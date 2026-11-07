@@ -173,3 +173,17 @@ test("desktop and mobile pages are selected by their routes, independently of re
     );
   }
 });
+
+test("request observation adds correlation IDs and preserves safe API errors", async () => {
+  const response = await app.fetch(
+    new Request("https://cure-sooty.vercel.app/api/medical/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://cure-sooty.vercel.app" },
+      body: JSON.stringify({ source: "icd10", query: "" }),
+    }),
+  );
+  assert.equal(response.status, 400);
+  assert.match(response.headers.get("x-request-id") ?? "", /^[a-f0-9-]{36}$/);
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.deepEqual(await response.json(), { error: "INVALID_SEARCH" });
+});

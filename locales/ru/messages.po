@@ -7,54 +7,54 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ru\n"
 
-#: src/routes/d.tsx:455
-#: src/routes/m.tsx:416
+#: src/routes/d.tsx:446
+#: src/routes/m.tsx:407
 msgid "API-ключ"
 msgstr "API-ключ"
 
-#: src/routes/d.tsx:613
-#: src/routes/m.tsx:563
+#: src/routes/d.tsx:604
+#: src/routes/m.tsx:554
 msgid "ROR содержит организации образования. Наличие в ROR не подтверждает медицинскую аккредитацию."
 msgstr "ROR содержит организации образования. Наличие в ROR не подтверждает медицинскую аккредитацию."
 
-#: src/routes/d.tsx:433
-#: src/routes/m.tsx:394
+#: src/routes/d.tsx:424
+#: src/routes/m.tsx:385
 msgid "Адрес API"
 msgstr "Адрес API"
 
-#: src/routes/d.tsx:329
-#: src/routes/d.tsx:331
-#: src/routes/m.tsx:643
-#: src/routes/m.tsx:645
+#: src/routes/d.tsx:320
+#: src/routes/d.tsx:322
+#: src/routes/m.tsx:634
+#: src/routes/m.tsx:636
 msgid "Аккаунт"
 msgstr "Аккаунт"
 
-#: src/routes/d.tsx:252
-#: src/routes/m.tsx:251
+#: src/routes/d.tsx:243
+#: src/routes/m.tsx:242
 msgid "Больницы и клиники — OpenStreetMap"
 msgstr "Больницы и клиники — OpenStreetMap"
 
-#: src/routes/d.tsx:652
-#: src/routes/m.tsx:602
+#: src/routes/d.tsx:643
+#: src/routes/m.tsx:593
 msgid "В источнике ничего не найдено."
 msgstr "В источнике ничего не найдено."
 
-#: src/routes/d.tsx:305
+#: src/routes/d.tsx:296
 msgid "Версия для компьютера"
 msgstr "Версия для компьютера"
 
-#: src/routes/d.tsx:635
-#: src/routes/m.tsx:585
+#: src/routes/d.tsx:626
+#: src/routes/m.tsx:576
 msgid "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 msgstr "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 
-#: src/routes/d.tsx:386
-#: src/routes/m.tsx:348
+#: src/routes/d.tsx:377
+#: src/routes/m.tsx:339
 msgid "Войдите, чтобы настроить нейросеть."
 msgstr "Войдите, чтобы настроить нейросеть."
 
-#: src/routes/d.tsx:349
-#: src/routes/m.tsx:663
+#: src/routes/d.tsx:340
+#: src/routes/m.tsx:654
 msgid "Войти через Google"
 msgstr "Войти через Google"
 
@@ -62,119 +62,119 @@ msgstr "Войти через Google"
 msgid "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
 msgstr "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
 
-#: src/routes/d.tsx:343
-#: src/routes/m.tsx:657
+#: src/routes/d.tsx:334
+#: src/routes/m.tsx:648
 msgid "Выйти"
 msgstr "Выйти"
 
-#: src/routes/d.tsx:367
-#: src/routes/m.tsx:329
+#: src/routes/d.tsx:358
+#: src/routes/m.tsx:320
 msgid "Демонстрационный счётчик сохраняется только на этом устройстве."
 msgstr "Демонстрационный счётчик сохраняется только на этом устройстве."
 
-#: src/routes/d.tsx:633
-#: src/routes/m.tsx:583
+#: src/routes/d.tsx:624
+#: src/routes/m.tsx:574
 msgid "Для ВОЗ нужно настроить серверные WHO_ICD_CLIENT_ID и WHO_ICD_CLIENT_SECRET."
 msgstr "Для ВОЗ нужно настроить серверные WHO_ICD_CLIENT_ID и WHO_ICD_CLIENT_SECRET."
 
-#: src/routes/d.tsx:499
-#: src/routes/m.tsx:460
+#: src/routes/d.tsx:490
+#: src/routes/m.tsx:451
 msgid "Для запроса к нейросети нужен интернет."
 msgstr "Для запроса к нейросети нужен интернет."
 
-#: src/routes/d.tsx:610
-#: src/routes/m.tsx:560
+#: src/routes/d.tsx:601
+#: src/routes/m.tsx:551
 msgid "Для этого источника используйте английский термин или код. Перевод названий автоматически не выполняется."
 msgstr "Для этого источника используйте английский термин или код. Перевод названий автоматически не выполняется."
 
-#: src/routes/d.tsx:375
-#: src/routes/m.tsx:337
+#: src/routes/d.tsx:366
+#: src/routes/m.tsx:328
 msgid "Добавить 1 к {count}?"
 msgstr "Добавить 1 к {count}?"
 
-#: src/routes/d.tsx:574
-#: src/routes/m.tsx:528
+#: src/routes/d.tsx:565
+#: src/routes/m.tsx:519
 msgid "Долгота"
 msgstr "Долгота"
 
-#: src/routes/d.tsx:234
-#: src/routes/m.tsx:233
+#: src/routes/d.tsx:225
+#: src/routes/m.tsx:224
 msgid "Достигнут лимит провайдера. Повторите запрос позже."
 msgstr "Достигнут лимит провайдера. Повторите запрос позже."
 
-#: src/routes/d.tsx:605
-#: src/routes/m.tsx:555
+#: src/routes/d.tsx:596
+#: src/routes/m.tsx:546
 msgid "Загружаем…"
 msgstr "Загружаем…"
 
-#: src/routes/d.tsx:518
-#: src/routes/m.tsx:479
+#: src/routes/d.tsx:509
+#: src/routes/m.tsx:470
 msgid "Загруженные записи доступны без интернета. Это сохранённая часть справочника, а не полная мировая база."
 msgstr "Загруженные записи доступны без интернета. Это сохранённая часть справочника, а не полная мировая база."
 
-#: src/routes/d.tsx:616
-#: src/routes/m.tsx:566
+#: src/routes/d.tsx:607
+#: src/routes/m.tsx:557
 msgid "Здесь доступны ссылки на региональные PBF-выгрузки OSM. Архив не является готовым списком больниц и не загружается в браузер автоматически."
 msgstr "Здесь доступны ссылки на региональные PBF-выгрузки OSM. Архив не является готовым списком больниц и не загружается в браузер автоматически."
 
-#: src/routes/d.tsx:468
-#: src/routes/m.tsx:429
+#: src/routes/d.tsx:459
+#: src/routes/m.tsx:420
 msgid "Использовать ключ"
 msgstr "Использовать ключ"
 
-#: src/routes/d.tsx:527
-#: src/routes/m.tsx:488
+#: src/routes/d.tsx:518
+#: src/routes/m.tsx:479
 msgid "Источник данных"
 msgstr "Источник данных"
 
-#: src/routes/d.tsx:637
-#: src/routes/m.tsx:587
+#: src/routes/d.tsx:628
+#: src/routes/m.tsx:578
 msgid "Источник ограничил запросы. Повторите позже."
 msgstr "Источник ограничил запросы. Повторите позже."
 
-#: src/routes/d.tsx:640
-#: src/routes/m.tsx:590
+#: src/routes/d.tsx:631
+#: src/routes/m.tsx:581
 msgid "Источник сейчас недоступен. Сохранённые записи остаются доступны."
 msgstr "Источник сейчас недоступен. Сохранённые записи остаются доступны."
 
-#: src/routes/d.tsx:484
-#: src/routes/m.tsx:445
+#: src/routes/d.tsx:475
+#: src/routes/m.tsx:436
 msgid "Ключ готов к использованию."
 msgstr "Ключ готов к использованию."
 
-#: src/routes/d.tsx:483
-#: src/routes/m.tsx:444
+#: src/routes/d.tsx:474
+#: src/routes/m.tsx:435
 msgid "Ключ хранится только в памяти вкладки. После перезагрузки введите его снова."
 msgstr "Ключ хранится только в памяти вкладки. После перезагрузки введите его снова."
 
-#: src/routes/d.tsx:546
-#: src/routes/m.tsx:503
+#: src/routes/d.tsx:537
+#: src/routes/m.tsx:494
 msgid "Код МКБ-10, например J45"
 msgstr "Код МКБ-10, например J45"
 
-#: src/routes/d.tsx:515
-#: src/routes/d.tsx:517
-#: src/routes/m.tsx:476
-#: src/routes/m.tsx:478
+#: src/routes/d.tsx:506
+#: src/routes/d.tsx:508
+#: src/routes/m.tsx:467
+#: src/routes/m.tsx:469
 msgid "Медицинские справочники"
 msgstr "Медицинские справочники"
 
-#: src/routes/d.tsx:255
-#: src/routes/m.tsx:254
+#: src/routes/d.tsx:246
+#: src/routes/m.tsx:245
 msgid "МКБ-10 — ВОЗ (по коду)"
 msgstr "МКБ-10 — ВОЗ (по коду)"
 
-#: src/routes/d.tsx:254
-#: src/routes/m.tsx:253
+#: src/routes/d.tsx:245
+#: src/routes/m.tsx:244
 msgid "МКБ-11 — ВОЗ"
 msgstr "МКБ-11 — ВОЗ"
 
-#: src/routes/m.tsx:304
+#: src/routes/m.tsx:295
 msgid "Мобильная версия"
 msgstr "Мобильная версия"
 
-#: src/routes/d.tsx:419
-#: src/routes/m.tsx:380
+#: src/routes/d.tsx:410
+#: src/routes/m.tsx:371
 msgid "Модель"
 msgstr "Модель"
 
@@ -182,18 +182,18 @@ msgstr "Модель"
 msgid "На главную"
 msgstr "На главную"
 
-#: src/routes/d.tsx:547
-#: src/routes/m.tsx:503
+#: src/routes/d.tsx:538
+#: src/routes/m.tsx:494
 msgid "Название, термин или код"
 msgstr "Название, термин или код"
 
-#: src/routes/d.tsx:605
-#: src/routes/m.tsx:555
+#: src/routes/d.tsx:596
+#: src/routes/m.tsx:546
 msgid "Найти в источнике"
 msgstr "Найти в источнике"
 
-#: src/routes/d.tsx:382
-#: src/routes/m.tsx:344
+#: src/routes/d.tsx:373
+#: src/routes/m.tsx:335
 msgid "Настройки AI"
 msgstr "Настройки AI"
 
@@ -201,77 +201,81 @@ msgstr "Настройки AI"
 msgid "Не удалось войти"
 msgstr "Не удалось войти"
 
-#: src/routes/d.tsx:356
-#: src/routes/m.tsx:670
+#: src/routes/d.tsx:347
+#: src/routes/m.tsx:661
 msgid "Не удалось войти. Попробуйте ещё раз."
 msgstr "Не удалось войти. Попробуйте ещё раз."
 
-#: src/routes/d.tsx:355
-#: src/routes/m.tsx:669
+#: src/routes/d.tsx:346
+#: src/routes/m.tsx:660
 msgid "Не удалось выйти. Попробуйте ещё раз."
 msgstr "Не удалось выйти. Попробуйте ещё раз."
 
-#: src/routes/d.tsx:369
-#: src/routes/m.tsx:331
+#: src/routes/d.tsx:360
+#: src/routes/m.tsx:322
 msgid "Не удалось открыть локальное хранилище."
 msgstr "Не удалось открыть локальное хранилище."
 
-#: src/routes/d.tsx:388
-#: src/routes/m.tsx:350
+#: src/routes/d.tsx:379
+#: src/routes/m.tsx:341
 msgid "Не удалось открыть настройки AI на устройстве."
 msgstr "Не удалось открыть настройки AI на устройстве."
+
+#: src/router.tsx:44
+msgid "Не удалось открыть страницу. Сохранённые данные доступны после восстановления."
+msgstr "Не удалось открыть страницу. Сохранённые данные доступны после восстановления."
 
 #: src/routes/__root.tsx:212
 msgid "Не удалось подготовить приложение для работы без интернета."
 msgstr "Не удалось подготовить приложение для работы без интернета."
 
-#: src/routes/d.tsx:228
-#: src/routes/m.tsx:227
+#: src/routes/d.tsx:219
+#: src/routes/m.tsx:218
 msgid "Не удалось подтвердить вход. Проверьте подключение и войдите снова."
 msgstr "Не удалось подтвердить вход. Проверьте подключение и войдите снова."
 
-#: src/routes/d.tsx:237
-#: src/routes/m.tsx:236
+#: src/routes/d.tsx:228
+#: src/routes/m.tsx:227
 msgid "Не удалось проверить подключение. Проверьте ключ, модель и настройки API."
 msgstr "Не удалось проверить подключение. Проверьте ключ, модель и настройки API."
 
-#: src/routes/d.tsx:357
-#: src/routes/m.tsx:671
+#: src/routes/d.tsx:348
+#: src/routes/m.tsx:662
 msgid "Не удалось проверить сессию. Попробуйте обновить страницу."
 msgstr "Не удалось проверить сессию. Попробуйте обновить страницу."
 
-#: src/routes/d.tsx:628
-#: src/routes/m.tsx:578
+#: src/routes/d.tsx:619
+#: src/routes/m.tsx:569
 msgid "Не удалось сохранить записи. Показанные результаты могут быть недоступны после закрытия приложения."
 msgstr "Не удалось сохранить записи. Показанные результаты могут быть недоступны после закрытия приложения."
 
-#: src/routes/d.tsx:378
-#: src/routes/m.tsx:340
+#: src/routes/d.tsx:369
+#: src/routes/m.tsx:331
 msgid "Не удалось сохранить изменение на устройстве."
 msgstr "Не удалось сохранить изменение на устройстве."
 
-#: src/routes/d.tsx:509
-#: src/routes/m.tsx:470
+#: src/routes/d.tsx:500
+#: src/routes/m.tsx:461
 msgid "Не удалось сохранить настройки AI."
 msgstr "Не удалось сохранить настройки AI."
 
-#: src/routes/d.tsx:384
-#: src/routes/m.tsx:346
+#: src/routes/d.tsx:375
+#: src/routes/m.tsx:337
 msgid "Нейросеть"
 msgstr "Нейросеть"
 
-#: src/routes/d.tsx:226
-#: src/routes/m.tsx:225
+#: src/routes/d.tsx:217
+#: src/routes/m.tsx:216
 msgid "Нейросеть не настроена. Проверьте ключ и серверные настройки провайдера."
 msgstr "Нейросеть не настроена. Проверьте ключ и серверные настройки провайдера."
 
-#: src/routes/d.tsx:236
-#: src/routes/m.tsx:235
+#: src/routes/d.tsx:227
+#: src/routes/m.tsx:226
 msgid "Нейросеть не ответила вовремя. Повторите запрос позже."
 msgstr "Нейросеть не ответила вовремя. Повторите запрос позже."
 
-#: src/routes/d.tsx:502
-#: src/routes/m.tsx:463
+#: src/routes/d.tsx:493
+#: src/routes/m.tsx:454
 msgid "Нейросеть ответила. Подключение работает."
 msgstr "Нейросеть ответила. Подключение работает."
 
@@ -279,13 +283,13 @@ msgstr "Нейросеть ответила. Подключение работа
 msgid "Нет интернета. Доступны сохранённые на устройстве данные."
 msgstr "Нет интернета. Доступны сохранённые на устройстве данные."
 
-#: src/routes/d.tsx:619
-#: src/routes/m.tsx:569
+#: src/routes/d.tsx:610
+#: src/routes/m.tsx:560
 msgid "Нет сети: поиск выполняется только по сохранённым записям."
 msgstr "Нет сети: поиск выполняется только по сохранённым записям."
 
-#: src/routes/d.tsx:559
-#: src/routes/m.tsx:513
+#: src/routes/d.tsx:550
+#: src/routes/m.tsx:504
 msgid "Область поиска учреждений"
 msgstr "Область поиска учреждений"
 
@@ -293,28 +297,37 @@ msgstr "Область поиска учреждений"
 msgid "Обновить приложение"
 msgstr "Обновить приложение"
 
-#: src/routes/d.tsx:678
-#: src/routes/m.tsx:628
+#: src/routes/d.tsx:669
+#: src/routes/m.tsx:619
 msgid "Открыть источник"
 msgstr "Открыть источник"
 
-#: src/routes/d.tsx:415
-#: src/routes/m.tsx:376
+#: src/client.tsx:37
+#: src/router.tsx:58
+msgid "Перезагрузить"
+msgstr "Перезагрузить"
+
+#: src/routes/d.tsx:406
+#: src/routes/m.tsx:367
 msgid "По умолчанию используется ГигаЧат. Свой ключ не требуется."
 msgstr "По умолчанию используется ГигаЧат. Свой ключ не требуется."
 
-#: src/routes/d.tsx:646
-#: src/routes/m.tsx:596
+#: src/router.tsx:55
+msgid "Повторить"
+msgstr "Повторить"
+
+#: src/routes/d.tsx:637
+#: src/routes/m.tsx:587
 msgid "Показана ограниченная выборка."
 msgstr "Показана ограниченная выборка."
 
-#: src/routes/d.tsx:625
-#: src/routes/m.tsx:575
+#: src/routes/d.tsx:616
+#: src/routes/m.tsx:566
 msgid "Полученные записи сохранены на устройстве."
 msgstr "Полученные записи сохранены на устройстве."
 
-#: src/routes/d.tsx:306
-#: src/routes/m.tsx:305
+#: src/routes/d.tsx:297
+#: src/routes/m.tsx:296
 msgid "Привет, мир!"
 msgstr "Привет, мир!"
 
@@ -326,91 +339,95 @@ msgstr "Приложение"
 msgid "Приложение готово к запуску без интернета."
 msgstr "Приложение готово к запуску без интернета."
 
-#: src/routes/d.tsx:392
-#: src/routes/m.tsx:354
+#: src/routes/d.tsx:383
+#: src/routes/m.tsx:345
 msgid "Провайдер"
 msgstr "Провайдер"
 
-#: src/routes/d.tsx:232
-#: src/routes/m.tsx:231
+#: src/routes/d.tsx:223
+#: src/routes/m.tsx:222
 msgid "Провайдер отклонил ключ или доступ к модели."
 msgstr "Провайдер отклонил ключ или доступ к модели."
 
-#: src/routes/d.tsx:496
-#: src/routes/m.tsx:457
+#: src/routes/d.tsx:487
+#: src/routes/m.tsx:448
 msgid "Проверить подключение"
 msgstr "Проверить подключение"
 
-#: src/routes/d.tsx:554
-#: src/routes/d.tsx:569
-#: src/routes/d.tsx:581
-#: src/routes/d.tsx:593
-#: src/routes/d.tsx:639
-#: src/routes/m.tsx:509
-#: src/routes/m.tsx:523
-#: src/routes/m.tsx:535
-#: src/routes/m.tsx:547
-#: src/routes/m.tsx:589
+#: src/routes/d.tsx:545
+#: src/routes/d.tsx:560
+#: src/routes/d.tsx:572
+#: src/routes/d.tsx:584
+#: src/routes/d.tsx:630
+#: src/routes/m.tsx:500
+#: src/routes/m.tsx:514
+#: src/routes/m.tsx:526
+#: src/routes/m.tsx:538
+#: src/routes/m.tsx:580
 msgid "Проверьте запрос и параметры поиска."
 msgstr "Проверьте запрос и параметры поиска."
 
-#: src/routes/d.tsx:496
-#: src/routes/m.tsx:457
+#: src/routes/d.tsx:487
+#: src/routes/m.tsx:448
 msgid "Проверяем подключение…"
 msgstr "Проверяем подключение…"
 
-#: src/routes/d.tsx:335
-#: src/routes/m.tsx:649
+#: src/routes/d.tsx:326
+#: src/routes/m.tsx:640
 msgid "Проверяем сессию…"
 msgstr "Проверяем сессию…"
 
-#: src/routes/d.tsx:256
-#: src/routes/m.tsx:255
+#: src/client.tsx:34
+msgid "Произошла ошибка приложения. Перезагрузите страницу."
+msgstr "Произошла ошибка приложения. Перезагрузите страницу."
+
+#: src/routes/d.tsx:247
+#: src/routes/m.tsx:246
 msgid "Публикации — PubMed"
 msgstr "Публикации — PubMed"
 
-#: src/routes/d.tsx:586
-#: src/routes/m.tsx:540
+#: src/routes/d.tsx:577
+#: src/routes/m.tsx:531
 msgid "Радиус, метры (до 10 000)"
 msgstr "Радиус, метры (до 10 000)"
 
-#: src/routes/d.tsx:253
-#: src/routes/m.tsx:252
+#: src/routes/d.tsx:244
+#: src/routes/m.tsx:243
 msgid "Региональные выгрузки — Geofabrik"
 msgstr "Региональные выгрузки — Geofabrik"
 
-#: src/routes/d.tsx:257
-#: src/routes/m.tsx:256
+#: src/routes/d.tsx:248
+#: src/routes/m.tsx:247
 msgid "Редкие заболевания — Orphadata"
 msgstr "Редкие заболевания — Orphadata"
 
-#: src/routes/d.tsx:230
-#: src/routes/m.tsx:229
+#: src/routes/d.tsx:221
+#: src/routes/m.tsx:220
 msgid "Сервер не смог проверить сертификат нейросети."
 msgstr "Сервер не смог проверить сертификат нейросети."
 
-#: src/routes/d.tsx:333
-#: src/routes/m.tsx:647
+#: src/routes/d.tsx:324
+#: src/routes/m.tsx:638
 msgid "Сессия будет проверена после подключения к интернету."
 msgstr "Сессия будет проверена после подключения к интернету."
 
-#: src/routes/d.tsx:677
-#: src/routes/m.tsx:627
+#: src/routes/d.tsx:668
+#: src/routes/m.tsx:618
 msgid "Скачать PBF из источника"
 msgstr "Скачать PBF из источника"
 
-#: src/routes/d.tsx:653
-#: src/routes/m.tsx:603
+#: src/routes/d.tsx:644
+#: src/routes/m.tsx:594
 msgid "Сохранённых записей по этому запросу пока нет."
 msgstr "Сохранённых записей по этому запросу пока нет."
 
-#: src/routes/d.tsx:479
-#: src/routes/m.tsx:440
+#: src/routes/d.tsx:470
+#: src/routes/m.tsx:431
 msgid "Удалить ключ"
 msgstr "Удалить ключ"
 
-#: src/routes/d.tsx:251
-#: src/routes/m.tsx:250
+#: src/routes/d.tsx:242
+#: src/routes/m.tsx:241
 msgid "Университеты — ROR"
 msgstr "Университеты — ROR"
 
@@ -418,18 +435,18 @@ msgstr "Университеты — ROR"
 msgid "Установить приложение"
 msgstr "Установить приложение"
 
-#: src/routes/d.tsx:562
-#: src/routes/m.tsx:516
+#: src/routes/d.tsx:553
+#: src/routes/m.tsx:507
 msgid "Широта"
 msgstr "Широта"
 
 #. placeholder {0}: search.data.dataLanguage
-#: src/routes/d.tsx:645
-#: src/routes/m.tsx:595
+#: src/routes/d.tsx:636
+#: src/routes/m.tsx:586
 msgid "Язык данных: {0}."
 msgstr "Язык данных: {0}."
 
-#: src/routes/d.tsx:308
-#: src/routes/m.tsx:307
+#: src/routes/d.tsx:299
+#: src/routes/m.tsx:298
 msgid "Язык интерфейса"
 msgstr "Язык интерфейса"

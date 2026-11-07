@@ -19,9 +19,11 @@
 - Rslint, Oxfmt — линтер и форматирование.
 - Husky, lint-staged, Commitlint — Git-хуки и Conventional Commits.
 - Vercel — хостинг.
+- Sentry — ошибки, события, логи и трассы.
 
 ## Используемые API
 
+- Sentry ingest — облачная телеметрия при подключённом DSN.
 - Google OAuth — вход через Google.
 - GigaChat — AI по умолчанию.
 - OpenAI, Anthropic, Google Gemini, OpenRouter, DeepSeek, Groq — AI с ключом пользователя.

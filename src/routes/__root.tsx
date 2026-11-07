@@ -22,13 +22,13 @@ import { Serwist } from "@serwist/window";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { createRootRouteWithContext } from "@tanstack/react-router";
 import { Outlet, Scripts, HeadContent } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 
 import "@mantine/notifications/styles.css";
 import "@mantine/nprogress/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/dates/styles.css";
 
-import { createServerFn } from "@tanstack/react-start";
 import * as React from "react";
 
 import { createI18n } from "@/src/i18n";
@@ -37,6 +37,7 @@ import { getToken } from "@/src/lib/auth-server";
 import { defaultLocale, lastLocaleKey } from "@/src/lib/locale";
 import { getRequestDevice } from "@/src/lib/request-device";
 import { getRequestLocale } from "@/src/lib/request-locale";
+import { observePromise } from "@/src/observability/events";
 
 import mantineCoreStyles from "@mantine/core/styles.css?url";
 
@@ -157,8 +158,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     worker.addEventListener("controlling", () => {
       if (!disposed) setPwa({ ready: true });
     });
-    void worker
-      .register()
+    void observePromise("pwa.register", worker.register())
       .then(async () => {
         await navigator.serviceWorker.ready;
         if (!disposed) setPwa({ ready: true });

@@ -51,7 +51,6 @@ export async function handleAiChat(
     );
   } catch (error) {
     const code = classifyAiError(error);
-    console.error("AI request failed", { code, provider: input.provider });
     return failure(code, 503);
   }
 }

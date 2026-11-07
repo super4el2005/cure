@@ -49,6 +49,7 @@ import {
   medicalAttribution,
 } from "@/src/lib/medical-catalog";
 import type { MedicalResult, MedicalSource } from "@/src/lib/medical-catalog";
+import { openLocalData } from "@/src/observability/events";
 
 export const Route = createFileRoute("/m")({ component: MobileHome });
 
@@ -71,27 +72,17 @@ function MobileHome() {
   // Explicit storage avoids silently treating an in-memory fallback as durable.
   const counter = useMemo(() => {
     if (!mounted) return undefined;
-    try {
-      return createDeviceCounter(window.localStorage);
-    } catch {
-      return undefined;
-    }
+    return openLocalData("storage.counter", () => createDeviceCounter(window.localStorage));
   }, [mounted]);
   const catalog = useMemo(() => {
     if (!mounted) return undefined;
-    try {
-      return createMedicalCache(window.localStorage);
-    } catch {
-      return undefined;
-    }
+    return openLocalData("storage.catalog", () => createMedicalCache(window.localStorage));
   }, [mounted]);
   const preferencesCollection = useMemo(() => {
     if (!mounted || !userId) return undefined;
-    try {
-      return createAiPreferences(userId, window.localStorage);
-    } catch {
-      return undefined;
-    }
+    return openLocalData("storage.preferences", () =>
+      createAiPreferences(userId, window.localStorage),
+    );
   }, [mounted, userId]);
   const { data: counterRows } = useLiveQuery(() => counter);
   const { data: catalogRows } = useLiveQuery(() => catalog);
