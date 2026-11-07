@@ -246,7 +246,7 @@ describe("GigaChat TLS and safe diagnostics", () => {
     expect(classifyAiError(error)).toBe(expected);
   });
 
-  it("logs only a safe error code and provider, never raw SDK requests", async () => {
+  it("returns a safe error without local logging; request instrumentation owns reporting", async () => {
     const logger = rstest.spyOn(console, "error").mockImplementation(() => {});
     try {
       const response = await handleAiChat(
@@ -261,10 +261,7 @@ describe("GigaChat TLS and safe diagnostics", () => {
         },
       );
       expect(await response.json()).toEqual({ error: "AI_TLS_ERROR" });
-      expect(logger).toHaveBeenCalledWith("AI request failed", {
-        code: "AI_TLS_ERROR",
-        provider: "gigachat",
-      });
+      expect(logger).not.toHaveBeenCalled();
       expect(JSON.stringify(logger.mock.calls)).not.toContain("secret-key");
       expect(JSON.stringify(logger.mock.calls)).not.toContain("private-message");
     } finally {

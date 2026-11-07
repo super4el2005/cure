@@ -5,11 +5,12 @@ import { defineConfig, loadEnv } from "@rsbuild/core";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginReact } from "@rsbuild/plugin-react";
 import { RsdoctorRspackPlugin } from "@rsdoctor/core";
+import { sentryWebpackPlugin } from "@sentry/webpack-plugin";
 import { InjectManifest } from "@serwist/webpack-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
 
 // Convex's deployment URL is public and is needed by both client and SSR.
-const { publicVars } = loadEnv({ prefixes: ["CONVEX_URL", "CONVEX_SITE_URL"] });
+const { publicVars } = loadEnv({ prefixes: ["CONVEX_URL", "CONVEX_SITE_URL", "PUBLIC_SENTRY_"] });
 const shellRevision = randomUUID();
 const linguiConfigPath = resolve(import.meta.dirname, "lingui.config.ts");
 
@@ -20,7 +21,18 @@ export default defineConfig({
     },
   },
   source: {
-    define: publicVars,
+    define: {
+      "import.meta.env.PUBLIC_SENTRY_DSN": JSON.stringify(
+        process.env.PUBLIC_SENTRY_DSN || process.env.SENTRY_DSN || "",
+      ),
+      ...publicVars,
+      "import.meta.env.PUBLIC_SENTRY_RELEASE": JSON.stringify(
+        process.env.SENTRY_RELEASE || process.env.VERCEL_GIT_COMMIT_SHA || "development",
+      ),
+      "import.meta.env.PUBLIC_SENTRY_ENVIRONMENT": JSON.stringify(
+        process.env.VERCEL_ENV || "development",
+      ),
+    },
   },
   server: {
     port: 3000,
@@ -63,6 +75,31 @@ export default defineConfig({
         ],
       });
       config.plugins ??= [];
+      if (
+        isProd &&
+        process.env.SENTRY_AUTH_TOKEN &&
+        process.env.SENTRY_ORG &&
+        process.env.SENTRY_PROJECT
+      ) {
+        config.devtool = "hidden-source-map";
+        const directory = environment.name === "client" ? "dist/client" : "dist/server";
+        config.plugins.push(
+          sentryWebpackPlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            release: {
+              name:
+                process.env.SENTRY_RELEASE || process.env.VERCEL_GIT_COMMIT_SHA || "development",
+            },
+            sourcemaps: {
+              assets: `${directory}/**`,
+              filesToDeleteAfterUpload: `${directory}/**/*.map`,
+            },
+            telemetry: false,
+          }),
+        );
+      }
       if (isProd && environment.name === "client") {
         config.plugins.push(
           new InjectManifest({
