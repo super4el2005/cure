@@ -5,6 +5,7 @@ import {
   getResponseHeader,
   setResponseHeader,
 } from "@tanstack/react-start/server";
+import Cookies from "js-cookie";
 
 import {
   lastLocaleKey,
@@ -32,11 +33,7 @@ export const getRequestLocale = createIsomorphicFn()
     } catch {
       // Browser preferences still work when persistent storage is unavailable.
     }
-    const cookie = document.cookie
-      .split(";")
-      .map((value) => value.trim())
-      .find((value) => value.startsWith(`${localeCookie}=`))
-      ?.slice(localeCookie.length + 1);
+    const cookie = Cookies.get(localeCookie);
     return resolveClientLocale({
       cookie,
       serverLocale:

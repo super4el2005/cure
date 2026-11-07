@@ -1,4 +1,5 @@
 import { useLingui } from "@lingui/react/macro";
+import { Button, Container, Stack, Text, Title } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth/error")({
@@ -9,10 +10,12 @@ function AuthError() {
   const { t } = useLingui();
 
   return (
-    <main>
-      <h1>{t`Не удалось войти`}</h1>
-      <p>{t`Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз.`}</p>
-      <Link to="/">{t`На главную`}</Link>
-    </main>
+    <Container component="main" py="md">
+      <Stack>
+        <Title order={1}>{t`Не удалось войти`}</Title>
+        <Text>{t`Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз.`}</Text>
+        <Button component={Link} to="/">{t`На главную`}</Button>
+      </Stack>
+    </Container>
   );
 }

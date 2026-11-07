@@ -1,16 +1,21 @@
+import Bowser from "bowser";
+
 export type Device = "desktop" | "mobile";
+
+export const deviceHomeRoutes = { desktop: "/d", mobile: "/m" } as const;
 
 type DeviceSignals = {
   userAgent?: string | undefined;
   mobileHint?: string | undefined;
 };
 
-// Device class, not viewport size. Tablets use the mobile application too.
+// Bowser owns UA parsing. Our routing policy groups phones and tablets into /m;
+// Sec-CH-UA-Mobile: ?0 does not exclude tablets.
 export function detectDevice({ userAgent = "", mobileHint }: DeviceSignals): Device {
-  if (mobileHint === "?1") return "mobile";
-  if (/iPad|Tablet|Kindle|Silk|PlayBook|Android(?!.*Mobile)/i.test(userAgent)) return "mobile";
-  if (mobileHint === "?0") return "desktop";
-  return /Mobi|iPhone|iPod|Android|Windows Phone/i.test(userAgent) ? "mobile" : "desktop";
+  const platform = userAgent ? Bowser.getParser(userAgent).getPlatformType() : undefined;
+  const mobile =
+    platform === "tablet" || mobileHint === "?1" || (mobileHint !== "?0" && platform === "mobile");
+  return mobile ? "mobile" : "desktop";
 }
 
 export function resolveClientDevice(

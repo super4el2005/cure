@@ -38,7 +38,8 @@
     "test:pwa": "npm run build && npm run test:browser",
     "icons": "node scripts/generate-icons.ts",
     "test:browser": "playwright test",
-    "test:vercel": "npm run build && node --test tests/vercel.node.ts"
+    "test:vercel": "npm run build && node --test tests/vercel.node.ts",
+    "api:generate": "node scripts/export-api-contract.ts && oxfmt openapi/cure.json && orval --config orval.config.ts"
   },
   "dependencies": {
     "@convex-dev/better-auth": "^0.13.0",
@@ -68,17 +69,25 @@
     "@tanstack/react-router": "^1.170.46",
     "@tanstack/react-router-ssr-query": "^1.167.3",
     "@tanstack/react-start": "^1.169.4",
+    "axios": "^1.21.0",
     "better-auth": "~1.7.18",
+    "bowser": "^2.15.0",
     "convex": "^1.49.0",
     "dayjs": "^1.11.23",
+    "geolib": "^4.0.1",
     "gigachat": "^0.0.21",
+    "html-to-text": "^10.0.1",
+    "js-cookie": "^3.0.8",
+    "lru-cache": "^11.5.3",
     "negotiator": "^1.1.0",
+    "openid-client": "^6.8.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-icons": "^5.7.0",
     "recharts": "^3.10.1",
     "serwist": "^9.5.13",
-    "srvx": "^1.0.8"
+    "srvx": "^1.0.8",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
@@ -95,6 +104,8 @@
     "@rslint/core": "^0.10.0",
     "@rstest/core": "^0.12.6",
     "@serwist/webpack-plugin": "^9.5.13",
+    "@types/html-to-text": "^9.0.4",
+    "@types/js-cookie": "^3.0.6",
     "@types/negotiator": "^0.6.5",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
@@ -102,6 +113,7 @@
     "husky": "^9.1.7",
     "jiti": "^2.7.0",
     "lint-staged": "^17.6.0",
+    "orval": "^8.46.0",
     "oxfmt": "^0.77.0",
     "postcss": "^8.5.32",
     "postcss-load-config": "^6.0.1",

@@ -1,6 +1,12 @@
 import "@tanstack/react-start/server-only";
+import { LRUCache } from "lru-cache";
+
 import type { Locale } from "@/src/lib/locale";
 import type { MedicalRecord, MedicalResult, MedicalSearch } from "@/src/lib/medical-catalog";
+import {
+  queryReferencesByName,
+  queryReferencesByOrphacode,
+} from "@/src/server/medical/generated/orphadata";
 import {
   jsonFetch,
   MedicalApiError,
@@ -17,7 +23,14 @@ export function createMedicalProviders(
   env: Record<string, string | undefined> = process.env,
 ) {
   const who = createWhoClient(fetchImpl, env);
-  let regions: { expiresAt: number; features: Record<string, unknown>[] } | undefined;
+  const regions = new LRUCache<string, Record<string, unknown>[]>({
+    max: 1,
+    ttl: 86_400_000,
+    fetchMethod: async () => {
+      const data = await jsonFetch(fetchImpl, "https://download.geofabrik.de/index-v1.json");
+      return rows(data.features).map((feature) => object(feature.properties));
+    },
+  });
   return async (input: MedicalSearch, locale: Locale): Promise<MedicalResult> => {
     const stamp = new Date().toISOString();
     const record = (
@@ -130,14 +143,8 @@ export function createMedicalProviders(
       total = null;
       language = "multilingual";
     } else if (input.source === "geofabrik") {
-      if (!regions || regions.expiresAt < Date.now()) {
-        const data = await jsonFetch(fetchImpl, "https://download.geofabrik.de/index-v1.json");
-        regions = {
-          expiresAt: Date.now() + 86_400_000,
-          features: rows(data.features).map((feature) => object(feature.properties)),
-        };
-      }
-      const matches = regions.features.filter((item) =>
+      const features = await regions.fetch("regions");
+      const matches = (features ?? []).filter((item) =>
         `${text(item.name)} ${text(item.id)}`.toLowerCase().includes(input.query.toLowerCase()),
       );
       total = matches.length;
@@ -191,12 +198,14 @@ export function createMedicalProviders(
       }
     } else if (input.source === "orphadata") {
       const query = input.query.replace(/^ORPHA:/i, "").trim();
-      const path = /^\d+$/.test(query) ? query : `names/${encodeURIComponent(query)}`;
-      const response = await jsonFetch(
-        fetchImpl,
-        `https://api.orphadata.com/rd-cross-referencing/orphacodes/${path}?lang=en`,
-        {},
-        true,
+      const options = {
+        env: { fetch: fetchImpl },
+        validateStatus: (status: number) => (status >= 200 && status < 300) || status === 404,
+      };
+      const response = object(
+        /^\d+$/.test(query)
+          ? await queryReferencesByOrphacode(Number(query), { lang: "en" }, options)
+          : await queryReferencesByName(query, { lang: "en" }, options),
       );
       const data = response.data ? object(response.data) : {};
       const results = Array.isArray(data.results)

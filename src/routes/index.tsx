@@ -1,17 +1,13 @@
-import { createFileRoute, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { DesktopHome } from "@/src/routes/-index.desktop";
-import { MobileHome } from "@/src/routes/-index.mobile";
-
-const rootRoute = getRouteApi("__root__");
+import { deviceHomeRoutes } from "@/src/lib/device";
+import { getRequestDevice } from "@/src/lib/request-device";
 
 export const Route = createFileRoute("/")({
-  component: Home,
+  beforeLoad: ({ context }) => {
+    // Keep the build-time PWA shell anonymous. Offline bootstrap resolves the
+    // device locally and runs the same route redirect without a server request.
+    if (context.isShell()) return;
+    throw redirect({ to: deviceHomeRoutes[getRequestDevice()], replace: true });
+  },
 });
-
-function Home() {
-  const { device } = rootRoute.useLoaderData();
-  // The prerendered PWA shell is anonymous and has no device-specific page.
-  if (device === undefined) return null;
-  return device === "mobile" ? <MobileHome /> : <DesktopHome />;
-}

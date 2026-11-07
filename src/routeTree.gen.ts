@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DRouteImport } from './routes/d'
+import { Route as MRouteImport } from './routes/m'
 import { Route as AuthErrorRouteImport } from './routes/auth.error'
 import { Route as ApiAiChatRouteImport } from './routes/api.ai.chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
@@ -18,6 +20,16 @@ import { Route as ApiMedicalSearchRouteImport } from './routes/api.medical.searc
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DRoute = DRouteImport.update({
+  id: '/d',
+  path: '/d',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MRoute = MRouteImport.update({
+  id: '/m',
+  path: '/m',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthErrorRoute = AuthErrorRouteImport.update({
@@ -43,6 +55,8 @@ const ApiMedicalSearchRoute = ApiMedicalSearchRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/d': typeof DRoute
+  '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -50,6 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/d': typeof DRoute
+  '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -58,6 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/d': typeof DRoute
+  '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -66,13 +84,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth/error' | '/api/ai/chat' | '/api/auth/$' | '/api/medical/search'
+    | '/'
+    | '/d'
+    | '/m'
+    | '/auth/error'
+    | '/api/ai/chat'
+    | '/api/auth/$'
+    | '/api/medical/search'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/auth/error' | '/api/ai/chat' | '/api/auth/$' | '/api/medical/search'
+    | '/'
+    | '/d'
+    | '/m'
+    | '/auth/error'
+    | '/api/ai/chat'
+    | '/api/auth/$'
+    | '/api/medical/search'
   id:
     | '__root__'
     | '/'
+    | '/d'
+    | '/m'
     | '/auth/error'
     | '/api/ai/chat'
     | '/api/auth/$'
@@ -81,6 +113,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DRoute: typeof DRoute
+  MRoute: typeof MRoute
   AuthErrorRoute: typeof AuthErrorRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -94,6 +128,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d': {
+      id: '/d'
+      path: '/d'
+      fullPath: '/d'
+      preLoaderRoute: typeof DRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m': {
+      id: '/m'
+      path: '/m'
+      fullPath: '/m'
+      preLoaderRoute: typeof MRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/error': {
@@ -129,6 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DRoute: DRoute,
+  MRoute: MRoute,
   AuthErrorRoute: AuthErrorRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

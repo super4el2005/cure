@@ -14,7 +14,7 @@ test("manifest and anonymous shell are served; online pages retain SSR", async (
     expect(response.ok()).toBeTruthy();
     expect(response.headers()["content-type"]).toContain("image/png");
   }
-  const response = await request.get("/", { headers: { "accept-language": "en-US,en;q=0.9" } });
+  const response = await request.get("/d", { headers: { "accept-language": "en-US,en;q=0.9" } });
   expect(response.ok()).toBeTruthy();
   expect(await response.text()).toContain("Hello, world!");
   const shell = await request.get("/_shell.html");
@@ -29,6 +29,7 @@ for (const device of ["desktop", "mobile"] as const) {
     device === "mobile"
       ? "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1"
       : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36";
+  const homeURL = `http://localhost:3102/${device === "mobile" ? "m" : "d"}`;
   test(`installed worker boots offline after a browser restart and retains local TanStack DB data (${device})`, async () => {
     const profile = await mkdtemp(join(tmpdir(), "cure-pwa-"));
     let context = await chromium.launchPersistentContext(profile, {
@@ -44,6 +45,7 @@ for (const device of ["desktop", "mobile"] as const) {
       await page.goto("http://localhost:3102/");
       await expect(page.getByRole("heading", { name: "Hello, world!" })).toBeVisible();
       await expect(page.locator("main")).toHaveAttribute("data-page", device);
+      await expect(page).toHaveURL(homeURL);
       await page.evaluate(async () => {
         await navigator.serviceWorker.ready;
         if (!navigator.serviceWorker.controller) {
@@ -103,7 +105,7 @@ for (const device of ["desktop", "mobile"] as const) {
       await expect(page.getByRole("button", { name: "Add 1 to 2?" })).toBeVisible();
       await page.getByRole("button", { name: "Русский", exact: true }).click();
       await expect(page.getByRole("heading", { name: "Привет, мир!" })).toBeVisible();
-      await expect(page).toHaveURL("http://localhost:3102/");
+      await expect(page).toHaveURL(homeURL);
       await page.getByRole("button", { name: "English", exact: true }).click();
       await expect(page.getByRole("heading", { name: "Hello, world!" })).toBeVisible();
       await context.close();
@@ -120,6 +122,10 @@ for (const device of ["desktop", "mobile"] as const) {
       await expect(page.getByRole("heading", { name: "Hello, world!" })).toBeVisible();
       await expect(page.locator("main")).toHaveAttribute("data-page", device);
       await expect(page.getByRole("button", { name: "Add 1 to 2?" })).toBeVisible();
+      await expect(page).toHaveURL(homeURL);
+      // A prefixed route also boots directly from the anonymous shell offline.
+      await page.goto(homeURL);
+      await expect(page.locator("main")).toHaveAttribute("data-page", device);
       await expect(
         page.getByText("Your session will be checked when you reconnect."),
       ).toBeVisible();
@@ -155,7 +161,7 @@ for (const device of ["desktop", "mobile"] as const) {
       await expect(page.getByRole("heading", { name: "Привет, мир!" })).toBeVisible();
       await page.reload();
       await expect(page.getByRole("heading", { name: "Привет, мир!" })).toBeVisible();
-      await expect(page).toHaveURL("http://localhost:3102/");
+      await expect(page).toHaveURL(homeURL);
     } finally {
       await context.close();
       await rm(profile, { recursive: true, force: true });

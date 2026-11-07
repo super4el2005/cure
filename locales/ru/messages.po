@@ -7,345 +7,429 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: ru\n"
 
-#: src/components/ai-settings.tsx:194
+#: src/routes/d.tsx:455
+#: src/routes/m.tsx:416
 msgid "API-ключ"
 msgstr "API-ключ"
 
-#: src/components/medical-catalog.tsx:186
+#: src/routes/d.tsx:613
+#: src/routes/m.tsx:563
 msgid "ROR содержит организации образования. Наличие в ROR не подтверждает медицинскую аккредитацию."
 msgstr "ROR содержит организации образования. Наличие в ROR не подтверждает медицинскую аккредитацию."
 
-#: src/components/ai-settings.tsx:173
+#: src/routes/d.tsx:433
+#: src/routes/m.tsx:394
 msgid "Адрес API"
 msgstr "Адрес API"
 
-#: src/components/auth-panel.tsx:53
+#: src/routes/d.tsx:329
+#: src/routes/d.tsx:331
+#: src/routes/m.tsx:643
+#: src/routes/m.tsx:645
 msgid "Аккаунт"
 msgstr "Аккаунт"
 
-#: src/components/medical-catalog.tsx:35
+#: src/routes/d.tsx:252
+#: src/routes/m.tsx:251
 msgid "Больницы и клиники — OpenStreetMap"
 msgstr "Больницы и клиники — OpenStreetMap"
 
-#: src/components/medical-catalog.tsx:222
+#: src/routes/d.tsx:652
+#: src/routes/m.tsx:602
 msgid "В источнике ничего не найдено."
 msgstr "В источнике ничего не найдено."
 
-#: src/routes/-index.desktop.tsx:15
+#: src/routes/d.tsx:305
 msgid "Версия для компьютера"
 msgstr "Версия для компьютера"
 
-#: src/components/medical-catalog.tsx:205
+#: src/routes/d.tsx:635
+#: src/routes/m.tsx:585
 msgid "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 msgstr "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 
-#: src/components/ai-settings.tsx:247
+#: src/routes/d.tsx:386
+#: src/routes/m.tsx:348
 msgid "Войдите, чтобы настроить нейросеть."
 msgstr "Войдите, чтобы настроить нейросеть."
 
-#: src/components/auth-panel.tsx:68
+#: src/routes/d.tsx:349
+#: src/routes/m.tsx:663
 msgid "Войти через Google"
 msgstr "Войти через Google"
 
-#: src/routes/auth.error.tsx:14
+#: src/routes/auth.error.tsx:16
 msgid "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
 msgstr "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
 
-#: src/components/auth-panel.tsx:63
+#: src/routes/d.tsx:343
+#: src/routes/m.tsx:657
 msgid "Выйти"
 msgstr "Выйти"
 
-#: src/components/local-counter.tsx:56
+#: src/routes/d.tsx:367
+#: src/routes/m.tsx:329
 msgid "Демонстрационный счётчик сохраняется только на этом устройстве."
 msgstr "Демонстрационный счётчик сохраняется только на этом устройстве."
 
-#: src/components/medical-catalog.tsx:203
+#: src/routes/d.tsx:633
+#: src/routes/m.tsx:583
 msgid "Для ВОЗ нужно настроить серверные WHO_ICD_CLIENT_ID и WHO_ICD_CLIENT_SECRET."
 msgstr "Для ВОЗ нужно настроить серверные WHO_ICD_CLIENT_ID и WHO_ICD_CLIENT_SECRET."
 
-#: src/components/ai-settings.tsx:233
+#: src/routes/d.tsx:499
+#: src/routes/m.tsx:460
 msgid "Для запроса к нейросети нужен интернет."
 msgstr "Для запроса к нейросети нужен интернет."
 
-#: src/components/medical-catalog.tsx:183
+#: src/routes/d.tsx:610
+#: src/routes/m.tsx:560
 msgid "Для этого источника используйте английский термин или код. Перевод названий автоматически не выполняется."
 msgstr "Для этого источника используйте английский термин или код. Перевод названий автоматически не выполняется."
 
-#: src/components/local-counter.tsx:60
+#: src/routes/d.tsx:375
+#: src/routes/m.tsx:337
 msgid "Добавить 1 к {count}?"
 msgstr "Добавить 1 к {count}?"
 
-#: src/components/medical-catalog.tsx:154
+#: src/routes/d.tsx:574
+#: src/routes/m.tsx:528
 msgid "Долгота"
 msgstr "Долгота"
 
-#: src/components/ai-settings.tsx:129
+#: src/routes/d.tsx:234
+#: src/routes/m.tsx:233
 msgid "Достигнут лимит провайдера. Повторите запрос позже."
 msgstr "Достигнут лимит провайдера. Повторите запрос позже."
 
-#: src/components/medical-catalog.tsx:179
+#: src/routes/d.tsx:605
+#: src/routes/m.tsx:555
 msgid "Загружаем…"
 msgstr "Загружаем…"
 
-#: src/components/medical-catalog.tsx:101
+#: src/routes/d.tsx:518
+#: src/routes/m.tsx:479
 msgid "Загруженные записи доступны без интернета. Это сохранённая часть справочника, а не полная мировая база."
 msgstr "Загруженные записи доступны без интернета. Это сохранённая часть справочника, а не полная мировая база."
 
-#: src/components/medical-catalog.tsx:189
+#: src/routes/d.tsx:616
+#: src/routes/m.tsx:566
 msgid "Здесь доступны ссылки на региональные PBF-выгрузки OSM. Архив не является готовым списком больниц и не загружается в браузер автоматически."
 msgstr "Здесь доступны ссылки на региональные PBF-выгрузки OSM. Архив не является готовым списком больниц и не загружается в браузер автоматически."
 
-#: src/components/ai-settings.tsx:207
+#: src/routes/d.tsx:468
+#: src/routes/m.tsx:429
 msgid "Использовать ключ"
 msgstr "Использовать ключ"
 
-#: src/components/medical-catalog.tsx:109
+#: src/routes/d.tsx:527
+#: src/routes/m.tsx:488
 msgid "Источник данных"
 msgstr "Источник данных"
 
-#: src/components/medical-catalog.tsx:207
+#: src/routes/d.tsx:637
+#: src/routes/m.tsx:587
 msgid "Источник ограничил запросы. Повторите позже."
 msgstr "Источник ограничил запросы. Повторите позже."
 
-#: src/components/medical-catalog.tsx:210
+#: src/routes/d.tsx:640
+#: src/routes/m.tsx:590
 msgid "Источник сейчас недоступен. Сохранённые записи остаются доступны."
 msgstr "Источник сейчас недоступен. Сохранённые записи остаются доступны."
 
-#: src/components/ai-settings.tsx:219
+#: src/routes/d.tsx:484
+#: src/routes/m.tsx:445
 msgid "Ключ готов к использованию."
 msgstr "Ключ готов к использованию."
 
-#: src/components/ai-settings.tsx:218
+#: src/routes/d.tsx:483
+#: src/routes/m.tsx:444
 msgid "Ключ хранится только в памяти вкладки. После перезагрузки введите его снова."
 msgstr "Ключ хранится только в памяти вкладки. После перезагрузки введите его снова."
 
-#: src/components/medical-catalog.tsx:129
+#: src/routes/d.tsx:546
+#: src/routes/m.tsx:503
 msgid "Код МКБ-10, например J45"
 msgstr "Код МКБ-10, например J45"
 
-#: src/components/medical-catalog.tsx:99
-#: src/components/medical-catalog.tsx:100
+#: src/routes/d.tsx:515
+#: src/routes/d.tsx:517
+#: src/routes/m.tsx:476
+#: src/routes/m.tsx:478
 msgid "Медицинские справочники"
 msgstr "Медицинские справочники"
 
-#: src/components/medical-catalog.tsx:38
+#: src/routes/d.tsx:255
+#: src/routes/m.tsx:254
 msgid "МКБ-10 — ВОЗ (по коду)"
 msgstr "МКБ-10 — ВОЗ (по коду)"
 
-#: src/components/medical-catalog.tsx:37
+#: src/routes/d.tsx:254
+#: src/routes/m.tsx:253
 msgid "МКБ-11 — ВОЗ"
 msgstr "МКБ-11 — ВОЗ"
 
-#: src/routes/-index.mobile.tsx:14
+#: src/routes/m.tsx:304
 msgid "Мобильная версия"
 msgstr "Мобильная версия"
 
-#: src/components/ai-settings.tsx:164
+#: src/routes/d.tsx:419
+#: src/routes/m.tsx:380
 msgid "Модель"
 msgstr "Модель"
 
-#: src/routes/auth.error.tsx:15
+#: src/routes/auth.error.tsx:17
 msgid "На главную"
 msgstr "На главную"
 
-#: src/components/medical-catalog.tsx:129
+#: src/routes/d.tsx:547
+#: src/routes/m.tsx:503
 msgid "Название, термин или код"
 msgstr "Название, термин или код"
 
-#: src/components/medical-catalog.tsx:179
+#: src/routes/d.tsx:605
+#: src/routes/m.tsx:555
 msgid "Найти в источнике"
 msgstr "Найти в источнике"
 
-#: src/components/ai-settings.tsx:135
+#: src/routes/d.tsx:382
+#: src/routes/m.tsx:344
 msgid "Настройки AI"
 msgstr "Настройки AI"
 
-#: src/routes/auth.error.tsx:13
+#: src/routes/auth.error.tsx:15
 msgid "Не удалось войти"
 msgstr "Не удалось войти"
 
-#: src/components/auth-panel.tsx:30
+#: src/routes/d.tsx:356
+#: src/routes/m.tsx:670
 msgid "Не удалось войти. Попробуйте ещё раз."
 msgstr "Не удалось войти. Попробуйте ещё раз."
 
-#: src/components/auth-panel.tsx:46
+#: src/routes/d.tsx:355
+#: src/routes/m.tsx:669
 msgid "Не удалось выйти. Попробуйте ещё раз."
 msgstr "Не удалось выйти. Попробуйте ещё раз."
 
-#: src/components/local-counter.tsx:53
+#: src/routes/d.tsx:369
+#: src/routes/m.tsx:331
 msgid "Не удалось открыть локальное хранилище."
 msgstr "Не удалось открыть локальное хранилище."
 
-#: src/components/ai-settings.tsx:117
+#: src/routes/d.tsx:388
+#: src/routes/m.tsx:350
 msgid "Не удалось открыть настройки AI на устройстве."
 msgstr "Не удалось открыть настройки AI на устройстве."
 
-#: src/components/pwa-controls.tsx:79
+#: src/routes/__root.tsx:212
 msgid "Не удалось подготовить приложение для работы без интернета."
 msgstr "Не удалось подготовить приложение для работы без интернета."
 
-#: src/components/ai-settings.tsx:123
+#: src/routes/d.tsx:228
+#: src/routes/m.tsx:227
 msgid "Не удалось подтвердить вход. Проверьте подключение и войдите снова."
 msgstr "Не удалось подтвердить вход. Проверьте подключение и войдите снова."
 
-#: src/components/ai-settings.tsx:132
+#: src/routes/d.tsx:237
+#: src/routes/m.tsx:236
 msgid "Не удалось проверить подключение. Проверьте ключ, модель и настройки API."
 msgstr "Не удалось проверить подключение. Проверьте ключ, модель и настройки API."
 
-#: src/components/auth-panel.tsx:72
+#: src/routes/d.tsx:357
+#: src/routes/m.tsx:671
 msgid "Не удалось проверить сессию. Попробуйте обновить страницу."
 msgstr "Не удалось проверить сессию. Попробуйте обновить страницу."
 
-#: src/components/medical-catalog.tsx:198
+#: src/routes/d.tsx:628
+#: src/routes/m.tsx:578
 msgid "Не удалось сохранить записи. Показанные результаты могут быть недоступны после закрытия приложения."
 msgstr "Не удалось сохранить записи. Показанные результаты могут быть недоступны после закрытия приложения."
 
-#: src/components/local-counter.tsx:61
+#: src/routes/d.tsx:378
+#: src/routes/m.tsx:340
 msgid "Не удалось сохранить изменение на устройстве."
 msgstr "Не удалось сохранить изменение на устройстве."
 
-#: src/components/ai-settings.tsx:236
+#: src/routes/d.tsx:509
+#: src/routes/m.tsx:470
 msgid "Не удалось сохранить настройки AI."
 msgstr "Не удалось сохранить настройки AI."
 
-#: src/components/ai-settings.tsx:136
+#: src/routes/d.tsx:384
+#: src/routes/m.tsx:346
 msgid "Нейросеть"
 msgstr "Нейросеть"
 
-#: src/components/ai-settings.tsx:121
+#: src/routes/d.tsx:226
+#: src/routes/m.tsx:225
 msgid "Нейросеть не настроена. Проверьте ключ и серверные настройки провайдера."
 msgstr "Нейросеть не настроена. Проверьте ключ и серверные настройки провайдера."
 
-#: src/components/ai-settings.tsx:131
+#: src/routes/d.tsx:236
+#: src/routes/m.tsx:235
 msgid "Нейросеть не ответила вовремя. Повторите запрос позже."
 msgstr "Нейросеть не ответила вовремя. Повторите запрос позже."
 
-#: src/components/ai-settings.tsx:234
+#: src/routes/d.tsx:502
+#: src/routes/m.tsx:463
 msgid "Нейросеть ответила. Подключение работает."
 msgstr "Нейросеть ответила. Подключение работает."
 
-#: src/components/pwa-controls.tsx:75
+#: src/routes/__root.tsx:206
 msgid "Нет интернета. Доступны сохранённые на устройстве данные."
 msgstr "Нет интернета. Доступны сохранённые на устройстве данные."
 
-#: src/components/medical-catalog.tsx:192
+#: src/routes/d.tsx:619
+#: src/routes/m.tsx:569
 msgid "Нет сети: поиск выполняется только по сохранённым записям."
 msgstr "Нет сети: поиск выполняется только по сохранённым записям."
 
-#: src/components/medical-catalog.tsx:140
+#: src/routes/d.tsx:559
+#: src/routes/m.tsx:513
 msgid "Область поиска учреждений"
 msgstr "Область поиска учреждений"
 
-#: src/components/pwa-controls.tsx:84
+#: src/routes/__root.tsx:230
 msgid "Обновить приложение"
 msgstr "Обновить приложение"
 
-#: src/components/medical-catalog.tsx:243
+#: src/routes/d.tsx:678
+#: src/routes/m.tsx:628
 msgid "Открыть источник"
 msgstr "Открыть источник"
 
-#: src/components/ai-settings.tsx:160
+#: src/routes/d.tsx:415
+#: src/routes/m.tsx:376
 msgid "По умолчанию используется ГигаЧат. Свой ключ не требуется."
 msgstr "По умолчанию используется ГигаЧат. Свой ключ не требуется."
 
-#: src/components/medical-catalog.tsx:216
+#: src/routes/d.tsx:646
+#: src/routes/m.tsx:596
 msgid "Показана ограниченная выборка."
 msgstr "Показана ограниченная выборка."
 
-#: src/components/medical-catalog.tsx:195
+#: src/routes/d.tsx:625
+#: src/routes/m.tsx:575
 msgid "Полученные записи сохранены на устройстве."
 msgstr "Полученные записи сохранены на устройстве."
 
-#: src/routes/-index.desktop.tsx:16
-#: src/routes/-index.mobile.tsx:15
+#: src/routes/d.tsx:306
+#: src/routes/m.tsx:305
 msgid "Привет, мир!"
 msgstr "Привет, мир!"
 
-#: src/components/pwa-controls.tsx:73
+#: src/routes/__root.tsx:203
 msgid "Приложение"
 msgstr "Приложение"
 
-#: src/components/pwa-controls.tsx:77
+#: src/routes/__root.tsx:209
 msgid "Приложение готово к запуску без интернета."
 msgstr "Приложение готово к запуску без интернета."
 
-#: src/components/ai-settings.tsx:138
+#: src/routes/d.tsx:392
+#: src/routes/m.tsx:354
 msgid "Провайдер"
 msgstr "Провайдер"
 
-#: src/components/ai-settings.tsx:127
+#: src/routes/d.tsx:232
+#: src/routes/m.tsx:231
 msgid "Провайдер отклонил ключ или доступ к модели."
 msgstr "Провайдер отклонил ключ или доступ к модели."
 
-#: src/components/ai-settings.tsx:231
+#: src/routes/d.tsx:496
+#: src/routes/m.tsx:457
 msgid "Проверить подключение"
 msgstr "Проверить подключение"
 
-#: src/components/medical-catalog.tsx:209
+#: src/routes/d.tsx:554
+#: src/routes/d.tsx:569
+#: src/routes/d.tsx:581
+#: src/routes/d.tsx:593
+#: src/routes/d.tsx:639
+#: src/routes/m.tsx:509
+#: src/routes/m.tsx:523
+#: src/routes/m.tsx:535
+#: src/routes/m.tsx:547
+#: src/routes/m.tsx:589
 msgid "Проверьте запрос и параметры поиска."
 msgstr "Проверьте запрос и параметры поиска."
 
-#: src/components/ai-settings.tsx:231
+#: src/routes/d.tsx:496
+#: src/routes/m.tsx:457
 msgid "Проверяем подключение…"
 msgstr "Проверяем подключение…"
 
-#: src/components/auth-panel.tsx:57
+#: src/routes/d.tsx:335
+#: src/routes/m.tsx:649
 msgid "Проверяем сессию…"
 msgstr "Проверяем сессию…"
 
-#: src/components/medical-catalog.tsx:39
+#: src/routes/d.tsx:256
+#: src/routes/m.tsx:255
 msgid "Публикации — PubMed"
 msgstr "Публикации — PubMed"
 
-#: src/components/medical-catalog.tsx:166
+#: src/routes/d.tsx:586
+#: src/routes/m.tsx:540
 msgid "Радиус, метры (до 10 000)"
 msgstr "Радиус, метры (до 10 000)"
 
-#: src/components/medical-catalog.tsx:36
+#: src/routes/d.tsx:253
+#: src/routes/m.tsx:252
 msgid "Региональные выгрузки — Geofabrik"
 msgstr "Региональные выгрузки — Geofabrik"
 
-#: src/components/medical-catalog.tsx:40
+#: src/routes/d.tsx:257
+#: src/routes/m.tsx:256
 msgid "Редкие заболевания — Orphadata"
 msgstr "Редкие заболевания — Orphadata"
 
-#: src/components/ai-settings.tsx:125
+#: src/routes/d.tsx:230
+#: src/routes/m.tsx:229
 msgid "Сервер не смог проверить сертификат нейросети."
 msgstr "Сервер не смог проверить сертификат нейросети."
 
-#: src/components/auth-panel.tsx:55
+#: src/routes/d.tsx:333
+#: src/routes/m.tsx:647
 msgid "Сессия будет проверена после подключения к интернету."
 msgstr "Сессия будет проверена после подключения к интернету."
 
-#: src/components/medical-catalog.tsx:243
+#: src/routes/d.tsx:677
+#: src/routes/m.tsx:627
 msgid "Скачать PBF из источника"
 msgstr "Скачать PBF из источника"
 
-#: src/components/medical-catalog.tsx:223
+#: src/routes/d.tsx:653
+#: src/routes/m.tsx:603
 msgid "Сохранённых записей по этому запросу пока нет."
 msgstr "Сохранённых записей по этому запросу пока нет."
 
-#: src/components/ai-settings.tsx:216
+#: src/routes/d.tsx:479
+#: src/routes/m.tsx:440
 msgid "Удалить ключ"
 msgstr "Удалить ключ"
 
-#: src/components/medical-catalog.tsx:34
+#: src/routes/d.tsx:251
+#: src/routes/m.tsx:250
 msgid "Университеты — ROR"
 msgstr "Университеты — ROR"
 
-#: src/components/pwa-controls.tsx:82
+#: src/routes/__root.tsx:219
 msgid "Установить приложение"
 msgstr "Установить приложение"
 
-#: src/components/medical-catalog.tsx:142
+#: src/routes/d.tsx:562
+#: src/routes/m.tsx:516
 msgid "Широта"
 msgstr "Широта"
 
 #. placeholder {0}: search.data.dataLanguage
-#: src/components/medical-catalog.tsx:215
+#: src/routes/d.tsx:645
+#: src/routes/m.tsx:595
 msgid "Язык данных: {0}."
 msgstr "Язык данных: {0}."
 
-#: src/components/language-switcher.tsx:23
+#: src/routes/d.tsx:308
+#: src/routes/m.tsx:307
 msgid "Язык интерфейса"
 msgstr "Язык интерфейса"
