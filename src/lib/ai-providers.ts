@@ -1,4 +1,7 @@
 import { defineByokProvider } from "@tanstack/ai/byok";
+import type { z } from "zod";
+
+import type { aiInputSchema } from "@/src/lib/contracts";
 
 export const aiProviders = [
   { id: "gigachat", label: "GigaChat", model: "GigaChat" },
@@ -17,9 +20,4 @@ export const byokProviders = aiProviders
 export function isAiProvider(value: unknown): value is AiProvider {
   return aiProviders.some((provider) => provider.id === value);
 }
-export type AiInput = {
-  provider: AiProvider;
-  model: string;
-  baseURL?: string;
-  messages: { role: "user" | "assistant"; content: string }[];
-};
+export type AiInput = z.infer<typeof aiInputSchema>;

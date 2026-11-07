@@ -1,48 +1,71 @@
 import "@tanstack/react-start/server-only";
+import {
+  ClientError,
+  Configuration,
+  ClientSecretBasic,
+  clientCredentialsGrant,
+  customFetch,
+  ResponseBodyError,
+  WWWAuthenticateChallengeError,
+} from "openid-client";
+
 import type { Locale } from "@/src/lib/locale";
 import type { MedicalRecord, MedicalSearch } from "@/src/lib/medical-catalog";
-import {
-  jsonFetch,
-  MedicalApiError,
-  object,
-  plainText,
-  rows,
-  safeUrl,
-  text,
-} from "@/src/server/medical/http";
+import { getICD10Entity, searchLinearization } from "@/src/server/medical/generated/who";
+import { MedicalApiError, object, plainText, rows, safeUrl, text } from "@/src/server/medical/http";
 
 export function createWhoClient(
   fetchImpl: typeof fetch = fetch,
   env: Record<string, string | undefined> = process.env,
 ) {
-  let token: { value: string; expiresAt: number } | undefined;
+  let token: Awaited<ReturnType<typeof clientCredentialsGrant>> | undefined;
   let refreshing: Promise<string> | undefined;
   async function accessToken() {
-    if (token && token.expiresAt > Date.now() + 60_000) return token.value;
+    if (token && (token.expiresIn() ?? 0) > 60) return token.access_token;
     const clientId = env.WHO_ICD_CLIENT_ID?.trim();
     const secret = env.WHO_ICD_CLIENT_SECRET?.trim();
     if (!clientId || !secret) throw new MedicalApiError("SOURCE_NOT_CONFIGURED", 503);
     refreshing ??= (async () => {
-      const data = await jsonFetch(fetchImpl, "https://icdaccessmanagement.who.int/connect/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${Buffer.from(`${clientId}:${secret}`, "utf8").toString("base64")}`,
+      const config = new Configuration(
+        {
+          issuer: "https://icdaccessmanagement.who.int",
+          token_endpoint: "https://icdaccessmanagement.who.int/connect/token",
         },
-        body: new URLSearchParams({
-          scope: "icdapi_access",
-          grant_type: "client_credentials",
-        }),
-      });
-      if (
-        !text(data.access_token) ||
-        typeof data.expires_in !== "number" ||
-        !Number.isFinite(data.expires_in) ||
-        data.expires_in <= 0
-      )
-        throw new MedicalApiError("INVALID_SOURCE_RESPONSE");
-      token = { value: text(data.access_token), expiresAt: Date.now() + data.expires_in * 1000 };
-      return token.value;
+        clientId,
+        undefined,
+        ClientSecretBasic(secret),
+      );
+      config[customFetch] = fetchImpl as NonNullable<Configuration[typeof customFetch]>;
+      config.timeout = 15;
+      try {
+        const data = await clientCredentialsGrant(config, { scope: "icdapi_access" });
+        if ((data.expiresIn() ?? 0) <= 0) throw new MedicalApiError("INVALID_SOURCE_RESPONSE");
+        token = data;
+        return data.access_token;
+      } catch (error) {
+        if (error instanceof MedicalApiError) throw error;
+        const status =
+          error instanceof ResponseBodyError || error instanceof WWWAuthenticateChallengeError
+            ? error.status
+            : error instanceof ClientError && error.cause instanceof Response
+              ? error.cause.status
+              : undefined;
+        if (status && status >= 400)
+          throw new MedicalApiError(
+            status === 429 ? "SOURCE_RATE_LIMITED" : "SOURCE_UNAVAILABLE",
+            status === 429 ? 429 : 502,
+            { upstreamStatus: status, failure: "http" },
+          );
+        if (
+          error instanceof ClientError &&
+          ["OAUTH_INVALID_RESPONSE", "OAUTH_RESPONSE_IS_NOT_JSON"].includes(error.code ?? "")
+        )
+          throw new MedicalApiError("INVALID_SOURCE_RESPONSE", 502, { failure: "json" });
+        throw new MedicalApiError("SOURCE_UNAVAILABLE", 502, {
+          failure:
+            error instanceof ClientError && error.code === "OAUTH_TIMEOUT" ? "timeout" : "network",
+        });
+      }
     })()
       .catch((error: unknown) => {
         throw whoError(error, "token");
@@ -62,30 +85,29 @@ export function createWhoClient(
     const release = isTen ? "2019" : "2026-01";
     if (isTen && !/^[a-z]\d{2}(?:\.[a-z0-9]{1,4})?$/i.test(input.query))
       throw new MedicalApiError("INVALID_SEARCH", 400);
-    const url = new URL(
-      isTen
-        ? `https://id.who.int/icd/release/10/${release}/${input.query.toUpperCase()}`
-        : `https://id.who.int/icd/release/11/${release}/mms/search`,
-    );
-    if (!isTen) {
-      url.searchParams.set("q", input.query);
-      url.searchParams.set("useFlexisearch", "true");
-      url.searchParams.set("flatResults", "true");
-    }
-    const lookup = async (bearer: string) =>
-      jsonFetch(
-        fetchImpl,
-        url,
-        {
-          headers: {
-            Authorization: `Bearer ${bearer}`,
-            "API-Version": "v2",
-            "Accept-Language": language,
-            Accept: "application/json",
-          },
+    const lookup = async (bearer: string) => {
+      const options = {
+        headers: {
+          Authorization: `Bearer ${bearer}`,
+          "API-Version": "v2",
+          "Accept-Language": language,
+          Accept: "application/json",
         },
-        isTen,
+        env: { fetch: fetchImpl },
+        validateStatus: (status: number) =>
+          (status >= 200 && status < 300) || (isTen && status === 404),
+      };
+      return object(
+        isTen
+          ? await getICD10Entity(release, input.query.toUpperCase(), options)
+          : await searchLinearization(
+              release,
+              "mms",
+              { q: input.query, useFlexisearch: true, flatResults: true },
+              options,
+            ),
       );
+    };
     const bearer = await accessToken();
     let data;
     try {
@@ -95,7 +117,7 @@ export function createWhoClient(
         throw whoError(error, "lookup");
       // The upstream may revoke a token before its advertised expiry. Refresh once,
       // without invalidating a newer token obtained by a concurrent request.
-      if (token?.value === bearer) token = undefined;
+      if (token?.access_token === bearer) token = undefined;
       const renewed = await accessToken();
       try {
         data = await lookup(renewed);
@@ -107,7 +129,10 @@ export function createWhoClient(
     const records = items.slice(0, 20).map((entity) => {
       const title =
         isTen && typeof entity.title === "object" ? object(entity.title)["@value"] : entity.title;
-      const sourceId = text(entity.id) || text(entity["@id"]) || url.href;
+      const sourceId =
+        text(entity.id) ||
+        text(entity["@id"]) ||
+        `https://id.who.int/icd/release/10/${release}/${input.query.toUpperCase()}`;
       return {
         id: `${input.source}:${release}:${sourceId}:${language}`,
         source: input.source,

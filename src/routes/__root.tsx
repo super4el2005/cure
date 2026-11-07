@@ -2,11 +2,24 @@ import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import type { ConvexQueryClient } from "@convex-dev/react-query";
 import { I18nProvider } from "@lingui/react";
 import { useLingui } from "@lingui/react/macro";
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  ColorSchemeScript,
+  Container,
+  Group,
+  mantineHtmlProps,
+  MantineProvider,
+  Paper,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { useNetwork, useSetState, useWindowEvent } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
-import { QueryClient } from "@tanstack/react-query";
+import { Serwist } from "@serwist/window";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import { createRootRouteWithContext } from "@tanstack/react-router";
 import { Outlet, Scripts, HeadContent } from "@tanstack/react-router";
 
@@ -18,7 +31,6 @@ import "@mantine/dates/styles.css";
 import { createServerFn } from "@tanstack/react-start";
 import * as React from "react";
 
-import { PwaControls } from "@/src/components/pwa-controls";
 import { createI18n } from "@/src/i18n";
 import { authClient } from "@/src/lib/auth-client";
 import { getToken } from "@/src/lib/auth-server";
@@ -27,6 +39,10 @@ import { getRequestDevice } from "@/src/lib/request-device";
 import { getRequestLocale } from "@/src/lib/request-locale";
 
 import mantineCoreStyles from "@mantine/core/styles.css?url";
+
+interface InstallPrompt extends Event {
+  prompt(): Promise<{ outcome: "accepted" | "dismissed" }>;
+}
 
 const getAuth = createServerFn({ method: "GET" }).handler(async () => getToken());
 
@@ -115,7 +131,57 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const { i18n } = useLingui();
+  const { t, i18n } = useLingui();
+  const { online } = useNetwork();
+  const [pwa, setPwa] = useSetState<{
+    install: InstallPrompt | null;
+    update: Serwist | null;
+    ready: boolean;
+    failed: boolean;
+  }>({ install: null, update: null, ready: false, failed: false });
+  useWindowEvent("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    if ("prompt" in event && typeof event.prompt === "function") {
+      setPwa({ install: event as unknown as InstallPrompt });
+    }
+  });
+  useWindowEvent("appinstalled", () => setPwa({ install: null }));
+  // Serwist owns worker registration and lifecycle; window events use Mantine.
+  React.useEffect(() => {
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
+    let disposed = false;
+    const worker = new Serwist("/sw.js", { scope: "/" });
+    worker.addEventListener("waiting", () => {
+      if (!disposed) setPwa({ update: worker });
+    });
+    worker.addEventListener("controlling", () => {
+      if (!disposed) setPwa({ ready: true });
+    });
+    void worker
+      .register()
+      .then(async () => {
+        await navigator.serviceWorker.ready;
+        if (!disposed) setPwa({ ready: true });
+      })
+      .catch(() => {
+        if (!disposed) setPwa({ failed: true });
+      });
+    return () => {
+      disposed = true;
+    };
+  }, [setPwa]);
+  const install = useMutation({
+    mutationKey: ["install-pwa"],
+    networkMode: "always",
+    retry: false,
+    mutationFn: async () => {
+      try {
+        await pwa.install?.prompt();
+      } finally {
+        setPwa({ install: null });
+      }
+    },
+  });
   const { isShell } = Route.useRouteContext();
   const { device } = Route.useLoaderData();
 
@@ -133,7 +199,40 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <MantineProvider>
           <ModalsProvider>
-            <PwaControls />
+            <Container py="md">
+              <Paper component="aside" aria-label={t`Приложение`}>
+                <Stack>
+                  {!online && (
+                    <Text role="status">{t`Нет интернета. Доступны сохранённые на устройстве данные.`}</Text>
+                  )}
+                  {pwa.ready && (
+                    <Text role="status">{t`Приложение готово к запуску без интернета.`}</Text>
+                  )}
+                  {(pwa.failed || install.isError) && (
+                    <Alert role="alert">{t`Не удалось подготовить приложение для работы без интернета.`}</Alert>
+                  )}
+                  <Group>
+                    {pwa.install && (
+                      <Button
+                        loading={install.isPending}
+                        onClick={() => install.mutate()}
+                      >{t`Установить приложение`}</Button>
+                    )}
+                    {pwa.update && (
+                      <Button
+                        onClick={() => {
+                          const worker = pwa.update;
+                          if (!worker) return;
+                          setPwa({ update: null });
+                          worker.addEventListener("controlling", () => window.location.reload());
+                          worker.messageSkipWaiting();
+                        }}
+                      >{t`Обновить приложение`}</Button>
+                    )}
+                  </Group>
+                </Stack>
+              </Paper>
+            </Container>
             {children}
           </ModalsProvider>
           <NavigationProgress />

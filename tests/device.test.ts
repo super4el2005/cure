@@ -13,6 +13,19 @@ describe("device selection", () => {
     ["Unknown client", "?1", "mobile"],
     ["Unknown client", "?0", "desktop"],
     ["", undefined, "desktop"],
+    ["", "?1", "mobile"],
+    ["Unknown client", undefined, "desktop"],
+    [
+      "Mozilla/5.0 (Linux; Android 13; SM-X700) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+      "?0",
+      "mobile",
+    ],
+    [
+      "Mozilla/5.0 (Linux; U; en-US; KFAPWI Build/JDQ39) AppleWebKit/535.19 (KHTML, like Gecko) Silk/3.13 Safari/535.19 Silk-Accelerated=true",
+      "?0",
+      "mobile",
+    ],
+    ["iPhone; CPU iPhone OS 18_0 like Mac OS X", "?0", "desktop"],
   ])("selects %s / %s as %s", (userAgent, mobileHint, expected) => {
     expect(detectDevice({ userAgent, mobileHint })).toBe(expected);
   });

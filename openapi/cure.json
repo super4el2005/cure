@@ -1,0 +1,378 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Cure",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/medical/search": {
+      "post": {
+        "operationId": "searchMedical",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "string",
+                        "enum": ["ror", "geofabrik", "icd11", "icd10", "pubmed", "orphadata"]
+                      },
+                      "query": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 100
+                      }
+                    },
+                    "required": ["source", "query"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "type": "string",
+                        "const": "osm"
+                      },
+                      "query": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "latitude": {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      },
+                      "longitude": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      "radius": {
+                        "type": "number",
+                        "minimum": 100,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": ["source", "query", "latitude", "longitude", "radius"],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "ror",
+                              "osm",
+                              "geofabrik",
+                              "icd11",
+                              "icd10",
+                              "pubmed",
+                              "orphadata"
+                            ]
+                          },
+                          "sourceId": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "dataLanguage": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "string"
+                          },
+                          "fetchedAt": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          },
+                          "latitude": {
+                            "type": ["number", "null"]
+                          },
+                          "longitude": {
+                            "type": ["number", "null"]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "sourceId",
+                          "title",
+                          "description",
+                          "code",
+                          "url",
+                          "dataLanguage",
+                          "version",
+                          "fetchedAt",
+                          "country",
+                          "latitude",
+                          "longitude"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": ["ror", "osm", "geofabrik", "icd11", "icd10", "pubmed", "orphadata"]
+                    },
+                    "total": {
+                      "type": ["number", "null"]
+                    },
+                    "truncated": {
+                      "type": "boolean"
+                    },
+                    "fetchedAt": {
+                      "type": "string"
+                    },
+                    "dataLanguage": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "records",
+                    "source",
+                    "total",
+                    "truncated",
+                    "fetchedAt",
+                    "dataLanguage"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "stage": {
+                      "type": "string",
+                      "enum": ["token", "lookup"]
+                    },
+                    "upstreamStatus": {
+                      "type": "number"
+                    },
+                    "failure": {
+                      "type": "string",
+                      "enum": ["http", "network", "timeout", "json"]
+                    }
+                  },
+                  "required": ["error"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai/chat": {
+      "post": {
+        "operationId": "checkAi",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "messages": {
+                        "minItems": 1,
+                        "maxItems": 32,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": ["user", "assistant"]
+                            },
+                            "content": {
+                              "type": "string",
+                              "maxLength": 8000
+                            }
+                          },
+                          "required": ["role", "content"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "baseURL": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "default": "gigachat",
+                        "type": "string",
+                        "const": "gigachat"
+                      },
+                      "model": {
+                        "default": "",
+                        "type": "string"
+                      }
+                    },
+                    "required": ["messages", "provider", "model"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "messages": {
+                        "minItems": 1,
+                        "maxItems": 32,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": ["user", "assistant"]
+                            },
+                            "content": {
+                              "type": "string",
+                              "maxLength": 8000
+                            }
+                          },
+                          "required": ["role", "content"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "baseURL": {
+                        "type": "string"
+                      },
+                      "provider": {
+                        "type": "string",
+                        "enum": [
+                          "openai",
+                          "anthropic",
+                          "gemini",
+                          "openrouter",
+                          "deepseek",
+                          "groq",
+                          "custom"
+                        ]
+                      },
+                      "model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      }
+                    },
+                    "required": ["messages", "provider", "model"],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "provider": {
+                      "type": "string",
+                      "enum": [
+                        "gigachat",
+                        "openai",
+                        "anthropic",
+                        "gemini",
+                        "openrouter",
+                        "deepseek",
+                        "groq",
+                        "custom"
+                      ]
+                    }
+                  },
+                  "required": ["text", "provider"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "API error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "stage": {
+                      "type": "string",
+                      "enum": ["token", "lookup"]
+                    },
+                    "upstreamStatus": {
+                      "type": "number"
+                    },
+                    "failure": {
+                      "type": "string",
+                      "enum": ["http", "network", "timeout", "json"]
+                    }
+                  },
+                  "required": ["error"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

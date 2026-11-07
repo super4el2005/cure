@@ -1,3 +1,12 @@
+import { isPointWithinRadius } from "geolib";
+import type { z } from "zod";
+
+import type {
+  medicalRecordSchema,
+  medicalResultSchema,
+  medicalSearchSchema,
+} from "@/src/lib/contracts";
+
 export const medicalSources = [
   "ror",
   "osm",
@@ -12,36 +21,9 @@ export function isMedicalSource(value: unknown): value is MedicalSource {
   return medicalSources.some((source) => source === value);
 }
 
-export type MedicalRecord = {
-  id: string;
-  source: MedicalSource;
-  sourceId: string;
-  title: string;
-  description: string;
-  code: string;
-  url: string;
-  dataLanguage: string;
-  version: string;
-  fetchedAt: string;
-  country: string;
-  latitude: number | null;
-  longitude: number | null;
-};
-export type MedicalSearch = {
-  source: MedicalSource;
-  query: string;
-  latitude?: number;
-  longitude?: number;
-  radius?: number;
-};
-export type MedicalResult = {
-  records: MedicalRecord[];
-  source: MedicalSource;
-  total: number | null;
-  truncated: boolean;
-  fetchedAt: string;
-  dataLanguage: string;
-};
+export type MedicalRecord = z.infer<typeof medicalRecordSchema>;
+export type MedicalSearch = z.infer<typeof medicalSearchSchema>;
+export type MedicalResult = z.infer<typeof medicalResultSchema>;
 export const medicalAttribution: Record<
   MedicalSource,
   { label: string; license: string; url: string }
@@ -83,7 +65,9 @@ export function filterMedicalRecords(
   records: MedicalRecord[],
   source: MedicalSource,
   query: string,
-  area?: Pick<MedicalSearch, "latitude" | "longitude" | "radius">,
+  area?: Partial<
+    Pick<Extract<MedicalSearch, { source: "osm" }>, "latitude" | "longitude" | "radius">
+  >,
 ) {
   const needle = query.trim().toLocaleLowerCase();
   return records.filter(
@@ -95,18 +79,11 @@ export function filterMedicalRecords(
         !Number.isFinite(area.longitude) ||
         (record.latitude !== null &&
           record.longitude !== null &&
-          distanceMeters(area.latitude!, area.longitude!, record.latitude, record.longitude) <=
-            (area.radius ?? 5000))) &&
+          isPointWithinRadius(
+            { latitude: record.latitude, longitude: record.longitude },
+            { latitude: area.latitude!, longitude: area.longitude! },
+            area.radius ?? 5000,
+          ))) &&
       `${record.title} ${record.code} ${record.description}`.toLocaleLowerCase().includes(needle),
   );
-}
-
-function distanceMeters(lat: number, lon: number, targetLat: number, targetLon: number) {
-  const radians = (degrees: number) => (degrees * Math.PI) / 180;
-  const a =
-    Math.sin(radians(targetLat - lat) / 2) ** 2 +
-    Math.cos(radians(lat)) *
-      Math.cos(radians(targetLat)) *
-      Math.sin(radians(targetLon - lon) / 2) ** 2;
-  return 6_371_000 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(Math.max(0, 1 - a)));
 }
