@@ -52,8 +52,8 @@ export const invitations = query({
           .unique();
         return {
           ...invite,
-          projectTitle: project?.title ?? "",
-          projectStatus: project?.status ?? "archived",
+          projectTitle: invite.projectTitle ?? "",
+          projectStatus: invite.status === "pending" ? (project?.status ?? "archived") : null,
         };
       }),
     );
@@ -126,6 +126,7 @@ export const invite = mutation({
     )
       throw new ConvexError("REVISION_CONFLICT");
     await ctx.db.insert("collaborationInvites", {
+      projectTitle: access.project.title,
       clientId: args.clientId,
       projectClientId: args.projectClientId,
       inviteeId: profile.userId,
@@ -317,5 +318,94 @@ export const setMember = mutation({
       at: Date.now(),
     });
     return receipt.commit(revision);
+  },
+});
+
+// A single authorized snapshot for the encrypted organizational workspace.
+// Incoming invitations do not grant access to the project's members or protocol.
+export const workspace = query({
+  args: { organizationId: v.id("organizations"), actorId: v.string() },
+  handler: async (ctx, args) => {
+    const { userId } = await organizationAccess(ctx, args.organizationId);
+    if (userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
+    const selfMemberships = await ctx.db
+      .query("projectMembers")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    const visible = selfMemberships.filter(
+      (member) => member.active && member.organizationId === args.organizationId,
+    );
+    const invitations = await ctx.db
+      .query("collaborationInvites")
+      .withIndex("by_recipient", (q) => q.eq("inviteeId", userId))
+      .collect();
+    const groups = await Promise.all(
+      visible.map(async (self) => {
+        const members = await ctx.db
+          .query("projectMembers")
+          .withIndex("by_project", (q) => q.eq("projectClientId", self.projectClientId))
+          .collect();
+        if (self.role === "owner" || self.role === "coordinator")
+          invitations.push(
+            ...(await ctx.db
+              .query("collaborationInvites")
+              .withIndex("by_project", (q) => q.eq("projectClientId", self.projectClientId))
+              .collect()),
+          );
+        return Promise.all(
+          members.map(async (member) => {
+            const profile = await ctx.db
+              .query("profiles")
+              .withIndex("by_user", (q) => q.eq("userId", member.userId))
+              .unique();
+            const organization = await ctx.db.get(member.organizationId);
+            return {
+              entity: "member" as const,
+              key: `member:${member.clientId}`,
+              clientId: member.clientId,
+              projectClientId: member.projectClientId,
+              userId: member.userId,
+              role: member.role,
+              active: member.active,
+              displayName: profile?.displayName ?? "",
+              organization: organization?.name ?? "",
+              revision: member.revision,
+              delivery: "confirmed" as const,
+            };
+          }),
+        );
+      }),
+    );
+    const unique = [...new Map(invitations.map((invite) => [invite.clientId, invite])).values()];
+    const inviteRows = await Promise.all(
+      unique.map(async (invite) => {
+        const profile = await ctx.db
+          .query("profiles")
+          .withIndex("by_user", (q) => q.eq("userId", invite.inviteeId))
+          .unique();
+        const project = await ctx.db
+          .query("projects")
+          .withIndex("by_client", (q) => q.eq("clientId", invite.projectClientId))
+          .unique();
+        return {
+          entity: "invitation" as const,
+          key: `invitation:${invite.clientId}`,
+          clientId: invite.clientId,
+          projectClientId: invite.projectClientId,
+          inviteeId: invite.inviteeId,
+          inviterId: invite.inviterId,
+          targetProfileId: profile?._id ?? "",
+          inviteeName: profile?.displayName ?? "",
+          projectTitle: invite.projectTitle ?? "",
+          projectStatus: invite.status === "pending" ? (project?.status ?? "archived") : null,
+          role: invite.role,
+          status: invite.status,
+          expiresAt: invite.expiresAt,
+          revision: invite.revision,
+          delivery: "confirmed" as const,
+        };
+      }),
+    );
+    return [...groups.flat(), ...inviteRows];
   },
 });

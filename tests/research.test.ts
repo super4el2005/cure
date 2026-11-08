@@ -336,3 +336,191 @@ describe("research collaboration invitations", () => {
     expect(await t.query(api.projects.publicDetails, { clientId: projectId })).toBeNull();
   });
 });
+
+describe("team workspace projections", () => {
+  it("shows incoming decisions without granting project access and hides others' invitations from members", async () => {
+    const { t, owner, organizationId, args } = await setup();
+    await owner.mutation(api.projects.apply, args);
+    const profiles = await t.run(async (ctx) => {
+      const result = [];
+      for (const userId of ["member", "viewer"])
+        result.push(
+          await ctx.db.insert("profiles", {
+            userId,
+            displayName: userId,
+            profession: "researcher",
+            specialty: "",
+            interests: [],
+            languages: [],
+            bio: "",
+            published: true,
+            verified: true,
+            updatedAt: Date.now(),
+          }),
+        );
+      return result;
+    });
+    const first = crypto.randomUUID();
+    await owner.mutation(api.projectTeams.invite, {
+      actorId: "owner",
+      projectClientId: projectId,
+      clientId: first,
+      targetProfileId: profiles[0]!,
+      role: "member",
+      idempotencyKey: "invite.member",
+    });
+    const member = t.withIdentity({ subject: "member" });
+    const viewer = t.withIdentity({ subject: "viewer" });
+    const before = await member.query(api.projectTeams.workspace, {
+      actorId: "member",
+      organizationId,
+    });
+    expect(before).toHaveLength(1);
+    expect(before[0]?.entity).toBe("invitation");
+    expect(await member.query(api.projects.mine, { actorId: "member", organizationId })).toEqual(
+      [],
+    );
+    await member.mutation(api.projectTeams.respond, {
+      actorId: "member",
+      clientId: first,
+      organizationId,
+      decision: "accept",
+      expectedRevision: 1,
+      idempotencyKey: "join.member",
+    });
+    const second = crypto.randomUUID();
+    await owner.mutation(api.projectTeams.invite, {
+      actorId: "owner",
+      projectClientId: projectId,
+      clientId: second,
+      targetProfileId: profiles[1]!,
+      role: "coordinator",
+      idempotencyKey: "invite.coordinator",
+    });
+    const memberState = await member.query(api.projectTeams.workspace, {
+      actorId: "member",
+      organizationId,
+    });
+    expect(memberState.filter((row) => row.entity === "member")).toHaveLength(2);
+    expect(memberState.filter((row) => row.entity === "invitation")).toHaveLength(1);
+    expect(memberState.some((row) => row.clientId === second)).toBe(false);
+    const incoming = await viewer.query(api.projectTeams.workspace, {
+      actorId: "viewer",
+      organizationId,
+    });
+    expect(incoming).toHaveLength(1);
+    expect(incoming[0]?.clientId).toBe(second);
+    await expect(
+      viewer.query(api.projectTeams.workspace, { actorId: "member", organizationId }),
+    ).rejects.toThrow("ACCOUNT_CHANGED");
+    await viewer.mutation(api.projectTeams.respond, {
+      actorId: "viewer",
+      clientId: second,
+      organizationId,
+      decision: "accept",
+      expectedRevision: 1,
+      idempotencyKey: "join.coordinator",
+    });
+    await expect(
+      viewer.mutation(api.projectTeams.setMember, {
+        actorId: "viewer",
+        projectClientId: projectId,
+        targetUserId: "owner",
+        role: "viewer",
+        active: false,
+        expectedRevision: 1,
+        idempotencyKey: "remove.owner",
+      }),
+    ).rejects.toThrow("ACCESS_DENIED");
+    await expect(
+      viewer.mutation(api.projectTeams.invite, {
+        actorId: "viewer",
+        projectClientId: projectId,
+        clientId: crypto.randomUUID(),
+        targetProfileId: profiles[0]!,
+        role: "coordinator",
+        idempotencyKey: "promote.other",
+      }),
+    ).rejects.toThrow("ACCESS_DENIED");
+  });
+  it("replays a decline exactly once and does not permit acceptance after expiry or revocation", async () => {
+    const { t, owner, organizationId, args } = await setup();
+    await owner.mutation(api.projects.apply, args);
+    const profileId = await t.run((ctx) =>
+      ctx.db.insert("profiles", {
+        userId: "member",
+        displayName: "Member",
+        profession: "researcher",
+        specialty: "",
+        interests: [],
+        languages: [],
+        bio: "",
+        published: true,
+        verified: true,
+        updatedAt: Date.now(),
+      }),
+    );
+    const member = t.withIdentity({ subject: "member" });
+    const invite = async () => {
+      const clientId = crypto.randomUUID();
+      await owner.mutation(api.projectTeams.invite, {
+        actorId: "owner",
+        projectClientId: projectId,
+        clientId,
+        targetProfileId: profileId,
+        role: "member",
+        idempotencyKey: clientId,
+      });
+      return clientId;
+    };
+    const first = await invite();
+    const decline = {
+      actorId: "member",
+      clientId: first,
+      decision: "decline" as const,
+      expectedRevision: 1,
+      idempotencyKey: "decline",
+    };
+    await member.mutation(api.projectTeams.respond, decline);
+    expect(await member.mutation(api.projectTeams.respond, decline)).toEqual({ revision: 2 });
+    expect(await t.run((ctx) => ctx.db.query("projectMembers").collect())).toHaveLength(1);
+    const expired = await invite();
+    await t.run(async (ctx) => {
+      const row = await ctx.db
+        .query("collaborationInvites")
+        .withIndex("by_client", (q) => q.eq("clientId", expired))
+        .unique();
+      await ctx.db.patch(row!._id, { expiresAt: Date.now() - 1 });
+    });
+    await expect(
+      member.mutation(api.projectTeams.respond, {
+        ...decline,
+        clientId: expired,
+        organizationId,
+        decision: "accept",
+        idempotencyKey: "expired",
+      }),
+    ).rejects.toThrow("INVITE_EXPIRED");
+    const revoked = await invite();
+    const revocation = {
+      actorId: "owner",
+      clientId: revoked,
+      expectedRevision: 1,
+      idempotencyKey: "revoke",
+    };
+    await owner.mutation(api.projectTeams.revokeInvite, revocation);
+    expect(await owner.mutation(api.projectTeams.revokeInvite, revocation)).toEqual({
+      revision: 2,
+    });
+    await expect(
+      member.mutation(api.projectTeams.respond, {
+        ...decline,
+        clientId: revoked,
+        organizationId,
+        decision: "accept",
+        expectedRevision: 2,
+        idempotencyKey: "revoked",
+      }),
+    ).rejects.toThrow("INVITE_NOT_PENDING");
+  });
+});

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DRouteImport } from './routes/d'
 import { Route as MRouteImport } from './routes/m'
 import { Route as AuthErrorRouteImport } from './routes/auth.error'
+import { Route as DInvitationsRouteImport } from './routes/d_.invitations'
 import { Route as DOrganizationsRouteImport } from './routes/d_.organizations'
 import { Route as DPatientsRouteImport } from './routes/d_.patients'
 import { Route as DProfileRouteImport } from './routes/d_.profile'
@@ -20,6 +21,7 @@ import { Route as DProjectsRouteImport } from './routes/d_.projects'
 import { Route as DResearchRouteImport } from './routes/d_.research'
 import { Route as DSpecialistsRouteImport } from './routes/d_.specialists'
 import { Route as DToolsRouteImport } from './routes/d_.tools'
+import { Route as MInvitationsRouteImport } from './routes/m_.invitations'
 import { Route as MOrganizationsRouteImport } from './routes/m_.organizations'
 import { Route as MPatientsRouteImport } from './routes/m_.patients'
 import { Route as MProfileRouteImport } from './routes/m_.profile'
@@ -37,7 +39,9 @@ import { Route as MOrganizationsIdRouteImport } from './routes/m_.organizations_
 import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
 import { Route as MSpecialistsIdRouteImport } from './routes/m_.specialists_.$id'
 import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
+import { Route as DProjectsIdTeamRouteImport } from './routes/d_.projects_.$id.team'
 import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
+import { Route as MProjectsIdTeamRouteImport } from './routes/m_.projects_.$id.team'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -57,6 +61,11 @@ const MRoute = MRouteImport.update({
 const AuthErrorRoute = AuthErrorRouteImport.update({
   id: '/auth/error',
   path: '/auth/error',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DInvitationsRoute = DInvitationsRouteImport.update({
+  id: '/d_/invitations',
+  path: '/d/invitations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DOrganizationsRoute = DOrganizationsRouteImport.update({
@@ -92,6 +101,11 @@ const DSpecialistsRoute = DSpecialistsRouteImport.update({
 const DToolsRoute = DToolsRouteImport.update({
   id: '/d_/tools',
   path: '/d/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MInvitationsRoute = MInvitationsRouteImport.update({
+  id: '/m_/invitations',
+  path: '/m/invitations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MOrganizationsRoute = MOrganizationsRouteImport.update({
@@ -179,9 +193,19 @@ const DProjectsIdProtocolRoute = DProjectsIdProtocolRouteImport.update({
   path: '/d/projects/$id/protocol',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DProjectsIdTeamRoute = DProjectsIdTeamRouteImport.update({
+  id: '/d_/projects_/$id/team',
+  path: '/d/projects/$id/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
   id: '/m_/projects_/$id/protocol',
   path: '/m/projects/$id/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdTeamRoute = MProjectsIdTeamRouteImport.update({
+  id: '/m_/projects_/$id/team',
+  path: '/m/projects/$id/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -190,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d/invitations': typeof DInvitationsRoute
   '/d/organizations': typeof DOrganizationsRoute
   '/d/patients': typeof DPatientsRoute
   '/d/profile': typeof DProfileRoute
@@ -197,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/d/research': typeof DResearchRoute
   '/d/specialists': typeof DSpecialistsRoute
   '/d/tools': typeof DToolsRoute
+  '/m/invitations': typeof MInvitationsRoute
   '/m/organizations': typeof MOrganizationsRoute
   '/m/patients': typeof MPatientsRoute
   '/m/profile': typeof MProfileRoute
@@ -214,13 +240,16 @@ export interface FileRoutesByFullPath {
   '/m/research/$id': typeof MResearchIdRoute
   '/m/specialists/$id': typeof MSpecialistsIdRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d/projects/$id/team': typeof DProjectsIdTeamRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m/projects/$id/team': typeof MProjectsIdTeamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d/invitations': typeof DInvitationsRoute
   '/d/organizations': typeof DOrganizationsRoute
   '/d/patients': typeof DPatientsRoute
   '/d/profile': typeof DProfileRoute
@@ -228,6 +257,7 @@ export interface FileRoutesByTo {
   '/d/research': typeof DResearchRoute
   '/d/specialists': typeof DSpecialistsRoute
   '/d/tools': typeof DToolsRoute
+  '/m/invitations': typeof MInvitationsRoute
   '/m/organizations': typeof MOrganizationsRoute
   '/m/patients': typeof MPatientsRoute
   '/m/profile': typeof MProfileRoute
@@ -245,7 +275,9 @@ export interface FileRoutesByTo {
   '/m/research/$id': typeof MResearchIdRoute
   '/m/specialists/$id': typeof MSpecialistsIdRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d/projects/$id/team': typeof DProjectsIdTeamRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m/projects/$id/team': typeof MProjectsIdTeamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -253,6 +285,7 @@ export interface FileRoutesById {
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d_/invitations': typeof DInvitationsRoute
   '/d_/organizations': typeof DOrganizationsRoute
   '/d_/patients': typeof DPatientsRoute
   '/d_/profile': typeof DProfileRoute
@@ -260,6 +293,7 @@ export interface FileRoutesById {
   '/d_/research': typeof DResearchRoute
   '/d_/specialists': typeof DSpecialistsRoute
   '/d_/tools': typeof DToolsRoute
+  '/m_/invitations': typeof MInvitationsRoute
   '/m_/organizations': typeof MOrganizationsRoute
   '/m_/patients': typeof MPatientsRoute
   '/m_/profile': typeof MProfileRoute
@@ -277,7 +311,9 @@ export interface FileRoutesById {
   '/m_/research_/$id': typeof MResearchIdRoute
   '/m_/specialists_/$id': typeof MSpecialistsIdRoute
   '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d_/projects_/$id/team': typeof DProjectsIdTeamRoute
   '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m_/projects_/$id/team': typeof MProjectsIdTeamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -286,6 +322,7 @@ export interface FileRouteTypes {
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d/invitations'
     | '/d/organizations'
     | '/d/patients'
     | '/d/profile'
@@ -293,6 +330,7 @@ export interface FileRouteTypes {
     | '/d/research'
     | '/d/specialists'
     | '/d/tools'
+    | '/m/invitations'
     | '/m/organizations'
     | '/m/patients'
     | '/m/profile'
@@ -310,13 +348,16 @@ export interface FileRouteTypes {
     | '/m/research/$id'
     | '/m/specialists/$id'
     | '/d/projects/$id/protocol'
+    | '/d/projects/$id/team'
     | '/m/projects/$id/protocol'
+    | '/m/projects/$id/team'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d/invitations'
     | '/d/organizations'
     | '/d/patients'
     | '/d/profile'
@@ -324,6 +365,7 @@ export interface FileRouteTypes {
     | '/d/research'
     | '/d/specialists'
     | '/d/tools'
+    | '/m/invitations'
     | '/m/organizations'
     | '/m/patients'
     | '/m/profile'
@@ -341,13 +383,16 @@ export interface FileRouteTypes {
     | '/m/research/$id'
     | '/m/specialists/$id'
     | '/d/projects/$id/protocol'
+    | '/d/projects/$id/team'
     | '/m/projects/$id/protocol'
+    | '/m/projects/$id/team'
   id:
     | '__root__'
     | '/'
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d_/invitations'
     | '/d_/organizations'
     | '/d_/patients'
     | '/d_/profile'
@@ -355,6 +400,7 @@ export interface FileRouteTypes {
     | '/d_/research'
     | '/d_/specialists'
     | '/d_/tools'
+    | '/m_/invitations'
     | '/m_/organizations'
     | '/m_/patients'
     | '/m_/profile'
@@ -372,7 +418,9 @@ export interface FileRouteTypes {
     | '/m_/research_/$id'
     | '/m_/specialists_/$id'
     | '/d_/projects_/$id/protocol'
+    | '/d_/projects_/$id/team'
     | '/m_/projects_/$id/protocol'
+    | '/m_/projects_/$id/team'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -380,6 +428,7 @@ export interface RootRouteChildren {
   DRoute: typeof DRoute
   MRoute: typeof MRoute
   AuthErrorRoute: typeof AuthErrorRoute
+  DInvitationsRoute: typeof DInvitationsRoute
   DOrganizationsRoute: typeof DOrganizationsRoute
   DPatientsRoute: typeof DPatientsRoute
   DProfileRoute: typeof DProfileRoute
@@ -387,6 +436,7 @@ export interface RootRouteChildren {
   DResearchRoute: typeof DResearchRoute
   DSpecialistsRoute: typeof DSpecialistsRoute
   DToolsRoute: typeof DToolsRoute
+  MInvitationsRoute: typeof MInvitationsRoute
   MOrganizationsRoute: typeof MOrganizationsRoute
   MPatientsRoute: typeof MPatientsRoute
   MProfileRoute: typeof MProfileRoute
@@ -404,7 +454,9 @@ export interface RootRouteChildren {
   MResearchIdRoute: typeof MResearchIdRoute
   MSpecialistsIdRoute: typeof MSpecialistsIdRoute
   DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
+  DProjectsIdTeamRoute: typeof DProjectsIdTeamRoute
   MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
+  MProjectsIdTeamRoute: typeof MProjectsIdTeamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -435,6 +487,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/error'
       fullPath: '/auth/error'
       preLoaderRoute: typeof AuthErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/invitations': {
+      id: '/d_/invitations'
+      path: '/d/invitations'
+      fullPath: '/d/invitations'
+      preLoaderRoute: typeof DInvitationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/d_/organizations': {
@@ -484,6 +543,13 @@ declare module '@tanstack/react-router' {
       path: '/d/tools'
       fullPath: '/d/tools'
       preLoaderRoute: typeof DToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/invitations': {
+      id: '/m_/invitations'
+      path: '/m/invitations'
+      fullPath: '/m/invitations'
+      preLoaderRoute: typeof MInvitationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m_/organizations': {
@@ -605,11 +671,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DProjectsIdProtocolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/projects_/$id/team': {
+      id: '/d_/projects_/$id/team'
+      path: '/d/projects/$id/team'
+      fullPath: '/d/projects/$id/team'
+      preLoaderRoute: typeof DProjectsIdTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/m_/projects_/$id/protocol': {
       id: '/m_/projects_/$id/protocol'
       path: '/m/projects/$id/protocol'
       fullPath: '/m/projects/$id/protocol'
       preLoaderRoute: typeof MProjectsIdProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/team': {
+      id: '/m_/projects_/$id/team'
+      path: '/m/projects/$id/team'
+      fullPath: '/m/projects/$id/team'
+      preLoaderRoute: typeof MProjectsIdTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -620,6 +700,7 @@ const rootRouteChildren: RootRouteChildren = {
   DRoute: DRoute,
   MRoute: MRoute,
   AuthErrorRoute: AuthErrorRoute,
+  DInvitationsRoute: DInvitationsRoute,
   DOrganizationsRoute: DOrganizationsRoute,
   DPatientsRoute: DPatientsRoute,
   DProfileRoute: DProfileRoute,
@@ -627,6 +708,7 @@ const rootRouteChildren: RootRouteChildren = {
   DResearchRoute: DResearchRoute,
   DSpecialistsRoute: DSpecialistsRoute,
   DToolsRoute: DToolsRoute,
+  MInvitationsRoute: MInvitationsRoute,
   MOrganizationsRoute: MOrganizationsRoute,
   MPatientsRoute: MPatientsRoute,
   MProfileRoute: MProfileRoute,
@@ -644,7 +726,9 @@ const rootRouteChildren: RootRouteChildren = {
   MResearchIdRoute: MResearchIdRoute,
   MSpecialistsIdRoute: MSpecialistsIdRoute,
   DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
+  DProjectsIdTeamRoute: DProjectsIdTeamRoute,
   MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
+  MProjectsIdTeamRoute: MProjectsIdTeamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

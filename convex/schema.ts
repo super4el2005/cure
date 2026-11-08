@@ -100,6 +100,7 @@ export default defineSchema({
     .index("by_project_version", ["projectClientId", "version"])
     .index("by_client", ["clientId"]),
   collaborationInvites: defineTable({
+    projectTitle: v.optional(v.string()),
     clientId: v.string(),
     projectClientId: v.string(),
     inviteeId: v.string(),

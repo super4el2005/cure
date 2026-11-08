@@ -86,6 +86,7 @@ function leader(): LeaderElection {
 
 const modules = {
   "../convex/_generated/server.js": () => import("@/convex/_generated/server.js"),
+  "../convex/projectTeams.ts": () => import("@/convex/projectTeams"),
   "../convex/protocols.ts": () => import("@/convex/protocols"),
   "../convex/projects.ts": () => import("@/convex/projects"),
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
@@ -116,8 +117,10 @@ describe("durable research projects", () => {
     const client = {
       watchQuery(fn: FunctionReference<"query">) {
         const protocols = getFunctionName(fn) === getFunctionName(api.protocols.mine);
+        const team = getFunctionName(fn) === getFunctionName(api.projectTeams.workspace);
         return {
-          localQueryResult: () => (protocols ? protocolResult : result),
+          localQueryResult: () =>
+            team ? (result === undefined ? undefined : []) : protocols ? protocolResult : result,
           onUpdate(callback: () => void) {
             listeners.add(callback);
             return () => {

@@ -273,3 +273,25 @@ test("protocol pages render their own protected entry without the project list p
     assert.doesNotMatch(html, /Private projects, study stages/);
   }
 });
+
+test("team and invitation routes render independent protected entries without live backend calls", async () => {
+  for (const device of ["d", "m"]) {
+    const team = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/team`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(team.status, 200);
+    const html = await team.text();
+    assert.match(html, /Study team/);
+    assert.doesNotMatch(html, /Private projects, study stages/);
+    const invitations = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/invitations`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(invitations.status, 200);
+    assert.match(await invitations.text(), /The decision is saved for the selected organization/);
+  }
+});

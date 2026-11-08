@@ -40,6 +40,8 @@ import {
   validateResearchTransition,
 } from "@/src/lib/research-model";
 import type { ProtocolValues, ProjectValues, ProjectRole } from "@/src/lib/research-model";
+import { teamRecordSchema, teamCommandSchema, teamOperationSchema } from "@/src/lib/team-model";
+import type { TeamRecord, TeamCommand, TeamOperation } from "@/src/lib/team-model";
 import { reportFailure } from "@/src/observability/events";
 
 const rowSchema = projectValuesSchema.extend({
@@ -54,7 +56,7 @@ const protocolRowSchema = protocolValuesSchema.extend({
   version: z.number().int().positive(),
 });
 const envelopeSchema = z.object({
-  clientId: z.uuid(),
+  clientId: z.string().min(1),
   revision: z.number().int().positive(),
   ciphertext: z.string(),
 });
@@ -62,7 +64,8 @@ type Envelope = z.infer<typeof envelopeSchema>;
 const failureSchema = z.object({
   id: z.string(),
   code: z.string(),
-  domain: z.enum(["project", "protocol"]).default("project"),
+  domain: z.enum(["project", "protocol", "team"]).default("project"),
+  operation: teamOperationSchema.optional(),
   envelope: envelopeSchema,
   at: z.number(),
 });
@@ -112,6 +115,20 @@ export async function openProjectWorkspace(config: {
     revision: row.version,
     ciphertext: config.vault.seal(row, `${protocolScope}:${row.clientId}`),
   });
+  const teamScope = `${scope}:team`;
+  const readTeam = (envelope: Envelope) => {
+    const row = teamRecordSchema.parse(
+      config.vault.open(envelope.ciphertext, `${teamScope}:${envelope.clientId}`),
+    );
+    if (row.key !== envelope.clientId || row.revision !== envelope.revision)
+      throw new Error("INVALID_VAULT_DATA");
+    return row;
+  };
+  const sealTeam = (row: TeamRecord): Envelope => ({
+    clientId: row.key,
+    revision: row.revision,
+    ciphertext: config.vault.seal(row, `${teamScope}:${row.key}`),
+  });
   let persistence = config.persistence;
   if (!persistence) {
     database = await openBrowserWASQLiteOPFSDatabase({
@@ -152,6 +169,23 @@ export async function openProjectWorkspace(config: {
         query: api.protocols.mine,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
         select: (rows) => rows.map((row) => sealProtocol(protocolRowSchema.parse(row))),
+        getKey: (row) => row.clientId,
+        onError: (error) => reportFailure(error, "projects.sync"),
+      }),
+      persistence,
+      schemaVersion: 1,
+    }),
+  );
+  const team = createCollection(
+    persistedCollectionOptions({
+      ...convexCollectionOptions({
+        id: teamScope,
+        startSync: true,
+        gcTime: Infinity,
+        client: config.client,
+        query: api.projectTeams.workspace,
+        queryArgs: { organizationId: config.organizationId, actorId: config.userId },
+        select: (rows) => rows.map((row) => sealTeam(teamRecordSchema.parse(row))),
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
@@ -215,8 +249,94 @@ export async function openProjectWorkspace(config: {
         };
       },
     });
+    const teamChange = (params: Parameters<typeof mutation>[0], operation: TeamOperation) => {
+      if (params.transaction.mutations.length !== 1)
+        throw new NonRetriableError("INVALID_TEAM_OPERATION");
+      const change = params.transaction.mutations[0]!;
+      if (change.type !== (operation === "invite" ? "insert" : "update"))
+        throw new NonRetriableError("INVALID_TEAM_OPERATION");
+      return {
+        row: readTeam(change.modified as Envelope),
+        previous: operation === "invite" ? undefined : readTeam(change.original as Envelope),
+      };
+    };
+    const inviteMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectTeams.invite,
+      collections: [team],
+      getArgs: (params) => {
+        const { row } = teamChange(params, "invite");
+        if (row.entity !== "invitation" || !row.targetProfileId)
+          throw new NonRetriableError("INVALID_TEAM_OPERATION");
+        return {
+          actorId: config.userId,
+          projectClientId: row.projectClientId,
+          clientId: row.clientId,
+          targetProfileId: row.targetProfileId as Id<"profiles">,
+          role: row.role,
+        };
+      },
+    });
+    const respondMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectTeams.respond,
+      collections: [team],
+      getArgs: (params) => {
+        const { row, previous } = teamChange(params, "respond");
+        if (
+          row.entity !== "invitation" ||
+          !previous ||
+          !["accepted", "declined"].includes(row.status)
+        )
+          throw new NonRetriableError("INVALID_TEAM_OPERATION");
+        return {
+          actorId: config.userId,
+          clientId: row.clientId,
+          decision: row.status === "accepted" ? ("accept" as const) : ("decline" as const),
+          organizationId: config.organizationId,
+          expectedRevision: previous.revision,
+        };
+      },
+    });
+    const revokeMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectTeams.revokeInvite,
+      collections: [team],
+      getArgs: (params) => {
+        const { row, previous } = teamChange(params, "revokeInvite");
+        if (row.entity !== "invitation" || !previous)
+          throw new NonRetriableError("INVALID_TEAM_OPERATION");
+        return {
+          actorId: config.userId,
+          clientId: row.clientId,
+          expectedRevision: previous.revision,
+        };
+      },
+    });
+    const memberMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectTeams.setMember,
+      collections: [team],
+      getArgs: (params) => {
+        const { row, previous } = teamChange(params, "setMember");
+        if (row.entity !== "member" || row.role === "owner" || !previous)
+          throw new NonRetriableError("INVALID_TEAM_OPERATION");
+        return {
+          actorId: config.userId,
+          projectClientId: row.projectClientId,
+          targetUserId: row.userId,
+          role: row.role,
+          active: row.active,
+          expectedRevision: previous.revision,
+        };
+      },
+    });
     const guarded =
-      (invoke: typeof mutation, domain: "project" | "protocol") =>
+      (
+        invoke: typeof mutation,
+        domain: "project" | "protocol" | "team",
+        operation?: TeamOperation,
+      ) =>
       async (params: Parameters<typeof mutation>[0]) => {
         if (closed || !detector.isOnline()) throw new Error("AUTH_REQUIRED");
         try {
@@ -235,6 +355,14 @@ export async function openProjectWorkspace(config: {
           }
           const code =
             [
+              "INVALID_TEAM_OPERATION",
+              "INVITEE_UNAVAILABLE",
+              "ALREADY_MEMBER",
+              "INVITE_ALREADY_PENDING",
+              "INVITE_EXPIRED",
+              "INVITE_NOT_PENDING",
+              "AFFILIATION_REQUIRED",
+              "NEW_INVITATION_REQUIRED",
               "ACCOUNT_CHANGED",
               "ACCESS_DENIED",
               "REVISION_CONFLICT",
@@ -255,6 +383,7 @@ export async function openProjectWorkspace(config: {
                 id: params.idempotencyKey,
                 code,
                 domain,
+                ...(operation ? { operation } : {}),
                 envelope: change.modified,
                 at: Date.now(),
               }),
@@ -264,7 +393,7 @@ export async function openProjectWorkspace(config: {
         }
       };
     const executor = startOfflineExecutor({
-      collections: { [scope]: collection, [protocolScope]: protocols },
+      collections: { [scope]: collection, [protocolScope]: protocols, [teamScope]: team },
       storage: receipts.storage,
       mutationCodec: convexMutationCodec,
       onlineDetector: detector,
@@ -277,6 +406,10 @@ export async function openProjectWorkspace(config: {
       mutationFns: {
         "project.apply.v1": guarded(mutation, "project"),
         "protocol.append.v1": guarded(protocolMutation, "protocol"),
+        "team.invite.v1": guarded(inviteMutation, "team", "invite"),
+        "team.respond.v1": guarded(respondMutation, "team", "respond"),
+        "team.revokeInvite.v1": guarded(revokeMutation, "team", "revokeInvite"),
+        "team.setMember.v1": guarded(memberMutation, "team", "setMember"),
       },
       shouldRetry: (error) => (error.message === "AUTH_REQUIRED" ? true : undefined),
       onStorageFailure: () => reportFailure(new Error("STORAGE_UNAVAILABLE"), "projects.queue"),
@@ -355,6 +488,121 @@ export async function openProjectWorkspace(config: {
         );
       },
     });
+    const teamActions = Object.fromEntries(
+      (["invite", "respond", "revokeInvite", "setMember"] as const).map((operation) => [
+        operation,
+        executor.createOfflineAction<TeamCommand>({
+          mutationFnName: `team.${operation}.v1`,
+          onMutate: (input) => {
+            if (closed) throw new Error("WORKSPACE_LOCKED");
+            if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+            if (team.status !== "ready") throw new Error("WORKSPACE_NOT_READY");
+            const command = teamCommandSchema.parse(input);
+            if (command.operation !== operation) throw new Error("INVALID_TEAM_OPERATION");
+            if (command.operation === "invite") {
+              const envelope = collection.get(command.projectClientId);
+              const project = envelope ? read(envelope) : undefined;
+              if (
+                !project ||
+                !["owner", "coordinator"].includes(project.selfRole) ||
+                (command.role === "coordinator" && project.selfRole !== "owner")
+              )
+                throw new Error("ACCESS_DENIED");
+              if (["completed", "archived"].includes(project.status))
+                throw new Error("PROJECT_COMPLETED");
+              team.insert(
+                sealTeam({
+                  entity: "invitation",
+                  key: `invitation:${command.clientId}`,
+                  clientId: command.clientId,
+                  projectClientId: command.projectClientId,
+                  inviteeId: "",
+                  inviterId: config.userId,
+                  targetProfileId: command.targetProfileId,
+                  inviteeName: command.inviteeName,
+                  projectTitle: project.title,
+                  projectStatus: project.status,
+                  role: command.role,
+                  status: "pending",
+                  expiresAt: Date.now() + 7 * 86400000,
+                  revision: 1,
+                  delivery: "local",
+                }),
+              );
+              return;
+            }
+            const envelope = team.get(command.key);
+            if (!envelope) throw new Error("INVALID_TEAM_OPERATION");
+            const row = readTeam(envelope);
+            const parent = collection.get(row.projectClientId);
+            const project = parent ? read(parent) : undefined;
+            if (command.operation === "respond") {
+              if (row.entity !== "invitation" || row.inviteeId !== config.userId)
+                throw new Error("ACCESS_DENIED");
+              if (row.status !== "pending") throw new Error("INVITE_NOT_PENDING");
+              if (
+                command.decision === "accept" &&
+                (row.expiresAt <= Date.now() ||
+                  ["completed", "archived"].includes(row.projectStatus ?? "archived"))
+              )
+                throw new Error("INVITE_EXPIRED");
+              team.update(row.key, (draft) =>
+                Object.assign(
+                  draft,
+                  sealTeam({
+                    ...row,
+                    status: command.decision === "accept" ? "accepted" : "declined",
+                    revision: row.revision + 1,
+                    delivery: "local",
+                  }),
+                ),
+              );
+              return;
+            }
+            if (!project || !["owner", "coordinator"].includes(project.selfRole))
+              throw new Error("ACCESS_DENIED");
+            if (command.operation === "revokeInvite") {
+              if (row.entity !== "invitation" || row.status !== "pending")
+                throw new Error("INVITE_NOT_PENDING");
+              if (row.role === "coordinator" && project.selfRole !== "owner")
+                throw new Error("ACCESS_DENIED");
+              team.update(row.key, (draft) =>
+                Object.assign(
+                  draft,
+                  sealTeam({
+                    ...row,
+                    status: "revoked",
+                    revision: row.revision + 1,
+                    delivery: "local",
+                  }),
+                ),
+              );
+            } else {
+              if (
+                row.entity !== "member" ||
+                row.role === "owner" ||
+                (project.selfRole !== "owner" &&
+                  (row.role === "coordinator" || command.role === "coordinator"))
+              )
+                throw new Error("ACCESS_DENIED");
+              if (command.active && !row.active) throw new Error("NEW_INVITATION_REQUIRED");
+              team.update(row.key, (draft) =>
+                Object.assign(
+                  draft,
+                  sealTeam({
+                    ...row,
+                    role: command.role,
+                    active: command.active,
+                    revision: row.revision + 1,
+                    delivery: "local",
+                  }),
+                ),
+              );
+            }
+          },
+        }),
+      ]),
+    );
     const saveTransaction = async (tx: ReturnType<typeof apply>) => {
       const persisted = receipts.wait(tx.id);
       try {
@@ -368,6 +616,7 @@ export async function openProjectWorkspace(config: {
     return {
       collection,
       protocols,
+      team,
       executor,
       scope,
       organizationId: config.organizationId,
@@ -385,6 +634,15 @@ export async function openProjectWorkspace(config: {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         return readProtocol(row);
       },
+      readTeam(row: Envelope) {
+        if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        return readTeam(row);
+      },
+      async saveTeam(command: TeamCommand) {
+        if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
+        const parsed = teamCommandSchema.parse(command);
+        return saveTransaction(teamActions[parsed.operation]!(parsed));
+      },
       async save(command: Parameters<typeof apply>[0]) {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         return saveTransaction(apply(command));
@@ -393,7 +651,7 @@ export async function openProjectWorkspace(config: {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         return saveTransaction(appendProtocol(command));
       },
-      async failedActions(domain: "project" | "protocol" = "project") {
+      async failedActions(domain: "project" | "protocol" | "team" = "project") {
         const rows = await Promise.all(
           (await failures.keys()).map(async (key) =>
             failureSchema.parse(JSON.parse((await failures.get(key))!)),
@@ -412,7 +670,7 @@ export async function openProjectWorkspace(config: {
         executor.dispose();
         receipts.dispose();
         try {
-          await Promise.all([collection.cleanup(), protocols.cleanup()]);
+          await Promise.all([collection.cleanup(), protocols.cleanup(), team.cleanup()]);
         } catch (error) {
           reportFailure(error, "projects.close");
         }
@@ -428,7 +686,7 @@ export async function openProjectWorkspace(config: {
     config.vault.lock();
     disposeExecutor?.();
     try {
-      await Promise.all([collection.cleanup(), protocols.cleanup()]);
+      await Promise.all([collection.cleanup(), protocols.cleanup(), team.cleanup()]);
     } catch (cleanupError) {
       reportFailure(cleanupError, "projects.close");
     }

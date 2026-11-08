@@ -312,6 +312,11 @@ function Projects() {
                       />
                     )}
                   >{t`Протокол исследования`}</Anchor>
+                  <Anchor
+                    renderRoot={(props) => (
+                      <Link {...props} to="/m/projects/$id/team" params={{ id: row.clientId }} />
+                    )}
+                  >{t`Команда исследования`}</Anchor>
                   <Text>{row.summary}</Text>
                   <Text>{row.topic}</Text>
                   <Text>
