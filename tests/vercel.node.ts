@@ -310,3 +310,23 @@ test("project work routes render independent protected entries on both device pa
     assert.doesNotMatch(html, /Private projects, study stages/);
   }
 });
+
+test("patient record and consent routes render protected entries without listing patient data", async () => {
+  for (const device of ["d", "m"]) {
+    for (const [suffix, title] of [
+      ["", "Patient record"],
+      ["/consents", "Patient consents"],
+    ] as const) {
+      const response = await app.fetch(
+        new Request(
+          `https://cure-sooty.vercel.app/${device}/patients/f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258${suffix}`,
+          { headers: { "accept-language": "en" } },
+        ),
+      );
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.match(html, new RegExp(title));
+      assert.doesNotMatch(html, /Test Patient|Private clinical note|Signed consent reference/);
+    }
+  }
+});

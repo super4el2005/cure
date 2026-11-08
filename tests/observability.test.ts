@@ -110,3 +110,11 @@ describe("operation resilience", () => {
     client.clear();
   });
 });
+
+it("identifies clinical and project routes without recording record IDs or query data", () => {
+  expect(safePath("https://cure.test/d/patients/private-patient/consents?diagnosis=F41")).toBe(
+    "/d/patients/:id/consents",
+  );
+  expect(safePath("https://cure.test/m/projects/private-study/work")).toBe("/m/projects/:id/work");
+  expect(safePath("https://cure.test/d/patients/private-patient/secret-notes")).toBe("/:redacted");
+});

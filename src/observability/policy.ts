@@ -88,6 +88,7 @@ export const errorCodes = new Set([
   "ETHICS_APPROVAL_REQUIRED",
   "PROJECT_SYNC_REJECTED",
   "PROJECT_SYNC_UNCONFIRMED",
+  "PATIENT_NOT_FOUND",
   "INVALID_PATIENT",
   "REVISION_CONFLICT",
   "IDEMPOTENCY_KEY_REUSED",
@@ -129,6 +130,23 @@ export function safePath(value: unknown): string {
     const path = new URL(typeof value === "string" ? value : "/", "https://application.invalid")
       .pathname;
     if (paths.has(path)) return path;
+    if (
+      /^\/[dm]\/(profile|patients|projects|invitations|specialists|organizations|research|tools)$/.test(
+        path,
+      )
+    )
+      return path;
+    const detail = path.match(
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work))?$/,
+    );
+    if (
+      detail &&
+      (!detail[3] ||
+        (detail[2] === "patients" && detail[3] === "consents") ||
+        (detail[2] === "projects" && ["protocol", "team", "work"].includes(detail[3])))
+    )
+      return `/${detail[1]}/${detail[2]}/:id${detail[3] ? `/${detail[3]}` : ""}`;
+
     if (path.startsWith("/api/auth/")) return "/api/auth/:action";
     if (path.startsWith("/_serverFn/")) return "/_serverFn/:function";
     if (path.startsWith("/icd/")) return "/icd/:classification";
