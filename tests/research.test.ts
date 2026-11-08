@@ -156,6 +156,18 @@ describe("research project and protocol invariants", () => {
     expect(project.status).toBe("preparing");
     expect(project.revision).toBe(4);
     expect(
+      await owner.query(api.protocols.mine, {
+        organizationId: args.organizationId,
+        actorId: "owner",
+      }),
+    ).toHaveLength(2);
+    expect(
+      await t
+        .withIdentity({ subject: "member" })
+        .query(api.protocols.mine, { organizationId: args.organizationId, actorId: "member" }),
+    ).toEqual([]);
+
+    expect(
       JSON.stringify(await t.query(api.projects.publicDetails, { clientId: projectId })),
     ).not.toContain("Private");
     await expect(

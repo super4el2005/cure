@@ -34,11 +34,12 @@ import { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-adm
 import { encryptedStorage } from "@/src/lib/patient-vault";
 import type { Vault } from "@/src/lib/patient-vault";
 import {
+  protocolValuesSchema,
   projectRoleSchema,
   projectValuesSchema,
   validateResearchTransition,
 } from "@/src/lib/research-model";
-import type { ProjectValues, ProjectRole } from "@/src/lib/research-model";
+import type { ProtocolValues, ProjectValues, ProjectRole } from "@/src/lib/research-model";
 import { reportFailure } from "@/src/observability/events";
 
 const rowSchema = projectValuesSchema.extend({
@@ -46,6 +47,11 @@ const rowSchema = projectValuesSchema.extend({
   organizationId: z.string(),
   revision: z.number().int().positive(),
   selfRole: projectRoleSchema,
+});
+const protocolRowSchema = protocolValuesSchema.extend({
+  clientId: z.uuid(),
+  projectClientId: z.uuid(),
+  version: z.number().int().positive(),
 });
 const envelopeSchema = z.object({
   clientId: z.uuid(),
@@ -56,6 +62,7 @@ type Envelope = z.infer<typeof envelopeSchema>;
 const failureSchema = z.object({
   id: z.string(),
   code: z.string(),
+  domain: z.enum(["project", "protocol"]).default("project"),
   envelope: envelopeSchema,
   at: z.number(),
 });
@@ -91,6 +98,20 @@ export async function openProjectWorkspace(config: {
     revision: value.revision,
     ciphertext: config.vault.seal(value, `${scope}:${value.clientId}`),
   });
+  const protocolScope = `${scope}:protocols`;
+  const readProtocol = (row: Envelope) => {
+    const decoded = protocolRowSchema.parse(
+      config.vault.open(row.ciphertext, `${protocolScope}:${row.clientId}`),
+    );
+    if (decoded.clientId !== row.clientId || decoded.version !== row.revision)
+      throw new Error("INVALID_VAULT_DATA");
+    return decoded;
+  };
+  const sealProtocol = (row: z.infer<typeof protocolRowSchema>): Envelope => ({
+    clientId: row.clientId,
+    revision: row.version,
+    ciphertext: config.vault.seal(row, `${protocolScope}:${row.clientId}`),
+  });
   let persistence = config.persistence;
   if (!persistence) {
     database = await openBrowserWASQLiteOPFSDatabase({
@@ -114,6 +135,23 @@ export async function openProjectWorkspace(config: {
         query: api.projects.mine,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
         select: (rows) => rows.map((row) => seal(rowSchema.parse(row))),
+        getKey: (row) => row.clientId,
+        onError: (error) => reportFailure(error, "projects.sync"),
+      }),
+      persistence,
+      schemaVersion: 1,
+    }),
+  );
+  const protocols = createCollection(
+    persistedCollectionOptions({
+      ...convexCollectionOptions({
+        id: protocolScope,
+        startSync: true,
+        gcTime: Infinity,
+        client: config.client,
+        query: api.protocols.mine,
+        queryArgs: { organizationId: config.organizationId, actorId: config.userId },
+        select: (rows) => rows.map((row) => sealProtocol(protocolRowSchema.parse(row))),
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
@@ -160,8 +198,73 @@ export async function openProjectWorkspace(config: {
         };
       },
     });
+    const protocolMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.protocols.append,
+      collections: [protocols],
+      getArgs: ({ transaction }) => {
+        if (transaction.mutations.length !== 1 || transaction.mutations[0]!.type !== "insert")
+          throw new NonRetriableError("INVALID_PROTOCOL");
+        const row = readProtocol(transaction.mutations[0]!.modified as Envelope);
+        return {
+          actorId: config.userId,
+          clientId: row.clientId,
+          projectClientId: row.projectClientId,
+          expectedVersion: row.version - 1,
+          values: protocolValuesSchema.parse(row),
+        };
+      },
+    });
+    const guarded =
+      (invoke: typeof mutation, domain: "project" | "protocol") =>
+      async (params: Parameters<typeof mutation>[0]) => {
+        if (closed || !detector.isOnline()) throw new Error("AUTH_REQUIRED");
+        try {
+          await invoke(params);
+        } catch (error) {
+          if (!(error instanceof NonRetriableError)) {
+            reportFailure(error, "projects.sync", "PROJECT_SYNC_UNCONFIRMED");
+            // eslint-disable-next-line preserve-caught-error -- Provider payloads must not enter persistent errors.
+            throw new Error("PROJECT_SYNC_UNCONFIRMED");
+          }
+          if (error.message.includes("UNAUTHENTICATED")) {
+            detector.requireAuthentication();
+            config.onAuthRequired();
+            // eslint-disable-next-line preserve-caught-error -- The sanitized failure is reported centrally.
+            throw new Error("AUTH_REQUIRED");
+          }
+          const code =
+            [
+              "ACCOUNT_CHANGED",
+              "ACCESS_DENIED",
+              "REVISION_CONFLICT",
+              "INVALID_PROJECT",
+              "INVALID_PROTOCOL",
+              "PROJECT_COMPLETED",
+              "IDEMPOTENCY_KEY_REUSED",
+              "INVALID_RESEARCH_TRANSITION",
+              "PROJECT_NOT_PUBLISHABLE",
+              "ETHICS_APPROVAL_REQUIRED",
+            ].find((code) => new RegExp(`\\b${code}\\b`).test(error.message)) ??
+            "PROJECT_SYNC_REJECTED";
+          const change = params.transaction.mutations[0];
+          if (change)
+            await failures.set(
+              params.idempotencyKey,
+              JSON.stringify({
+                id: params.idempotencyKey,
+                code,
+                domain,
+                envelope: change.modified,
+                at: Date.now(),
+              }),
+            );
+          reportFailure(error, "projects.sync", code);
+          throw new NonRetriableError(code);
+        }
+      };
     const executor = startOfflineExecutor({
-      collections: { [scope]: collection },
+      collections: { [scope]: collection, [protocolScope]: protocols },
       storage: receipts.storage,
       mutationCodec: convexMutationCodec,
       onlineDetector: detector,
@@ -172,49 +275,8 @@ export async function openProjectWorkspace(config: {
           : new BroadcastChannelLeader(`${scope}:leader`)),
       maxConcurrency: 1,
       mutationFns: {
-        "project.apply.v1": async (params) => {
-          if (closed || !detector.isOnline()) throw new Error("AUTH_REQUIRED");
-          try {
-            await mutation(params);
-          } catch (error) {
-            if (!(error instanceof NonRetriableError)) {
-              reportFailure(error, "projects.sync", "PROJECT_SYNC_UNCONFIRMED");
-              // eslint-disable-next-line preserve-caught-error -- Provider payloads must not enter persistent errors.
-              throw new Error("PROJECT_SYNC_UNCONFIRMED");
-            }
-            if (error.message.includes("UNAUTHENTICATED")) {
-              detector.requireAuthentication();
-              config.onAuthRequired();
-              // eslint-disable-next-line preserve-caught-error -- The sanitized failure is reported centrally.
-              throw new Error("AUTH_REQUIRED");
-            }
-            const code =
-              [
-                "ACCOUNT_CHANGED",
-                "ACCESS_DENIED",
-                "REVISION_CONFLICT",
-                "INVALID_PROJECT",
-                "IDEMPOTENCY_KEY_REUSED",
-                "INVALID_RESEARCH_TRANSITION",
-                "PROJECT_NOT_PUBLISHABLE",
-                "ETHICS_APPROVAL_REQUIRED",
-              ].find((code) => new RegExp(`\\b${code}\\b`).test(error.message)) ??
-              "PROJECT_SYNC_REJECTED";
-            const change = params.transaction.mutations[0];
-            if (change)
-              await failures.set(
-                params.idempotencyKey,
-                JSON.stringify({
-                  id: params.idempotencyKey,
-                  code,
-                  envelope: change.modified,
-                  at: Date.now(),
-                }),
-              );
-            reportFailure(error, "projects.sync", code);
-            throw new NonRetriableError(code);
-          }
-        },
+        "project.apply.v1": guarded(mutation, "project"),
+        "protocol.append.v1": guarded(protocolMutation, "protocol"),
       },
       shouldRetry: (error) => (error.message === "AUTH_REQUIRED" ? true : undefined),
       onStorageFailure: () => reportFailure(new Error("STORAGE_UNAVAILABLE"), "projects.queue"),
@@ -253,8 +315,59 @@ export async function openProjectWorkspace(config: {
         }
       },
     });
+    const appendProtocol = executor.createOfflineAction<{
+      clientId: string;
+      projectClientId: string;
+      values: ProtocolValues;
+    }>({
+      mutationFnName: "protocol.append.v1",
+      onMutate: (command) => {
+        if (closed) throw new Error("WORKSPACE_LOCKED");
+        if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        if (protocols.status !== "ready") throw new Error("WORKSPACE_NOT_READY");
+        const project = collection.get(command.projectClientId);
+        const parent = project ? read(project) : undefined;
+        if (!parent || !["owner", "coordinator"].includes(parent.selfRole))
+          throw new Error("ACCESS_DENIED");
+        if (["completed", "archived"].includes(parent.status)) throw new Error("PROJECT_COMPLETED");
+        const values = protocolValuesSchema.parse(command.values);
+        if (values.ethicsApproved && values.ethicsExpiresAt <= Date.now())
+          throw new Error("ETHICS_APPROVAL_REQUIRED");
+        const version =
+          Array.from(protocols.values())
+            .map(readProtocol)
+            .reduce(
+              (latest, row) =>
+                row.projectClientId === command.projectClientId
+                  ? Math.max(latest, row.version)
+                  : latest,
+              0,
+            ) + 1;
+        protocols.insert(
+          sealProtocol(
+            protocolRowSchema.parse({
+              ...values,
+              clientId: command.clientId,
+              projectClientId: command.projectClientId,
+              version,
+            }),
+          ),
+        );
+      },
+    });
+    const saveTransaction = async (tx: ReturnType<typeof apply>) => {
+      const persisted = receipts.wait(tx.id);
+      try {
+        await Promise.race([persisted, tx.when("settled").then(() => undefined)]);
+      } finally {
+        receipts.cancel(tx.id);
+      }
+      void tx.when("settled").catch((error) => reportFailure(error, "projects.sync"));
+      return { transactionId: tx.id };
+    };
     return {
       collection,
+      protocols,
       executor,
       scope,
       organizationId: config.organizationId,
@@ -268,24 +381,25 @@ export async function openProjectWorkspace(config: {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         return read(row);
       },
+      readProtocol(row: Envelope) {
+        if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        return readProtocol(row);
+      },
       async save(command: Parameters<typeof apply>[0]) {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
-        const tx = apply(command);
-        const persisted = receipts.wait(tx.id);
-        try {
-          await Promise.race([persisted, tx.when("settled").then(() => undefined)]);
-        } finally {
-          receipts.cancel(tx.id);
-        }
-        void tx.when("settled").catch((error) => reportFailure(error, "projects.sync"));
-        return { transactionId: tx.id };
+        return saveTransaction(apply(command));
       },
-      async failedActions() {
-        return Promise.all(
+      async saveProtocol(command: Parameters<typeof appendProtocol>[0]) {
+        if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
+        return saveTransaction(appendProtocol(command));
+      },
+      async failedActions(domain: "project" | "protocol" = "project") {
+        const rows = await Promise.all(
           (await failures.keys()).map(async (key) =>
             failureSchema.parse(JSON.parse((await failures.get(key))!)),
           ),
         );
+        return rows.filter((row) => row.domain === domain);
       },
       async dismissFailure(id: string) {
         await failures.delete(id);
@@ -298,7 +412,7 @@ export async function openProjectWorkspace(config: {
         executor.dispose();
         receipts.dispose();
         try {
-          await collection.cleanup();
+          await Promise.all([collection.cleanup(), protocols.cleanup()]);
         } catch (error) {
           reportFailure(error, "projects.close");
         }
@@ -314,7 +428,7 @@ export async function openProjectWorkspace(config: {
     config.vault.lock();
     disposeExecutor?.();
     try {
-      await collection.cleanup();
+      await Promise.all([collection.cleanup(), protocols.cleanup()]);
     } catch (cleanupError) {
       reportFailure(cleanupError, "projects.close");
     }

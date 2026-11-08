@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 
 import { mutation, query } from "@/convex/_generated/server";
+import { actorId, organizationAccess } from "@/convex/lib/access";
 import { projectAccess, operationReceipt, requireClientId } from "@/convex/lib/research";
 import { protocolFields } from "@/convex/schema";
 import { protocolValuesSchema } from "@/src/lib/research-model";
@@ -81,5 +82,30 @@ export const append = mutation({
       at: Date.now(),
     });
     return receipt.commit(version);
+  },
+});
+
+export const mine = query({
+  args: { organizationId: v.id("organizations"), actorId: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await actorId(ctx);
+    if (userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
+    await organizationAccess(ctx, args.organizationId);
+    const memberships = await ctx.db
+      .query("projectMembers")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    const rows = await Promise.all(
+      memberships
+        .filter((member) => member.active && member.organizationId === args.organizationId)
+        .map((member) =>
+          ctx.db
+            .query("studyProtocols")
+            .withIndex("by_project_version", (q) => q.eq("projectClientId", member.projectClientId))
+            .order("desc")
+            .collect(),
+        ),
+    );
+    return rows.flat();
   },
 });

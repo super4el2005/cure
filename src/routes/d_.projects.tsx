@@ -303,6 +303,15 @@ function Projects() {
                       }
                     </Badge>
                   </Group>
+                  <Anchor
+                    renderRoot={(props) => (
+                      <Link
+                        {...props}
+                        to="/d/projects/$id/protocol"
+                        params={{ id: row.clientId }}
+                      />
+                    )}
+                  >{t`Протокол исследования`}</Anchor>
                   <Text>{row.summary}</Text>
                   <Text>{row.topic}</Text>
                   <Text>

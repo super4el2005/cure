@@ -10,6 +10,8 @@ import type {
 } from "@tanstack/offline-transactions";
 import { convexTest } from "convex-test";
 import type { ConvexReactClient } from "convex/react";
+import { getFunctionName } from "convex/server";
+import type { FunctionReference, FunctionArgs } from "convex/server";
 
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
@@ -84,6 +86,7 @@ function leader(): LeaderElection {
 
 const modules = {
   "../convex/_generated/server.js": () => import("@/convex/_generated/server.js"),
+  "../convex/protocols.ts": () => import("@/convex/protocols"),
   "../convex/projects.ts": () => import("@/convex/projects"),
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
 };
@@ -105,12 +108,16 @@ describe("durable research projects", () => {
     });
     const actor = t.withIdentity({ subject: "researcher" });
     let result: Awaited<ReturnType<typeof actor.query<typeof api.projects.mine>>> | undefined = [];
+    let protocolResult:
+      | Awaited<ReturnType<typeof actor.query<typeof api.protocols.mine>>>
+      | undefined = [];
     const listeners = new Set<() => void>();
     let calls = 0;
     const client = {
-      watchQuery() {
+      watchQuery(fn: FunctionReference<"query">) {
+        const protocols = getFunctionName(fn) === getFunctionName(api.protocols.mine);
         return {
-          localQueryResult: () => result,
+          localQueryResult: () => (protocols ? protocolResult : result),
           onUpdate(callback: () => void) {
             listeners.add(callback);
             return () => {
@@ -120,11 +127,24 @@ describe("durable research projects", () => {
         };
       },
       async mutation(
-        _fn: unknown,
-        args: Parameters<typeof actor.mutation<typeof api.projects.apply>>[1],
+        fn: FunctionReference<"mutation">,
+        args: FunctionArgs<typeof api.projects.apply> | FunctionArgs<typeof api.protocols.append>,
       ) {
         calls++;
-        const response = await actor.mutation(api.projects.apply, args);
+        const response =
+          getFunctionName(fn) === getFunctionName(api.protocols.append)
+            ? await actor.mutation(
+                api.protocols.append,
+                args as FunctionArgs<typeof api.protocols.append>,
+              )
+            : await actor.mutation(
+                api.projects.apply,
+                args as FunctionArgs<typeof api.projects.apply>,
+              );
+        protocolResult = await actor.query(api.protocols.mine, {
+          organizationId,
+          actorId: "researcher",
+        });
         result = await actor.query(api.projects.mine, { organizationId, actorId: "researcher" });
         for (const listener of listeners) listener();
         return response;
@@ -177,11 +197,28 @@ describe("durable research projects", () => {
     };
     const clientId = crypto.randomUUID();
     const saved = await workspace.save({ clientId, values });
+    await workspace.protocols.preload();
+    const initialProtocol = await workspace.saveProtocol({
+      clientId: crypto.randomUUID(),
+      projectClientId: clientId,
+      values: {
+        hypothesis: "Initial private hypothesis",
+        inclusion: "",
+        exclusion: "",
+        endpoints: "Initial outcome",
+        analysisPlan: "Initial plan",
+        ethicsApproved: false,
+        ethicsReference: "",
+        ethicsExpiresAt: 0,
+      },
+    });
+
     expect(calls).toBe(0);
-    expect(await workspace.executor.peekOutbox()).toHaveLength(1);
+    expect(await workspace.executor.peekOutbox()).toHaveLength(2);
     expect(JSON.stringify([...storage.values.values()])).not.toContain(values.title);
     await workspace.close();
     result = undefined;
+    protocolResult = undefined;
     const connection = network();
     workspace = await open(connection);
     expect(workspace.read(workspace.collection.get(clientId)!).title).toBe(values.title);
@@ -190,7 +227,8 @@ describe("durable research projects", () => {
     connection.connect();
     workspace.setAuthenticated(true);
     await settled;
-    expect(calls).toBe(1);
+    await workspace.executor.waitForTransactionCompletion(initialProtocol.transactionId);
+    expect(calls).toBe(2);
     expect(
       await actor.query(api.projects.mine, { organizationId, actorId: "researcher" }),
     ).toHaveLength(1);
@@ -240,6 +278,49 @@ describe("durable research projects", () => {
     expect(JSON.stringify([...failureStorage.values.values()])).not.toContain(
       "Preserved rejected draft",
     );
+    expect(await workspace.executor.peekOutbox()).toEqual([]);
+    connection.disconnect();
+    await workspace.protocols.preload();
+    const protocolValues = {
+      hypothesis: "Confidential protocol hypothesis",
+      inclusion: "Adults",
+      exclusion: "",
+      endpoints: "Primary outcome",
+      analysisPlan: "Predefined analysis",
+      ethicsApproved: false,
+      ethicsReference: "",
+      ethicsExpiresAt: 0,
+    };
+    const protocolSaved = await workspace.saveProtocol({
+      clientId: crypto.randomUUID(),
+      projectClientId: clientId,
+      values: protocolValues,
+    });
+    expect(JSON.stringify([...storage.values.values()])).not.toContain(protocolValues.hypothesis);
+    await workspace.close();
+    result = undefined;
+    protocolResult = undefined;
+    const finalNetwork = network();
+    workspace = await open(finalNetwork);
+    expect(
+      [...workspace.protocols.values()]
+        .map(workspace.readProtocol)
+        .some((row) => row.hypothesis === protocolValues.hypothesis),
+    ).toBe(true);
+    result = await actor.query(api.projects.mine, { organizationId, actorId: "researcher" });
+    protocolResult = [];
+    const protocolSettled = workspace.executor.waitForTransactionCompletion(
+      protocolSaved.transactionId,
+    );
+    finalNetwork.connect();
+    workspace.setAuthenticated(true);
+    await protocolSettled;
+    expect(
+      await actor.query(api.protocols.history, {
+        projectClientId: clientId,
+        actorId: "researcher",
+      }),
+    ).toHaveLength(2);
     expect(await workspace.executor.peekOutbox()).toEqual([]);
     await workspace.close();
     sqlite.close();

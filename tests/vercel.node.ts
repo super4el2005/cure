@@ -258,3 +258,18 @@ test("public specialist and organization detail routes do not render directory p
     }
   }
 });
+
+test("protocol pages render their own protected entry without the project list parent", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/protocol`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Study protocol/);
+    assert.doesNotMatch(html, /Private projects, study stages/);
+  }
+});

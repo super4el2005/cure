@@ -36,6 +36,8 @@ import { Route as DSpecialistsIdRouteImport } from './routes/d_.specialists_.$id
 import { Route as MOrganizationsIdRouteImport } from './routes/m_.organizations_.$id'
 import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
 import { Route as MSpecialistsIdRouteImport } from './routes/m_.specialists_.$id'
+import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
+import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -172,6 +174,16 @@ const MSpecialistsIdRoute = MSpecialistsIdRouteImport.update({
   path: '/m/specialists/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DProjectsIdProtocolRoute = DProjectsIdProtocolRouteImport.update({
+  id: '/d_/projects_/$id/protocol',
+  path: '/d/projects/$id/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
+  id: '/m_/projects_/$id/protocol',
+  path: '/m/projects/$id/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -201,6 +213,8 @@ export interface FileRoutesByFullPath {
   '/m/organizations/$id': typeof MOrganizationsIdRoute
   '/m/research/$id': typeof MResearchIdRoute
   '/m/specialists/$id': typeof MSpecialistsIdRoute
+  '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -230,6 +244,8 @@ export interface FileRoutesByTo {
   '/m/organizations/$id': typeof MOrganizationsIdRoute
   '/m/research/$id': typeof MResearchIdRoute
   '/m/specialists/$id': typeof MSpecialistsIdRoute
+  '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -260,6 +276,8 @@ export interface FileRoutesById {
   '/m_/organizations_/$id': typeof MOrganizationsIdRoute
   '/m_/research_/$id': typeof MResearchIdRoute
   '/m_/specialists_/$id': typeof MSpecialistsIdRoute
+  '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -291,6 +309,8 @@ export interface FileRouteTypes {
     | '/m/organizations/$id'
     | '/m/research/$id'
     | '/m/specialists/$id'
+    | '/d/projects/$id/protocol'
+    | '/m/projects/$id/protocol'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -320,6 +340,8 @@ export interface FileRouteTypes {
     | '/m/organizations/$id'
     | '/m/research/$id'
     | '/m/specialists/$id'
+    | '/d/projects/$id/protocol'
+    | '/m/projects/$id/protocol'
   id:
     | '__root__'
     | '/'
@@ -349,6 +371,8 @@ export interface FileRouteTypes {
     | '/m_/organizations_/$id'
     | '/m_/research_/$id'
     | '/m_/specialists_/$id'
+    | '/d_/projects_/$id/protocol'
+    | '/m_/projects_/$id/protocol'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -379,6 +403,8 @@ export interface RootRouteChildren {
   MOrganizationsIdRoute: typeof MOrganizationsIdRoute
   MResearchIdRoute: typeof MResearchIdRoute
   MSpecialistsIdRoute: typeof MSpecialistsIdRoute
+  DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
+  MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -572,6 +598,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MSpecialistsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/projects_/$id/protocol': {
+      id: '/d_/projects_/$id/protocol'
+      path: '/d/projects/$id/protocol'
+      fullPath: '/d/projects/$id/protocol'
+      preLoaderRoute: typeof DProjectsIdProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/protocol': {
+      id: '/m_/projects_/$id/protocol'
+      path: '/m/projects/$id/protocol'
+      fullPath: '/m/projects/$id/protocol'
+      preLoaderRoute: typeof MProjectsIdProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -603,6 +643,8 @@ const rootRouteChildren: RootRouteChildren = {
   MOrganizationsIdRoute: MOrganizationsIdRoute,
   MResearchIdRoute: MResearchIdRoute,
   MSpecialistsIdRoute: MSpecialistsIdRoute,
+  DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
+  MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
