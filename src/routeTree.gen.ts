@@ -13,6 +13,16 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DRouteImport } from './routes/d'
 import { Route as MRouteImport } from './routes/m'
 import { Route as AuthErrorRouteImport } from './routes/auth.error'
+import { Route as DOrganizationsRouteImport } from './routes/d_.organizations'
+import { Route as DPatientsRouteImport } from './routes/d_.patients'
+import { Route as DProfileRouteImport } from './routes/d_.profile'
+import { Route as DSpecialistsRouteImport } from './routes/d_.specialists'
+import { Route as DToolsRouteImport } from './routes/d_.tools'
+import { Route as MOrganizationsRouteImport } from './routes/m_.organizations'
+import { Route as MPatientsRouteImport } from './routes/m_.patients'
+import { Route as MProfileRouteImport } from './routes/m_.profile'
+import { Route as MSpecialistsRouteImport } from './routes/m_.specialists'
+import { Route as MToolsRouteImport } from './routes/m_.tools'
 import { Route as ApiAiChatRouteImport } from './routes/api.ai.chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiMedicalSearchRouteImport } from './routes/api.medical.search'
@@ -37,6 +47,56 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/auth/error',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DOrganizationsRoute = DOrganizationsRouteImport.update({
+  id: '/d_/organizations',
+  path: '/d/organizations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DPatientsRoute = DPatientsRouteImport.update({
+  id: '/d_/patients',
+  path: '/d/patients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProfileRoute = DProfileRouteImport.update({
+  id: '/d_/profile',
+  path: '/d/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DSpecialistsRoute = DSpecialistsRouteImport.update({
+  id: '/d_/specialists',
+  path: '/d/specialists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DToolsRoute = DToolsRouteImport.update({
+  id: '/d_/tools',
+  path: '/d/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MOrganizationsRoute = MOrganizationsRouteImport.update({
+  id: '/m_/organizations',
+  path: '/m/organizations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MPatientsRoute = MPatientsRouteImport.update({
+  id: '/m_/patients',
+  path: '/m/patients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProfileRoute = MProfileRouteImport.update({
+  id: '/m_/profile',
+  path: '/m/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MSpecialistsRoute = MSpecialistsRouteImport.update({
+  id: '/m_/specialists',
+  path: '/m/specialists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MToolsRoute = MToolsRouteImport.update({
+  id: '/m_/tools',
+  path: '/m/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
   id: '/api/ai/chat',
   path: '/api/ai/chat',
@@ -58,6 +118,16 @@ export interface FileRoutesByFullPath {
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d/organizations': typeof DOrganizationsRoute
+  '/d/patients': typeof DPatientsRoute
+  '/d/profile': typeof DProfileRoute
+  '/d/specialists': typeof DSpecialistsRoute
+  '/d/tools': typeof DToolsRoute
+  '/m/organizations': typeof MOrganizationsRoute
+  '/m/patients': typeof MPatientsRoute
+  '/m/profile': typeof MProfileRoute
+  '/m/specialists': typeof MSpecialistsRoute
+  '/m/tools': typeof MToolsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
@@ -67,6 +137,16 @@ export interface FileRoutesByTo {
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d/organizations': typeof DOrganizationsRoute
+  '/d/patients': typeof DPatientsRoute
+  '/d/profile': typeof DProfileRoute
+  '/d/specialists': typeof DSpecialistsRoute
+  '/d/tools': typeof DToolsRoute
+  '/m/organizations': typeof MOrganizationsRoute
+  '/m/patients': typeof MPatientsRoute
+  '/m/profile': typeof MProfileRoute
+  '/m/specialists': typeof MSpecialistsRoute
+  '/m/tools': typeof MToolsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
@@ -77,6 +157,16 @@ export interface FileRoutesById {
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d_/organizations': typeof DOrganizationsRoute
+  '/d_/patients': typeof DPatientsRoute
+  '/d_/profile': typeof DProfileRoute
+  '/d_/specialists': typeof DSpecialistsRoute
+  '/d_/tools': typeof DToolsRoute
+  '/m_/organizations': typeof MOrganizationsRoute
+  '/m_/patients': typeof MPatientsRoute
+  '/m_/profile': typeof MProfileRoute
+  '/m_/specialists': typeof MSpecialistsRoute
+  '/m_/tools': typeof MToolsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
@@ -88,6 +178,16 @@ export interface FileRouteTypes {
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d/organizations'
+    | '/d/patients'
+    | '/d/profile'
+    | '/d/specialists'
+    | '/d/tools'
+    | '/m/organizations'
+    | '/m/patients'
+    | '/m/profile'
+    | '/m/specialists'
+    | '/m/tools'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
@@ -97,6 +197,16 @@ export interface FileRouteTypes {
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d/organizations'
+    | '/d/patients'
+    | '/d/profile'
+    | '/d/specialists'
+    | '/d/tools'
+    | '/m/organizations'
+    | '/m/patients'
+    | '/m/profile'
+    | '/m/specialists'
+    | '/m/tools'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
@@ -106,6 +216,16 @@ export interface FileRouteTypes {
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d_/organizations'
+    | '/d_/patients'
+    | '/d_/profile'
+    | '/d_/specialists'
+    | '/d_/tools'
+    | '/m_/organizations'
+    | '/m_/patients'
+    | '/m_/profile'
+    | '/m_/specialists'
+    | '/m_/tools'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
@@ -116,6 +236,16 @@ export interface RootRouteChildren {
   DRoute: typeof DRoute
   MRoute: typeof MRoute
   AuthErrorRoute: typeof AuthErrorRoute
+  DOrganizationsRoute: typeof DOrganizationsRoute
+  DPatientsRoute: typeof DPatientsRoute
+  DProfileRoute: typeof DProfileRoute
+  DSpecialistsRoute: typeof DSpecialistsRoute
+  DToolsRoute: typeof DToolsRoute
+  MOrganizationsRoute: typeof MOrganizationsRoute
+  MPatientsRoute: typeof MPatientsRoute
+  MProfileRoute: typeof MProfileRoute
+  MSpecialistsRoute: typeof MSpecialistsRoute
+  MToolsRoute: typeof MToolsRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiMedicalSearchRoute: typeof ApiMedicalSearchRoute
@@ -151,6 +281,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/organizations': {
+      id: '/d_/organizations'
+      path: '/d/organizations'
+      fullPath: '/d/organizations'
+      preLoaderRoute: typeof DOrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/patients': {
+      id: '/d_/patients'
+      path: '/d/patients'
+      fullPath: '/d/patients'
+      preLoaderRoute: typeof DPatientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/profile': {
+      id: '/d_/profile'
+      path: '/d/profile'
+      fullPath: '/d/profile'
+      preLoaderRoute: typeof DProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/specialists': {
+      id: '/d_/specialists'
+      path: '/d/specialists'
+      fullPath: '/d/specialists'
+      preLoaderRoute: typeof DSpecialistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/tools': {
+      id: '/d_/tools'
+      path: '/d/tools'
+      fullPath: '/d/tools'
+      preLoaderRoute: typeof DToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/organizations': {
+      id: '/m_/organizations'
+      path: '/m/organizations'
+      fullPath: '/m/organizations'
+      preLoaderRoute: typeof MOrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/patients': {
+      id: '/m_/patients'
+      path: '/m/patients'
+      fullPath: '/m/patients'
+      preLoaderRoute: typeof MPatientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/profile': {
+      id: '/m_/profile'
+      path: '/m/profile'
+      fullPath: '/m/profile'
+      preLoaderRoute: typeof MProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/specialists': {
+      id: '/m_/specialists'
+      path: '/m/specialists'
+      fullPath: '/m/specialists'
+      preLoaderRoute: typeof MSpecialistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/tools': {
+      id: '/m_/tools'
+      path: '/m/tools'
+      fullPath: '/m/tools'
+      preLoaderRoute: typeof MToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ai/chat': {
       id: '/api/ai/chat'
       path: '/api/ai/chat'
@@ -180,6 +380,16 @@ const rootRouteChildren: RootRouteChildren = {
   DRoute: DRoute,
   MRoute: MRoute,
   AuthErrorRoute: AuthErrorRoute,
+  DOrganizationsRoute: DOrganizationsRoute,
+  DPatientsRoute: DPatientsRoute,
+  DProfileRoute: DProfileRoute,
+  DSpecialistsRoute: DSpecialistsRoute,
+  DToolsRoute: DToolsRoute,
+  MOrganizationsRoute: MOrganizationsRoute,
+  MPatientsRoute: MPatientsRoute,
+  MProfileRoute: MProfileRoute,
+  MSpecialistsRoute: MSpecialistsRoute,
+  MToolsRoute: MToolsRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiMedicalSearchRoute: ApiMedicalSearchRoute,

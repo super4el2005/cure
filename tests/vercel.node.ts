@@ -91,7 +91,7 @@ test("root routing selects /d or /m from request signals and preserves SSR local
       html,
       new RegExp(`data-page="${device === "mobile" ? "desktop" : "mobile"}"`),
     );
-    assert.match(html, /Hello, world!/);
+    assert.match(html, /Doctors and researchers — together/);
   }
 });
 
@@ -125,7 +125,10 @@ test("SSR negotiates language from request headers and cookies, independently of
     assert.match(response.headers.get("vary") ?? "", /Cookie/i);
     const html = await response.text();
     assert.match(html, new RegExp(`<html[^>]*lang="${expected}"`));
-    assert.match(html, expected === "en" ? /Hello, world!/ : /Привет, мир!/);
+    assert.match(
+      html,
+      expected === "en" ? /Doctors and researchers — together/ : /Врачи и исследователи — вместе/,
+    );
     assert.doesNotMatch(html, /href="[^"]*[?&]lang=/);
   }
 });
@@ -186,4 +189,32 @@ test("request observation adds correlation IDs and preserves safe API errors", a
   assert.match(response.headers.get("x-request-id") ?? "", /^[a-f0-9-]{36}$/);
   assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.deepEqual(await response.json(), { error: "INVALID_SEARCH" });
+});
+
+test("public directories and protected entry pages render without patient data or live backend calls", async () => {
+  for (const base of ["/d", "/m"]) {
+    for (const [path, heading] of [
+      ["/specialists", "Specialists"],
+      ["/organizations", "Organizations"],
+      ["/profile", "My professional profile"],
+      ["/patients", "Patients"],
+    ]) {
+      const response = await app.fetch(
+        new Request(`https://cure-sooty.vercel.app${base}${path}`, {
+          headers: { "accept-language": "en" },
+        }),
+      );
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.ok(html.includes(heading!));
+      assert.ok(html.includes(`${base}/profile`));
+      assert.doesNotMatch(html, /Private patient|Private clinical notes/);
+    }
+  }
+});
+
+test("offline shell precaches the SQLite worker and WASM runtime", () => {
+  const worker = readFileSync("dist/client/sw.js", "utf8");
+  assert.match(worker, /opfs-worker[^"\s]*\.js/);
+  assert.match(worker, /\.wasm/);
 });

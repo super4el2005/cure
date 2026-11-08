@@ -1,9 +1,12 @@
 import * as Sentry from "@sentry/tanstackstart-react";
 import axios from "axios";
+import { ConvexError } from "convex/values";
 
 import { errorCodes } from "@/src/observability/policy";
 
 export function failureDetails(error: unknown): { code: string; status?: number } {
+  if (error instanceof ConvexError && typeof error.data === "string" && errorCodes.has(error.data))
+    return { code: error.data };
   if (axios.isCancel(error) || (error instanceof Error && error.name === "AbortError"))
     return { code: "CANCELLED" };
   if (axios.isAxiosError<{ error?: unknown }>(error)) {
