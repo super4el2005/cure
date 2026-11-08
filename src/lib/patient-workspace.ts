@@ -191,7 +191,7 @@ export async function openPatientWorkspace(config: {
             }
             const message = error instanceof Error ? error.message : "";
             if (message.includes("UNAUTHENTICATED")) {
-              detector.setAuthenticated(false);
+              detector.requireAuthentication();
               config.onAuthRequired();
               // eslint-disable-next-line preserve-caught-error -- Raw SDK causes must not enter persisted errors or console output.
               throw new Error("AUTH_REQUIRED");
@@ -322,6 +322,8 @@ export async function openPatientWorkspace(config: {
       canWrite: () => executor.isOfflineEnabled,
       expiresAt: config.expiresAt,
       setAuthenticated: (value: boolean) => detector.setAuthenticated(value),
+      confirmAuthentication: () => detector.confirmAuthentication(),
+      requiresAuthentication: () => detector.requiresAuthentication(),
       read: (row: PatientEnvelope) => {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         const decoded = openPatient(row, config.vault, scope);

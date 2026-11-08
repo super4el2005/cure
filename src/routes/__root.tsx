@@ -44,6 +44,7 @@ import type { Locale } from "@/src/lib/locale";
 import { defaultLocale, lastLocaleKey } from "@/src/lib/locale";
 import { getRequestDevice } from "@/src/lib/request-device";
 import { getRequestLocale } from "@/src/lib/request-locale";
+import { useRetainedWorkspaces } from "@/src/lib/use-retained-workspaces";
 import { observePromise } from "@/src/observability/events";
 
 import mantineCoreStyles from "@mantine/core/styles.css?url";
@@ -139,6 +140,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  useRetainedWorkspaces();
   const { t, i18n } = useLingui();
   const { online } = useNetwork();
   const [pwa, setPwa] = useSetState<{
@@ -273,7 +275,7 @@ function ApplicationNavigation() {
         });
         if (result.error) throw new Error("SIGN_IN_FAILED");
       } else {
-        const result = await signOutClinicalSession();
+        const result = await signOutClinicalSession(queryClient);
         if (result.error) throw new Error("SIGN_OUT_FAILED");
         await queryClient.cancelQueries();
         queryClient.clear();

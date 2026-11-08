@@ -46,6 +46,7 @@ import type { ConsentEvent } from "@/src/lib/consent-model";
 import { patientFormSchema, patientValueSchema } from "@/src/lib/patient-model";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
+import { retainedWorkspaceOptions, retainWorkspace } from "@/src/lib/retained-workspaces";
 import { failureDetails, openLocalData } from "@/src/observability/events";
 
 export const Route = createFileRoute("/m_/patients")({ component: Patients });
@@ -57,6 +58,7 @@ function Patients() {
   const { isAuthenticated } = useConvexAuth();
   const session = authClient.useSession();
   const queryClient = useQueryClient();
+  const retained = useQuery(retainedWorkspaceOptions);
   const identity = useMemo(
     () => (mounted ? openLocalData("storage.clinical", clinicalIdentity) : undefined),
     [mounted],
@@ -228,7 +230,7 @@ function Patients() {
       });
       try {
         if (abort.signal.aborted) throw new Error("CANCELLED");
-        await resource.current?.workspace.close();
+        await retainWorkspace(queryClient, { kind: "patients", userId, workspace });
         resource.current = { workspace, userId, role: lease.role };
         workspace.setAuthenticated(isAuthenticated && online);
         return resource.current;
@@ -243,10 +245,12 @@ function Patients() {
       void queryClient.invalidateQueries({ queryKey: ["clinical-headers"] });
     },
   });
+  const active = retained.data.find(
+    (entry) =>
+      entry.kind === "patients" && entry.userId === userId && entry.userId === previousUser?.userId,
+  );
   const opened =
-    unlock.data && unlock.data.userId === userId && previousUser?.userId === userId
-      ? unlock.data
-      : undefined;
+    active?.kind === "patients" ? { ...active, role: active.workspace.role } : undefined;
   const workspace = opened?.workspace;
   const downloaded = useLiveQuery(() => workspace?.collection);
   const status = useQuery({
@@ -275,43 +279,9 @@ function Patients() {
             }
           }) ?? [])
       : [];
-  useEffect(() => {
-    workspace?.setAuthenticated(
-      isAuthenticated && online && opened?.userId === session.data?.user.id,
-    );
-  }, [workspace, isAuthenticated, online, opened?.userId, session.data?.user.id]);
-  useEffect(() => {
-    if (
-      resource.current &&
-      (resource.current.userId !== userId || previousUser?.userId !== resource.current.userId)
-    ) {
-      controller.current?.abort();
-      void resource.current.workspace.close();
-      resource.current = undefined;
-      unlock.reset();
-    }
-  }, [userId, previousUser?.userId, unlock.reset]);
-  useEffect(() => {
-    const current = resource.current;
-    if (
-      current &&
-      isAuthenticated &&
-      online &&
-      details.isSuccess &&
-      !details.data.memberships.some(
-        (m) => m.organizationId === current.workspace.organizationId && m.role === current.role,
-      )
-    ) {
-      current.workspace.setAuthenticated(false);
-      void current.workspace.close();
-      resource.current = undefined;
-      unlock.reset();
-    }
-  }, [isAuthenticated, online, details.isSuccess, details.data, unlock.reset]);
   useEffect(
     () => () => {
       controller.current?.abort();
-      void resource.current?.workspace.close();
     },
     [],
   );
@@ -470,7 +440,7 @@ function Patients() {
       if (lease.userId !== opened.userId || lease.role !== opened.role)
         throw new Error("ACCOUNT_CHANGED");
       if (Date.now() >= workspace.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
-      workspace.setAuthenticated(true);
+      workspace.confirmAuthentication();
     },
   });
   const lock = useMutation({
@@ -479,7 +449,7 @@ function Patients() {
     retry: false,
     mutationFn: async () => {
       try {
-        await lockClinicalAccess();
+        await lockClinicalAccess(queryClient);
       } finally {
         await workspace?.close();
         resource.current = undefined;

@@ -118,7 +118,7 @@ function DesktopHome() {
         request.current?.abort();
         await byok.clear();
         keyForm.reset();
-        const result = await signOutClinicalSession();
+        const result = await signOutClinicalSession(queryClient);
         if (result.error) throw new Error("SIGN_OUT_FAILED");
         await queryClient.cancelQueries();
         queryClient.clear();

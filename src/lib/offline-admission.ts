@@ -3,13 +3,27 @@ import { z } from "zod";
 
 export function authenticatedDetector(base: OnlineDetector, expiresAt: number) {
   let authenticated = false;
+  let needsAuthentication = false;
   return {
     ...base,
     subscribe: (callback: () => void) => base.subscribe(callback),
     notifyOnline: () => base.notifyOnline(),
     isOnline: () => authenticated && Date.now() < expiresAt && base.isOnline(),
     dispose: () => base.dispose(),
+    requireAuthentication() {
+      needsAuthentication = true;
+      authenticated = false;
+      base.notifyOnline();
+    },
+    confirmAuthentication() {
+      needsAuthentication = false;
+      authenticated = true;
+      base.notifyOnline();
+    },
+    requiresAuthentication: () => needsAuthentication,
     setAuthenticated(value: boolean) {
+      if (value && needsAuthentication) return;
+      if (authenticated === value) return;
       authenticated = value;
       base.notifyOnline();
     },

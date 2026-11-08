@@ -183,7 +183,7 @@ export async function openProjectWorkspace(config: {
               throw new Error("PROJECT_SYNC_UNCONFIRMED");
             }
             if (error.message.includes("UNAUTHENTICATED")) {
-              detector.setAuthenticated(false);
+              detector.requireAuthentication();
               config.onAuthRequired();
               // eslint-disable-next-line preserve-caught-error -- The sanitized failure is reported centrally.
               throw new Error("AUTH_REQUIRED");
@@ -261,6 +261,8 @@ export async function openProjectWorkspace(config: {
       role: config.role,
       expiresAt: config.expiresAt,
       setAuthenticated: (value: boolean) => detector.setAuthenticated(value),
+      confirmAuthentication: () => detector.confirmAuthentication(),
+      requiresAuthentication: () => detector.requiresAuthentication(),
       canWrite: () => executor.isOfflineEnabled,
       read(row: Envelope) {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");

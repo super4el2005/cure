@@ -15,6 +15,7 @@ export const actions: Record<string, string> = {
   "patients-restore": "patients.restore",
   "projects-open": "projects.open",
   "projects-save": "projects.save",
+  "projects-resume": "projects.resume",
   "projects-lock": "projects.lock",
   "projects-restore": "projects.restore",
   "research-loadmore": "research.loadmore",

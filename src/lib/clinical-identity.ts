@@ -1,10 +1,12 @@
 import { createCollection, localStorageCollectionOptions } from "@tanstack/db";
+import type { QueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 
 import type { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/src/lib/auth-client";
 import type { Vault } from "@/src/lib/patient-vault";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
+import { releaseWorkspaces } from "@/src/lib/retained-workspaces";
 
 const identityOptions = (storage: Storage) =>
   localStorageCollectionOptions<{ id: string; userId: string; label: string }>({
@@ -33,15 +35,16 @@ export async function rememberClinicalIdentity(userId: string, label: string) {
     : collection.insert({ id: "current", userId, label });
   await tx.when("settled");
 }
-export async function lockClinicalAccess() {
+export async function lockClinicalAccess(queryClient?: QueryClient) {
+  if (queryClient) await releaseWorkspaces(queryClient);
   const collection = clinicalIdentity();
   if (collection) {
     await collection.preload();
     if (collection.has("current")) await collection.delete("current").when("settled");
   }
 }
-export async function signOutClinicalSession() {
-  await lockClinicalAccess();
+export async function signOutClinicalSession(queryClient: QueryClient) {
+  await lockClinicalAccess(queryClient);
   return authClient.signOut();
 }
 const headerSchema = z.object({

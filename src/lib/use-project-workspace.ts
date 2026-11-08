@@ -21,6 +21,7 @@ import {
   rememberClinicalIdentity,
 } from "@/src/lib/clinical-identity";
 import { openProjectWorkspace } from "@/src/lib/project-workspace";
+import { retainedWorkspaceOptions, retainWorkspace } from "@/src/lib/retained-workspaces";
 import { openLocalData } from "@/src/observability/events";
 
 export function useProjectWorkspace() {
@@ -31,6 +32,7 @@ export function useProjectWorkspace() {
   const { isAuthenticated } = useConvexAuth();
   const session = authClient.useSession();
   const queryClient = useQueryClient();
+  const retained = useQuery(retainedWorkspaceOptions);
   const identity = useMemo(
     () => (mounted ? openLocalData("storage.clinical", clinicalIdentity) : undefined),
     [mounted],
@@ -146,7 +148,7 @@ export function useProjectWorkspace() {
       });
       try {
         if (abort.signal.aborted) throw new Error("CANCELLED");
-        await resource.current?.workspace.close();
+        await retainWorkspace(queryClient, { kind: "projects", userId, workspace });
         resource.current = { workspace, userId, role: lease.role };
         workspace.setAuthenticated(isAuthenticated && online);
         return resource.current;
@@ -161,10 +163,12 @@ export function useProjectWorkspace() {
       void queryClient.invalidateQueries({ queryKey: ["clinical-headers"] });
     },
   });
+  const active = retained.data.find(
+    (entry) =>
+      entry.kind === "projects" && entry.userId === userId && entry.userId === previousUser?.userId,
+  );
   const opened =
-    unlock.data && unlock.data.userId === userId && previousUser?.userId === userId
-      ? unlock.data
-      : undefined;
+    active?.kind === "projects" ? { ...active, role: active.workspace.role } : undefined;
   const workspace = opened?.workspace;
   const downloaded = useLiveQuery(() => workspace?.collection);
   const status = useQuery({
@@ -191,53 +195,34 @@ export function useProjectWorkspace() {
           }
         }) ?? [])
       : [];
-  useEffect(() => {
-    workspace?.setAuthenticated(
-      isAuthenticated && online && opened?.userId === session.data?.user.id,
-    );
-  }, [workspace, isAuthenticated, online, opened?.userId, session.data?.user.id]);
-  useEffect(() => {
-    if (
-      resource.current &&
-      (resource.current.userId !== userId || previousUser?.userId !== resource.current.userId)
-    ) {
-      controller.current?.abort();
-      void resource.current.workspace.close();
-      resource.current = undefined;
-      unlock.reset();
-    }
-  }, [userId, previousUser?.userId, unlock.reset]);
-  useEffect(() => {
-    const current = resource.current;
-    if (
-      current &&
-      isAuthenticated &&
-      online &&
-      details.isSuccess &&
-      !details.data.memberships.some(
-        (m) => m.organizationId === current.workspace.organizationId && m.role === current.role,
-      )
-    ) {
-      current.workspace.setAuthenticated(false);
-      void current.workspace.close();
-      resource.current = undefined;
-      unlock.reset();
-    }
-  }, [isAuthenticated, online, details.isSuccess, details.data, unlock.reset]);
   useEffect(
     () => () => {
       controller.current?.abort();
-      void resource.current?.workspace.close();
     },
     [],
   );
+  const resume = useMutation({
+    mutationKey: ["projects-resume"],
+    retry: false,
+    mutationFn: async () => {
+      if (!workspace || !opened) throw new Error("WORKSPACE_LOCKED");
+      const lease = await convex.query(api.profiles.offlineLease, {
+        organizationId: workspace.organizationId,
+        nonce: crypto.randomUUID(),
+      });
+      if (lease.userId !== opened.userId || lease.role !== opened.role)
+        throw new Error("ACCOUNT_CHANGED");
+      if (Date.now() >= workspace.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+      workspace.confirmAuthentication();
+    },
+  });
   const lock = useMutation({
     mutationKey: ["projects-lock"],
     networkMode: "always",
     retry: false,
     mutationFn: async () => {
       try {
-        await lockClinicalAccess();
+        await lockClinicalAccess(queryClient);
       } finally {
         await workspace?.close();
         resource.current = undefined;
@@ -258,6 +243,7 @@ export function useProjectWorkspace() {
     unlockForm,
     unlock,
     lock,
+    resume,
     downloaded,
   };
 }

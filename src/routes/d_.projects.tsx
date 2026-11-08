@@ -40,6 +40,7 @@ function Projects() {
     unlockForm,
     unlock,
     lock,
+    resume,
     downloaded,
   } = useProjectWorkspace();
   const [editing, editor] = useDisclosure(false);
@@ -178,7 +179,7 @@ function Projects() {
             </form>
           </Paper>
         )}
-        {(unlock.isError || lock.isError || save.isError || restore.isError) && (
+        {(unlock.isError || lock.isError || resume.isError || save.isError || restore.isError) && (
           <Alert color="red">{t`Операция не выполнена. Проверьте парольную фразу, срок доступа и разрешения. При ошибке сохранения не закрывайте форму.`}</Alert>
         )}
         {workspace && (
@@ -190,6 +191,12 @@ function Projects() {
               <Text>
                 {t`В очереди:`} {status.data?.pending ?? "…"}
               </Text>
+              <Button
+                variant="default"
+                disabled={!online}
+                loading={resume.isPending}
+                onClick={() => resume.mutate()}
+              >{t`Повторно проверить сессию и доступ`}</Button>
               <Button
                 variant="default"
                 onClick={() => lock.mutate()}

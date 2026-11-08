@@ -17,6 +17,7 @@ export const mine = query({
       .withIndex("by_user", (q) => q.eq("userId", userId))
       .collect();
     return {
+      userId,
       profile,
       memberships: await Promise.all(
         memberships
