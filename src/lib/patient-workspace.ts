@@ -32,10 +32,12 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { consentEventSchema, validateConsentTransition } from "@/src/lib/consent-model";
 import type { ConsentEvent } from "@/src/lib/consent-model";
+import { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
 import { openPatient, patientEnvelope, patientValueSchema } from "@/src/lib/patient-model";
 import type { PatientEnvelope, PatientValues } from "@/src/lib/patient-model";
 import { encryptedStorage } from "@/src/lib/patient-vault";
 import type { Vault } from "@/src/lib/patient-vault";
+export { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
 import { reportFailure } from "@/src/observability/events";
 
 const failedActionSchema = z
@@ -59,55 +61,6 @@ const failedActionSchema = z
     ...(record.consentId || consent ? { consentId: record.consentId ?? consent!.id } : {}),
   }));
 export type FailedPatientAction = z.infer<typeof failedActionSchema>;
-
-export function authenticatedDetector(base: OnlineDetector, expiresAt: number) {
-  let authenticated = false;
-  return {
-    ...base,
-    subscribe: (callback: () => void) => base.subscribe(callback),
-    notifyOnline: () => base.notifyOnline(),
-    isOnline: () => authenticated && Date.now() < expiresAt && base.isOnline(),
-    dispose: () => base.dispose(),
-    setAuthenticated(value: boolean) {
-      authenticated = value;
-      base.notifyOnline();
-    },
-  };
-}
-
-// Offline transactions expose server settlement, not a local persistence receipt.
-// This adapter acknowledges the documented serialized transaction id only AFTER
-// StorageAdapter.set has completed. It neither schedules nor replays mutations.
-export function durabilityReceipts(storage: StorageAdapter) {
-  const pending = new Map<string, { resolve: () => void; reject: (error: unknown) => void }>();
-  return {
-    storage: {
-      ...storage,
-      async set(key: string, value: string) {
-        const parsed = z.object({ id: z.string() }).parse(JSON.parse(value));
-        try {
-          await storage.set(key, value);
-          pending.get(parsed.id)?.resolve();
-        } catch (error) {
-          pending.get(parsed.id)?.reject(error);
-          throw error;
-        } finally {
-          pending.delete(parsed.id);
-        }
-      },
-    },
-    wait(id: string) {
-      return new Promise<void>((resolve, reject) => pending.set(id, { resolve, reject }));
-    },
-    cancel(id: string) {
-      pending.delete(id);
-    },
-    dispose() {
-      for (const waiter of pending.values()) waiter.reject(new Error("WORKSPACE_LOCKED"));
-      pending.clear();
-    },
-  };
-}
 
 export async function openPatientWorkspace(config: {
   client: ConvexCollectionClient & Pick<ConvexReactClient, "mutation">;
@@ -150,7 +103,7 @@ export async function openPatientWorkspace(config: {
         gcTime: Infinity,
         client: config.client,
         query: api.patients.list,
-        queryArgs: { organizationId: config.organizationId },
+        queryArgs: { organizationId: config.organizationId, actorId: config.userId },
         select: (rows) => rows.map((row) => patientEnvelope(row, config.vault, scope)),
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "patients.sync"),

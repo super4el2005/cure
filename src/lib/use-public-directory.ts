@@ -6,7 +6,7 @@ import { openPublicDirectory } from "@/src/lib/public-directory";
 import { reportFailure } from "@/src/observability/events";
 
 type Directory = Awaited<ReturnType<typeof openPublicDirectory>>;
-export function usePublicDirectory() {
+export function usePublicDirectory(researchId?: string) {
   const client = useConvex();
   const [state, setState] = useSetState<{ directory?: Directory; failed: boolean }>({
     failed: false,
@@ -15,7 +15,7 @@ export function usePublicDirectory() {
   useEffect(() => {
     const controller = new AbortController();
     let directory: Directory | undefined;
-    void openPublicDirectory(client, controller.signal)
+    void openPublicDirectory(client, controller.signal, researchId)
       .then(async (opened) => {
         directory = opened;
         if (controller.signal.aborted) await opened.close();
@@ -30,6 +30,6 @@ export function usePublicDirectory() {
       controller.abort();
       void directory?.close().catch((error) => reportFailure(error, "directory.close"));
     };
-  }, [client, setState]);
+  }, [client, setState, researchId]);
   return state;
 }

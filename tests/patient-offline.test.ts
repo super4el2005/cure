@@ -168,10 +168,12 @@ describe("durable patient operations", () => {
           clientFailure = error;
           throw error;
         });
-        result = await doctor.query(api.patients.list, { organizationId }).catch((error) => {
-          clientFailure = error;
-          throw error;
-        });
+        result = await doctor
+          .query(api.patients.list, { actorId: "doctor", organizationId })
+          .catch((error) => {
+            clientFailure = error;
+            throw error;
+          });
         for (const listener of listeners) {
           try {
             listener();
@@ -262,7 +264,9 @@ describe("durable patient operations", () => {
       );
     });
     expect(calls).toBe(1);
-    expect(await doctor.query(api.patients.list, { organizationId })).toHaveLength(1);
+    expect(
+      await doctor.query(api.patients.list, { actorId: "doctor", organizationId }),
+    ).toHaveLength(1);
     expect(await restored.executor.peekOutbox()).toEqual([]);
     await t.mutation(internal.provisioning.approveMembership, {
       userId: "researcher",
@@ -306,13 +310,14 @@ describe("durable patient operations", () => {
     const consentSettled = restored.executor.waitForTransactionCompletion(
       consentSaved.transactionId,
     );
-    result = await doctor.query(api.patients.list, { organizationId });
+    result = await doctor.query(api.patients.list, { actorId: "doctor", organizationId });
     nextNetwork.connect();
     restored.setAuthenticated(true);
     await consentSettled;
-    expect((await doctor.query(api.patients.list, { organizationId }))[0]?.consentHistory).toEqual([
-      event,
-    ]);
+    expect(
+      (await doctor.query(api.patients.list, { actorId: "doctor", organizationId }))[0]
+        ?.consentHistory,
+    ).toEqual([event]);
     nextNetwork.disconnect();
     restored.setAuthenticated(false);
     const conflict = await restored.save({
@@ -332,7 +337,7 @@ describe("durable patient operations", () => {
     const rejected = expect(
       restored.executor.waitForTransactionCompletion(conflict.transactionId),
     ).rejects.toThrow("REVISION_CONFLICT");
-    result = await doctor.query(api.patients.list, { organizationId });
+    result = await doctor.query(api.patients.list, { actorId: "doctor", organizationId });
     for (const listener of listeners) listener();
     await restored.collection.utils.awaitSync();
     nextNetwork.connect();
@@ -342,9 +347,9 @@ describe("durable patient operations", () => {
     expect(archived).toHaveLength(1);
     expect(archived[0]?.code).toBe("REVISION_CONFLICT");
     expect(restored.read(archived[0]!.envelope).notes).toBe("Unsent local note");
-    expect((await doctor.query(api.patients.list, { organizationId }))[0]?.notes).toBe(
-      "Newer server note",
-    );
+    expect(
+      (await doctor.query(api.patients.list, { actorId: "doctor", organizationId }))[0]?.notes,
+    ).toBe("Newer server note");
     expect(JSON.stringify([...failures.values.values()])).not.toContain("Unsent local note");
     nextNetwork.disconnect();
     restored.setAuthenticated(false);

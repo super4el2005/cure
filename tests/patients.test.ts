@@ -83,9 +83,9 @@ describe("patient authorization and transaction guarantees", () => {
       values: { ...values, fullName: "Updated" },
     };
     expect(await doctor.mutation(api.patients.apply, update)).toEqual({ revision: 2 });
-    expect((await doctor.query(api.patients.list, { organizationId }))[0]?.fullName).toBe(
-      "Updated",
-    );
+    expect(
+      (await doctor.query(api.patients.list, { actorId: "doctor", organizationId }))[0]?.fullName,
+    ).toBe("Updated");
     await expect(
       doctor.mutation(api.patients.apply, { ...update, idempotencyKey: "stale" }),
     ).rejects.toThrow("REVISION_CONFLICT");
@@ -97,10 +97,12 @@ describe("patient authorization and transaction guarantees", () => {
       idempotencyKey: "delete-1",
       expectedRevision: 2,
     });
-    expect((await doctor.query(api.patients.list, { organizationId }))[0]?.deleted).toBe(true);
-    expect(JSON.stringify(await doctor.query(api.patients.list, { organizationId }))).not.toContain(
-      values.notes,
-    );
+    expect(
+      (await doctor.query(api.patients.list, { actorId: "doctor", organizationId }))[0]?.deleted,
+    ).toBe(true);
+    expect(
+      JSON.stringify(await doctor.query(api.patients.list, { actorId: "doctor", organizationId })),
+    ).not.toContain(values.notes);
     const audit = await t.run((ctx) => ctx.db.query("patientAudit").collect());
     expect(audit.map((a) => a.action)).toEqual(["create", "update", "delete"]);
     expect(JSON.stringify(audit)).not.toContain(values.fullName);
@@ -131,7 +133,9 @@ describe("patient authorization and transaction guarantees", () => {
   it("researchers only read individually granted structured records and cannot write", async () => {
     const { doctor, researcher, organizationId, args } = await setup();
     await doctor.mutation(api.patients.apply, args);
-    expect(await researcher.query(api.patients.list, { organizationId })).toEqual([]);
+    expect(
+      await researcher.query(api.patients.list, { actorId: "researcher", organizationId }),
+    ).toEqual([]);
     await doctor.mutation(api.patients.apply, {
       ...args,
       action: "update",
@@ -146,7 +150,10 @@ describe("patient authorization and transaction guarantees", () => {
       expiresAt: Date.now() + 60000,
       active: true,
     });
-    const rows = await researcher.query(api.patients.list, { organizationId });
+    const rows = await researcher.query(api.patients.list, {
+      actorId: "researcher",
+      organizationId,
+    });
     expect(rows).toHaveLength(1);
     expect(rows[0]?.diagnosisCodes).toEqual(["F41"]);
     expect(JSON.stringify(rows)).not.toContain(values.fullName);
@@ -162,7 +169,9 @@ describe("patient authorization and transaction guarantees", () => {
       expiresAt: Date.now() + 60000,
       active: false,
     });
-    expect(await researcher.query(api.patients.list, { organizationId })).toEqual([]);
+    expect(
+      await researcher.query(api.patients.list, { actorId: "researcher", organizationId }),
+    ).toEqual([]);
   });
   it("rejects an old account's queued operation under another authorized doctor", async () => {
     const { t, organizationId, args } = await setup();
@@ -180,7 +189,9 @@ describe("patient authorization and transaction guarantees", () => {
   it("does not give an organization administrator patient access", async () => {
     const { t, organizationId } = await setup();
     await expect(
-      t.withIdentity({ subject: "admin" }).query(api.patients.list, { organizationId }),
+      t
+        .withIdentity({ subject: "admin" })
+        .query(api.patients.list, { actorId: "doctor", organizationId }),
     ).rejects.toThrow("ACCESS_DENIED");
   });
   it("rejects invalid calendar dates and unverified memberships", async () => {
@@ -221,9 +232,14 @@ describe("patient consent and researcher access", () => {
       idempotencyKey: "consent-1",
       values: { ...values, sex: "male", consentHistory: [granted] },
     });
-    expect(await researcher.query(api.patients.list, { organizationId })).toEqual([]);
+    expect(
+      await researcher.query(api.patients.list, { actorId: "researcher", organizationId }),
+    ).toEqual([]);
     await doctor.mutation(api.patients.share, share);
-    const [row] = await researcher.query(api.patients.list, { organizationId });
+    const [row] = await researcher.query(api.patients.list, {
+      actorId: "researcher",
+      organizationId,
+    });
     expect(row?.sex).toBe("unknown");
     expect(row?.diagnosisCodes).toEqual(["F41"]);
     expect(row && "consentScope" in row ? row.consentScope : undefined).toEqual(["diagnoses"]);
@@ -244,7 +260,9 @@ describe("patient consent and researcher access", () => {
       idempotencyKey: "withdraw-1",
       values: { ...values, consentHistory: [granted, withdrawn] },
     });
-    expect(await researcher.query(api.patients.list, { organizationId })).toEqual([]);
+    expect(
+      await researcher.query(api.patients.list, { actorId: "researcher", organizationId }),
+    ).toEqual([]);
     const renewed = consentEvent({ version: 3 });
     await doctor.mutation(api.patients.apply, {
       ...args,
@@ -253,9 +271,13 @@ describe("patient consent and researcher access", () => {
       idempotencyKey: "consent-3",
       values: { ...values, consentHistory: [granted, withdrawn, renewed] },
     });
-    expect(await researcher.query(api.patients.list, { organizationId })).toEqual([]);
+    expect(
+      await researcher.query(api.patients.list, { actorId: "researcher", organizationId }),
+    ).toEqual([]);
     await doctor.mutation(api.patients.share, share);
-    expect(await researcher.query(api.patients.list, { organizationId })).toHaveLength(1);
+    expect(
+      await researcher.query(api.patients.list, { actorId: "researcher", organizationId }),
+    ).toHaveLength(1);
     const audit = await t.run((ctx) => ctx.db.query("patientAudit").collect());
     expect(audit.filter((a) => a.action.startsWith("consent-")).map((a) => a.action)).toEqual([
       "consent-granted",

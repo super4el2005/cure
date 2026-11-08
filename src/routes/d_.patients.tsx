@@ -157,6 +157,7 @@ function Patients() {
     { workspace: Workspace; userId: string; role: "doctor" | "researcher" } | undefined
   >(undefined);
   const controller = useRef<AbortController | undefined>(undefined);
+  useEffect(() => () => controller.current?.abort(), [userId]);
   const unlock = useMutation({
     mutationKey: ["patients-open"],
     gcTime: 0,

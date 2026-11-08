@@ -218,3 +218,24 @@ test("offline shell precaches the SQLite worker and WASM runtime", () => {
   assert.match(worker, /opfs-worker[^"\s]*\.js/);
   assert.match(worker, /\.wasm/);
 });
+
+test("research detail and project workspace are independent desktop/mobile routes", async () => {
+  for (const device of ["d", "m"]) {
+    const headers = { "accept-language": "en-US,en;q=0.9" };
+    const detail = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/research/8df7de54-a59e-41fd-8a44-480b44a12f0c`,
+        { headers },
+      ),
+    );
+    assert.equal(detail.status, 200);
+    const html = await detail.text();
+    assert.match(html, /All studies/);
+    assert.doesNotMatch(html, /Search downloaded studies/);
+    const workspace = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/projects`, { headers }),
+    );
+    assert.equal(workspace.status, 200);
+    assert.match(await workspace.text(), /Private projects, study stages/);
+  }
+});

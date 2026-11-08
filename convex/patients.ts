@@ -6,9 +6,10 @@ import { patientFields } from "@/convex/schema";
 import { activeResearchConsent, validateConsentTransition } from "@/src/lib/consent-model";
 
 export const list = query({
-  args: { organizationId: v.id("organizations") },
-  handler: async (ctx, { organizationId }) => {
+  args: { organizationId: v.id("organizations"), actorId: v.string() },
+  handler: async (ctx, { organizationId, actorId: expectedActor }) => {
     const { userId, membership } = await organizationAccess(ctx, organizationId);
+    if (userId !== expectedActor) throw new ConvexError("ACCOUNT_CHANGED");
     const rows = await ctx.db
       .query("patients")
       .withIndex("by_organization", (q) => q.eq("organizationId", organizationId))

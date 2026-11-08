@@ -23,7 +23,116 @@ export const patientFields = {
   diagnosisCodes: v.array(v.string()),
   notes: v.string(),
 };
+export const researchKind = v.union(
+  v.literal("retrospective"),
+  v.literal("prospective"),
+  v.literal("interventional"),
+  v.literal("registry"),
+);
+export const researchStatus = v.union(
+  v.literal("draft"),
+  v.literal("preparing"),
+  v.literal("recruiting"),
+  v.literal("active"),
+  v.literal("completed"),
+  v.literal("archived"),
+);
+export const projectRole = v.union(
+  v.literal("owner"),
+  v.literal("coordinator"),
+  v.literal("member"),
+  v.literal("viewer"),
+);
+export const projectFields = {
+  title: v.string(),
+  summary: v.string(),
+  topic: v.string(),
+  kind: researchKind,
+  status: researchStatus,
+  published: v.boolean(),
+  publicEligibility: v.string(),
+  publicContact: v.string(),
+};
+export const protocolFields = {
+  hypothesis: v.string(),
+  inclusion: v.string(),
+  exclusion: v.string(),
+  endpoints: v.string(),
+  analysisPlan: v.string(),
+  ethicsApproved: v.boolean(),
+  ethicsReference: v.string(),
+  ethicsExpiresAt: v.number(),
+};
 export default defineSchema({
+  projects: defineTable({
+    clientId: v.string(),
+    organizationId: v.id("organizations"),
+    ...projectFields,
+    revision: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    createdBy: v.string(),
+    updatedBy: v.string(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_public_created", ["published", "createdAt"])
+    .index("by_organization", ["organizationId"]),
+  projectMembers: defineTable({
+    clientId: v.string(),
+    projectClientId: v.string(),
+    userId: v.string(),
+    organizationId: v.id("organizations"),
+    role: projectRole,
+    active: v.boolean(),
+    revision: v.number(),
+  })
+    .index("by_project_user", ["projectClientId", "userId"])
+    .index("by_user", ["userId"])
+    .index("by_project", ["projectClientId"]),
+  studyProtocols: defineTable({
+    clientId: v.string(),
+    projectClientId: v.string(),
+    version: v.number(),
+    ...protocolFields,
+    createdAt: v.number(),
+    createdBy: v.string(),
+  })
+    .index("by_project_version", ["projectClientId", "version"])
+    .index("by_client", ["clientId"]),
+  collaborationInvites: defineTable({
+    clientId: v.string(),
+    projectClientId: v.string(),
+    inviteeId: v.string(),
+    inviterId: v.string(),
+    role: v.union(v.literal("coordinator"), v.literal("member"), v.literal("viewer")),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("accepted"),
+      v.literal("declined"),
+      v.literal("revoked"),
+    ),
+    expiresAt: v.number(),
+    revision: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_recipient", ["inviteeId"])
+    .index("by_project", ["projectClientId"]),
+  workspaceReceipts: defineTable({
+    userId: v.string(),
+    idempotencyKey: v.string(),
+    fingerprint: v.string(),
+    revision: v.number(),
+    at: v.number(),
+  }).index("by_owner_key", ["userId", "idempotencyKey"]),
+  researchAudit: defineTable({
+    projectClientId: v.string(),
+    actorId: v.string(),
+    action: v.string(),
+    entityClientId: v.string(),
+    revision: v.number(),
+    at: v.number(),
+  }).index("by_project", ["projectClientId"]),
   organizations: defineTable({
     name: v.string(),
     kind: v.union(

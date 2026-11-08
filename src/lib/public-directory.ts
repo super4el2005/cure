@@ -4,14 +4,21 @@ import {
   openBrowserWASQLiteOPFSDatabase,
   persistedCollectionOptions,
 } from "@tanstack/browser-db-sqlite-persistence";
-import { convexCollectionOptions } from "@tanstack/convex-db-collection";
+import {
+  convexCollectionOptions,
+  convexPaginatedCollectionOptions,
+} from "@tanstack/convex-db-collection";
 import { createCollection } from "@tanstack/db";
 import type { ConvexReactClient } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 
 // Only public, verified directory data. Patient records never enter this database.
-export async function openPublicDirectory(client: ConvexReactClient, signal?: AbortSignal) {
+export async function openPublicDirectory(
+  client: ConvexReactClient,
+  signal?: AbortSignal,
+  researchId?: string,
+) {
   const name = "cure-public-directory-v1";
   const database = await openBrowserWASQLiteOPFSDatabase({
     databaseName: name,
@@ -49,12 +56,52 @@ export async function openPublicDirectory(client: ConvexReactClient, signal?: Ab
       schemaVersion: 1,
     }),
   );
+  const research = createCollection(
+    persistedCollectionOptions({
+      ...convexPaginatedCollectionOptions({
+        id: "cure-public-research-v1",
+        client,
+        query: api.projects.publicPage,
+        queryArgs: {},
+        getKey: (row) => row.id,
+        syncMode: "on-demand",
+        queryOrder: { field: "createdAt", direction: "desc" },
+        pageSize: 50,
+        maxRows: Number.MAX_SAFE_INTEGER,
+      }),
+      persistence,
+      schemaVersion: 1,
+    }),
+  );
+  const researchDetails = researchId
+    ? createCollection(
+        persistedCollectionOptions({
+          ...convexCollectionOptions({
+            id: `cure-public-research-detail-v1:${researchId}`,
+            client,
+            query: api.projects.publicDetails,
+            queryArgs: { clientId: researchId },
+            select: (value) => (value ? [value] : []),
+            getKey: (row) => row.id,
+          }),
+          persistence,
+          schemaVersion: 1,
+        }),
+      )
+    : undefined;
   return {
     specialists,
     organizations,
+    research,
+    researchDetails,
     async close() {
       try {
-        await Promise.all([specialists.cleanup(), organizations.cleanup()]);
+        await Promise.all([
+          specialists.cleanup(),
+          organizations.cleanup(),
+          research.cleanup(),
+          researchDetails?.cleanup(),
+        ]);
       } finally {
         coordinator.dispose();
         await database.close?.();
