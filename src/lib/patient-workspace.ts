@@ -246,6 +246,7 @@ export async function openPatientWorkspace(config: {
     await executor.waitForInit();
     if (executor.mode !== "offline") throw new Error("STORAGE_UNAVAILABLE");
     const apply = executor.createOfflineAction<{
+      expectedRevision: number;
       action: "create" | "update" | "delete" | "consent";
       clientId: string;
       values?: PatientValues;
@@ -257,6 +258,8 @@ export async function openPatientWorkspace(config: {
         if (config.role !== "doctor") throw new Error("ACCESS_DENIED");
         if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         const previous = collection.get(command.clientId);
+        if ((previous?.revision ?? 0) !== command.expectedRevision)
+          throw new Error("REVISION_CONFLICT");
         if (command.action === "create") {
           const values = patientValueSchema.parse(command.values);
           collection.insert(

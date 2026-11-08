@@ -47,6 +47,7 @@ function Projects() {
   const form = useForm({
     initialValues: {
       clientId: "",
+      expectedRevision: 0,
       failureId: "",
       title: "",
       summary: "",
@@ -99,6 +100,7 @@ function Projects() {
       if (!workspace) throw new Error("WORKSPACE_LOCKED");
       const saved = await workspace.save({
         clientId: input.clientId || crypto.randomUUID(),
+        expectedRevision: input.expectedRevision,
         values: projectValuesSchema.parse(input),
       });
       if (input.failureId) await workspace.dismissFailure(input.failureId);
@@ -121,6 +123,7 @@ function Projects() {
       form.setValues({
         ...projectValuesSchema.parse(row),
         clientId: row.clientId,
+        expectedRevision: workspace.collection.get(row.clientId)?.revision ?? 0,
         failureId: failure.id,
       });
       editor.open();
@@ -335,6 +338,7 @@ function Projects() {
                         form.setValues({
                           ...projectValuesSchema.parse(row),
                           clientId: row.clientId,
+                          expectedRevision: row.revision,
                           failureId: "",
                         });
                         save.reset();

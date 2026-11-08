@@ -29,6 +29,7 @@ export const mine = query({
 });
 export const save = mutation({
   args: {
+    actorId: v.string(),
     displayName: v.string(),
     profession,
     specialty: v.string(),
@@ -37,8 +38,9 @@ export const save = mutation({
     bio: v.string(),
     published: v.boolean(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { actorId: expectedActor, ...args }) => {
     const userId = await actorId(ctx);
+    if (userId !== expectedActor) throw new ConvexError("ACCOUNT_CHANGED");
     if (
       !args.displayName.trim() ||
       args.displayName.length > 150 ||

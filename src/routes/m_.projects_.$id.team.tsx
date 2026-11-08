@@ -275,6 +275,7 @@ function Team() {
                                   onChange={(event) =>
                                     save.mutate({
                                       operation: "setMember",
+                                      expectedRevision: member.revision,
                                       key: member.key,
                                       role: event.currentTarget.value as InvitedRole,
                                       active: true,
@@ -296,6 +297,7 @@ function Team() {
                                         if (member.role !== "owner")
                                           save.mutate({
                                             operation: "setMember",
+                                            expectedRevision: member.revision,
                                             key: member.key,
                                             role: member.role,
                                             active: false,
@@ -347,7 +349,11 @@ function Team() {
                                     variant="default"
                                     disabled={!workspace.canWrite() || save.isPending}
                                     onClick={() =>
-                                      save.mutate({ operation: "revokeInvite", key: invite.key })
+                                      save.mutate({
+                                        operation: "revokeInvite",
+                                        expectedRevision: invite.revision,
+                                        key: invite.key,
+                                      })
                                     }
                                   >{t`Отозвать приглашение`}</Button>
                                 )}

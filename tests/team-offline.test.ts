@@ -125,6 +125,7 @@ describe("durable cross-organization collaboration", () => {
     const owner = t.withIdentity({ subject: "owner" });
     const guest = t.withIdentity({ subject: "guest" });
     const profileId = await guest.mutation(api.profiles.save, {
+      actorId: "guest",
       displayName: "Invited investigator",
       profession: "researcher",
       specialty: "Medicine",
@@ -288,6 +289,7 @@ describe("durable cross-organization collaboration", () => {
         .filter((row) => row.entity === "member"),
     ).toEqual([]);
     const accepted = await recipientSpace.saveTeam({
+      expectedRevision: incoming.revision,
       operation: "respond",
       key: incoming.key,
       decision: "accept",
@@ -431,6 +433,7 @@ describe("durable cross-organization collaboration", () => {
           row.entity === "member" && row.userId === "guest",
       )!;
     const removal = await hostSpace.saveTeam({
+      expectedRevision: member.revision,
       operation: "setMember",
       key: member.key,
       role: "member",
@@ -483,8 +486,19 @@ describe("durable cross-organization collaboration", () => {
     expect(JSON.stringify([...host.failureStorage.values.values()])).not.toContain(
       "Invited investigator",
     );
+    await expect(
+      hostSpace.saveTeam({
+        operation: "setMember",
+        expectedRevision: 1,
+        key: member.key,
+        role: "member",
+        active: false,
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    expect(await hostSpace.executor.peekOutbox()).toEqual([]);
     // Re-evaluate the current record, then remove using its current revision.
     const confirmedRemoval = await hostSpace.saveTeam({
+      expectedRevision: 2,
       operation: "setMember",
       key: member.key,
       role: "viewer",
@@ -528,12 +542,14 @@ describe("durable cross-organization collaboration", () => {
     await recipient.refresh();
     recipient.disconnect();
     const stale = await recipientSpace.saveTeam({
+      expectedRevision: 1,
       operation: "respond",
       key: `invitation:${secondId}`,
       decision: "accept",
     });
     host.disconnect();
     const revoked = await hostSpace.saveTeam({
+      expectedRevision: 1,
       operation: "revokeInvite",
       key: `invitation:${secondId}`,
     });

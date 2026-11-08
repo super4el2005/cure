@@ -66,6 +66,7 @@ function Protocol() {
     !["completed", "archived"].includes(project.status);
   const form = useForm({
     initialValues: {
+      expectedVersion: 0,
       hypothesis: "",
       inclusion: "",
       exclusion: "",
@@ -117,6 +118,7 @@ function Protocol() {
       const result = await workspace.saveProtocol({
         clientId: crypto.randomUUID(),
         projectClientId: id,
+        expectedVersion: input.expectedVersion,
         values: protocolValuesSchema.parse({
           ...input,
           ethicsExpiresAt: input.ethicsDate ? dayjs(input.ethicsDate).valueOf() : 0,
@@ -142,6 +144,7 @@ function Protocol() {
       const row = workspace.readProtocol(failure.envelope);
       form.setValues({
         ...row,
+        expectedVersion: history[0]?.version ?? 0,
         ethicsDate: row.ethicsExpiresAt ? toDateTimeString(row.ethicsExpiresAt) : null,
         attested: false,
         failureId: failure.id,
@@ -235,6 +238,7 @@ function Protocol() {
                     if (latest)
                       form.setValues({
                         ...latest,
+                        expectedVersion: latest.version,
                         ethicsDate: latest.ethicsExpiresAt
                           ? toDateTimeString(latest.ethicsExpiresAt)
                           : null,

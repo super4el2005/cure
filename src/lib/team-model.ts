@@ -48,12 +48,18 @@ export const teamCommandSchema = z.discriminatedUnion("operation", [
     role: invitedRoleSchema,
   }),
   z.object({
+    expectedRevision: z.number().int().positive(),
     operation: z.literal("respond"),
     key: z.string(),
     decision: z.enum(["accept", "decline"]),
   }),
-  z.object({ operation: z.literal("revokeInvite"), key: z.string() }),
   z.object({
+    expectedRevision: z.number().int().positive(),
+    operation: z.literal("revokeInvite"),
+    key: z.string(),
+  }),
+  z.object({
+    expectedRevision: z.number().int().positive(),
     operation: z.literal("setMember"),
     key: z.string(),
     role: invitedRoleSchema,

@@ -14,6 +14,7 @@ describe("public detail privacy", () => {
     const t = convexTest(schema, modules);
     const actor = t.withIdentity({ subject: "private-account-id" });
     const profile = {
+      actorId: "private-account-id",
       displayName: "Researcher",
       profession: "researcher" as const,
       specialty: "Medicine",

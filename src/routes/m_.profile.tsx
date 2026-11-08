@@ -38,6 +38,7 @@ function Profile() {
   });
   const form = useForm({
     initialValues: {
+      actorId: "",
       displayName: "",
       profession: "researcher" as "doctor" | "researcher",
       specialty: "",
@@ -118,6 +119,7 @@ function Profile() {
                     form.setValues(
                       profile
                         ? {
+                            actorId: details.data!.userId,
                             displayName: profile.displayName,
                             profession: profile.profession,
                             specialty: profile.specialty,
@@ -126,14 +128,14 @@ function Profile() {
                             bio: profile.bio,
                             published: profile.published,
                           }
-                        : { ...form.values },
+                        : { ...form.getInitialValues(), actorId: details.data!.userId },
                     );
                     editor.open();
                   }}
                 >{t`Редактировать профиль`}</Button>
               </Stack>
             </Paper>
-            {editing && (
+            {editing && form.values.actorId === details.data.userId && (
               <form onSubmit={form.onSubmit((values) => save.mutate(values))}>
                 <Stack>
                   <TextInput

@@ -511,13 +511,19 @@ export async function openProjectWorkspace(config: {
     disposeExecutor = () => executor.dispose();
     await executor.waitForInit();
     if (executor.mode !== "offline") throw new Error("STORAGE_UNAVAILABLE");
-    const apply = executor.createOfflineAction<{ clientId: string; values: ProjectValues }>({
+    const apply = executor.createOfflineAction<{
+      clientId: string;
+      expectedRevision: number;
+      values: ProjectValues;
+    }>({
       mutationFnName: "project.apply.v1",
       onMutate: (command) => {
         if (closed) throw new Error("WORKSPACE_LOCKED");
         if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         const values = projectValuesSchema.parse(command.values);
         const previous = collection.get(command.clientId);
+        if ((previous?.revision ?? 0) !== command.expectedRevision)
+          throw new Error("REVISION_CONFLICT");
         if (previous) {
           const row = read(previous);
           if (!["owner", "coordinator"].includes(row.selfRole)) throw new Error("ACCESS_DENIED");
@@ -545,6 +551,7 @@ export async function openProjectWorkspace(config: {
     const appendProtocol = executor.createOfflineAction<{
       clientId: string;
       projectClientId: string;
+      expectedVersion: number;
       values: ProtocolValues;
     }>({
       mutationFnName: "protocol.append.v1",
@@ -570,6 +577,7 @@ export async function openProjectWorkspace(config: {
                   : latest,
               0,
             ) + 1;
+        if (version - 1 !== command.expectedVersion) throw new Error("REVISION_CONFLICT");
         protocols.insert(
           sealProtocol(
             protocolRowSchema.parse({
@@ -628,6 +636,7 @@ export async function openProjectWorkspace(config: {
             const envelope = team.get(command.key);
             if (!envelope) throw new Error("INVALID_TEAM_OPERATION");
             const row = readTeam(envelope);
+            if (row.revision !== command.expectedRevision) throw new Error("REVISION_CONFLICT");
             const parent = collection.get(row.projectClientId);
             const project = parent ? read(parent) : undefined;
             if (command.operation === "respond") {

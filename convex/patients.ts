@@ -232,6 +232,7 @@ export const apply = mutation({
 
 export const share = mutation({
   args: {
+    actorId: v.string(),
     organizationId: v.id("organizations"),
     clientId: v.string(),
     researcherId: v.string(),
@@ -239,7 +240,8 @@ export const share = mutation({
     active: v.boolean(),
   },
   handler: async (ctx, args) => {
-    await organizationAccess(ctx, args.organizationId, true);
+    const { userId } = await organizationAccess(ctx, args.organizationId, true);
+    if (userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
     const patient = await ctx.db
       .query("patients")
       .withIndex("by_client", (q) =>
@@ -291,9 +293,10 @@ export const share = mutation({
 });
 
 export const researchers = query({
-  args: { organizationId: v.id("organizations") },
-  handler: async (ctx, { organizationId }) => {
-    await organizationAccess(ctx, organizationId, true);
+  args: { organizationId: v.id("organizations"), actorId: v.string() },
+  handler: async (ctx, { organizationId, actorId: expectedActor }) => {
+    const { userId } = await organizationAccess(ctx, organizationId, true);
+    if (userId !== expectedActor) throw new ConvexError("ACCOUNT_CHANGED");
     const memberships = await ctx.db
       .query("memberships")
       .withIndex("by_organization_user", (q) => q.eq("organizationId", organizationId))

@@ -227,6 +227,7 @@ describe("durable patient operations", () => {
     });
     await first.collection.preload();
     const saved = await first.save({
+      expectedRevision: 0,
       action: "create",
       clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
       values,
@@ -288,6 +289,7 @@ describe("durable patient operations", () => {
       recordedBy: "doctor",
     };
     const consentSaved = await restored.save({
+      expectedRevision: 1,
       action: "consent",
       clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
       consent: event,
@@ -320,7 +322,24 @@ describe("durable patient operations", () => {
     ).toEqual([event]);
     nextNetwork.disconnect();
     restored.setAuthenticated(false);
+    await expect(
+      restored.save({
+        action: "update",
+        clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
+        expectedRevision: 1,
+        values: { ...values, notes: "Stale editor" },
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    await expect(
+      restored.save({
+        action: "delete",
+        clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
+        expectedRevision: 1,
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    expect(await restored.executor.peekOutbox()).toEqual([]);
     const conflict = await restored.save({
+      expectedRevision: 2,
       action: "update",
       clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
       values: { ...values, notes: "Unsent local note" },
@@ -360,7 +379,16 @@ describe("durable patient operations", () => {
       recipients: ["not-approved"],
       purpose: "Pending consent purpose",
     };
+    await expect(
+      restored.save({
+        action: "consent",
+        clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
+        expectedRevision: 2,
+        consent: rejectedEvent,
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
     const consentRejected = await restored.save({
+      expectedRevision: 3,
       action: "consent",
       clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
       consent: rejectedEvent,

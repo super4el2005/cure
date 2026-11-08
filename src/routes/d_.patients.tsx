@@ -104,6 +104,7 @@ function Patients() {
   const consentForm = useForm({
     initialValues: {
       clientId: "",
+      expectedRevision: 0,
       kind: "granted" as "granted" | "withdrawn",
       purpose: "",
       recipients: [] as string[],
@@ -140,6 +141,7 @@ function Patients() {
   const patientForm = useForm({
     initialValues: {
       clientId: "",
+      expectedRevision: 0,
       fullName: "",
       birthDate: "",
       sex: "unknown" as "female" | "male" | "unknown",
@@ -298,6 +300,7 @@ function Patients() {
         if (!event) throw new Error("INVALID_VAULT_DATA");
         consentForm.setValues({
           clientId: row.clientId,
+          expectedRevision: workspace.collection.get(row.clientId)?.revision ?? 0,
           kind: event.kind,
           purpose: event.purpose,
           recipients: event.recipients,
@@ -313,6 +316,7 @@ function Patients() {
       }
       patientForm.setValues({
         ...row,
+        expectedRevision: workspace.collection.get(row.clientId)?.revision ?? 0,
         diagnosisCodes: row.diagnosisCodes.join(", "),
         failureId: failure.id,
       });
@@ -330,6 +334,7 @@ function Patients() {
       const clientId = input.clientId || crypto.randomUUID();
       const result = await workspace.save({
         clientId,
+        expectedRevision: input.expectedRevision,
         action: workspace.collection.has(clientId) ? "update" : "create",
         values: patientValueSchema.parse(values),
       });
@@ -347,9 +352,9 @@ function Patients() {
     gcTime: 0,
     networkMode: "always",
     retry: false,
-    mutationFn: async (clientId: string) => {
+    mutationFn: async (input: { clientId: string; expectedRevision: number }) => {
       if (!workspace) throw new Error("WORKSPACE_LOCKED");
-      return workspace.save({ action: "delete", clientId });
+      return workspace.save({ action: "delete", ...input });
     },
     onSuccess: () => {
       void status.refetch();
@@ -362,6 +367,7 @@ function Patients() {
     queryFn: async () => {
       if (online && isAuthenticated) {
         const people = await convex.query(api.patients.researchers, {
+          actorId: opened!.userId,
           organizationId: workspace!.organizationId,
         });
         await workspace!.cacheResearchers(people);
@@ -398,6 +404,7 @@ function Patients() {
       };
       const result = await workspace.save({
         action: "consent",
+        expectedRevision: input.expectedRevision,
         clientId: input.clientId,
         consent: event,
       });
@@ -414,8 +421,9 @@ function Patients() {
     mutationKey: ["patients-share"],
     retry: false,
     mutationFn: async (values: typeof shareForm.values) => {
-      if (!workspace || !online || !isAuthenticated) throw new Error("UNAUTHENTICATED");
+      if (!workspace || !opened || !online || !isAuthenticated) throw new Error("UNAUTHENTICATED");
       return convex.mutation(api.patients.share, {
+        actorId: opened.userId,
         organizationId: workspace.organizationId,
         clientId: values.clientId,
         researcherId: values.researcherId,
@@ -830,6 +838,7 @@ function Patients() {
                               onClick={() => {
                                 patientForm.setValues({
                                   ...row,
+                                  expectedRevision: row.revision,
                                   diagnosisCodes: row.diagnosisCodes.join(", "),
                                   failureId: "",
                                 });
@@ -846,6 +855,7 @@ function Patients() {
                                   archivedExpiresAt: 0,
                                   failureId: "",
                                   clientId: row.clientId,
+                                  expectedRevision: row.revision,
                                   kind: "granted",
                                   purpose: latest?.purpose ?? "",
                                   recipients: latest?.recipients ?? [],
@@ -872,7 +882,11 @@ function Patients() {
                                   title: t`Удалить данные пациента?`,
                                   children: <Text>{row.fullName}</Text>,
                                   labels: { confirm: t`Удалить`, cancel: t`Отмена` },
-                                  onConfirm: () => remove.mutate(row.clientId),
+                                  onConfirm: () =>
+                                    remove.mutate({
+                                      clientId: row.clientId,
+                                      expectedRevision: row.revision,
+                                    }),
                                 })
                               }
                             >{t`Удалить`}</Button>

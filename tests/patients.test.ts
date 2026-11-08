@@ -144,6 +144,7 @@ describe("patient authorization and transaction guarantees", () => {
       values: { ...values, consentHistory: [consentEvent()] },
     });
     await doctor.mutation(api.patients.share, {
+      actorId: "doctor",
       organizationId,
       clientId,
       researcherId: "researcher",
@@ -163,6 +164,7 @@ describe("patient authorization and transaction guarantees", () => {
         "ACCESS_DENIED",
       );
     await doctor.mutation(api.patients.share, {
+      actorId: "doctor",
       organizationId,
       clientId,
       researcherId: "researcher",
@@ -217,6 +219,7 @@ describe("patient consent and researcher access", () => {
     const { t, doctor, researcher, organizationId, args } = await setup();
     await doctor.mutation(api.patients.apply, { ...args, values: { ...values, sex: "male" } });
     const share = {
+      actorId: "doctor",
       organizationId,
       clientId,
       researcherId: "researcher",
@@ -342,6 +345,7 @@ describe("professional profiles and public directories", () => {
   it("never self-verifies a role or leaks identity through public profiles", async () => {
     const { t, doctor } = await setup();
     await doctor.mutation(api.profiles.save, {
+      actorId: "doctor",
       displayName: "Dr Test",
       profession: "doctor",
       specialty: "Neurology",
@@ -357,6 +361,7 @@ describe("professional profiles and public directories", () => {
     expect(rows[0]).not.toHaveProperty("userId");
     await expect(
       doctor.mutation(api.profiles.save, {
+        actorId: "doctor",
         displayName: "Dr Test",
         profession: "researcher",
         specialty: "",
@@ -379,4 +384,38 @@ describe("professional profiles and public directories", () => {
     });
     expect((await t.query(api.organizations.directory, {})).map((o) => o.name)).toEqual(["Clinic"]);
   });
+});
+
+it("binds grant changes and recipient snapshots to the expected doctor account", async () => {
+  const { doctor, organizationId } = await setup();
+  await expect(
+    doctor.query(api.patients.researchers, { actorId: "other-doctor", organizationId }),
+  ).rejects.toThrow("ACCOUNT_CHANGED");
+  await expect(
+    doctor.mutation(api.patients.share, {
+      actorId: "other-doctor",
+      organizationId,
+      clientId,
+      researcherId: "researcher",
+      active: true,
+      expiresAt: Date.now() + 60000,
+    }),
+  ).rejects.toThrow("ACCOUNT_CHANGED");
+});
+
+it("rejects a profile form opened under another account", async () => {
+  const { doctor } = await setup();
+  await expect(
+    doctor.mutation(api.profiles.save, {
+      actorId: "other",
+      displayName: "Other user's draft",
+      profession: "doctor",
+      specialty: "",
+      interests: [],
+      languages: [],
+      bio: "",
+      published: false,
+    }),
+  ).rejects.toThrow("ACCOUNT_CHANGED");
+  expect((await doctor.query(api.profiles.mine, {})).profile).toBeNull();
 });

@@ -201,9 +201,10 @@ describe("durable research projects", () => {
       publicContact: "",
     };
     const clientId = crypto.randomUUID();
-    const saved = await workspace.save({ clientId, values });
+    const saved = await workspace.save({ clientId, expectedRevision: 0, values });
     await workspace.protocols.preload();
     const initialProtocol = await workspace.saveProtocol({
+      expectedVersion: 0,
       clientId: crypto.randomUUID(),
       projectClientId: clientId,
       values: {
@@ -242,6 +243,7 @@ describe("durable research projects", () => {
     expect(revision).toBe(1);
     connection.disconnect();
     const edited = await workspace.save({
+      expectedRevision: 1,
       clientId,
       values: { ...values, title: "Updated research question" },
     });
@@ -254,7 +256,16 @@ describe("durable research projects", () => {
     ).toBe("Updated research question");
     expect(await workspace.failedActions()).toEqual([]);
     connection.disconnect();
+    await expect(
+      workspace.save({
+        clientId,
+        expectedRevision: 1,
+        values: { ...values, title: "Old open form" },
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    expect(await workspace.executor.peekOutbox()).toEqual([]);
     const conflicting = await workspace.save({
+      expectedRevision: 2,
       clientId,
       values: { ...values, title: "Preserved rejected draft" },
     });
@@ -296,7 +307,16 @@ describe("durable research projects", () => {
       ethicsReference: "",
       ethicsExpiresAt: 0,
     };
+    await expect(
+      workspace.saveProtocol({
+        clientId: crypto.randomUUID(),
+        projectClientId: clientId,
+        expectedVersion: 0,
+        values: protocolValues,
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
     const protocolSaved = await workspace.saveProtocol({
+      expectedVersion: 1,
       clientId: crypto.randomUUID(),
       projectClientId: clientId,
       values: protocolValues,

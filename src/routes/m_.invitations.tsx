@@ -153,6 +153,7 @@ function Invitations() {
                             onClick={() =>
                               save.mutate({
                                 operation: "respond",
+                                expectedRevision: invite.revision,
                                 key: invite.key,
                                 decision: "accept",
                               })
@@ -164,6 +165,7 @@ function Invitations() {
                             onClick={() =>
                               save.mutate({
                                 operation: "respond",
+                                expectedRevision: invite.revision,
                                 key: invite.key,
                                 decision: "decline",
                               })
