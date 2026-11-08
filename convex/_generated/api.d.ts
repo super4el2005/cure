@@ -1,3 +1,4 @@
+import type * as projectWork from "../projectWork.js";
 import type * as projectTeams from "@/convex/projectTeams";
 import type * as protocols from "@/convex/protocols";
 import type * as projects from "@/convex/projects";
@@ -26,6 +27,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   projectTeams: typeof projectTeams;
+  projectWork: typeof projectWork;
   projects: typeof projects;
   protocols: typeof protocols;
   profiles: typeof profiles;

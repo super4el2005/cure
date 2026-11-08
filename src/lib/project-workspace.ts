@@ -34,6 +34,13 @@ import { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-adm
 import { encryptedStorage } from "@/src/lib/patient-vault";
 import type { Vault } from "@/src/lib/patient-vault";
 import {
+  workRecordSchema,
+  workCommandSchema,
+  taskValuesSchema,
+  messageBodySchema,
+} from "@/src/lib/project-work-model";
+import type { WorkRecord, WorkCommand } from "@/src/lib/project-work-model";
+import {
   protocolValuesSchema,
   projectRoleSchema,
   projectValuesSchema,
@@ -64,7 +71,7 @@ type Envelope = z.infer<typeof envelopeSchema>;
 const failureSchema = z.object({
   id: z.string(),
   code: z.string(),
-  domain: z.enum(["project", "protocol", "team"]).default("project"),
+  domain: z.enum(["project", "protocol", "team", "task", "message"]).default("project"),
   operation: teamOperationSchema.optional(),
   envelope: envelopeSchema,
   at: z.number(),
@@ -129,6 +136,20 @@ export async function openProjectWorkspace(config: {
     revision: row.revision,
     ciphertext: config.vault.seal(row, `${teamScope}:${row.key}`),
   });
+  const workScope = `${scope}:work`;
+  const readWork = (envelope: Envelope) => {
+    const row = workRecordSchema.parse(
+      config.vault.open(envelope.ciphertext, `${workScope}:${envelope.clientId}`),
+    );
+    if (row.key !== envelope.clientId || row.revision !== envelope.revision)
+      throw new Error("INVALID_VAULT_DATA");
+    return row;
+  };
+  const sealWork = (row: WorkRecord): Envelope => ({
+    clientId: row.key,
+    revision: row.revision,
+    ciphertext: config.vault.seal(row, `${workScope}:${row.key}`),
+  });
   let persistence = config.persistence;
   if (!persistence) {
     database = await openBrowserWASQLiteOPFSDatabase({
@@ -186,6 +207,23 @@ export async function openProjectWorkspace(config: {
         query: api.projectTeams.workspace,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
         select: (rows) => rows.map((row) => sealTeam(teamRecordSchema.parse(row))),
+        getKey: (row) => row.clientId,
+        onError: (error) => reportFailure(error, "projects.sync"),
+      }),
+      persistence,
+      schemaVersion: 1,
+    }),
+  );
+  const work = createCollection(
+    persistedCollectionOptions({
+      ...convexCollectionOptions({
+        id: workScope,
+        startSync: true,
+        gcTime: Infinity,
+        client: config.client,
+        query: api.projectWork.workspace,
+        queryArgs: { organizationId: config.organizationId, actorId: config.userId },
+        select: (rows) => rows.map((row) => sealWork(workRecordSchema.parse(row))),
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
@@ -331,10 +369,54 @@ export async function openProjectWorkspace(config: {
         };
       },
     });
+    const taskMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectWork.saveTask,
+      collections: [work],
+      getArgs: ({ transaction }) => {
+        if (transaction.mutations.length !== 1 || transaction.mutations[0]!.type === "delete")
+          throw new NonRetriableError("INVALID_TASK");
+        const change = transaction.mutations[0]!;
+        const row = readWork(change.modified as Envelope);
+        if (row.entity !== "task") throw new NonRetriableError("INVALID_TASK");
+        return {
+          actorId: config.userId,
+          clientId: row.clientId,
+          projectClientId: row.projectClientId,
+          values: taskValuesSchema.parse(row),
+          expectedRevision: change.type === "insert" ? 0 : (change.original as Envelope).revision,
+        };
+      },
+    });
+    const messageMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectWork.saveMessage,
+      collections: [work],
+      getArgs: ({ transaction }) => {
+        if (transaction.mutations.length !== 1 || transaction.mutations[0]!.type === "delete")
+          throw new NonRetriableError("INVALID_MESSAGE");
+        const change = transaction.mutations[0]!;
+        const row = readWork(change.modified as Envelope);
+        if (row.entity !== "message") throw new NonRetriableError("INVALID_MESSAGE");
+        return {
+          actorId: config.userId,
+          clientId: row.clientId,
+          projectClientId: row.projectClientId,
+          body: row.deleted ? "" : row.body,
+          action:
+            change.type === "insert"
+              ? ("create" as const)
+              : row.deleted
+                ? ("delete" as const)
+                : ("update" as const),
+          expectedRevision: change.type === "insert" ? 0 : (change.original as Envelope).revision,
+        };
+      },
+    });
     const guarded =
       (
         invoke: typeof mutation,
-        domain: "project" | "protocol" | "team",
+        domain: "project" | "protocol" | "team" | "task" | "message",
         operation?: TeamOperation,
       ) =>
       async (params: Parameters<typeof mutation>[0]) => {
@@ -355,6 +437,11 @@ export async function openProjectWorkspace(config: {
           }
           const code =
             [
+              "INVALID_TASK",
+              "ASSIGNEE_UNAVAILABLE",
+              "INVALID_MESSAGE",
+              "MESSAGE_DELETED",
+              "PROJECT_ARCHIVED",
               "INVALID_TEAM_OPERATION",
               "INVITEE_UNAVAILABLE",
               "ALREADY_MEMBER",
@@ -393,7 +480,12 @@ export async function openProjectWorkspace(config: {
         }
       };
     const executor = startOfflineExecutor({
-      collections: { [scope]: collection, [protocolScope]: protocols, [teamScope]: team },
+      collections: {
+        [scope]: collection,
+        [protocolScope]: protocols,
+        [teamScope]: team,
+        [workScope]: work,
+      },
       storage: receipts.storage,
       mutationCodec: convexMutationCodec,
       onlineDetector: detector,
@@ -404,6 +496,8 @@ export async function openProjectWorkspace(config: {
           : new BroadcastChannelLeader(`${scope}:leader`)),
       maxConcurrency: 1,
       mutationFns: {
+        "work.task.v1": guarded(taskMutation, "task"),
+        "work.message.v1": guarded(messageMutation, "message"),
         "project.apply.v1": guarded(mutation, "project"),
         "protocol.append.v1": guarded(protocolMutation, "protocol"),
         "team.invite.v1": guarded(inviteMutation, "team", "invite"),
@@ -603,6 +697,108 @@ export async function openProjectWorkspace(config: {
         }),
       ]),
     );
+    const workActions = Object.fromEntries(
+      (["task", "message"] as const).map((entity) => [
+        entity,
+        executor.createOfflineAction<WorkCommand>({
+          mutationFnName: `work.${entity}.v1`,
+          onMutate: (input) => {
+            if (closed) throw new Error("WORKSPACE_LOCKED");
+            if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+            if (work.status !== "ready") throw new Error("WORKSPACE_NOT_READY");
+            const command = workCommandSchema.parse(input);
+            if (command.entity !== entity) throw new Error("INVALID_WORK_OPERATION");
+            const parent = collection.get(command.projectClientId);
+            const project = parent ? read(parent) : undefined;
+            if (!project || project.selfRole === "viewer") throw new Error("ACCESS_DENIED");
+            if (project.status === "archived") throw new Error("PROJECT_ARCHIVED");
+            const key = `${entity}:${command.clientId}`;
+            const envelope = work.get(key);
+            const existing = envelope ? readWork(envelope) : undefined;
+            if ((existing?.revision ?? 0) !== command.expectedRevision)
+              throw new Error("REVISION_CONFLICT");
+            const manager = ["owner", "coordinator"].includes(project.selfRole);
+            const now = Date.now();
+            const common = {
+              key,
+              clientId: command.clientId,
+              projectClientId: command.projectClientId,
+              revision: (existing?.revision ?? 0) + 1,
+              createdBy: existing?.createdBy ?? config.userId,
+              createdAt: existing?.createdAt ?? now,
+              updatedAt: now,
+              delivery: "local" as const,
+            };
+            if (command.entity === "task") {
+              if (existing && existing.entity !== "task") throw new Error("INVALID_TASK");
+              if (
+                existing &&
+                !manager &&
+                existing.createdBy !== config.userId &&
+                existing.assigneeId !== config.userId
+              )
+                throw new Error("ACCESS_DENIED");
+              if (!manager && command.values.assigneeId !== (existing?.assigneeId ?? config.userId))
+                throw new Error("ACCESS_DENIED");
+              if (
+                !manager &&
+                existing?.status === "cancelled" &&
+                command.values.status !== "cancelled"
+              )
+                throw new Error("ACCESS_DENIED");
+              if (
+                (!existing && command.values.archived) ||
+                (existing &&
+                  existing.archived !== command.values.archived &&
+                  !manager &&
+                  existing.createdBy !== config.userId)
+              )
+                throw new Error("ACCESS_DENIED");
+              if (!existing || command.values.assigneeId !== existing.assigneeId) {
+                const assignee = Array.from(team.values())
+                  .map(readTeam)
+                  .find(
+                    (row) =>
+                      row.entity === "member" &&
+                      row.projectClientId === command.projectClientId &&
+                      row.userId === command.values.assigneeId &&
+                      row.active &&
+                      row.role !== "viewer",
+                  );
+                if (!assignee && command.values.assigneeId !== config.userId)
+                  throw new Error("ASSIGNEE_UNAVAILABLE");
+              }
+              const next = sealWork(
+                workRecordSchema.parse({ ...common, ...command.values, entity: "task" }),
+              );
+              if (envelope) work.update(key, (draft) => Object.assign(draft, next));
+              else work.insert(next);
+            } else {
+              if (existing && existing.entity !== "message") throw new Error("INVALID_MESSAGE");
+              if ((command.action === "create") === Boolean(existing))
+                throw new Error("REVISION_CONFLICT");
+              if (existing?.deleted) throw new Error("MESSAGE_DELETED");
+              if (
+                existing &&
+                existing.createdBy !== config.userId &&
+                !(manager && command.action === "delete")
+              )
+                throw new Error("ACCESS_DENIED");
+              const next = sealWork(
+                workRecordSchema.parse({
+                  ...common,
+                  entity: "message",
+                  deleted: command.action === "delete",
+                  body: command.action === "delete" ? "" : messageBodySchema.parse(command.body),
+                }),
+              );
+              if (envelope) work.update(key, (draft) => Object.assign(draft, next));
+              else work.insert(next);
+            }
+          },
+        }),
+      ]),
+    );
     const saveTransaction = async (tx: ReturnType<typeof apply>) => {
       const persisted = receipts.wait(tx.id);
       try {
@@ -617,6 +813,7 @@ export async function openProjectWorkspace(config: {
       collection,
       protocols,
       team,
+      work,
       executor,
       scope,
       organizationId: config.organizationId,
@@ -638,6 +835,15 @@ export async function openProjectWorkspace(config: {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         return readTeam(row);
       },
+      readWork(row: Envelope) {
+        if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        return readWork(row);
+      },
+      async saveWork(command: WorkCommand) {
+        if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
+        const parsed = workCommandSchema.parse(command);
+        return saveTransaction(workActions[parsed.entity]!(parsed));
+      },
       async saveTeam(command: TeamCommand) {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         const parsed = teamCommandSchema.parse(command);
@@ -651,7 +857,9 @@ export async function openProjectWorkspace(config: {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         return saveTransaction(appendProtocol(command));
       },
-      async failedActions(domain: "project" | "protocol" | "team" = "project") {
+      async failedActions(
+        domain: "project" | "protocol" | "team" | "task" | "message" = "project",
+      ) {
         const rows = await Promise.all(
           (await failures.keys()).map(async (key) =>
             failureSchema.parse(JSON.parse((await failures.get(key))!)),
@@ -670,7 +878,12 @@ export async function openProjectWorkspace(config: {
         executor.dispose();
         receipts.dispose();
         try {
-          await Promise.all([collection.cleanup(), protocols.cleanup(), team.cleanup()]);
+          await Promise.all([
+            collection.cleanup(),
+            protocols.cleanup(),
+            team.cleanup(),
+            work.cleanup(),
+          ]);
         } catch (error) {
           reportFailure(error, "projects.close");
         }
@@ -686,7 +899,12 @@ export async function openProjectWorkspace(config: {
     config.vault.lock();
     disposeExecutor?.();
     try {
-      await Promise.all([collection.cleanup(), protocols.cleanup(), team.cleanup()]);
+      await Promise.all([
+        collection.cleanup(),
+        protocols.cleanup(),
+        team.cleanup(),
+        work.cleanup(),
+      ]);
     } catch (cleanupError) {
       reportFailure(cleanupError, "projects.close");
     }

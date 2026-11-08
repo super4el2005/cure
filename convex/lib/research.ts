@@ -6,7 +6,7 @@ import { actorId, organizationAccess } from "@/convex/lib/access";
 export async function projectAccess(
   ctx: QueryCtx,
   clientId: string,
-  write = false,
+  write: boolean | "contribute" = false,
   allowArchived = false,
 ) {
   const userId = await actorId(ctx);
@@ -20,7 +20,10 @@ export async function projectAccess(
     .unique();
   if (!project || !member?.active) throw new ConvexError("ACCESS_DENIED");
   await organizationAccess(ctx, member.organizationId);
-  if (write && member.role !== "owner" && member.role !== "coordinator")
+  if (
+    (write === true && member.role !== "owner" && member.role !== "coordinator") ||
+    (write === "contribute" && member.role === "viewer")
+  )
     throw new ConvexError("ACCESS_DENIED");
   if (write && project.status === "archived" && !allowArchived)
     throw new ConvexError("PROJECT_ARCHIVED");

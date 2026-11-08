@@ -40,8 +40,10 @@ import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
 import { Route as MSpecialistsIdRouteImport } from './routes/m_.specialists_.$id'
 import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
 import { Route as DProjectsIdTeamRouteImport } from './routes/d_.projects_.$id.team'
+import { Route as DProjectsIdWorkRouteImport } from './routes/d_.projects_.$id.work'
 import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
 import { Route as MProjectsIdTeamRouteImport } from './routes/m_.projects_.$id.team'
+import { Route as MProjectsIdWorkRouteImport } from './routes/m_.projects_.$id.work'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -198,6 +200,11 @@ const DProjectsIdTeamRoute = DProjectsIdTeamRouteImport.update({
   path: '/d/projects/$id/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DProjectsIdWorkRoute = DProjectsIdWorkRouteImport.update({
+  id: '/d_/projects_/$id/work',
+  path: '/d/projects/$id/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
   id: '/m_/projects_/$id/protocol',
   path: '/m/projects/$id/protocol',
@@ -206,6 +213,11 @@ const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
 const MProjectsIdTeamRoute = MProjectsIdTeamRouteImport.update({
   id: '/m_/projects_/$id/team',
   path: '/m/projects/$id/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdWorkRoute = MProjectsIdWorkRouteImport.update({
+  id: '/m_/projects_/$id/work',
+  path: '/m/projects/$id/work',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -241,8 +253,10 @@ export interface FileRoutesByFullPath {
   '/m/specialists/$id': typeof MSpecialistsIdRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
+  '/d/projects/$id/work': typeof DProjectsIdWorkRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
+  '/m/projects/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -276,8 +290,10 @@ export interface FileRoutesByTo {
   '/m/specialists/$id': typeof MSpecialistsIdRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
+  '/d/projects/$id/work': typeof DProjectsIdWorkRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
+  '/m/projects/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -312,8 +328,10 @@ export interface FileRoutesById {
   '/m_/specialists_/$id': typeof MSpecialistsIdRoute
   '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d_/projects_/$id/team': typeof DProjectsIdTeamRoute
+  '/d_/projects_/$id/work': typeof DProjectsIdWorkRoute
   '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m_/projects_/$id/team': typeof MProjectsIdTeamRoute
+  '/m_/projects_/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -349,8 +367,10 @@ export interface FileRouteTypes {
     | '/m/specialists/$id'
     | '/d/projects/$id/protocol'
     | '/d/projects/$id/team'
+    | '/d/projects/$id/work'
     | '/m/projects/$id/protocol'
     | '/m/projects/$id/team'
+    | '/m/projects/$id/work'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -384,8 +404,10 @@ export interface FileRouteTypes {
     | '/m/specialists/$id'
     | '/d/projects/$id/protocol'
     | '/d/projects/$id/team'
+    | '/d/projects/$id/work'
     | '/m/projects/$id/protocol'
     | '/m/projects/$id/team'
+    | '/m/projects/$id/work'
   id:
     | '__root__'
     | '/'
@@ -419,8 +441,10 @@ export interface FileRouteTypes {
     | '/m_/specialists_/$id'
     | '/d_/projects_/$id/protocol'
     | '/d_/projects_/$id/team'
+    | '/d_/projects_/$id/work'
     | '/m_/projects_/$id/protocol'
     | '/m_/projects_/$id/team'
+    | '/m_/projects_/$id/work'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -455,8 +479,10 @@ export interface RootRouteChildren {
   MSpecialistsIdRoute: typeof MSpecialistsIdRoute
   DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
   DProjectsIdTeamRoute: typeof DProjectsIdTeamRoute
+  DProjectsIdWorkRoute: typeof DProjectsIdWorkRoute
   MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
   MProjectsIdTeamRoute: typeof MProjectsIdTeamRoute
+  MProjectsIdWorkRoute: typeof MProjectsIdWorkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -678,6 +704,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DProjectsIdTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/projects_/$id/work': {
+      id: '/d_/projects_/$id/work'
+      path: '/d/projects/$id/work'
+      fullPath: '/d/projects/$id/work'
+      preLoaderRoute: typeof DProjectsIdWorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/m_/projects_/$id/protocol': {
       id: '/m_/projects_/$id/protocol'
       path: '/m/projects/$id/protocol'
@@ -690,6 +723,13 @@ declare module '@tanstack/react-router' {
       path: '/m/projects/$id/team'
       fullPath: '/m/projects/$id/team'
       preLoaderRoute: typeof MProjectsIdTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/work': {
+      id: '/m_/projects_/$id/work'
+      path: '/m/projects/$id/work'
+      fullPath: '/m/projects/$id/work'
+      preLoaderRoute: typeof MProjectsIdWorkRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -727,8 +767,10 @@ const rootRouteChildren: RootRouteChildren = {
   MSpecialistsIdRoute: MSpecialistsIdRoute,
   DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
   DProjectsIdTeamRoute: DProjectsIdTeamRoute,
+  DProjectsIdWorkRoute: DProjectsIdWorkRoute,
   MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
   MProjectsIdTeamRoute: MProjectsIdTeamRoute,
+  MProjectsIdWorkRoute: MProjectsIdWorkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

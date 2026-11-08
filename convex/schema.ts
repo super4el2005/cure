@@ -63,7 +63,44 @@ export const protocolFields = {
   ethicsReference: v.string(),
   ethicsExpiresAt: v.number(),
 };
+export const taskFields = {
+  title: v.string(),
+  description: v.string(),
+  status: v.union(
+    v.literal("todo"),
+    v.literal("inProgress"),
+    v.literal("done"),
+    v.literal("cancelled"),
+  ),
+  priority: v.union(v.literal("low"), v.literal("normal"), v.literal("high")),
+  assigneeId: v.string(),
+  dueAt: v.number(),
+  archived: v.boolean(),
+};
 export default defineSchema({
+  projectTasks: defineTable({
+    clientId: v.string(),
+    projectClientId: v.string(),
+    ...taskFields,
+    revision: v.number(),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_project", ["projectClientId"]),
+  projectMessages: defineTable({
+    clientId: v.string(),
+    projectClientId: v.string(),
+    body: v.string(),
+    deleted: v.boolean(),
+    revision: v.number(),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_project", ["projectClientId"]),
   projects: defineTable({
     clientId: v.string(),
     organizationId: v.id("organizations"),

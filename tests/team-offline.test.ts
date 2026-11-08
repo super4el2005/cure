@@ -93,6 +93,7 @@ const modules = {
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
   "../convex/projects.ts": () => import("@/convex/projects"),
   "../convex/protocols.ts": () => import("@/convex/protocols"),
+  "../convex/projectWork.ts": () => import("@/convex/projectWork"),
   "../convex/projectTeams.ts": () => import("@/convex/projectTeams"),
 };
 describe("durable cross-organization collaboration", () => {
@@ -157,7 +158,12 @@ describe("durable cross-organization collaboration", () => {
       let snapshots = new Map<string, unknown>();
       const listeners = new Set<() => void>();
       async function refresh() {
-        for (const fn of [api.projects.mine, api.protocols.mine, api.projectTeams.workspace])
+        for (const fn of [
+          api.projects.mine,
+          api.protocols.mine,
+          api.projectTeams.workspace,
+          api.projectWork.workspace,
+        ])
           snapshots.set(
             getFunctionName(fn),
             await actor.query(fn, { actorId: userId, organizationId }),
@@ -306,6 +312,115 @@ describe("durable cross-organization collaboration", () => {
       (await guest.query(api.projects.details, { actorId: "guest", clientId: projectId }))
         .affiliationId,
     ).toBe(guestOrg);
+    // A member's private research discussion and task also survive a cold restart.
+    recipient.disconnect();
+    const messageId = crypto.randomUUID();
+    const taskId = crypto.randomUUID();
+    const message = await recipientSpace.saveWork({
+      entity: "message",
+      expectedRevision: 0,
+      clientId: messageId,
+      projectClientId: projectId,
+      action: "create",
+      body: "Private research discussion",
+    });
+    const taskValues = {
+      title: "Prepare confidential analysis",
+      description: "Internal methodology",
+      status: "todo" as const,
+      priority: "normal" as const,
+      assigneeId: "guest",
+      dueAt: Date.now() + 86400000,
+      archived: false,
+    };
+    const task = await recipientSpace.saveWork({
+      entity: "task",
+      expectedRevision: 0,
+      clientId: taskId,
+      projectClientId: projectId,
+      values: taskValues,
+    });
+    expect(JSON.stringify([...recipient.storage.values.values()])).not.toContain(
+      "Private research discussion",
+    );
+    await recipientSpace.close();
+    recipient.forget();
+    recipientSpace = await recipient.open();
+    expect(
+      [...recipientSpace.work.values()]
+        .map(recipientSpace.readWork)
+        .find((row) => row.entity === "message"),
+    ).toMatchObject({ body: "Private research discussion", delivery: "local" });
+    expect(
+      [...recipientSpace.work.values()]
+        .map(recipientSpace.readWork)
+        .find((row) => row.entity === "task"),
+    ).toMatchObject({ title: taskValues.title, delivery: "local" });
+    await recipient.refresh();
+    const messageSent = recipientSpace.executor.waitForTransactionCompletion(message.transactionId);
+    const taskSent = recipientSpace.executor.waitForTransactionCompletion(task.transactionId);
+    recipient.reconnect();
+    recipientSpace.setAuthenticated(true);
+    await messageSent;
+    await taskSent;
+    expect(
+      await guest.query(api.projectWork.workspace, { organizationId: guestOrg, actorId: "guest" }),
+    ).toHaveLength(2);
+    await expect(
+      owner.mutation(api.projectWork.saveMessage, {
+        actorId: "owner",
+        clientId: messageId,
+        projectClientId: projectId,
+        action: "update",
+        body: "Altered authorship",
+        expectedRevision: 1,
+        idempotencyKey: "forged-edit",
+      }),
+    ).rejects.toThrow("ACCESS_DENIED");
+    // An editor's captured revision must not follow a newer live subscription silently.
+    await guest.mutation(api.projectWork.saveMessage, {
+      actorId: "guest",
+      clientId: messageId,
+      projectClientId: projectId,
+      action: "update",
+      body: "New authoritative message",
+      expectedRevision: 1,
+      idempotencyKey: "other-tab-message",
+    });
+    await owner.mutation(api.projectWork.saveTask, {
+      actorId: "owner",
+      clientId: taskId,
+      projectClientId: projectId,
+      values: { ...taskValues, status: "inProgress" },
+      expectedRevision: 1,
+      idempotencyKey: "other-tab-task",
+    });
+    await recipient.refresh();
+    await expect(
+      recipientSpace.saveWork({
+        entity: "message",
+        clientId: messageId,
+        projectClientId: projectId,
+        expectedRevision: 1,
+        action: "update",
+        body: "Stale unsaved editor",
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    await expect(
+      recipientSpace.saveWork({
+        entity: "task",
+        clientId: taskId,
+        projectClientId: projectId,
+        expectedRevision: 1,
+        values: { ...taskValues, status: "done" },
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    expect(await recipientSpace.executor.peekOutbox()).toEqual([]);
+    expect(
+      [...recipientSpace.work.values()]
+        .map(recipientSpace.readWork)
+        .find((row) => row.entity === "message"),
+    ).toMatchObject({ body: "New authoritative message", revision: 2 });
     // Removing a guest belongs to the owner's scope even though their affiliation differs.
     await host.refresh();
     host.disconnect();
@@ -330,6 +445,27 @@ describe("durable cross-organization collaboration", () => {
       expectedRevision: 1,
       idempotencyKey: "another-coordinator",
     });
+    await recipient.refresh();
+    await expect(
+      recipientSpace.saveWork({
+        entity: "task",
+        expectedRevision: 1,
+        clientId: taskId,
+        projectClientId: projectId,
+        values: { ...taskValues, status: "done" },
+      }),
+    ).rejects.toThrow("ACCESS_DENIED");
+    await expect(
+      guest.mutation(api.projectWork.saveMessage, {
+        actorId: "guest",
+        clientId: messageId,
+        projectClientId: projectId,
+        action: "update",
+        body: "Forbidden",
+        expectedRevision: 1,
+        idempotencyKey: "viewer-edit",
+      }),
+    ).rejects.toThrow("ACCESS_DENIED");
     await host.refresh();
     const removalSettled = hostSpace.executor.waitForTransactionCompletion(removal.transactionId);
     host.reconnect();

@@ -117,7 +117,9 @@ describe("durable research projects", () => {
     const client = {
       watchQuery(fn: FunctionReference<"query">) {
         const protocols = getFunctionName(fn) === getFunctionName(api.protocols.mine);
-        const team = getFunctionName(fn) === getFunctionName(api.projectTeams.workspace);
+        const team =
+          getFunctionName(fn) === getFunctionName(api.projectTeams.workspace) ||
+          getFunctionName(fn) === getFunctionName(api.projectWork.workspace);
         return {
           localQueryResult: () =>
             team ? (result === undefined ? undefined : []) : protocols ? protocolResult : result,
