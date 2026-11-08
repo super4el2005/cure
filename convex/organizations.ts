@@ -1,3 +1,5 @@
+import { v } from "convex/values";
+
 import { query } from "@/convex/_generated/server";
 export const directory = query({
   args: {},
@@ -14,5 +16,22 @@ export const directory = query({
       city: o.city,
       description: o.description,
     }));
+  },
+});
+
+export const publicDetails = query({
+  args: { id: v.string() },
+  handler: async (ctx, { id }) => {
+    const key = ctx.db.normalizeId("organizations", id);
+    const organization = key ? await ctx.db.get(key) : null;
+    if (!organization?.published) return null;
+    return {
+      id: organization._id,
+      name: organization.name,
+      kind: organization.kind,
+      country: organization.country,
+      city: organization.city,
+      description: organization.description,
+    };
   },
 });

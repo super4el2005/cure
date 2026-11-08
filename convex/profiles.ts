@@ -105,3 +105,22 @@ export const offlineLease = query({
     };
   },
 });
+
+export const publicDetails = query({
+  args: { id: v.string() },
+  handler: async (ctx, { id }) => {
+    const key = ctx.db.normalizeId("profiles", id);
+    const profile = key ? await ctx.db.get(key) : null;
+    if (!profile?.published || !profile.verified) return null;
+    return {
+      id: profile._id,
+      displayName: profile.displayName,
+      profession: profile.profession,
+      specialty: profile.specialty,
+      interests: profile.interests,
+      languages: profile.languages,
+      bio: profile.bio,
+      verified: profile.verified,
+    };
+  },
+});

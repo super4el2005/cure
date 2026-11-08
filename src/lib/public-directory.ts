@@ -13,12 +13,19 @@ import type { ConvexReactClient } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 
+export type PublicSelection = {
+  researchId?: string;
+  specialistId?: string;
+  organizationId?: string;
+};
+
 // Only public, verified directory data. Patient records never enter this database.
 export async function openPublicDirectory(
   client: ConvexReactClient,
   signal?: AbortSignal,
-  researchId?: string,
+  selection: PublicSelection = {},
 ) {
+  const { researchId, specialistId, organizationId } = selection;
   const name = "cure-public-directory-v1";
   const database = await openBrowserWASQLiteOPFSDatabase({
     databaseName: name,
@@ -89,11 +96,45 @@ export async function openPublicDirectory(
         }),
       )
     : undefined;
+  const specialistDetails = specialistId
+    ? createCollection(
+        persistedCollectionOptions({
+          ...convexCollectionOptions({
+            id: `cure-public-specialist-detail-v1:${specialistId}`,
+            client,
+            query: api.profiles.publicDetails,
+            queryArgs: { id: specialistId },
+            select: (row) => (row ? [row] : []),
+            getKey: (row) => row.id,
+          }),
+          persistence,
+          schemaVersion: 1,
+        }),
+      )
+    : undefined;
+  const organizationDetails = organizationId
+    ? createCollection(
+        persistedCollectionOptions({
+          ...convexCollectionOptions({
+            id: `cure-public-organization-detail-v1:${organizationId}`,
+            client,
+            query: api.organizations.publicDetails,
+            queryArgs: { id: organizationId },
+            select: (row) => (row ? [row] : []),
+            getKey: (row) => row.id,
+          }),
+          persistence,
+          schemaVersion: 1,
+        }),
+      )
+    : undefined;
   return {
     specialists,
     organizations,
     research,
     researchDetails,
+    specialistDetails,
+    organizationDetails,
     async close() {
       try {
         await Promise.all([
@@ -101,6 +142,8 @@ export async function openPublicDirectory(
           organizations.cleanup(),
           research.cleanup(),
           researchDetails?.cleanup(),
+          specialistDetails?.cleanup(),
+          organizationDetails?.cleanup(),
         ]);
       } finally {
         coordinator.dispose();

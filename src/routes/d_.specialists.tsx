@@ -71,7 +71,15 @@ function Directory() {
             <Paper key={row.id} withBorder p="md">
               <Stack>
                 <Group>
-                  <Title order={2}>{row.displayName}</Title>
+                  <Title order={2}>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/d/specialists/$id" params={{ id: row.id }} />
+                      )}
+                    >
+                      {row.displayName}
+                    </Anchor>
+                  </Title>
                   <Badge>{t`Проверен`}</Badge>
                 </Group>
                 <Text>{row.profession === "doctor" ? t`Врач` : t`Исследователь`}</Text>

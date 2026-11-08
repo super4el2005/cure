@@ -46,8 +46,10 @@ msgstr "Без сети доступны ранее загруженные по�
 msgid "Без сети доступны только ранее подготовленные пространства с действующим сроком доступа."
 msgstr "Без сети доступны только ранее подготовленные пространства с действующим сроком доступа."
 
-#: src/routes/d_.organizations.tsx:79
-#: src/routes/m_.organizations.tsx:79
+#: src/routes/d_.organizations_.$id.tsx:24
+#: src/routes/d_.organizations.tsx:87
+#: src/routes/m_.organizations_.$id.tsx:24
+#: src/routes/m_.organizations.tsx:87
 msgid "Больница"
 msgstr "Больница"
 
@@ -57,10 +59,10 @@ msgid "Больницы и клиники — OpenStreetMap"
 msgstr "Больницы и клиники — OpenStreetMap"
 
 #: src/routes/d_.projects.tsx:80
-#: src/routes/d_.research_.$id.tsx:42
+#: src/routes/d_.research_.$id.tsx:43
 #: src/routes/d_.research.tsx:74
 #: src/routes/m_.projects.tsx:80
-#: src/routes/m_.research_.$id.tsx:42
+#: src/routes/m_.research_.$id.tsx:43
 #: src/routes/m_.research.tsx:74
 msgid "В архиве"
 msgstr "В архиве"
@@ -115,8 +117,8 @@ msgstr "Владелец"
 msgid "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 msgstr "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 
-#: src/routes/d_.research_.$id.tsx:81
-#: src/routes/m_.research_.$id.tsx:81
+#: src/routes/d_.research_.$id.tsx:90
+#: src/routes/m_.research_.$id.tsx:90
 msgid "Войдите и заполните профессиональный профиль для сотрудничества."
 msgstr "Войдите и заполните профессиональный профиль для сотрудничества."
 
@@ -157,10 +159,12 @@ msgstr "Восстановить данные в форме"
 
 #: src/routes/d_.profile.tsx:149
 #: src/routes/d_.profile.tsx:186
-#: src/routes/d_.specialists.tsx:77
+#: src/routes/d_.specialists_.$id.tsx:55
+#: src/routes/d_.specialists.tsx:85
 #: src/routes/m_.profile.tsx:149
 #: src/routes/m_.profile.tsx:186
-#: src/routes/m_.specialists.tsx:77
+#: src/routes/m_.specialists_.$id.tsx:55
+#: src/routes/m_.specialists.tsx:85
 msgid "Врач"
 msgstr "Врач"
 
@@ -184,10 +188,20 @@ msgstr "Врачам"
 msgid "Врачи и исследователи — вместе"
 msgstr "Врачи и исследователи — вместе"
 
-#: src/routes/d_.research_.$id.tsx:47
-#: src/routes/m_.research_.$id.tsx:47
+#: src/routes/d_.research_.$id.tsx:48
+#: src/routes/m_.research_.$id.tsx:48
 msgid "Все исследования"
 msgstr "Все исследования"
+
+#: src/routes/d_.organizations_.$id.tsx:30
+#: src/routes/m_.organizations_.$id.tsx:30
+msgid "Все организации"
+msgstr "Все организации"
+
+#: src/routes/d_.specialists_.$id.tsx:35
+#: src/routes/m_.specialists_.$id.tsx:35
+msgid "Все специалисты"
+msgstr "Все специалисты"
 
 #: src/routes/auth.error.tsx:16
 msgid "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
@@ -326,10 +340,10 @@ msgid "Заблокировать пространство"
 msgstr "Заблокировать пространство"
 
 #: src/routes/d_.projects.tsx:79
-#: src/routes/d_.research_.$id.tsx:41
+#: src/routes/d_.research_.$id.tsx:42
 #: src/routes/d_.research.tsx:73
 #: src/routes/m_.projects.tsx:79
-#: src/routes/m_.research_.$id.tsx:41
+#: src/routes/m_.research_.$id.tsx:42
 #: src/routes/m_.research.tsx:73
 msgid "Завершено"
 msgstr "Завершено"
@@ -349,13 +363,17 @@ msgstr "Загруженные записи доступны без интерн
 msgid "Загрузить ещё исследования"
 msgstr "Загрузить ещё исследования"
 
+#: src/routes/d_.organizations_.$id.tsx:32
 #: src/routes/d_.organizations.tsx:52
-#: src/routes/d_.research_.$id.tsx:48
+#: src/routes/d_.research_.$id.tsx:49
 #: src/routes/d_.research.tsx:87
+#: src/routes/d_.specialists_.$id.tsx:37
 #: src/routes/d_.specialists.tsx:52
+#: src/routes/m_.organizations_.$id.tsx:32
 #: src/routes/m_.organizations.tsx:52
-#: src/routes/m_.research_.$id.tsx:48
+#: src/routes/m_.research_.$id.tsx:49
 #: src/routes/m_.research.tsx:87
+#: src/routes/m_.specialists_.$id.tsx:37
 #: src/routes/m_.specialists.tsx:52
 msgid "Загрузка"
 msgstr "Загрузка"
@@ -442,8 +460,8 @@ msgstr "Интервенционное"
 msgid "Использовать ключ"
 msgstr "Использовать ключ"
 
-#: src/routes/d_.research_.$id.tsx:52
-#: src/routes/m_.research_.$id.tsx:52
+#: src/routes/d_.research_.$id.tsx:54
+#: src/routes/m_.research_.$id.tsx:54
 msgid "Исследование не найдено или не опубликовано."
 msgstr "Исследование не найдено или не опубликовано."
 
@@ -459,11 +477,13 @@ msgstr "Исследования"
 #: src/routes/d_.patients.tsx:769
 #: src/routes/d_.profile.tsx:150
 #: src/routes/d_.profile.tsx:186
-#: src/routes/d_.specialists.tsx:77
+#: src/routes/d_.specialists_.$id.tsx:55
+#: src/routes/d_.specialists.tsx:85
 #: src/routes/m_.patients.tsx:769
 #: src/routes/m_.profile.tsx:150
 #: src/routes/m_.profile.tsx:186
-#: src/routes/m_.specialists.tsx:77
+#: src/routes/m_.specialists_.$id.tsx:55
+#: src/routes/m_.specialists.tsx:85
 msgid "Исследователь"
 msgstr "Исследователь"
 
@@ -502,7 +522,9 @@ msgid "Как на устройстве"
 msgstr "Как на устройстве"
 
 #: src/routes/d_.profile.tsx:110
+#: src/routes/d_.specialists_.$id.tsx:56
 #: src/routes/m_.profile.tsx:110
+#: src/routes/m_.specialists_.$id.tsx:56
 msgid "Квалификация подтверждена"
 msgstr "Квалификация подтверждена"
 
@@ -536,8 +558,10 @@ msgstr "Коды МКБ через запятую"
 msgid "Координатор"
 msgstr "Координатор"
 
-#: src/routes/d_.organizations.tsx:80
-#: src/routes/m_.organizations.tsx:80
+#: src/routes/d_.organizations_.$id.tsx:25
+#: src/routes/d_.organizations.tsx:88
+#: src/routes/m_.organizations_.$id.tsx:25
+#: src/routes/m_.organizations.tsx:88
 msgid "Лаборатория"
 msgstr "Лаборатория"
 
@@ -546,11 +570,15 @@ msgstr "Лаборатория"
 msgid "Локальная работа"
 msgstr "Локальная работа"
 
+#: src/routes/d_.organizations_.$id.tsx:43
 #: src/routes/d_.organizations.tsx:67
 #: src/routes/d_.research.tsx:93
+#: src/routes/d_.specialists_.$id.tsx:48
 #: src/routes/d_.specialists.tsx:67
+#: src/routes/m_.organizations_.$id.tsx:43
 #: src/routes/m_.organizations.tsx:67
 #: src/routes/m_.research.tsx:93
+#: src/routes/m_.specialists_.$id.tsx:48
 #: src/routes/m_.specialists.tsx:67
 msgid "Локальное хранилище недоступно. Каталог работает только при подключении к интернету."
 msgstr "Локальное хранилище недоступно. Каталог работает только при подключении к интернету."
@@ -603,9 +631,9 @@ msgid "Мой профессиональный профиль"
 msgstr "Мой профессиональный профиль"
 
 #: src/routes/__root.tsx:313
-#: src/routes/d_.research_.$id.tsx:83
+#: src/routes/d_.research_.$id.tsx:92
 #: src/routes/d.tsx:45
-#: src/routes/m_.research_.$id.tsx:83
+#: src/routes/m_.research_.$id.tsx:92
 #: src/routes/m.tsx:45
 msgid "Мой профиль"
 msgstr "Мой профиль"
@@ -636,18 +664,18 @@ msgstr "На главную"
 msgid "Наблюдатель"
 msgstr "Наблюдатель"
 
-#: src/routes/d_.research_.$id.tsx:59
+#: src/routes/d_.research_.$id.tsx:68
 #: src/routes/d_.research.tsx:115
-#: src/routes/m_.research_.$id.tsx:59
+#: src/routes/m_.research_.$id.tsx:68
 #: src/routes/m_.research.tsx:115
 msgid "Набор приостановлен"
 msgstr "Набор приостановлен"
 
 #: src/routes/d_.projects.tsx:77
-#: src/routes/d_.research_.$id.tsx:39
+#: src/routes/d_.research_.$id.tsx:40
 #: src/routes/d_.research.tsx:71
 #: src/routes/m_.projects.tsx:77
-#: src/routes/m_.research_.$id.tsx:39
+#: src/routes/m_.research_.$id.tsx:40
 #: src/routes/m_.research.tsx:71
 msgid "Набор участников"
 msgstr "Набор участников"
@@ -686,6 +714,11 @@ msgstr "Направление исследования"
 #: src/routes/m_.tools.tsx:336
 msgid "Настройки AI"
 msgstr "Настройки AI"
+
+#: src/routes/d_.specialists_.$id.tsx:60
+#: src/routes/m_.specialists_.$id.tsx:60
+msgid "Научные интересы"
+msgstr "Научные интересы"
 
 #: src/routes/d_.profile.tsx:160
 #: src/routes/m_.profile.tsx:160
@@ -726,8 +759,8 @@ msgstr "Не удалось выйти. Попробуйте ещё раз."
 msgid "Не удалось выполнить вход или выход. Для проверки серверной сессии нужен интернет."
 msgstr "Не удалось выполнить вход или выход. Для проверки серверной сессии нужен интернет."
 
-#: src/routes/d_.research_.$id.tsx:50
-#: src/routes/m_.research_.$id.tsx:50
+#: src/routes/d_.research_.$id.tsx:51
+#: src/routes/m_.research_.$id.tsx:51
 msgid "Не удалось загрузить исследование. Повторите попытку после восстановления связи."
 msgstr "Не удалось загрузить исследование. Повторите попытку после восстановления связи."
 
@@ -795,6 +828,11 @@ msgstr "Не удалось сохранить настройки AI."
 msgid "Не указан"
 msgstr "Не указан"
 
+#: src/routes/d_.specialists_.$id.tsx:69
+#: src/routes/m_.specialists_.$id.tsx:69
+msgid "Не указаны"
+msgstr "Не указаны"
+
 #: src/routes/d_.tools.tsx:376
 #: src/routes/m_.tools.tsx:338
 msgid "Нейросеть"
@@ -857,6 +895,11 @@ msgstr "Операция не выполнена. Проверьте парол�
 msgid "Операция не выполнена. Проверьте подключение и повторите попытку."
 msgstr "Операция не выполнена. Проверьте подключение и повторите попытку."
 
+#: src/routes/d_.organizations_.$id.tsx:58
+#: src/routes/m_.organizations_.$id.tsx:58
+msgid "Опубликованная информация организации. Состав сотрудников, закрытые проекты и данные пациентов не раскрываются."
+msgstr "Опубликованная информация организации. Состав сотрудников, закрытые проекты и данные пациентов не раскрываются."
+
 #: src/routes/d_.research.tsx:81
 #: src/routes/m_.research.tsx:81
 msgid "Опубликованные исследования организаций. Рабочие протоколы и данные пациентов не публикуются."
@@ -887,6 +930,11 @@ msgstr "Организации"
 msgid "Организация"
 msgstr "Организация"
 
+#: src/routes/d_.organizations_.$id.tsx:34
+#: src/routes/m_.organizations_.$id.tsx:34
+msgid "Организация не найдена или не опубликована."
+msgstr "Организация не найдена или не опубликована."
+
 #: src/routes/__root.tsx:304
 msgid "Основная навигация"
 msgstr "Основная навигация"
@@ -908,7 +956,9 @@ msgstr "Отзыв"
 msgid "Открытое описание"
 msgstr "Открытое описание"
 
+#: src/routes/d_.organizations_.$id.tsx:57
 #: src/routes/d_.research.tsx:80
+#: src/routes/m_.organizations_.$id.tsx:57
 #: src/routes/m_.research.tsx:80
 msgid "Открытые исследования"
 msgstr "Открытые исследования"
@@ -1027,10 +1077,10 @@ msgid "Повторно проверить сессию и доступ"
 msgstr "Повторно проверить сессию и доступ"
 
 #: src/routes/d_.projects.tsx:76
-#: src/routes/d_.research_.$id.tsx:38
+#: src/routes/d_.research_.$id.tsx:39
 #: src/routes/d_.research.tsx:70
 #: src/routes/m_.projects.tsx:76
-#: src/routes/m_.research_.$id.tsx:38
+#: src/routes/m_.research_.$id.tsx:39
 #: src/routes/m_.research.tsx:70
 msgid "Подготовка"
 msgstr "Подготовка"
@@ -1086,6 +1136,11 @@ msgstr "Поиск среди загруженных исследований"
 msgid "Показана ограниченная выборка."
 msgstr "Показана ограниченная выборка."
 
+#: src/routes/d_.specialists_.$id.tsx:73
+#: src/routes/m_.specialists_.$id.tsx:73
+msgid "Показаны только сведения, опубликованные специалистом. Данные пациентов и закрытые членства недоступны."
+msgstr "Показаны только сведения, опубликованные специалистом. Данные пациентов и закрытые членства недоступны."
+
 #: src/routes/d_.patients.tsx:601
 #: src/routes/d_.patients.tsx:679
 #: src/routes/m_.patients.tsx:601
@@ -1093,8 +1148,10 @@ msgstr "Показана ограниченная выборка."
 msgid "Пол"
 msgstr "Пол"
 
-#: src/routes/d_.organizations.tsx:77
-#: src/routes/m_.organizations.tsx:77
+#: src/routes/d_.organizations_.$id.tsx:22
+#: src/routes/d_.organizations.tsx:85
+#: src/routes/m_.organizations_.$id.tsx:22
+#: src/routes/m_.organizations.tsx:85
 msgid "Поликлиника"
 msgstr "Поликлиника"
 
@@ -1141,8 +1198,8 @@ msgstr "Провайдер"
 msgid "Провайдер отклонил ключ или доступ к модели."
 msgstr "Провайдер отклонил ключ или доступ к модели."
 
-#: src/routes/d_.specialists.tsx:75
-#: src/routes/m_.specialists.tsx:75
+#: src/routes/d_.specialists.tsx:83
+#: src/routes/m_.specialists.tsx:83
 msgid "Проверен"
 msgstr "Проверен"
 
@@ -1184,10 +1241,10 @@ msgid "Проверяем сессию…"
 msgstr "Проверяем сессию…"
 
 #: src/routes/d_.projects.tsx:78
-#: src/routes/d_.research_.$id.tsx:40
+#: src/routes/d_.research_.$id.tsx:41
 #: src/routes/d_.research.tsx:72
 #: src/routes/m_.projects.tsx:78
-#: src/routes/m_.research_.$id.tsx:40
+#: src/routes/m_.research_.$id.tsx:41
 #: src/routes/m_.research.tsx:72
 msgid "Проводится"
 msgstr "Проводится"
@@ -1217,6 +1274,16 @@ msgstr "Профессия"
 #: src/routes/m_.profile.tsx:107
 msgid "Профиль ещё не заполнен"
 msgstr "Профиль ещё не заполнен"
+
+#: src/routes/d_.specialists_.$id.tsx:39
+#: src/routes/m_.specialists_.$id.tsx:39
+msgid "Профиль не найден или не опубликован."
+msgstr "Профиль не найден или не опубликован."
+
+#: src/routes/d_.specialists_.$id.tsx:36
+#: src/routes/m_.specialists_.$id.tsx:36
+msgid "Профиль специалиста"
+msgstr "Профиль специалиста"
 
 #: src/routes/d_.tools.tsx:248
 #: src/routes/m_.tools.tsx:247
@@ -1303,8 +1370,8 @@ msgstr "Связываем клиническую практику и униве
 msgid "Связь научных вопросов с клинической практикой."
 msgstr "Связь научных вопросов с клинической практикой."
 
-#: src/routes/d_.research_.$id.tsx:78
-#: src/routes/m_.research_.$id.tsx:78
+#: src/routes/d_.research_.$id.tsx:87
+#: src/routes/m_.research_.$id.tsx:87
 msgid "Связь с координатором"
 msgstr "Связь с координатором"
 
@@ -1372,6 +1439,15 @@ msgstr "Создать исследование"
 #: src/routes/m_.patients.tsx:554
 msgid "Сохранение на устройстве и отправка на сервер — разные статусы. Неотправленные изменения остаются в шифруемой очереди."
 msgstr "Сохранение на устройстве и отправка на сервер — разные статусы. Неотправленные изменения остаются в шифруемой очереди."
+
+#: src/routes/d_.organizations_.$id.tsx:40
+#: src/routes/d_.research_.$id.tsx:60
+#: src/routes/d_.specialists_.$id.tsx:45
+#: src/routes/m_.organizations_.$id.tsx:40
+#: src/routes/m_.research_.$id.tsx:60
+#: src/routes/m_.specialists_.$id.tsx:45
+msgid "Сохранённая информация может отличаться от актуальной. Обновления загрузятся после подключения."
+msgstr "Сохранённая информация может отличаться от актуальной. Обновления загрузятся после подключения."
 
 #: src/routes/d_.tools.tsx:645
 #: src/routes/m_.tools.tsx:595
@@ -1452,8 +1528,22 @@ msgstr "Срок согласия истёк. Для нового срока т�
 msgid "Ссылка или номер документа, подтверждающего согласие или отзыв"
 msgstr "Ссылка или номер документа, подтверждающего согласие или отзыв"
 
-#: src/routes/d_.research_.$id.tsx:86
-#: src/routes/m_.research_.$id.tsx:86
+#: src/routes/d_.organizations_.$id.tsx:37
+#: src/routes/d_.research_.$id.tsx:57
+#: src/routes/d_.specialists_.$id.tsx:42
+#: src/routes/m_.organizations_.$id.tsx:37
+#: src/routes/m_.research_.$id.tsx:57
+#: src/routes/m_.specialists_.$id.tsx:42
+msgid "Страница не сохранена на устройстве. Подключитесь к интернету для загрузки."
+msgstr "Страница не сохранена на устройстве. Подключитесь к интернету для загрузки."
+
+#: src/routes/d_.organizations_.$id.tsx:31
+#: src/routes/m_.organizations_.$id.tsx:31
+msgid "Страница организации"
+msgstr "Страница организации"
+
+#: src/routes/d_.research_.$id.tsx:95
+#: src/routes/m_.research_.$id.tsx:95
 msgid "Страница содержит только сведения, разрешённые авторами к публикации."
 msgstr "Страница содержит только сведения, разрешённые авторами к публикации."
 
@@ -1507,8 +1597,10 @@ msgstr "Укажите источник подтверждения"
 msgid "Укажите цель использования данных"
 msgstr "Укажите цель использования данных"
 
-#: src/routes/d_.organizations.tsx:78
-#: src/routes/m_.organizations.tsx:78
+#: src/routes/d_.organizations_.$id.tsx:23
+#: src/routes/d_.organizations.tsx:86
+#: src/routes/m_.organizations_.$id.tsx:23
+#: src/routes/m_.organizations.tsx:86
 msgid "Университет"
 msgstr "Университет"
 
@@ -1517,13 +1609,13 @@ msgstr "Университет"
 msgid "Университеты — ROR"
 msgstr "Университеты — ROR"
 
-#: src/routes/d_.research_.$id.tsx:70
-#: src/routes/m_.research_.$id.tsx:70
+#: src/routes/d_.research_.$id.tsx:79
+#: src/routes/m_.research_.$id.tsx:79
 msgid "Условия участия"
 msgstr "Условия участия"
 
-#: src/routes/d_.research_.$id.tsx:72
-#: src/routes/m_.research_.$id.tsx:72
+#: src/routes/d_.research_.$id.tsx:81
+#: src/routes/m_.research_.$id.tsx:81
 msgid "Условия участия уточняются у координатора."
 msgstr "Условия участия уточняются у координатора."
 
@@ -1547,10 +1639,10 @@ msgid "Цель использования данных"
 msgstr "Цель использования данных"
 
 #: src/routes/d_.projects.tsx:75
-#: src/routes/d_.research_.$id.tsx:37
+#: src/routes/d_.research_.$id.tsx:38
 #: src/routes/d_.research.tsx:69
 #: src/routes/m_.projects.tsx:75
-#: src/routes/m_.research_.$id.tsx:37
+#: src/routes/m_.research_.$id.tsx:38
 #: src/routes/m_.research.tsx:69
 msgid "Черновик"
 msgstr "Черновик"
@@ -1581,6 +1673,11 @@ msgstr "Язык данных: {0}."
 #: src/routes/m_.tools.tsx:299
 msgid "Язык интерфейса"
 msgstr "Язык интерфейса"
+
+#: src/routes/d_.specialists_.$id.tsx:68
+#: src/routes/m_.specialists_.$id.tsx:68
+msgid "Языки общения"
+msgstr "Языки общения"
 
 #: src/routes/d_.profile.tsx:163
 #: src/routes/m_.profile.tsx:163

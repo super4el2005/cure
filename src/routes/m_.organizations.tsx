@@ -70,7 +70,15 @@ function Directory() {
           {rows?.map((row) => (
             <Paper key={row.id} withBorder p="md">
               <Stack>
-                <Title order={2}>{row.name}</Title>
+                <Title order={2}>
+                  <Anchor
+                    renderRoot={(props) => (
+                      <Link {...props} to="/m/organizations/$id" params={{ id: row.id }} />
+                    )}
+                  >
+                    {row.name}
+                  </Anchor>
+                </Title>
                 <Badge>
                   {
                     {

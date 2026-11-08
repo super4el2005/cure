@@ -30,8 +30,12 @@ import { Route as MToolsRouteImport } from './routes/m_.tools'
 import { Route as ApiAiChatRouteImport } from './routes/api.ai.chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiMedicalSearchRouteImport } from './routes/api.medical.search'
+import { Route as DOrganizationsIdRouteImport } from './routes/d_.organizations_.$id'
 import { Route as DResearchIdRouteImport } from './routes/d_.research_.$id'
+import { Route as DSpecialistsIdRouteImport } from './routes/d_.specialists_.$id'
+import { Route as MOrganizationsIdRouteImport } from './routes/m_.organizations_.$id'
 import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
+import { Route as MSpecialistsIdRouteImport } from './routes/m_.specialists_.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -138,14 +142,34 @@ const ApiMedicalSearchRoute = ApiMedicalSearchRouteImport.update({
   path: '/api/medical/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DOrganizationsIdRoute = DOrganizationsIdRouteImport.update({
+  id: '/d_/organizations_/$id',
+  path: '/d/organizations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DResearchIdRoute = DResearchIdRouteImport.update({
   id: '/d_/research_/$id',
   path: '/d/research/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DSpecialistsIdRoute = DSpecialistsIdRouteImport.update({
+  id: '/d_/specialists_/$id',
+  path: '/d/specialists/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MOrganizationsIdRoute = MOrganizationsIdRouteImport.update({
+  id: '/m_/organizations_/$id',
+  path: '/m/organizations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MResearchIdRoute = MResearchIdRouteImport.update({
   id: '/m_/research_/$id',
   path: '/m/research/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MSpecialistsIdRoute = MSpecialistsIdRouteImport.update({
+  id: '/m_/specialists_/$id',
+  path: '/m/specialists/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -171,8 +195,12 @@ export interface FileRoutesByFullPath {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d/organizations/$id': typeof DOrganizationsIdRoute
   '/d/research/$id': typeof DResearchIdRoute
+  '/d/specialists/$id': typeof DSpecialistsIdRoute
+  '/m/organizations/$id': typeof MOrganizationsIdRoute
   '/m/research/$id': typeof MResearchIdRoute
+  '/m/specialists/$id': typeof MSpecialistsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -196,8 +224,12 @@ export interface FileRoutesByTo {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d/organizations/$id': typeof DOrganizationsIdRoute
   '/d/research/$id': typeof DResearchIdRoute
+  '/d/specialists/$id': typeof DSpecialistsIdRoute
+  '/m/organizations/$id': typeof MOrganizationsIdRoute
   '/m/research/$id': typeof MResearchIdRoute
+  '/m/specialists/$id': typeof MSpecialistsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -222,8 +254,12 @@ export interface FileRoutesById {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d_/organizations_/$id': typeof DOrganizationsIdRoute
   '/d_/research_/$id': typeof DResearchIdRoute
+  '/d_/specialists_/$id': typeof DSpecialistsIdRoute
+  '/m_/organizations_/$id': typeof MOrganizationsIdRoute
   '/m_/research_/$id': typeof MResearchIdRoute
+  '/m_/specialists_/$id': typeof MSpecialistsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -249,8 +285,12 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d/organizations/$id'
     | '/d/research/$id'
+    | '/d/specialists/$id'
+    | '/m/organizations/$id'
     | '/m/research/$id'
+    | '/m/specialists/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -274,8 +314,12 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d/organizations/$id'
     | '/d/research/$id'
+    | '/d/specialists/$id'
+    | '/m/organizations/$id'
     | '/m/research/$id'
+    | '/m/specialists/$id'
   id:
     | '__root__'
     | '/'
@@ -299,8 +343,12 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d_/organizations_/$id'
     | '/d_/research_/$id'
+    | '/d_/specialists_/$id'
+    | '/m_/organizations_/$id'
     | '/m_/research_/$id'
+    | '/m_/specialists_/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -325,8 +373,12 @@ export interface RootRouteChildren {
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiMedicalSearchRoute: typeof ApiMedicalSearchRoute
+  DOrganizationsIdRoute: typeof DOrganizationsIdRoute
   DResearchIdRoute: typeof DResearchIdRoute
+  DSpecialistsIdRoute: typeof DSpecialistsIdRoute
+  MOrganizationsIdRoute: typeof MOrganizationsIdRoute
   MResearchIdRoute: typeof MResearchIdRoute
+  MSpecialistsIdRoute: typeof MSpecialistsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -478,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMedicalSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/organizations_/$id': {
+      id: '/d_/organizations_/$id'
+      path: '/d/organizations/$id'
+      fullPath: '/d/organizations/$id'
+      preLoaderRoute: typeof DOrganizationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/research_/$id': {
       id: '/d_/research_/$id'
       path: '/d/research/$id'
@@ -485,11 +544,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DResearchIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/specialists_/$id': {
+      id: '/d_/specialists_/$id'
+      path: '/d/specialists/$id'
+      fullPath: '/d/specialists/$id'
+      preLoaderRoute: typeof DSpecialistsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/organizations_/$id': {
+      id: '/m_/organizations_/$id'
+      path: '/m/organizations/$id'
+      fullPath: '/m/organizations/$id'
+      preLoaderRoute: typeof MOrganizationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/m_/research_/$id': {
       id: '/m_/research_/$id'
       path: '/m/research/$id'
       fullPath: '/m/research/$id'
       preLoaderRoute: typeof MResearchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/specialists_/$id': {
+      id: '/m_/specialists_/$id'
+      path: '/m/specialists/$id'
+      fullPath: '/m/specialists/$id'
+      preLoaderRoute: typeof MSpecialistsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -517,8 +597,12 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiMedicalSearchRoute: ApiMedicalSearchRoute,
+  DOrganizationsIdRoute: DOrganizationsIdRoute,
   DResearchIdRoute: DResearchIdRoute,
+  DSpecialistsIdRoute: DSpecialistsIdRoute,
+  MOrganizationsIdRoute: MOrganizationsIdRoute,
   MResearchIdRoute: MResearchIdRoute,
+  MSpecialistsIdRoute: MSpecialistsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

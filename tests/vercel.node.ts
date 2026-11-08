@@ -239,3 +239,22 @@ test("research detail and project workspace are independent desktop/mobile route
     assert.match(await workspace.text(), /Private projects, study stages/);
   }
 });
+
+test("public specialist and organization detail routes do not render directory parents", async () => {
+  for (const device of ["d", "m"]) {
+    for (const [section, title, directoryText] of [
+      ["specialists", "Specialist profile", "Search"],
+      ["organizations", "Organization page", "open to collaboration"],
+    ] as const) {
+      const response = await app.fetch(
+        new Request(`https://cure-sooty.vercel.app/${device}/${section}/unknown`, {
+          headers: { "accept-language": "en" },
+        }),
+      );
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.match(html, new RegExp(title));
+      assert.doesNotMatch(html, new RegExp(directoryText));
+    }
+  }
+});

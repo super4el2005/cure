@@ -12,7 +12,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { useInterval, useForceUpdate } from "@mantine/hooks";
+import { useInterval, useForceUpdate, useNetwork } from "@mantine/hooks";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -23,9 +23,10 @@ import { usePublicDirectory } from "@/src/lib/use-public-directory";
 export const Route = createFileRoute("/d_/research_/$id")({ component: PublicResearch });
 function PublicResearch() {
   const { t } = useLingui();
+  const { online } = useNetwork();
   useInterval(useForceUpdate(), 30000, { autoInvoke: true });
   const { id } = Route.useParams();
-  const local = usePublicDirectory(id);
+  const local = usePublicDirectory({ researchId: id });
   const cached = useLiveQuery(() => local.directory?.researchDetails);
   const remote = useQuery<FunctionReturnType<typeof api.projects.publicDetails>>({
     queryKey: convexQuery(api.projects.publicDetails, { clientId: id }).queryKey,
@@ -49,7 +50,15 @@ function PublicResearch() {
         {remote.isError && (
           <Alert color="red">{t`Не удалось загрузить исследование. Повторите попытку после восстановления связи.`}</Alert>
         )}
-        {ready && !study && <Alert>{t`Исследование не найдено или не опубликовано.`}</Alert>}
+        {ready && online && !study && (
+          <Alert>{t`Исследование не найдено или не опубликовано.`}</Alert>
+        )}
+        {!online && !study && (
+          <Alert>{t`Страница не сохранена на устройстве. Подключитесь к интернету для загрузки.`}</Alert>
+        )}
+        {!online && study && (
+          <Alert>{t`Сохранённая информация может отличаться от актуальной. Обновления загрузятся после подключения.`}</Alert>
+        )}
         {study && (
           <>
             <Title>{study.title}</Title>
