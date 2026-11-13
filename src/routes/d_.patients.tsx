@@ -1,5 +1,7 @@
 import { useLingui } from "@lingui/react/macro";
 import {
+  Accordion,
+  Pagination,
   Alert,
   Anchor,
   Badge,
@@ -19,9 +21,19 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
+import "dayjs/locale/ru";
+import { useForm } from "@mantine/form";
+import { usePagination } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import {
+  defaultPatientSearch,
+  patientSearchSchema,
+  possiblePatientDuplicates,
+  searchPatients,
+} from "@/src/lib/patient-search";
 import { usePatientWorkspace } from "@/src/lib/use-patient-workspace";
 import { failureDetails } from "@/src/observability/events";
 
@@ -58,6 +70,30 @@ function Patients() {
     downloaded,
     status,
   } = usePatientWorkspace();
+  const searchForm = useForm({
+    initialValues: { ...defaultPatientSearch, scope: "" },
+    onValuesChange: () => pagination.first(),
+  });
+  const currentSearch =
+    workspace && searchForm.values.scope === workspace.scope
+      ? searchForm.values
+      : defaultPatientSearch;
+  const filtered = searchPatients(rows, opened?.role ?? "researcher", currentSearch, Date.now());
+  const pageCount = Math.max(1, Math.ceil(filtered.length / 25));
+  const pagination = usePagination({ total: pageCount });
+  const page = Math.min(pagination.active, pageCount);
+  const pageRows = filtered.slice((page - 1) * 25, page * 25);
+  const duplicates = possiblePatientDuplicates(rows, opened?.role ?? "researcher");
+  const diagnosisOptions = [
+    ...new Set(
+      rows.flatMap((row) =>
+        opened?.role === "doctor" || row.consentScope.includes("diagnoses")
+          ? row.diagnosisCodes.map((code) => code.trim().toUpperCase()).filter(Boolean)
+          : [],
+      ),
+    ),
+  ].sort();
+
   return (
     <Container component="main" py="md">
       <Stack>
@@ -394,6 +430,140 @@ function Patients() {
                 </form>
               </Paper>
             )}
+            <Accordion
+              onChange={(value) => {
+                if (value === "search" && searchForm.values.scope !== workspace.scope)
+                  searchForm.setValues({ ...defaultPatientSearch, scope: workspace.scope });
+              }}
+            >
+              <Accordion.Item value="search">
+                <Accordion.Control>{t`Поиск и фильтры пациентов`}</Accordion.Control>
+                <Accordion.Panel>
+                  {searchForm.values.scope === workspace.scope && (
+                    <Stack>
+                      <TextInput
+                        label={
+                          opened.role === "doctor"
+                            ? t`Имя или идентификатор пациента`
+                            : t`Обезличенный идентификатор пациента`
+                        }
+                        maxLength={200}
+                        {...searchForm.getInputProps("query")}
+                      />
+                      <MultiSelect
+                        label={t`Все указанные диагнозы`}
+                        data={diagnosisOptions}
+                        searchable
+                        clearable
+                        maxValues={100}
+                        {...searchForm.getInputProps("diagnoses")}
+                      />
+                      <Text>{t`Коды диагнозов сравниваются целиком без учёта регистра. Недоступные по согласию поля не считаются пустыми.`}</Text>
+                      <NativeSelect
+                        label={t`Пол`}
+                        data={[
+                          { value: "any", label: t`Любой` },
+                          { value: "female", label: t`Женский` },
+                          { value: "male", label: t`Мужской` },
+                          { value: "unknown", label: t`Не указан` },
+                          ...(opened.role === "researcher"
+                            ? [{ value: "unavailable", label: t`Не разрешено согласием` }]
+                            : []),
+                        ]}
+                        {...searchForm.getInputProps("sex")}
+                      />
+                      {opened.role === "doctor" && (
+                        <>
+                          <DateInput
+                            label={t`Дата рождения: от`}
+                            locale={i18n.locale}
+                            clearable
+                            value={searchForm.values.birthFrom || null}
+                            onChange={(value) => searchForm.setFieldValue("birthFrom", value ?? "")}
+                          />
+                          <DateInput
+                            label={t`Дата рождения: до`}
+                            locale={i18n.locale}
+                            clearable
+                            value={searchForm.values.birthTo || null}
+                            onChange={(value) => searchForm.setFieldValue("birthTo", value ?? "")}
+                          />
+                        </>
+                      )}
+                      {!patientSearchSchema.safeParse(searchForm.values).success && (
+                        <Alert color="red">{t`Проверьте диапазон дат: начало не должно быть позже окончания.`}</Alert>
+                      )}
+                      <NativeSelect
+                        label={t`Сортировка пациентов`}
+                        data={[
+                          { value: "recent", label: t`По последнему изменению` },
+                          { value: "id", label: t`По идентификатору` },
+                          ...(opened.role === "doctor"
+                            ? [{ value: "name", label: t`По имени` }]
+                            : []),
+                        ]}
+                        {...searchForm.getInputProps("sort")}
+                      />
+                      <Button
+                        variant="default"
+                        onClick={() =>
+                          searchForm.setValues({ ...defaultPatientSearch, scope: workspace.scope })
+                        }
+                      >{t`Сбросить критерии`}</Button>
+                    </Stack>
+                  )}
+                </Accordion.Panel>
+              </Accordion.Item>
+              {opened.role === "doctor" && (
+                <Accordion.Item value="duplicates">
+                  <Accordion.Control>{t`Возможные дубликаты пациентов`}</Accordion.Control>
+                  <Accordion.Panel>
+                    <Stack>
+                      <Text>{t`Совпадение имени и даты рождения — повод для проверки, а не подтверждение личности. Записи, согласия и история не объединяются автоматически.`}</Text>
+                      {duplicates.length === 0 && (
+                        <Text>{t`Совпадений в загруженном наборе не найдено.`}</Text>
+                      )}
+                      <Text>
+                        {t`Групп совпадений:`} {duplicates.length}
+                      </Text>
+                      {duplicates.slice(0, 20).map((group) => (
+                        <Paper withBorder p="md" key={group[0]!.clientId}>
+                          <Stack>
+                            <Title order={3}>{group[0]!.fullName}</Title>
+                            <Text>
+                              {i18n.date(new Date(`${group[0]!.birthDate}T12:00:00`), {
+                                dateStyle: "medium",
+                              })}
+                            </Text>
+                            {group.map((record) => (
+                              <Anchor
+                                key={record.clientId}
+                                renderRoot={(props) => (
+                                  <Link
+                                    {...props}
+                                    to="/d/patients/$id"
+                                    params={{ id: record.clientId }}
+                                  />
+                                )}
+                              >
+                                {record.clientId}
+                              </Anchor>
+                            ))}
+                          </Stack>
+                        </Paper>
+                      ))}
+                      {duplicates.length > 20 && (
+                        <Text>{t`Показаны первые 20 групп совпадений.`}</Text>
+                      )}
+                    </Stack>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              )}
+            </Accordion>
+            <Text>
+              {t`Найдено:`} {i18n.number(filtered.length)} / {i18n.number(rows.length)}
+            </Text>
+            <Text>{t`Поиск выполняется в загруженном наборе выбранной организации и работает без сети.`}</Text>
             <Table.ScrollContainer minWidth={700}>
               <Table>
                 <Table.Thead>
@@ -405,7 +575,7 @@ function Patients() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {rows.map((row) => (
+                  {pageRows.map((row) => (
                     <Table.Tr key={row.clientId}>
                       <Table.Td>
                         <Anchor
@@ -490,6 +660,10 @@ function Patients() {
                 </Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            <Pagination total={pageCount} value={page} onChange={pagination.setPage} />
+            {downloaded.isReady && rows.length > 0 && filtered.length === 0 && (
+              <Text>{t`Нет пациентов, соответствующих текущим критериям.`}</Text>
+            )}
             {downloaded.isReady && rows.length === 0 && (
               <Text>{t`Доступных записей пока нет.`}</Text>
             )}

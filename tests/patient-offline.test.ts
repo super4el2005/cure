@@ -16,6 +16,7 @@ import type { FunctionReference } from "convex/server";
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
 import { analyzeCohort, defaultCohortCriteria } from "@/src/lib/cohort-analysis";
+import { defaultPatientSearch, searchPatients } from "@/src/lib/patient-search";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { durabilityReceipts, openPatientWorkspace } from "@/src/lib/patient-workspace";
 import { reportFailure } from "@/src/observability/events";
@@ -262,6 +263,13 @@ describe("durable patient operations", () => {
     );
     expect(offlineAnalysis.flow.selected).toBe(1);
     expect(offlineAnalysis.diagnoses).toEqual([{ code: "F41", count: 1 }]);
+    const offlineSearch = searchPatients(
+      [restored.read(local!)],
+      "doctor",
+      { ...defaultPatientSearch, query: "private patient", diagnoses: ["f41"] },
+      Date.now(),
+    );
+    expect(offlineSearch.map((row) => row.clientId)).toEqual([local!.clientId]);
     expect(calls).toBe(0);
     const settled = restored.executor.waitForTransactionCompletion(saved.transactionId);
     result = [];
