@@ -69,8 +69,8 @@ msgid "Аллергии"
 msgstr "Allergies"
 
 #: src/routes/__root.tsx:315
-#: src/routes/d_.analytics.tsx:58
-#: src/routes/m_.analytics.tsx:58
+#: src/routes/d_.analytics.tsx:71
+#: src/routes/m_.analytics.tsx:71
 msgid "Аналитика"
 msgstr "Analytics"
 
@@ -96,11 +96,11 @@ msgstr "Archive task"
 msgid "Без сети доступны ранее загруженные получатели. Отзыв на сервере вступит в силу после синхронизации."
 msgstr "Previously downloaded recipients are available offline. Withdrawal takes effect on the server after synchronization."
 
-#: src/routes/d_.analytics.tsx:96
+#: src/routes/d_.analytics.tsx:109
 #: src/routes/d_.patients_.$id_.visits.tsx:133
 #: src/routes/d_.patients.tsx:146
 #: src/routes/d_.projects.tsx:179
-#: src/routes/m_.analytics.tsx:96
+#: src/routes/m_.analytics.tsx:109
 #: src/routes/m_.patients_.$id_.visits.tsx:133
 #: src/routes/m_.patients.tsx:146
 #: src/routes/m_.projects.tsx:179
@@ -182,10 +182,10 @@ msgid "В очереди:"
 msgstr "Queued:"
 
 #. placeholder {0}: status.data?.pending ?? 0
-#: src/routes/d_.analytics.tsx:126
+#: src/routes/d_.analytics.tsx:139
 #: src/routes/d_.patients_.$id_.visits.tsx:155
 #: src/routes/d_.patients.tsx:183
-#: src/routes/m_.analytics.tsx:126
+#: src/routes/m_.analytics.tsx:139
 #: src/routes/m_.patients_.$id_.visits.tsx:155
 #: src/routes/m_.patients.tsx:183
 msgid "В очереди: {0}"
@@ -225,12 +225,14 @@ msgstr "Revision"
 msgid "Версия для компьютера"
 msgstr "Desktop version"
 
+#: src/routes/d_.analytics.tsx:184
 #: src/routes/d_.patients_.$id_.consents.tsx:380
 #: src/routes/d_.patients_.$id_.visits.tsx:338
 #: src/routes/d_.patients_.$id.tsx:149
 #: src/routes/d_.patients_.$id.tsx:485
 #: src/routes/d_.projects_.$id.protocol.tsx:335
 #: src/routes/d_.projects.tsx:331
+#: src/routes/m_.analytics.tsx:184
 #: src/routes/m_.patients_.$id_.consents.tsx:380
 #: src/routes/m_.patients_.$id_.visits.tsx:338
 #: src/routes/m_.patients_.$id.tsx:149
@@ -269,8 +271,8 @@ msgstr "Visits from the unlocked clinical workspace; times are shown in the appo
 msgid "Визиты пациента"
 msgstr "Patient visits"
 
-#: src/routes/d_.analytics.tsx:52
-#: src/routes/m_.analytics.tsx:52
+#: src/routes/d_.analytics.tsx:65
+#: src/routes/m_.analytics.tsx:65
 msgid "Включено в выборку"
 msgstr "Included in the cohort"
 
@@ -296,12 +298,12 @@ msgstr "Possible duplicate patients"
 msgid "Войдите и заполните профессиональный профиль для сотрудничества."
 msgstr "Sign in and complete your professional profile to collaborate."
 
-#: src/routes/d_.analytics.tsx:61
+#: src/routes/d_.analytics.tsx:74
 #: src/routes/d_.patients_.$id_.consents.tsx:63
 #: src/routes/d_.patients_.$id_.visits.tsx:98
 #: src/routes/d_.patients_.$id.tsx:76
 #: src/routes/d_.patients.tsx:104
-#: src/routes/m_.analytics.tsx:61
+#: src/routes/m_.analytics.tsx:74
 #: src/routes/m_.patients_.$id_.consents.tsx:63
 #: src/routes/m_.patients_.$id_.visits.tsx:98
 #: src/routes/m_.patients_.$id.tsx:76
@@ -349,13 +351,13 @@ msgstr "Sign in with Google"
 msgid "Восстановить данные в форме"
 msgstr "Restore data in the form"
 
-#: src/routes/d_.analytics.tsx:108
+#: src/routes/d_.analytics.tsx:121
 #: src/routes/d_.patients_.$id.tsx:147
 #: src/routes/d_.profile.tsx:151
 #: src/routes/d_.profile.tsx:188
 #: src/routes/d_.specialists_.$id.tsx:55
 #: src/routes/d_.specialists.tsx:85
-#: src/routes/m_.analytics.tsx:108
+#: src/routes/m_.analytics.tsx:121
 #: src/routes/m_.patients_.$id.tsx:147
 #: src/routes/m_.profile.tsx:151
 #: src/routes/m_.profile.tsx:188
@@ -391,8 +393,8 @@ msgstr "Doctors and researchers — together"
 msgid "Время завершённого или отменённого визита не переносится. Для нового приёма создайте отдельный визит."
 msgstr "The schedule of a finished or cancelled visit cannot be changed. Create a separate visit for a new appointment."
 
-#: src/routes/d_.analytics.tsx:147
-#: src/routes/m_.analytics.tsx:147
+#: src/routes/d_.analytics.tsx:301
+#: src/routes/m_.analytics.tsx:301
 msgid "Все выбранные"
 msgstr "All selected codes"
 
@@ -450,7 +452,7 @@ msgstr "Select a researcher"
 
 #: src/lib/use-patient-workspace.ts:70
 #: src/lib/use-project-workspace.ts:66
-#: src/routes/d_.analytics.tsx:73
+#: src/routes/d_.analytics.tsx:86
 #: src/routes/d_.invitations.tsx:65
 #: src/routes/d_.patients_.$id_.consents.tsx:76
 #: src/routes/d_.patients_.$id_.visits.tsx:110
@@ -461,7 +463,7 @@ msgstr "Select a researcher"
 #: src/routes/d_.projects_.$id.work.tsx:259
 #: src/routes/d_.projects.tsx:152
 #: src/routes/d_.workspace.tsx:120
-#: src/routes/m_.analytics.tsx:73
+#: src/routes/m_.analytics.tsx:86
 #: src/routes/m_.invitations.tsx:65
 #: src/routes/m_.patients_.$id_.consents.tsx:76
 #: src/routes/m_.patients_.$id_.visits.tsx:110
@@ -614,18 +616,18 @@ msgstr "The demo counter is stored only on this device."
 msgid "Диагнозы"
 msgstr "Diagnoses"
 
-#: src/routes/d_.analytics.tsx:137
-#: src/routes/m_.analytics.tsx:137
+#: src/routes/d_.analytics.tsx:285
+#: src/routes/m_.analytics.tsx:285
 msgid "Диагнозы включения"
 msgstr "Inclusion diagnoses"
 
-#: src/routes/d_.analytics.tsx:153
-#: src/routes/m_.analytics.tsx:153
+#: src/routes/d_.analytics.tsx:307
+#: src/routes/m_.analytics.tsx:307
 msgid "Диагнозы исключения"
 msgstr "Exclusion diagnoses"
 
-#: src/routes/d_.analytics.tsx:226
-#: src/routes/m_.analytics.tsx:226
+#: src/routes/d_.analytics.tsx:402
+#: src/routes/m_.analytics.tsx:402
 msgid "Диагнозы недоступны по согласию"
 msgstr "Diagnoses withheld by consent"
 
@@ -691,15 +693,15 @@ msgstr "Documents, recipient names and the full consent history are not shared w
 msgid "Долгота"
 msgstr "Longitude"
 
-#: src/routes/d_.analytics.tsx:237
-#: src/routes/d_.analytics.tsx:276
-#: src/routes/m_.analytics.tsx:237
-#: src/routes/m_.analytics.tsx:276
+#: src/routes/d_.analytics.tsx:413
+#: src/routes/d_.analytics.tsx:452
+#: src/routes/m_.analytics.tsx:413
+#: src/routes/m_.analytics.tsx:452
 msgid "Доля разрешённого набора"
 msgstr "Share of authorized records"
 
-#: src/routes/d_.analytics.tsx:258
-#: src/routes/m_.analytics.tsx:258
+#: src/routes/d_.analytics.tsx:434
+#: src/routes/m_.analytics.tsx:434
 msgid "Доля считается среди записей с разрешением на диагнозы, включая пустые списки. Один пациент учитывается один раз для каждого кода; сумма долей может превышать 100%."
 msgstr "The denominator includes all records authorized for diagnosis analysis, including empty lists. Each patient is counted once per code; percentages may add up to more than 100%."
 
@@ -725,8 +727,8 @@ msgstr "Researcher access"
 msgid "Доступ исследователя к записи"
 msgstr "Researcher access to this record"
 
-#: src/routes/d_.analytics.tsx:47
-#: src/routes/m_.analytics.tsx:47
+#: src/routes/d_.analytics.tsx:60
+#: src/routes/m_.analytics.tsx:60
 msgid "Доступно записей до отбора"
 msgstr "Available records before selection"
 
@@ -757,12 +759,12 @@ msgstr "No accessible records yet."
 msgid "Единица измерения"
 msgstr "Unit"
 
-#: src/routes/d_.analytics.tsx:45
+#: src/routes/d_.analytics.tsx:58
 #: src/routes/d_.patients_.$id.tsx:160
 #: src/routes/d_.patients_.$id.tsx:238
 #: src/routes/d_.patients.tsx:232
 #: src/routes/d_.patients.tsx:466
-#: src/routes/m_.analytics.tsx:45
+#: src/routes/m_.analytics.tsx:58
 #: src/routes/m_.patients_.$id.tsx:160
 #: src/routes/m_.patients_.$id.tsx:238
 #: src/routes/m_.patients.tsx:232
@@ -770,7 +772,7 @@ msgstr "Unit"
 msgid "Женский"
 msgstr "Female"
 
-#: src/routes/d_.analytics.tsx:113
+#: src/routes/d_.analytics.tsx:126
 #: src/routes/d_.invitations.tsx:112
 #: src/routes/d_.patients_.$id_.consents.tsx:129
 #: src/routes/d_.patients_.$id_.visits.tsx:154
@@ -780,7 +782,7 @@ msgstr "Female"
 #: src/routes/d_.projects_.$id.team.tsx:202
 #: src/routes/d_.projects_.$id.work.tsx:312
 #: src/routes/d_.projects.tsx:207
-#: src/routes/m_.analytics.tsx:113
+#: src/routes/m_.analytics.tsx:126
 #: src/routes/m_.invitations.tsx:112
 #: src/routes/m_.patients_.$id_.consents.tsx:129
 #: src/routes/m_.patients_.$id_.visits.tsx:154
@@ -879,16 +881,16 @@ msgstr "Tasks"
 msgid "Закрытые проекты, этапы работы и публикация открытого описания исследования."
 msgstr "Private projects, study stages and publication of public study descriptions."
 
-#: src/routes/d_.analytics.tsx:180
-#: src/routes/d_.analytics.tsx:201
-#: src/routes/d_.analytics.tsx:236
-#: src/routes/d_.analytics.tsx:265
-#: src/routes/d_.analytics.tsx:275
-#: src/routes/m_.analytics.tsx:180
-#: src/routes/m_.analytics.tsx:201
-#: src/routes/m_.analytics.tsx:236
-#: src/routes/m_.analytics.tsx:265
-#: src/routes/m_.analytics.tsx:275
+#: src/routes/d_.analytics.tsx:356
+#: src/routes/d_.analytics.tsx:377
+#: src/routes/d_.analytics.tsx:412
+#: src/routes/d_.analytics.tsx:441
+#: src/routes/d_.analytics.tsx:451
+#: src/routes/m_.analytics.tsx:356
+#: src/routes/m_.analytics.tsx:377
+#: src/routes/m_.analytics.tsx:412
+#: src/routes/m_.analytics.tsx:441
+#: src/routes/m_.analytics.tsx:451
 msgid "Записей"
 msgstr "Records"
 
@@ -977,6 +979,7 @@ msgstr "Another open tab manages changes for this workspace. You can read data h
 msgid "Изменения доступны во вкладке, управляющей очередью синхронизации."
 msgstr "Changes can be made in the tab managing the synchronization queue."
 
+#: src/routes/d_.analytics.tsx:174
 #: src/routes/d_.invitations.tsx:192
 #: src/routes/d_.patients_.$id_.visits.tsx:313
 #: src/routes/d_.patients_.$id.tsx:467
@@ -985,6 +988,7 @@ msgstr "Changes can be made in the tab managing the synchronization queue."
 #: src/routes/d_.projects_.$id.team.tsx:367
 #: src/routes/d_.projects_.$id.work.tsx:606
 #: src/routes/d_.projects.tsx:287
+#: src/routes/m_.analytics.tsx:174
 #: src/routes/m_.invitations.tsx:192
 #: src/routes/m_.patients_.$id_.visits.tsx:313
 #: src/routes/m_.patients_.$id.tsx:467
@@ -1045,23 +1049,23 @@ msgstr "Patient name"
 msgid "Интервенционное"
 msgstr "Interventional"
 
-#: src/routes/d_.analytics.tsx:50
-#: src/routes/m_.analytics.tsx:50
+#: src/routes/d_.analytics.tsx:63
+#: src/routes/m_.analytics.tsx:63
 msgid "Исключено: диагноз из списка исключения"
 msgstr "Excluded: exclusion diagnosis"
 
-#: src/routes/d_.analytics.tsx:51
-#: src/routes/m_.analytics.tsx:51
+#: src/routes/d_.analytics.tsx:64
+#: src/routes/m_.analytics.tsx:64
 msgid "Исключено: не соответствует диагнозам включения"
 msgstr "Excluded: inclusion diagnoses not met"
 
-#: src/routes/d_.analytics.tsx:49
-#: src/routes/m_.analytics.tsx:49
+#: src/routes/d_.analytics.tsx:62
+#: src/routes/m_.analytics.tsx:62
 msgid "Исключено: не соответствует полу"
 msgstr "Excluded: sex criterion not met"
 
-#: src/routes/d_.analytics.tsx:48
-#: src/routes/m_.analytics.tsx:48
+#: src/routes/d_.analytics.tsx:61
+#: src/routes/m_.analytics.tsx:61
 msgid "Исключено: нет разрешения на поля критериев"
 msgstr "Excluded: criteria fields are not authorized"
 
@@ -1129,9 +1133,9 @@ msgstr "Studies"
 msgid "Исследователь"
 msgstr "Researcher"
 
-#: src/routes/d_.analytics.tsx:108
+#: src/routes/d_.analytics.tsx:121
 #: src/routes/d_.patients.tsx:174
-#: src/routes/m_.analytics.tsx:108
+#: src/routes/m_.analytics.tsx:121
 #: src/routes/m_.patients.tsx:174
 msgid "Исследователь: только чтение"
 msgstr "Researcher: read only"
@@ -1175,8 +1179,8 @@ msgstr "The source is currently unavailable. Saved records remain available."
 msgid "К выполнению"
 msgstr "To do"
 
-#: src/routes/d_.analytics.tsx:176
-#: src/routes/m_.analytics.tsx:176
+#: src/routes/d_.analytics.tsx:352
+#: src/routes/m_.analytics.tsx:352
 msgid "Каждая исключённая запись учитывается в первом подходящем шаге; этапы не пересекаются."
 msgstr "Each excluded record is counted at the first matching step; exclusion steps do not overlap."
 
@@ -1239,8 +1243,8 @@ msgstr "The key is ready to use."
 msgid "Ключ хранится только в памяти вкладки. После перезагрузки введите его снова."
 msgstr "The key stays in tab memory only. Enter it again after reloading."
 
-#: src/routes/d_.analytics.tsx:274
-#: src/routes/m_.analytics.tsx:274
+#: src/routes/d_.analytics.tsx:450
+#: src/routes/m_.analytics.tsx:450
 msgid "Код диагноза"
 msgstr "Diagnosis code"
 
@@ -1271,8 +1275,8 @@ msgstr "Diagnosis codes are matched exactly, ignoring case. Fields withheld by c
 msgid "Коды МКБ через запятую"
 msgstr "ICD codes, separated by commas"
 
-#: src/routes/d_.analytics.tsx:171
-#: src/routes/m_.analytics.tsx:171
+#: src/routes/d_.analytics.tsx:336
+#: src/routes/m_.analytics.tsx:336
 msgid "Коды сравниваются целиком без учёта регистра; выбор F41 не включает F41.1 автоматически. Исключение имеет приоритет над включением."
 msgstr "Codes are matched exactly, ignoring case; selecting F41 does not automatically include F41.1. Exclusion takes precedence over inclusion."
 
@@ -1319,8 +1323,8 @@ msgstr "Coordinator"
 msgid "Критерии включения"
 msgstr "Inclusion criteria"
 
-#: src/routes/d_.analytics.tsx:134
-#: src/routes/m_.analytics.tsx:134
+#: src/routes/d_.analytics.tsx:270
+#: src/routes/m_.analytics.tsx:270
 msgid "Критерии выборки"
 msgstr "Cohort criteria"
 
@@ -1370,14 +1374,14 @@ msgstr "Working locally"
 msgid "Локальное хранилище недоступно. Каталог работает только при подключении к интернету."
 msgstr "Local storage is unavailable. The directory requires an internet connection."
 
-#: src/routes/d_.analytics.tsx:128
-#: src/routes/m_.analytics.tsx:128
+#: src/routes/d_.analytics.tsx:141
+#: src/routes/m_.analytics.tsx:141
 msgid "Локальный набор ещё не подготовлен. Дождитесь загрузки; это не пустая выборка."
 msgstr "The local dataset is not ready yet. Wait for it to load; this does not mean the cohort is empty."
 
-#: src/routes/d_.analytics.tsx:162
+#: src/routes/d_.analytics.tsx:322
 #: src/routes/d_.patients.tsx:465
-#: src/routes/m_.analytics.tsx:162
+#: src/routes/m_.analytics.tsx:322
 #: src/routes/m_.patients.tsx:465
 msgid "Любой"
 msgstr "Any"
@@ -1466,12 +1470,12 @@ msgstr "My professional profile"
 msgid "Мой профиль"
 msgstr "My profile"
 
-#: src/routes/d_.analytics.tsx:45
+#: src/routes/d_.analytics.tsx:58
 #: src/routes/d_.patients_.$id.tsx:160
 #: src/routes/d_.patients_.$id.tsx:239
 #: src/routes/d_.patients.tsx:233
 #: src/routes/d_.patients.tsx:467
-#: src/routes/m_.analytics.tsx:45
+#: src/routes/m_.analytics.tsx:58
 #: src/routes/m_.patients_.$id.tsx:160
 #: src/routes/m_.patients_.$id.tsx:239
 #: src/routes/m_.patients.tsx:233
@@ -1495,8 +1499,8 @@ msgstr "Male"
 msgid "На главную"
 msgstr "Back to home"
 
-#: src/routes/d_.analytics.tsx:269
-#: src/routes/m_.analytics.tsx:269
+#: src/routes/d_.analytics.tsx:445
+#: src/routes/m_.analytics.tsx:445
 msgid "На графике показаны до 20 наиболее частых кодов. Полный список приведён в таблице."
 msgstr "The chart shows up to 20 most frequent codes. The table contains the complete list."
 
@@ -1525,10 +1529,20 @@ msgstr "Recruitment paused"
 msgid "Набор участников"
 msgstr "Recruiting"
 
+#: src/routes/d_.analytics.tsx:272
+#: src/routes/m_.analytics.tsx:272
+msgid "Название анализа"
+msgstr "Analysis title"
+
 #: src/routes/d_.projects_.$id.work.tsx:349
 #: src/routes/m_.projects_.$id.work.tsx:349
 msgid "Название задачи"
 msgstr "Task title"
+
+#: src/routes/d_.analytics.tsx:222
+#: src/routes/m_.analytics.tsx:222
+msgid "Название и критерии будут удалены после синхронизации. Карты пациентов не изменятся."
+msgstr "The title and criteria will be deleted after synchronization. Patient records will not change."
 
 #: src/routes/d_.projects.tsx:228
 #: src/routes/m_.projects.tsx:228
@@ -1585,6 +1599,15 @@ msgstr "Research interests"
 msgid "Научные интересы через запятую"
 msgstr "Research interests, separated by commas"
 
+#: src/routes/d_.analytics.tsx:157
+#: src/routes/d_.analytics.tsx:200
+#: src/routes/d_.analytics.tsx:246
+#: src/routes/m_.analytics.tsx:157
+#: src/routes/m_.analytics.tsx:200
+#: src/routes/m_.analytics.tsx:246
+msgid "Начать другой анализ?"
+msgstr "Switch analysis?"
+
 #: src/lib/use-patient-workspace.ts:71
 #: src/lib/use-project-workspace.ts:67
 msgid "Не менее 12 символов"
@@ -1636,8 +1659,8 @@ msgstr "Unable to load the study. Try again when connectivity is restored."
 msgid "Не удалось загрузить каталог. Проверьте подключение и повторите попытку."
 msgstr "Could not load the directory. Check your connection and try again."
 
-#: src/routes/d_.analytics.tsx:103
-#: src/routes/m_.analytics.tsx:103
+#: src/routes/d_.analytics.tsx:116
+#: src/routes/m_.analytics.tsx:116
 msgid "Не удалось открыть или подтвердить пространство. Проверьте парольную фразу, сеть и разрешения."
 msgstr "Unable to open or verify the workspace. Check your passphrase, connection and permissions."
 
@@ -1683,6 +1706,11 @@ msgstr "Unable to read saved decisions. Please try again."
 msgid "Не удалось сменить язык."
 msgstr "Could not change the language."
 
+#: src/routes/d_.analytics.tsx:171
+#: src/routes/m_.analytics.tsx:171
+msgid "Не удалось сохранить анализ. Проверьте текущую версию и доступ; введённые значения остаются в форме."
+msgstr "Unable to save the analysis. Check the current revision and access; your input remains in the form."
+
 #: src/routes/d_.tools.tsx:620
 #: src/routes/m_.tools.tsx:570
 msgid "Не удалось сохранить записи. Показанные результаты могут быть недоступны после закрытия приложения."
@@ -1711,12 +1739,12 @@ msgstr "Unable to save the change. Check your permissions and the current record
 msgid "Не удалось сохранить настройки AI."
 msgstr "Unable to save AI settings."
 
-#: src/routes/d_.analytics.tsx:45
+#: src/routes/d_.analytics.tsx:58
 #: src/routes/d_.patients_.$id.tsx:160
 #: src/routes/d_.patients_.$id.tsx:237
 #: src/routes/d_.patients.tsx:231
 #: src/routes/d_.patients.tsx:468
-#: src/routes/m_.analytics.tsx:45
+#: src/routes/m_.analytics.tsx:58
 #: src/routes/m_.patients_.$id.tsx:160
 #: src/routes/m_.patients_.$id.tsx:237
 #: src/routes/m_.patients.tsx:231
@@ -1775,6 +1803,15 @@ msgstr "The AI provider timed out. Try again later."
 msgid "Нейросеть ответила. Подключение работает."
 msgstr "The AI provider responded. The connection works."
 
+#: src/routes/d_.analytics.tsx:159
+#: src/routes/d_.analytics.tsx:202
+#: src/routes/d_.analytics.tsx:248
+#: src/routes/m_.analytics.tsx:159
+#: src/routes/m_.analytics.tsx:202
+#: src/routes/m_.analytics.tsx:248
+msgid "Несохранённые критерии и название будут заменены. Сохранённая версия останется доступной."
+msgstr "Unsaved criteria and title will be replaced. The saved version will remain available."
+
 #: src/routes/d_.patients_.$id_.visits.tsx:327
 #: src/routes/m_.patients_.$id_.visits.tsx:327
 msgid "Нет визитов с выбранным статусом."
@@ -1785,8 +1822,8 @@ msgstr "No visits match the selected status."
 msgid "Нет действующего этического разрешения"
 msgstr "No current ethics approval"
 
-#: src/routes/d_.analytics.tsx:193
-#: src/routes/m_.analytics.tsx:193
+#: src/routes/d_.analytics.tsx:369
+#: src/routes/m_.analytics.tsx:369
 msgid "Нет записей, соответствующих текущим критериям и разрешениям."
 msgstr "No records match the current criteria and permissions."
 
@@ -1840,6 +1877,11 @@ msgstr "Low"
 msgid "Новое сообщение"
 msgstr "New message"
 
+#: src/routes/d_.analytics.tsx:166
+#: src/routes/m_.analytics.tsx:166
+msgid "Новый анализ"
+msgstr "New analysis"
+
 #: src/routes/d_.projects_.$id.protocol.tsx:290
 #: src/routes/m_.projects_.$id.protocol.tsx:290
 msgid "Номер или ссылка на этическое разрешение"
@@ -1856,9 +1898,9 @@ msgid "Обезличенный идентификатор пациента"
 msgstr "Pseudonymous patient identifier"
 
 #: src/routes/__root.tsx:308
-#: src/routes/d_.analytics.tsx:57
+#: src/routes/d_.analytics.tsx:70
 #: src/routes/d_.workspace.tsx:104
-#: src/routes/m_.analytics.tsx:57
+#: src/routes/m_.analytics.tsx:70
 #: src/routes/m_.workspace.tsx:104
 msgid "Обзор работы"
 msgstr "Work overview"
@@ -1872,8 +1914,10 @@ msgstr "Facility search area"
 msgid "Обновить приложение"
 msgstr "Update app"
 
+#: src/routes/d_.analytics.tsx:187
 #: src/routes/d_.patients_.$id.tsx:175
 #: src/routes/d_.patients_.$id.tsx:550
+#: src/routes/m_.analytics.tsx:187
 #: src/routes/m_.patients_.$id.tsx:175
 #: src/routes/m_.patients_.$id.tsx:550
 msgid "Обновлено:"
@@ -1964,13 +2008,18 @@ msgstr "The operation failed. Check your passphrase, access expiry and permissio
 msgid "Операция не выполнена. Проверьте подключение и повторите попытку."
 msgstr "The operation failed. Check your connection and try again."
 
+#: src/routes/d_.analytics.tsx:278
+#: src/routes/m_.analytics.tsx:278
+msgid "Описание анализа"
+msgstr "Analysis description"
+
 #: src/routes/d_.projects_.$id.work.tsx:355
 #: src/routes/m_.projects_.$id.work.tsx:355
 msgid "Описание задачи"
 msgstr "Task description"
 
-#: src/routes/d_.analytics.tsx:59
-#: src/routes/m_.analytics.tsx:59
+#: src/routes/d_.analytics.tsx:72
+#: src/routes/m_.analytics.tsx:72
 msgid "Описательный анализ доступных записей выбранной организации. Изменение критериев не изменяет карты пациентов."
 msgstr "Descriptive analysis of available records in the selected organization. Changing criteria does not change patient records."
 
@@ -2002,7 +2051,7 @@ msgstr "Publish the description in the directory"
 msgid "Организации"
 msgstr "Organizations"
 
-#: src/routes/d_.analytics.tsx:72
+#: src/routes/d_.analytics.tsx:85
 #: src/routes/d_.invitations.tsx:64
 #: src/routes/d_.patients_.$id_.consents.tsx:75
 #: src/routes/d_.patients_.$id_.visits.tsx:109
@@ -2013,7 +2062,7 @@ msgstr "Organizations"
 #: src/routes/d_.projects_.$id.work.tsx:258
 #: src/routes/d_.projects.tsx:151
 #: src/routes/d_.workspace.tsx:119
-#: src/routes/m_.analytics.tsx:72
+#: src/routes/m_.analytics.tsx:85
 #: src/routes/m_.invitations.tsx:64
 #: src/routes/m_.patients_.$id_.consents.tsx:75
 #: src/routes/m_.patients_.$id_.visits.tsx:109
@@ -2099,6 +2148,11 @@ msgstr "Public coordinator contact"
 msgid "Открытые критерии участия"
 msgstr "Public eligibility criteria"
 
+#: src/routes/d_.analytics.tsx:209
+#: src/routes/m_.analytics.tsx:209
+msgid "Открыть анализ"
+msgstr "Open analysis"
+
 #: src/routes/d_.workspace.tsx:297
 #: src/routes/m_.workspace.tsx:297
 msgid "Открыть задачи исследования"
@@ -2119,7 +2173,7 @@ msgstr "Open team"
 msgid "Открыть профиль"
 msgstr "Open profile"
 
-#: src/routes/d_.analytics.tsx:94
+#: src/routes/d_.analytics.tsx:107
 #: src/routes/d_.invitations.tsx:86
 #: src/routes/d_.patients_.$id_.consents.tsx:97
 #: src/routes/d_.patients_.$id_.visits.tsx:131
@@ -2130,7 +2184,7 @@ msgstr "Open profile"
 #: src/routes/d_.projects_.$id.work.tsx:280
 #: src/routes/d_.projects.tsx:174
 #: src/routes/d_.workspace.tsx:141
-#: src/routes/m_.analytics.tsx:94
+#: src/routes/m_.analytics.tsx:107
 #: src/routes/m_.invitations.tsx:86
 #: src/routes/m_.patients_.$id_.consents.tsx:97
 #: src/routes/m_.patients_.$id_.visits.tsx:131
@@ -2144,6 +2198,7 @@ msgstr "Open profile"
 msgid "Открыть рабочее пространство"
 msgstr "Open workspace"
 
+#: src/routes/d_.analytics.tsx:255
 #: src/routes/d_.patients_.$id_.consents.tsx:428
 #: src/routes/d_.patients_.$id_.visits.tsx:414
 #: src/routes/d_.patients_.$id.tsx:591
@@ -2151,6 +2206,7 @@ msgstr "Open workspace"
 #: src/routes/d_.projects_.$id.team.tsx:397
 #: src/routes/d_.projects_.$id.work.tsx:625
 #: src/routes/d_.projects.tsx:360
+#: src/routes/m_.analytics.tsx:255
 #: src/routes/m_.patients_.$id_.consents.tsx:428
 #: src/routes/m_.patients_.$id_.visits.tsx:414
 #: src/routes/m_.patients_.$id.tsx:591
@@ -2161,6 +2217,10 @@ msgstr "Open workspace"
 msgid "Открыть сохранённый черновик"
 msgstr "Open saved draft"
 
+#: src/routes/d_.analytics.tsx:161
+#: src/routes/d_.analytics.tsx:204
+#: src/routes/d_.analytics.tsx:224
+#: src/routes/d_.analytics.tsx:250
 #: src/routes/d_.patients_.$id_.consents.tsx:318
 #: src/routes/d_.patients_.$id_.consents.tsx:364
 #: src/routes/d_.patients_.$id_.visits.tsx:305
@@ -2180,6 +2240,10 @@ msgstr "Open saved draft"
 #: src/routes/d_.projects_.$id.work.tsx:550
 #: src/routes/d_.projects_.$id.work.tsx:596
 #: src/routes/d_.projects.tsx:280
+#: src/routes/m_.analytics.tsx:161
+#: src/routes/m_.analytics.tsx:204
+#: src/routes/m_.analytics.tsx:224
+#: src/routes/m_.analytics.tsx:250
 #: src/routes/m_.patients_.$id_.consents.tsx:318
 #: src/routes/m_.patients_.$id_.consents.tsx:364
 #: src/routes/m_.patients_.$id_.visits.tsx:305
@@ -2228,7 +2292,7 @@ msgstr "Revoke invitation"
 msgid "Оформить новую версию с другим сроком"
 msgstr "Create a new version with a different expiry"
 
-#: src/routes/d_.analytics.tsx:77
+#: src/routes/d_.analytics.tsx:90
 #: src/routes/d_.invitations.tsx:69
 #: src/routes/d_.patients_.$id_.consents.tsx:80
 #: src/routes/d_.patients_.$id_.visits.tsx:114
@@ -2239,7 +2303,7 @@ msgstr "Create a new version with a different expiry"
 #: src/routes/d_.projects_.$id.work.tsx:263
 #: src/routes/d_.projects.tsx:156
 #: src/routes/d_.workspace.tsx:124
-#: src/routes/m_.analytics.tsx:77
+#: src/routes/m_.analytics.tsx:90
 #: src/routes/m_.invitations.tsx:69
 #: src/routes/m_.patients_.$id_.consents.tsx:80
 #: src/routes/m_.patients_.$id_.visits.tsx:114
@@ -2335,7 +2399,7 @@ msgstr "GigaChat is used by default. Your own key is not required."
 msgid "Повторите нужное действие по текущей записи. Отклонённое решение не применяется автоматически."
 msgstr "Repeat the desired action using the current record. The rejected decision is not applied automatically."
 
-#: src/routes/d_.analytics.tsx:85
+#: src/routes/d_.analytics.tsx:98
 #: src/routes/d_.invitations.tsx:77
 #: src/routes/d_.patients_.$id_.consents.tsx:88
 #: src/routes/d_.patients_.$id_.visits.tsx:122
@@ -2346,7 +2410,7 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/d_.projects_.$id.work.tsx:271
 #: src/routes/d_.projects.tsx:165
 #: src/routes/d_.workspace.tsx:132
-#: src/routes/m_.analytics.tsx:85
+#: src/routes/m_.analytics.tsx:98
 #: src/routes/m_.invitations.tsx:77
 #: src/routes/m_.patients_.$id_.consents.tsx:88
 #: src/routes/m_.patients_.$id_.visits.tsx:122
@@ -2370,7 +2434,7 @@ msgstr "Repeat the passphrase"
 msgid "Повторить"
 msgstr "Retry"
 
-#: src/routes/d_.analytics.tsx:123
+#: src/routes/d_.analytics.tsx:136
 #: src/routes/d_.invitations.tsx:108
 #: src/routes/d_.patients_.$id_.consents.tsx:125
 #: src/routes/d_.patients_.$id_.visits.tsx:165
@@ -2381,7 +2445,7 @@ msgstr "Retry"
 #: src/routes/d_.projects_.$id.work.tsx:308
 #: src/routes/d_.projects.tsx:202
 #: src/routes/d_.workspace.tsx:228
-#: src/routes/m_.analytics.tsx:123
+#: src/routes/m_.analytics.tsx:136
 #: src/routes/m_.invitations.tsx:108
 #: src/routes/m_.patients_.$id_.consents.tsx:125
 #: src/routes/m_.patients_.$id_.visits.tsx:165
@@ -2481,6 +2545,11 @@ msgstr "Find clinical partners and research centers."
 msgid "Поиск среди загруженных исследований"
 msgstr "Search downloaded studies"
 
+#: src/routes/d_.analytics.tsx:263
+#: src/routes/m_.analytics.tsx:263
+msgid "Показан обзор всех доступных записей. Откройте или создайте анализ, чтобы настроить критерии."
+msgstr "Showing an overview of all available records. Open or create an analysis to set criteria."
+
 #: src/routes/d_.tools.tsx:638
 #: src/routes/m_.tools.tsx:588
 msgid "Показана ограниченная выборка."
@@ -2501,8 +2570,8 @@ msgstr "Showing data saved on your device. New invitations and changes from coll
 msgid "Показаны только сведения, опубликованные специалистом. Данные пациентов и закрытые членства недоступны."
 msgstr "Only information published by the specialist is shown. Patient data and private affiliations are not available."
 
-#: src/routes/d_.analytics.tsx:200
-#: src/routes/m_.analytics.tsx:200
+#: src/routes/d_.analytics.tsx:376
+#: src/routes/m_.analytics.tsx:376
 msgid "Показатель"
 msgstr "Measure"
 
@@ -2516,8 +2585,8 @@ msgstr "Observation or examination"
 msgid "Показывать архивные задачи"
 msgstr "Show archived tasks"
 
-#: src/routes/d_.analytics.tsx:160
-#: src/routes/d_.analytics.tsx:235
+#: src/routes/d_.analytics.tsx:320
+#: src/routes/d_.analytics.tsx:411
 #: src/routes/d_.patients_.$id_.consents.tsx:147
 #: src/routes/d_.patients_.$id_.consents.tsx:258
 #: src/routes/d_.patients_.$id_.consents.tsx:398
@@ -2526,8 +2595,8 @@ msgstr "Show archived tasks"
 #: src/routes/d_.patients.tsx:229
 #: src/routes/d_.patients.tsx:307
 #: src/routes/d_.patients.tsx:463
-#: src/routes/m_.analytics.tsx:160
-#: src/routes/m_.analytics.tsx:235
+#: src/routes/m_.analytics.tsx:320
+#: src/routes/m_.analytics.tsx:411
 #: src/routes/m_.patients_.$id_.consents.tsx:147
 #: src/routes/m_.patients_.$id_.consents.tsx:258
 #: src/routes/m_.patients_.$id_.consents.tsx:398
@@ -2539,13 +2608,13 @@ msgstr "Show archived tasks"
 msgid "Пол"
 msgstr "Sex"
 
-#: src/routes/d_.analytics.tsx:210
-#: src/routes/m_.analytics.tsx:210
+#: src/routes/d_.analytics.tsx:386
+#: src/routes/m_.analytics.tsx:386
 msgid "Пол не указан в разрешённых данных"
 msgstr "Sex unspecified in authorized records"
 
-#: src/routes/d_.analytics.tsx:214
-#: src/routes/m_.analytics.tsx:214
+#: src/routes/d_.analytics.tsx:390
+#: src/routes/m_.analytics.tsx:390
 msgid "Пол недоступен по согласию"
 msgstr "Sex withheld by consent"
 
@@ -2561,8 +2630,8 @@ msgstr "Outpatient clinic"
 msgid "Поликлиники, больницы, университеты и лаборатории, открытые для сотрудничества."
 msgstr "Clinics, hospitals, universities and laboratories open to collaboration."
 
-#: src/routes/d_.analytics.tsx:196
-#: src/routes/m_.analytics.tsx:196
+#: src/routes/d_.analytics.tsx:372
+#: src/routes/m_.analytics.tsx:372
 msgid "Полнота и доступность данных"
 msgstr "Data completeness and availability"
 
@@ -2769,6 +2838,7 @@ msgstr "Check your query and search parameters."
 
 #: src/lib/use-clinical-records.ts:173
 #: src/lib/use-patient-workspace.ts:133
+#: src/lib/use-saved-analyses.ts:40
 #: src/routes/d_.projects_.$id.protocol.tsx:90
 #: src/routes/d_.projects_.$id.work.tsx:120
 #: src/routes/d_.projects.tsx:65
@@ -2815,6 +2885,15 @@ msgstr "Duration in minutes"
 #: src/routes/m_.patients_.$id_.visits.tsx:354
 msgid "Продолжительность в минутах:"
 msgstr "Duration in minutes:"
+
+#: src/routes/d_.analytics.tsx:161
+#: src/routes/d_.analytics.tsx:204
+#: src/routes/d_.analytics.tsx:250
+#: src/routes/m_.analytics.tsx:161
+#: src/routes/m_.analytics.tsx:204
+#: src/routes/m_.analytics.tsx:250
+msgid "Продолжить"
+msgstr "Continue"
 
 #: src/client.tsx:34
 msgid "Произошла ошибка приложения. Перезагрузите страницу."
@@ -2928,13 +3007,13 @@ msgstr "Approval recorded"
 msgid "Разрешённые категории данных"
 msgstr "Permitted data categories"
 
-#: src/routes/d_.analytics.tsx:218
-#: src/routes/m_.analytics.tsx:218
+#: src/routes/d_.analytics.tsx:394
+#: src/routes/m_.analytics.tsx:394
 msgid "Разрешено анализировать диагнозы"
 msgstr "Authorized for diagnosis analysis"
 
-#: src/routes/d_.analytics.tsx:206
-#: src/routes/m_.analytics.tsx:206
+#: src/routes/d_.analytics.tsx:382
+#: src/routes/m_.analytics.tsx:382
 msgid "Разрешено анализировать пол"
 msgstr "Authorized for sex analysis"
 
@@ -2950,13 +3029,13 @@ msgstr "Read access only"
 msgid "Разрешить чтение обезличенных данных"
 msgstr "Allow reading de-identified data"
 
-#: src/routes/d_.analytics.tsx:231
-#: src/routes/m_.analytics.tsx:231
+#: src/routes/d_.analytics.tsx:407
+#: src/routes/m_.analytics.tsx:407
 msgid "Распределение по полу"
 msgstr "Sex distribution"
 
-#: src/routes/d_.analytics.tsx:117
-#: src/routes/m_.analytics.tsx:117
+#: src/routes/d_.analytics.tsx:130
+#: src/routes/m_.analytics.tsx:130
 msgid "Расчёт выполнен по локальным данным. Без синхронизации изменения других участников и новые отзывы доступа могут быть ещё не получены."
 msgstr "Calculated from local records. Without synchronization, changes by other participants and new access revocations may not have arrived yet."
 
@@ -3051,9 +3130,9 @@ msgstr "Study role"
 msgid "Самостоятельный выбор профессии не предоставляет доступ к пациентам. Права выдаются после проверки организации."
 msgstr "Selecting a profession does not grant access to patient records. Access requires organization verification."
 
-#: src/routes/d_.analytics.tsx:170
+#: src/routes/d_.analytics.tsx:335
 #: src/routes/d_.patients.tsx:512
-#: src/routes/m_.analytics.tsx:170
+#: src/routes/m_.analytics.tsx:335
 #: src/routes/m_.patients.tsx:512
 msgid "Сбросить критерии"
 msgstr "Reset criteria"
@@ -3081,6 +3160,11 @@ msgstr "Contact the coordinator"
 #: src/routes/m_.tools.tsx:221
 msgid "Сервер не смог проверить сертификат нейросети."
 msgstr "The server could not verify the AI provider certificate."
+
+#: src/routes/d_.analytics.tsx:237
+#: src/routes/m_.analytics.tsx:237
+msgid "Сервер отклонил изменение анализа. Черновик сохранён отдельно и не применяется автоматически."
+msgstr "The server rejected the analysis change. The draft is saved separately and is not applied automatically."
 
 #: src/routes/d_.patients.tsx:676
 #: src/routes/m_.patients.tsx:676
@@ -3136,8 +3220,8 @@ msgstr "Download PBF from source"
 msgid "Сменить организацию или заблокировать"
 msgstr "Switch organization or lock"
 
-#: src/routes/d_.analytics.tsx:144
-#: src/routes/m_.analytics.tsx:144
+#: src/routes/d_.analytics.tsx:298
+#: src/routes/m_.analytics.tsx:298
 msgid "Совпадение диагнозов включения"
 msgstr "Inclusion diagnosis matching"
 
@@ -3242,10 +3326,25 @@ msgstr "Saved information may be out of date. Updates will load when you reconne
 msgid "Сохранённое решение"
 msgstr "Saved decision"
 
+#: src/routes/d_.analytics.tsx:145
+#: src/routes/m_.analytics.tsx:145
+msgid "Сохранённые анализы"
+msgstr "Saved analyses"
+
+#: src/routes/d_.analytics.tsx:148
+#: src/routes/m_.analytics.tsx:148
+msgid "Сохранённые анализы ещё не загружены. Для первой загрузки нужен интернет."
+msgstr "Saved analyses have not been loaded yet. The initial download requires an internet connection."
+
 #: src/routes/d_.tools.tsx:645
 #: src/routes/m_.tools.tsx:595
 msgid "Сохранённых записей по этому запросу пока нет."
 msgstr "No saved records match this query yet."
+
+#: src/routes/d_.analytics.tsx:344
+#: src/routes/m_.analytics.tsx:344
+msgid "Сохранить анализ на устройстве"
+msgstr "Save analysis on this device"
 
 #: src/routes/d_.projects_.$id.protocol.tsx:312
 #: src/routes/d_.projects_.$id.work.tsx:406
@@ -3293,6 +3392,11 @@ msgstr "Save profile"
 msgid "Сохранить сообщение"
 msgstr "Save message"
 
+#: src/routes/d_.analytics.tsx:146
+#: src/routes/m_.analytics.tsx:146
+msgid "Сохраняются название и критерии, а не копии карт или результаты. При открытии расчёт повторяется по текущим разрешённым данным."
+msgstr "Only the title and criteria are saved, not copies of records or results. Opening an analysis recalculates it using currently authorized data."
+
 #: src/routes/d_.profile.tsx:157
 #: src/routes/m_.profile.tsx:157
 msgid "Специализация"
@@ -3323,8 +3427,8 @@ msgstr "Specialist"
 msgid "Специалисты"
 msgstr "Specialists"
 
-#: src/routes/d_.analytics.tsx:222
-#: src/routes/m_.analytics.tsx:222
+#: src/routes/d_.analytics.tsx:398
+#: src/routes/m_.analytics.tsx:398
 msgid "Список диагнозов пуст в разрешённых данных"
 msgstr "Empty diagnosis list in authorized records"
 
@@ -3443,8 +3547,8 @@ msgstr "Organization page"
 msgid "Страница содержит только сведения, разрешённые авторами к публикации."
 msgstr "This page contains only information approved for publication by its authors."
 
-#: src/routes/d_.analytics.tsx:174
-#: src/routes/m_.analytics.tsx:174
+#: src/routes/d_.analytics.tsx:350
+#: src/routes/m_.analytics.tsx:350
 msgid "Схема отбора"
 msgstr "Selection flow"
 
@@ -3518,6 +3622,11 @@ msgstr "Severity not specified"
 msgid "Тяжесть реакции"
 msgstr "Reaction severity"
 
+#: src/routes/d_.analytics.tsx:257
+#: src/routes/m_.analytics.tsx:257
+msgid "Удаление отклонено. Откройте актуальный анализ перед повторным удалением."
+msgstr "Deletion was rejected. Open the current analysis before attempting deletion again."
+
 #: src/routes/d_.patients_.$id_.visits.tsx:416
 #: src/routes/d_.patients_.$id.tsx:593
 #: src/routes/m_.patients_.$id_.visits.tsx:416
@@ -3530,6 +3639,8 @@ msgstr "Deletion was rejected. Review the current record before trying to delete
 msgid "Удаление сообщения"
 msgstr "Message deletion"
 
+#: src/routes/d_.analytics.tsx:224
+#: src/routes/d_.analytics.tsx:228
 #: src/routes/d_.patients_.$id_.visits.tsx:395
 #: src/routes/d_.patients_.$id_.visits.tsx:399
 #: src/routes/d_.patients_.$id.tsx:210
@@ -3537,6 +3648,8 @@ msgstr "Message deletion"
 #: src/routes/d_.patients.tsx:646
 #: src/routes/d_.patients.tsx:654
 #: src/routes/d_.projects_.$id.work.tsx:550
+#: src/routes/m_.analytics.tsx:224
+#: src/routes/m_.analytics.tsx:228
 #: src/routes/m_.patients_.$id_.visits.tsx:395
 #: src/routes/m_.patients_.$id_.visits.tsx:399
 #: src/routes/m_.patients_.$id.tsx:210
@@ -3588,6 +3701,11 @@ msgstr "Delete message"
 #: src/routes/m_.projects_.$id.work.tsx:546
 msgid "Удалить сообщение?"
 msgstr "Delete this message?"
+
+#: src/routes/d_.analytics.tsx:220
+#: src/routes/m_.analytics.tsx:220
+msgid "Удалить сохранённый анализ?"
+msgstr "Delete saved analysis?"
 
 #: src/routes/d_.projects_.$id.protocol.tsx:95
 #: src/routes/m_.projects_.$id.protocol.tsx:95
@@ -3676,8 +3794,8 @@ msgstr "Filter by visit status"
 msgid "ФИО"
 msgstr "Full name"
 
-#: src/routes/d_.analytics.tsx:146
-#: src/routes/m_.analytics.tsx:146
+#: src/routes/d_.analytics.tsx:300
+#: src/routes/m_.analytics.tsx:300
 msgid "Хотя бы один"
 msgstr "At least one code"
 
@@ -3693,10 +3811,10 @@ msgstr "Purpose of data use"
 msgid "Часовой пояс визита"
 msgstr "Appointment time zone"
 
-#: src/routes/d_.analytics.tsx:257
-#: src/routes/d_.analytics.tsx:261
-#: src/routes/m_.analytics.tsx:257
-#: src/routes/m_.analytics.tsx:261
+#: src/routes/d_.analytics.tsx:433
+#: src/routes/d_.analytics.tsx:437
+#: src/routes/m_.analytics.tsx:433
+#: src/routes/m_.analytics.tsx:437
 msgid "Частота диагнозов"
 msgstr "Diagnosis frequency"
 
@@ -3716,6 +3834,11 @@ msgstr "Draft"
 msgid "Черновик будет сохранён как новая клиническая запись. Удалённая версия не восстанавливается автоматически."
 msgstr "The draft will be saved as a new clinical record. The deleted version is not restored automatically."
 
+#: src/routes/d_.analytics.tsx:338
+#: src/routes/m_.analytics.tsx:338
+msgid "Черновик сохранится как новый анализ; удалённая запись не восстанавливается автоматически."
+msgstr "The draft will be saved as a new analysis; the deleted record is not restored automatically."
+
 #: src/routes/d_.patients_.$id.tsx:413
 #: src/routes/m_.patients_.$id.tsx:413
 msgid "Числовой"
@@ -3731,8 +3854,8 @@ msgstr "Numeric result"
 msgid "Чтение разрешённых данных пациентов без изменения карт."
 msgstr "Read permitted patient data without modifying records."
 
-#: src/routes/d_.analytics.tsx:179
-#: src/routes/m_.analytics.tsx:179
+#: src/routes/d_.analytics.tsx:355
+#: src/routes/m_.analytics.tsx:355
 msgid "Шаг"
 msgstr "Step"
 
@@ -3746,8 +3869,8 @@ msgstr "Latitude"
 msgid "Этап исследования"
 msgstr "Study stage"
 
-#: src/routes/d_.analytics.tsx:297
-#: src/routes/m_.analytics.tsx:297
+#: src/routes/d_.analytics.tsx:473
+#: src/routes/m_.analytics.tsx:473
 msgid "Это описательная выборка доступных локальных записей, а не оценка распространённости заболевания в популяции. Отсутствие диагноза в карте не означает отсутствие заболевания. Возраст, терапия, показатели и даты наблюдения в этот анализ не включены."
 msgstr "This is a descriptive cohort of available local records, not an estimate of population disease prevalence. An absent diagnosis does not establish absence of disease. Age, therapy, measurements and observation dates are not included in this analysis."
 

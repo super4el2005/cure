@@ -87,6 +87,7 @@ function leader(): LeaderElection {
 const modules = {
   "../convex/_generated/server.js": () => import("@/convex/_generated/server.js"),
   "../convex/patients.ts": () => import("@/convex/patients"),
+  "../convex/analyses.ts": () => import("@/convex/analyses"),
   "../convex/clinicalRecords.ts": () => import("@/convex/clinicalRecords"),
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
 };
@@ -127,7 +128,7 @@ it.each(["history", "visit"] as const)(
     let snapshots = new Map<string, unknown>();
     const listeners = new Set<() => void>();
     const refresh = async () => {
-      for (const fn of [api.patients.list, api.clinicalRecords.list])
+      for (const fn of [api.patients.list, api.clinicalRecords.list, api.analyses.list])
         snapshots.set(
           getFunctionName(fn),
           await doctor.query(fn, { actorId: "doctor", organizationId }),

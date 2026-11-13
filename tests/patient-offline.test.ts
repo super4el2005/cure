@@ -153,7 +153,7 @@ describe("durable patient operations", () => {
     let clientFailure: unknown;
     const client = {
       watchQuery(fn: FunctionReference<"query">) {
-        const clinical = getFunctionName(fn) === getFunctionName(api.clinicalRecords.list);
+        const clinical = getFunctionName(fn) !== getFunctionName(api.patients.list);
         return {
           localQueryResult: () => (clinical ? (result === undefined ? undefined : []) : result),
           onUpdate(callback: () => void) {
