@@ -252,6 +252,14 @@ export function safeAttributes(
           typeof value === "string" &&
           (Object.values(actions).includes(value) ||
             [
+              "library.close",
+              "library.sync",
+              "library.queue",
+              "projects.close",
+              "projects.sync",
+              "projects.queue",
+              "analyses.sync",
+              "workspace.close",
               "patients.close",
               "patients.sync",
               "patients.queue",

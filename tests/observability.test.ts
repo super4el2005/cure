@@ -121,6 +121,13 @@ it("identifies clinical and project routes without recording record IDs or query
 
 it("observes library and research actions without exposing record identifiers or private notes", () => {
   expect(safePath("/d/library")).toBe("/d/library");
+  expect(
+    safeAttributes({
+      "app.operation": "library.sync",
+      "app.code": "REVISION_CONFLICT",
+      notes: "SECRET",
+    }),
+  ).toEqual({ "app.operation": "library.sync", "app.code": "REVISION_CONFLICT" });
   expect(safePath("/m/projects/private-study/visits")).toBe("/m/projects/:id/visits");
   expect(safePath("/d/patients/private-patient/enrollment")).toBe("/d/patients/:id/enrollment");
   expect(
