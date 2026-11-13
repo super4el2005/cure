@@ -341,21 +341,31 @@ function Enrollment() {
                     {records.length === 0 && source.isReady && (
                       <Text>{t`Участие в исследованиях ещё не зарегистрировано.`}</Text>
                     )}
-                    {records.map(
-                      (record) =>
-                        record.payload?.kind === "enrollment" && (
+                    {records.map((record) => {
+                      const payload = record.payload;
+                      return (
+                        payload?.kind === "enrollment" && (
                           <Paper key={record.clientId} withBorder p="md">
                             <Stack>
                               <Title order={3}>
-                                {projectMap.get(record.payload.projectClientId)?.title ??
-                                  record.payload.projectClientId}
+                                {projectMap.get(payload.projectClientId)?.title ??
+                                  payload.projectClientId}
                               </Title>
+                              <Anchor
+                                renderRoot={(props) => (
+                                  <Link
+                                    {...props}
+                                    to="/m/projects/$id/enrollment"
+                                    params={{ id: payload.projectClientId }}
+                                  />
+                                )}
+                              >{t`Журнал набора клиники`}</Anchor>
                               <Text>
-                                {t`Версия протокола:`} {record.payload.protocolVersion} ·{" "}
-                                {record.payload.protocolClientId}
+                                {t`Версия протокола:`} {payload.protocolVersion} ·{" "}
+                                {payload.protocolClientId}
                               </Text>
-                              <Badge>{labels[record.payload.events.at(-1)!.status]}</Badge>
-                              {record.payload.events.map((event) => (
+                              <Badge>{labels[payload.events.at(-1)!.status]}</Badge>
+                              {payload.events.map((event) => (
                                 <Paper key={event.id} withBorder p="sm">
                                   <Stack gap="xs">
                                     <Text fw={600}>
@@ -391,8 +401,8 @@ function Enrollment() {
                                 </Paper>
                               ))}
                               <Group>
-                                {enrollmentTransitions[record.payload.events.at(-1)!.status]
-                                  .length > 0 && (
+                                {enrollmentTransitions[payload.events.at(-1)!.status].length >
+                                  0 && (
                                   <Button
                                     variant="default"
                                     disabled={
@@ -421,8 +431,9 @@ function Enrollment() {
                               </Group>
                             </Stack>
                           </Paper>
-                        ),
-                    )}
+                        )
+                      );
+                    })}
                     {failures.data?.map((failure) => (
                       <Alert key={failure.id} color="yellow">
                         <Stack>

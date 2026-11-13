@@ -17,6 +17,7 @@ import type { Value } from "convex/values";
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
 import type { ClinicalPayload } from "@/src/lib/clinical-record-model";
+import { enrollmentRegister } from "@/src/lib/enrollment-register";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
 import {
@@ -545,6 +546,17 @@ it("persists encrypted screening, competing inclusion chains and deletion across
   expect(workspace.readClinical(workspace.clinicalRecords.get(args.clientId)!).payload).toEqual(
     local,
   );
+  expect(
+    enrollmentRegister(
+      [...workspace.collection.values()]
+        .filter((row) => row.clientId !== workspace.patientSnapshotId)
+        .map(workspace.read),
+      [workspace.readClinical(workspace.clinicalRecords.get(args.clientId)!)],
+      projectClientId,
+      "doctor",
+      Date.now(),
+    ),
+  ).toMatchObject([{ fullName: "Private patient", status: "screening" }]);
   await refresh();
   const delivered = workspace.executor.waitForTransactionCompletion(queued.transactionId);
   connection.connect();
