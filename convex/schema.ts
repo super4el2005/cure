@@ -78,6 +78,16 @@ export const taskFields = {
   archived: v.boolean(),
 };
 const clinicalCommon = { occurredOn: v.string(), notes: v.string() };
+export const analysisValues = v.object({
+  title: v.string(),
+  description: v.string(),
+  criteria: v.object({
+    include: v.array(v.string()),
+    exclude: v.array(v.string()),
+    diagnosisMatch: v.union(v.literal("any"), v.literal("all")),
+    sex: v.union(v.literal("any"), v.literal("female"), v.literal("male"), v.literal("unknown")),
+  }),
+});
 export const clinicalPayload = v.union(
   v.object({
     ...clinicalCommon,
@@ -138,6 +148,26 @@ export const clinicalPayload = v.union(
   }),
 );
 export default defineSchema({
+  savedAnalyses: defineTable({
+    organizationId: v.id("organizations"),
+    userId: v.string(),
+    clientId: v.string(),
+    revision: v.number(),
+    deleted: v.boolean(),
+    values: v.union(analysisValues, v.null()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_owner", ["organizationId", "userId"])
+    .index("by_client", ["organizationId", "clientId"]),
+  analysisAudit: defineTable({
+    organizationId: v.id("organizations"),
+    actorId: v.string(),
+    clientId: v.string(),
+    revision: v.number(),
+    action: v.union(v.literal("create"), v.literal("update"), v.literal("delete")),
+    at: v.number(),
+  }).index("by_owner", ["organizationId", "actorId"]),
   clinicalRecords: defineTable({
     organizationId: v.id("organizations"),
     clientId: v.string(),

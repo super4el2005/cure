@@ -44,6 +44,8 @@ import { openPatient, patientEnvelope, patientValueSchema } from "@/src/lib/pati
 import type { PatientEnvelope, PatientValues } from "@/src/lib/patient-model";
 import { encryptedStorage } from "@/src/lib/patient-vault";
 import type { Vault } from "@/src/lib/patient-vault";
+import { analysisValuesSchema, readAnalysis, sealAnalysis } from "@/src/lib/saved-analysis-model";
+import type { AnalysisCommand } from "@/src/lib/saved-analysis-model";
 export { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
 import { reportFailure } from "@/src/observability/events";
 
@@ -51,7 +53,7 @@ const failedActionSchema = z
   .object({
     id: z.string(),
     code: z.string(),
-    domain: z.enum(["patient", "clinical"]).default("patient"),
+    domain: z.enum(["patient", "clinical", "analysis"]).default("patient"),
     envelope: z.object({
       clientId: z.string(),
       revision: z.number(),
@@ -160,6 +162,34 @@ export async function openPatientWorkspace(config: {
       initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
+  const analysisScope = `${scope}:analyses`;
+  const analysisSnapshotId = "__analysis_snapshot__";
+  const analyses = createCollection(
+    persistedCollectionOptions({
+      ...convexCollectionOptions({
+        id: analysisScope,
+        startSync: true,
+        gcTime: Infinity,
+        client: config.client,
+        query: api.analyses.list,
+        queryArgs: { actorId: config.userId, organizationId: config.organizationId },
+        select: (rows) => [
+          {
+            clientId: analysisSnapshotId,
+            revision: 1,
+            deleted: false,
+            ciphertext: config.vault.seal({ prepared: true }, `${analysisScope}:snapshot`),
+          },
+          ...rows.map((row) => sealAnalysis(row, config.vault, analysisScope)),
+        ],
+        getKey: (row) => row.clientId,
+        onError: (error) => reportFailure(error, "analyses.sync"),
+      }),
+      persistence,
+      schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
+    }),
+  );
   let cleanupExecutor: (() => void) | undefined;
   try {
     const outbox = encryptedStorage(
@@ -245,8 +275,33 @@ export async function openPatientWorkspace(config: {
         };
       },
     });
+    const analysisMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.analyses.apply,
+      collections: [analyses],
+      getArgs: ({ transaction }) => {
+        const change = transaction.mutations[0];
+        if (transaction.mutations.length !== 1 || !change || change.type === "delete")
+          throw new NonRetriableError("INVALID_ANALYSIS");
+        const row = readAnalysis(change.modified as PatientEnvelope, config.vault, analysisScope);
+        return {
+          actorId: config.userId,
+          organizationId: config.organizationId,
+          clientId: row.clientId,
+          expectedRevision:
+            change.type === "insert" ? 0 : (change.original as PatientEnvelope).revision,
+          action:
+            change.type === "insert"
+              ? ("create" as const)
+              : row.deleted
+                ? ("delete" as const)
+                : ("update" as const),
+          ...(row.values ? { values: row.values } : {}),
+        };
+      },
+    });
     const guarded =
-      (invoke: typeof mutation, domain: "patient" | "clinical") =>
+      (invoke: typeof mutation, domain: "patient" | "clinical" | "analysis") =>
       async (params: Parameters<typeof mutation>[0]) => {
         if (closed || !detector.isOnline()) throw new Error("AUTH_REQUIRED");
         try {
@@ -269,6 +324,7 @@ export async function openPatientWorkspace(config: {
               "ACCOUNT_CHANGED",
               "PATIENT_NOT_FOUND",
               "INVALID_CLINICAL_RECORD",
+              "INVALID_ANALYSIS",
               "CLINICAL_KIND_IMMUTABLE",
               "INVALID_VISIT_TRANSITION",
               "VISIT_SCHEDULE_IMMUTABLE",
@@ -298,14 +354,14 @@ export async function openPatientWorkspace(config: {
                 domain,
                 envelope:
                   change.type === "delete" ||
-                  (domain === "clinical" && (change.modified as ClinicalEnvelope).deleted)
+                  (domain !== "patient" && (change.modified as PatientEnvelope).deleted)
                     ? change.original
                     : change.modified,
                 action:
                   change.type === "insert"
                     ? ("create" as const)
                     : change.type === "delete" ||
-                        (domain === "clinical" && (change.modified as ClinicalEnvelope).deleted)
+                        (domain !== "patient" && (change.modified as PatientEnvelope).deleted)
                       ? ("delete" as const)
                       : ("update" as const),
                 expectedRevision:
@@ -319,7 +375,11 @@ export async function openPatientWorkspace(config: {
         }
       };
     const executor = startOfflineExecutor({
-      collections: { [scope]: collection, [clinicalScope]: clinicalRecords },
+      collections: {
+        [scope]: collection,
+        [clinicalScope]: clinicalRecords,
+        [analysisScope]: analyses,
+      },
       storage: receipts.storage,
       mutationCodec: convexMutationCodec,
       onlineDetector: detector,
@@ -332,6 +392,7 @@ export async function openPatientWorkspace(config: {
       mutationFns: {
         "patient.apply.v1": guarded(mutation, "patient"),
         "clinical.apply.v1": guarded(clinicalMutation, "clinical"),
+        "analysis.apply.v1": guarded(analysisMutation, "analysis"),
       },
       shouldRetry: (error) => (error.message === "AUTH_REQUIRED" ? true : undefined),
       onStorageFailure: () => reportFailure(new Error("STORAGE_UNAVAILABLE"), "patients.queue"),
@@ -450,6 +511,35 @@ export async function openPatientWorkspace(config: {
         else clinicalRecords.insert(envelope);
       },
     });
+    const applyAnalysis = executor.createOfflineAction<AnalysisCommand>({
+      mutationFnName: "analysis.apply.v1",
+      onMutate: (command) => {
+        if (closed) throw new Error("WORKSPACE_LOCKED");
+        if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        const envelope = analyses.get(command.clientId);
+        const previous = envelope ? readAnalysis(envelope, config.vault, analysisScope) : undefined;
+        if (
+          (previous?.revision ?? 0) !== command.expectedRevision ||
+          (command.action === "create" ? Boolean(previous) : !previous || previous.deleted)
+        )
+          throw new Error("REVISION_CONFLICT");
+        const now = Date.now();
+        const row = sealAnalysis(
+          {
+            clientId: command.clientId,
+            revision: command.expectedRevision + 1,
+            deleted: command.action === "delete",
+            values: command.action === "delete" ? null : analysisValuesSchema.parse(command.values),
+            createdAt: previous?.createdAt ?? now,
+            updatedAt: now,
+          },
+          config.vault,
+          analysisScope,
+        );
+        if (previous) analyses.update(command.clientId, (draft) => Object.assign(draft, row));
+        else analyses.insert(row);
+      },
+    });
     const persist = async (tx: ReturnType<typeof apply>) => {
       const persisted = receipts.wait(tx.id);
       try {
@@ -465,6 +555,8 @@ export async function openPatientWorkspace(config: {
       patientSnapshotId,
       clinicalRecords,
       clinicalSnapshotId: snapshotId,
+      analyses,
+      analysisSnapshotId,
       executor,
       scope,
       organizationId: config.organizationId,
@@ -498,6 +590,14 @@ export async function openPatientWorkspace(config: {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         return persist(applyClinical(command));
       },
+      readAnalysis: (envelope: PatientEnvelope) => {
+        if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        return readAnalysis(envelope, config.vault, analysisScope);
+      },
+      async saveAnalysis(command: AnalysisCommand) {
+        if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
+        return persist(applyAnalysis(command));
+      },
       async save(command: Parameters<typeof apply>[0]) {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         return persist(apply(command));
@@ -517,7 +617,7 @@ export async function openPatientWorkspace(config: {
           .array(z.object({ userId: z.string(), displayName: z.string() }))
           .parse(value ? JSON.parse(value) : []);
       },
-      async failedActions(domain: "patient" | "clinical" = "patient") {
+      async failedActions(domain: "patient" | "clinical" | "analysis" = "patient") {
         const rows = await Promise.all(
           (await failures.keys()).map(async (key) =>
             failedActionSchema.parse(JSON.parse((await failures.get(key))!)),
@@ -536,7 +636,7 @@ export async function openPatientWorkspace(config: {
         executor.dispose();
         receipts.dispose();
         try {
-          await Promise.all([collection.cleanup(), clinicalRecords.cleanup()]);
+          await Promise.all([collection.cleanup(), clinicalRecords.cleanup(), analyses.cleanup()]);
         } catch (error) {
           reportFailure(error, "patients.close");
         }
@@ -552,7 +652,7 @@ export async function openPatientWorkspace(config: {
     config.vault.lock();
     cleanupExecutor?.();
     try {
-      await Promise.all([collection.cleanup(), clinicalRecords.cleanup()]);
+      await Promise.all([collection.cleanup(), clinicalRecords.cleanup(), analyses.cleanup()]);
     } catch (cleanupError) {
       reportFailure(cleanupError, "patients.close");
     }
