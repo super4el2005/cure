@@ -15,6 +15,7 @@ import type { FunctionReference } from "convex/server";
 
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
+import { analyzeCohort, defaultCohortCriteria } from "@/src/lib/cohort-analysis";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { durabilityReceipts, openPatientWorkspace } from "@/src/lib/patient-workspace";
 import { reportFailure } from "@/src/observability/events";
@@ -251,6 +252,17 @@ describe("durable patient operations", () => {
     const local = restored.collection.get("f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258");
     expect(local).toBeDefined();
     expect(restored.read(local!).fullName).toBe(values.fullName);
+    const offlineAnalysis = analyzeCohort(
+      [...restored.collection.values()]
+        .filter((row) => row.clientId !== restored.patientSnapshotId && !row.deleted)
+        .map(restored.read),
+      "doctor",
+      defaultCohortCriteria,
+      Date.now(),
+    );
+    expect(offlineAnalysis.flow.selected).toBe(1);
+    expect(offlineAnalysis.diagnoses).toEqual([{ code: "F41", count: 1 }]);
+    expect(calls).toBe(0);
     const settled = restored.executor.waitForTransactionCompletion(saved.transactionId);
     result = [];
     nextNetwork.connect();
