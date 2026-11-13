@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { useProjectWork } from "@/src/lib/use-project-work";
+import { useVisitAgenda } from "@/src/lib/use-visit-agenda";
 
 export const Route = createFileRoute("/d_/workspace")({ component: WorkspaceOverview });
 function WorkspaceOverview() {
@@ -42,6 +43,7 @@ function WorkspaceOverview() {
     downloaded,
     status,
   } = useProjectWork();
+  const agenda = useVisitAgenda(userId);
   const projectIds = new Set(rows.map((row) => row.clientId));
   const tasks = workRecords
     .filter(
@@ -146,6 +148,64 @@ function WorkspaceOverview() {
         )}
         {(unlock.isError || lock.isError || resume.isError) && (
           <Alert color="red">{t`Операция не выполнена. Проверьте парольную фразу, срок доступа и разрешения. При ошибке сохранения не закрывайте форму.`}</Alert>
+        )}
+        {userId && (
+          <>
+            <Title order={2}>{t`Ближайшие и незавершённые визиты`}</Title>
+            {!agenda.workspace && (
+              <Alert>
+                <Text>{t`Откройте клиническое пространство для просмотра визитов.`}</Text>
+                <Anchor component={Link} to="/d/patients">{t`Пациенты`}</Anchor>
+              </Alert>
+            )}
+            {agenda.workspace && (
+              <>
+                <Text>
+                  {options.find((option) => option.value === agenda.workspace!.organizationId)
+                    ?.label ?? t`Клиническое пространство`}
+                </Text>
+                <Text>{t`Визиты открытого клинического пространства; время указано в часовом поясе приёма.`}</Text>
+                {!agenda.ready && <Text>{t`Загрузка локальных данных…`}</Text>}
+                {agenda.ready && agenda.visits.length === 0 && (
+                  <Text>{t`Нет запланированных или незавершённых визитов.`}</Text>
+                )}
+                {agenda.visits.slice(0, 10).map(({ record, payload, patientName, time }) => (
+                  <Paper withBorder p="md" key={record.clientId}>
+                    <Stack>
+                      <Title order={3}>{patientName}</Title>
+                      <Text>
+                        {i18n.date(new Date(time.epoch), {
+                          timeZone: time.timeZone,
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          timeZoneName: "shortOffset",
+                        })}
+                      </Text>
+                      <Text>{time.timeZone}</Text>
+                      <Badge>
+                        {payload.status === "inProgress" ? t`Идёт приём` : t`Запланирован`}
+                      </Badge>
+                      {time.epoch + payload.durationMinutes * 60000 < Date.now() && (
+                        <Badge color="orange">{t`Плановое время прошло; уточните результат визита`}</Badge>
+                      )}
+                      <Anchor
+                        renderRoot={(props) => (
+                          <Link
+                            {...props}
+                            to="/d/patients/$id/visits"
+                            params={{ id: record.patientClientId }}
+                          />
+                        )}
+                      >{t`Визиты пациента`}</Anchor>
+                    </Stack>
+                  </Paper>
+                ))}
+              </>
+            )}
+          </>
         )}
         {workspace && (
           <>

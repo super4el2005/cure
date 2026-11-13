@@ -284,6 +284,7 @@
 - TanStack Start — SSR; TanStack Router — маршрутизация.
 - Rsbuild / Rspack — сборка.
 - Mantine, Recharts, React Icons — интерфейс.
+- @internationalized/date — часовые пояса и точное время визитов.
 - Convex — backend и база данных.
 - Axios — HTTP; TanStack Query — запросы; TanStack DB — локальные данные.
 - Better Auth — авторизация.

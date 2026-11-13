@@ -60,6 +60,7 @@ function Patient() {
     editClinical,
   } = useClinicalRecords(id);
   const clinicalKinds = {
+    visit: t`Визит`,
     history: t`Анамнез`,
     allergy: t`Аллергии`,
     medication: t`Лекарственная терапия`,
@@ -268,6 +269,11 @@ function Patient() {
                 )}
                 {opened.role === "doctor" && (
                   <>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/d/patients/$id/visits" params={{ id }} />
+                      )}
+                    >{t`Визиты пациента`}</Anchor>
                     <Title order={2}>{t`Клиническая история`}</Title>
                     <Button
                       disabled={!workspace.canWrite()}
@@ -291,10 +297,12 @@ function Patient() {
                               <NativeSelect
                                 label={t`Раздел карты`}
                                 disabled={Boolean(clinicalForm.values.clientId)}
-                                data={Object.entries(clinicalKinds).map(([value, label]) => ({
-                                  value,
-                                  label,
-                                }))}
+                                data={Object.entries(clinicalKinds)
+                                  .filter(([value]) => value !== "visit")
+                                  .map(([value, label]) => ({
+                                    value,
+                                    label,
+                                  }))}
                                 {...clinicalForm.getInputProps("kind")}
                               />
                               <DateInput

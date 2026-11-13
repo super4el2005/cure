@@ -5,10 +5,15 @@ import { useLiveQuery } from "@tanstack/react-db";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
-import type { ClinicalPayload, ClinicalRecord } from "@/src/lib/clinical-record-model";
+import type {
+  ClinicalPayload,
+  ClinicalRecord,
+  VisitPayload,
+} from "@/src/lib/clinical-record-model";
 import { clinicalPayloadSchema } from "@/src/lib/clinical-record-model";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
 import { usePatientWorkspace } from "@/src/lib/use-patient-workspace";
+import { resolveVisitTime, visitTime } from "@/src/lib/visit-time";
 
 const initialValues = {
   clientId: "",
@@ -34,10 +39,43 @@ const initialValues = {
   numericValue: "" as number | string,
   textValue: "",
   unit: "",
+  scheduledLocal: null as string | null,
+  timeZone: "UTC",
+  disambiguation: "reject" as "reject" | "earlier" | "later",
+  durationMinutes: 30 as number | string,
+  visitType: "consultation" as VisitPayload["visitType"],
+  visitStatus: "planned" as VisitPayload["status"],
+  originalVisitStatus: "planned" as VisitPayload["status"],
+  reason: "",
+  location: "",
+  outcome: "",
+  followUpOn: null as string | null,
+  cancellationReason: "",
 };
 function payload(values: typeof initialValues) {
   const common = { occurredOn: values.occurredOn ?? "", notes: values.notes };
   switch (values.kind) {
+    case "visit": {
+      const scheduledFor = resolveVisitTime(
+        values.scheduledLocal ?? "",
+        values.timeZone,
+        values.disambiguation,
+      );
+      return {
+        ...common,
+        kind: values.kind,
+        occurredOn: visitTime(scheduledFor).date,
+        scheduledFor,
+        durationMinutes: values.durationMinutes,
+        visitType: values.visitType,
+        status: values.visitStatus,
+        reason: values.reason,
+        location: values.location,
+        outcome: values.outcome,
+        followUpOn: values.followUpOn ?? "",
+        cancellationReason: values.cancellationReason,
+      };
+    }
     case "history":
       return { ...common, kind: values.kind, text: values.text };
     case "allergy":
@@ -75,7 +113,7 @@ function payload(values: typeof initialValues) {
       };
   }
 }
-export function useClinicalRecords(patientId: string) {
+export function useClinicalRecords(patientId: string, view: "records" | "visits" = "records") {
   const space = usePatientWorkspace();
   const { workspace, opened, status } = space;
   const { t } = useLingui();
@@ -87,7 +125,10 @@ export function useClinicalRecords(patientId: string) {
           .flatMap((envelope) => {
             try {
               const row = workspace.readClinical(envelope);
-              return row.patientClientId === patientId ? [row] : [];
+              return row.patientClientId === patientId &&
+                (view === "visits" ? row.payload?.kind === "visit" : row.payload?.kind !== "visit")
+                ? [row]
+                : [];
             } catch (error) {
               if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
               throw error;
@@ -103,18 +144,32 @@ export function useClinicalRecords(patientId: string) {
   const clinicalForm = useForm({
     initialValues,
     validate: (values) => {
-      const result = clinicalPayloadSchema.safeParse(payload(values));
+      let result;
+      try {
+        result = clinicalPayloadSchema.safeParse(payload(values));
+      } catch (error) {
+        return {
+          scheduledLocal:
+            error instanceof Error && error.message === "AMBIGUOUS_VISIT_TIME"
+              ? t`Этот час повторяется дважды. Выберите первое или второе вхождение.`
+              : t`Проверьте дату и часовой пояс. Указанное местное время может не существовать при переводе часов.`,
+        };
+      }
       return result.success
         ? {}
         : Object.fromEntries(
             result.error.issues.map((issue) => {
               const field = String(issue.path[0] ?? "notes");
               return [
-                field === "status"
-                  ? values.kind === "allergy"
-                    ? "allergyStatus"
-                    : "medicationStatus"
-                  : field,
+                field === "scheduledFor"
+                  ? "scheduledLocal"
+                  : field === "status"
+                    ? values.kind === "allergy"
+                      ? "allergyStatus"
+                      : values.kind === "visit"
+                        ? "visitStatus"
+                        : "medicationStatus"
+                    : field,
                 t`Проверьте значение поля`,
               ];
             }),
@@ -122,7 +177,7 @@ export function useClinicalRecords(patientId: string) {
     },
   });
   const clinicalFailures = useQuery({
-    queryKey: ["clinical-failures", workspace?.scope, patientId],
+    queryKey: ["clinical-failures", workspace?.scope, patientId, view],
     enabled: opened?.role === "doctor",
     networkMode: "always",
     gcTime: 0,
@@ -130,7 +185,11 @@ export function useClinicalRecords(patientId: string) {
     queryFn: async () =>
       (await workspace!.failedActions("clinical")).filter((failure) => {
         try {
-          return workspace!.readClinical(failure.envelope).patientClientId === patientId;
+          const row = workspace!.readClinical(failure.envelope);
+          return (
+            row.patientClientId === patientId &&
+            (view === "visits" ? row.payload?.kind === "visit" : row.payload?.kind !== "visit")
+          );
         } catch (error) {
           if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return false;
           throw error;
@@ -181,6 +240,27 @@ export function useClinicalRecords(patientId: string) {
         textValue: value.textValue,
         unit: value.unit,
       });
+    if (value.kind === "visit") {
+      const scheduled = visitTime(value.scheduledFor);
+      clinicalForm.setValues({
+        scheduledLocal: scheduled.local,
+        timeZone: scheduled.timeZone,
+        disambiguation:
+          visitTime(resolveVisitTime(scheduled.local, scheduled.timeZone, "earlier")).epoch ===
+          scheduled.epoch
+            ? "earlier"
+            : "later",
+        durationMinutes: value.durationMinutes,
+        visitType: value.visitType,
+        visitStatus: value.status,
+        originalVisitStatus: value.status,
+        reason: value.reason,
+        location: value.location,
+        outcome: value.outcome,
+        followUpOn: value.followUpOn || null,
+        cancellationReason: value.cancellationReason,
+      });
+    }
     clinicalEditor.open();
   };
   const saveClinical = useMutation({
@@ -266,6 +346,8 @@ export function useClinicalRecords(patientId: string) {
       clinicalForm.reset();
       clinicalForm.setValues({
         patientClientId: patientId,
+        kind: view === "visits" ? "visit" : "history",
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         occurredOn: dayjs().format("YYYY-MM-DD"),
       });
       clinicalEditor.open();
