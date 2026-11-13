@@ -1,5 +1,11 @@
 export function workspaceAdmission(
-  workspace: { userId: string; organizationId: string; role: string; expiresAt: number },
+  workspace: {
+    userId: string;
+    organizationId?: string;
+    role?: string;
+    purpose?: "library";
+    expiresAt: number;
+  },
   signals: {
     now: number;
     localReady: boolean;
@@ -8,7 +14,11 @@ export function workspaceAdmission(
     isAuthenticated: boolean;
     online: boolean;
     profile:
-      | { userId: string; memberships: readonly { organizationId: string; role: string }[] }
+      | {
+          userId: string;
+          memberships: readonly { organizationId: string; role: string }[];
+          profile?: { profession: string } | null;
+        }
       | undefined;
   },
 ): "close" | "pause" | "sync" {
@@ -19,10 +29,13 @@ export function workspaceAdmission(
     (signals.isAuthenticated &&
       signals.online &&
       signals.profile?.userId === workspace.userId &&
-      !signals.profile.memberships.some(
-        (member) =>
-          member.organizationId === workspace.organizationId && member.role === workspace.role,
-      ))
+      (workspace.purpose === "library"
+        ? !signals.profile.profile ||
+          !["doctor", "researcher"].includes(signals.profile.profile.profession)
+        : !signals.profile.memberships.some(
+            (member) =>
+              member.organizationId === workspace.organizationId && member.role === workspace.role,
+          )))
   )
     return "close";
   return signals.isAuthenticated &&

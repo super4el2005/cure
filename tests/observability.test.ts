@@ -118,3 +118,21 @@ it("identifies clinical and project routes without recording record IDs or query
   expect(safePath("https://cure.test/m/projects/private-study/work")).toBe("/m/projects/:id/work");
   expect(safePath("https://cure.test/d/patients/private-patient/secret-notes")).toBe("/:redacted");
 });
+
+it("observes library and research actions without exposing record identifiers or private notes", () => {
+  expect(safePath("/d/library")).toBe("/d/library");
+  expect(safePath("/m/projects/private-study/visits")).toBe("/m/projects/:id/visits");
+  expect(safePath("/d/patients/private-patient/enrollment")).toBe("/d/patients/:id/enrollment");
+  expect(
+    safeAttributes({
+      "app.operation": "library.save",
+      "app.code": "INVALID_LIBRARY",
+      "private.notes": "SECRET",
+      "app.outcome": "error",
+    }),
+  ).toEqual({
+    "app.operation": "library.save",
+    "app.code": "INVALID_LIBRARY",
+    "app.outcome": "error",
+  });
+});

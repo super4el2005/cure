@@ -46,6 +46,7 @@ import { lastLocaleKey, localeCookie } from "@/src/lib/locale";
 import type { Locale } from "@/src/lib/locale";
 import { createMedicalCache, saveMedicalRecords } from "@/src/lib/medical-cache";
 import {
+  medicalSearchRequest,
   filterMedicalRecords,
   isMedicalSource,
   medicalAttribution,
@@ -273,7 +274,8 @@ function DesktopHome() {
   const searchError = axios.isAxiosError<{ error: string }>(search.error)
     ? search.error.response?.data?.error
     : undefined;
-  const currentInput = medicalFormSchema.safeParse(catalogForm.values).data;
+  const parsedInput = medicalFormSchema.safeParse(catalogForm.values).data;
+  const currentInput = parsedInput ? medicalSearchRequest(parsedInput) : undefined;
   const matchesSearch = deepEquals(search.variables?.data, currentInput);
   const resultIds = new Set(matchesSearch ? search.data?.records.map((record) => record.id) : []);
   const savedRecords =
@@ -511,7 +513,10 @@ function DesktopHome() {
                   <Box
                     component="form"
                     onSubmit={catalogForm.onSubmit(() => {
-                      if (online) search.mutate({ data: medicalSearchSchema.parse(currentInput) });
+                      if (online)
+                        search.mutate({
+                          data: medicalSearchRequest(medicalSearchSchema.parse(currentInput)),
+                        });
                     })}
                   >
                     <Stack>

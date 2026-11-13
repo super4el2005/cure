@@ -1,12 +1,14 @@
 import { queryOptions } from "@tanstack/react-query";
 import type { QueryClient } from "@tanstack/react-query";
 
+import type { openLibraryWorkspace } from "@/src/lib/library-workspace";
 import type { openPatientWorkspace } from "@/src/lib/patient-workspace";
 import type { openProjectWorkspace } from "@/src/lib/project-workspace";
 
 type PatientWorkspace = Awaited<ReturnType<typeof openPatientWorkspace>>;
 type ProjectWorkspace = Awaited<ReturnType<typeof openProjectWorkspace>>;
 export type RetainedWorkspace =
+  | { kind: "library"; userId: string; workspace: Awaited<ReturnType<typeof openLibraryWorkspace>> }
   | { kind: "patients"; userId: string; workspace: PatientWorkspace }
   | { kind: "projects"; userId: string; workspace: ProjectWorkspace };
 

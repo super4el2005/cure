@@ -4,6 +4,20 @@ import type { Breadcrumb, ErrorEvent, Log } from "@sentry/tanstackstart-react";
 // One catalog for semantic user actions. Never derive event names from user input.
 export const actions: Record<string, string> = {
   authentication: "account.authentication",
+  "library-open": "library.open",
+  "library-lock": "library.lock",
+  "library-resume": "library.resume",
+  "library-save": "library.save",
+  "library-delete": "library.delete",
+  "library-restore": "library.restore",
+  "library-import": "library.import",
+  "library-cache-publications": "library.references.persist",
+  "enrollment-save": "enrollment.save",
+  "enrollment-delete": "enrollment.delete",
+  "enrollment-restore": "enrollment.restore",
+  "study-visit-save": "study.visit.save",
+  "study-visit-delete": "study.visit.delete",
+  "study-visit-restore": "study.visit.restore",
   "profile-save": "profile.save",
   "patients-open": "patients.open",
   "patients-save": "patients.save",
@@ -54,6 +68,25 @@ export const actions: Record<string, string> = {
 export const errorCodes = new Set([
   "FORBIDDEN_ORIGIN",
   "INVALID_REQUEST",
+  "PROFILE_REQUIRED",
+  "INVALID_LIBRARY",
+  "LIBRARY_ITEM_DELETED",
+  "INVALID_ENROLLMENT",
+  "INVALID_ENROLLMENT_TRANSITION",
+  "ENROLLMENT_BINDING_IMMUTABLE",
+  "ENROLLMENT_HISTORY_IMMUTABLE",
+  "ENROLLMENT_EXISTS",
+  "PARTICIPATION_CONSENT_REQUIRED",
+  "PARTICIPATION_CONSENT_EXPIRED",
+  "PROTOCOL_OUTDATED",
+  "RECRUITMENT_CLOSED",
+  "ETHICS_APPROVAL_REQUIRED",
+  "STUDY_VISIT_BINDING_IMMUTABLE",
+  "ENROLLMENT_CHANGED",
+  "PARTICIPATION_INACTIVE",
+  "INVALID_VISIT_WINDOW",
+  "VISIT_DEVIATION_REQUIRED",
+  "VISIT_ACTUAL_DATE_REQUIRED",
   "INVALID_SEARCH",
   "INVALID_CONTENT_TYPE",
   "INVALID_MODEL",
@@ -158,19 +191,21 @@ export function safePath(value: unknown): string {
       .pathname;
     if (paths.has(path)) return path;
     if (
-      /^\/[dm]\/(workspace|profile|patients|projects|invitations|specialists|organizations|research|tools)$/.test(
+      /^\/[dm]\/(workspace|profile|patients|projects|invitations|specialists|organizations|research|tools|analytics|library)$/.test(
         path,
       )
     )
       return path;
     const detail = path.match(
-      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work))?$/,
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment))?$/,
     );
     if (
       detail &&
       (!detail[3] ||
-        (detail[2] === "patients" && detail[3] === "consents") ||
-        (detail[2] === "projects" && ["protocol", "team", "work"].includes(detail[3])))
+        (detail[2] === "patients" &&
+          ["consents", "forms", "visits", "enrollment"].includes(detail[3])) ||
+        (detail[2] === "projects" &&
+          ["protocol", "team", "work", "forms", "visits", "enrollment"].includes(detail[3])))
     )
       return `/${detail[1]}/${detail[2]}/:id${detail[3] ? `/${detail[3]}` : ""}`;
 

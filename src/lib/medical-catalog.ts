@@ -87,3 +87,7 @@ export function filterMedicalRecords(
       `${record.title} ${record.code} ${record.description}`.toLocaleLowerCase().includes(needle),
   );
 }
+
+export function medicalSearchRequest(input: MedicalSearch) {
+  return input.source === "pubmed" ? { ...input, offset: input.offset ?? 0 } : input;
+}

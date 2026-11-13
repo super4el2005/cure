@@ -16,7 +16,7 @@ import { apiClient } from "@/src/lib/http-client";
 import type { ErrorType } from "@/src/lib/http-client";
 export type SearchMedicalBody =
   | {
-      source: "ror" | "geofabrik" | "icd11" | "icd10" | "pubmed" | "orphadata";
+      source: "ror" | "geofabrik" | "icd11" | "icd10" | "orphadata";
       /**
        * @minLength 2
        * @maxLength 100
@@ -42,6 +42,19 @@ export type SearchMedicalBody =
        * @maximum 10000
        */
       radius: number;
+    }
+  | {
+      source: "pubmed";
+      /**
+       * @minLength 2
+       * @maxLength 100
+       */
+      query: string;
+      /**
+       * @minimum 0
+       * @maximum 9980
+       */
+      offset?: number;
     };
 
 export type SearchMedical200RecordsItemSource =
@@ -57,10 +70,18 @@ export const SearchMedical200RecordsItemSource = {
   orphadata: "orphadata",
 } as const;
 
+export type SearchMedical200RecordsItemBibliography = {
+  doi: string;
+  authors: string[];
+  year: number | null;
+  journal: string;
+};
+
 export type SearchMedical200RecordsItem = {
   id: string;
   source: SearchMedical200RecordsItemSource;
   sourceId: string;
+  bibliography?: SearchMedical200RecordsItemBibliography;
   title: string;
   description: string;
   code: string;
