@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { Vault } from "@/src/lib/patient-vault";
 import { enrollmentPayloadSchema } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema, questionnairePayloadSchema } from "@/src/lib/study-form-model";
+import { studyVisitPayloadSchema, visitFields } from "@/src/lib/study-visit-model";
 import { visitTime, visitTimeSchema } from "@/src/lib/visit-time";
 
 const common = { occurredOn: z.iso.date(), notes: z.string().trim().max(2000) };
@@ -10,19 +11,8 @@ export const clinicalPayloadSchema = z
   .discriminatedUnion("kind", [
     questionnairePayloadSchema,
     enrollmentPayloadSchema,
-    z.object({
-      ...common,
-      kind: z.literal("visit"),
-      scheduledFor: visitTimeSchema,
-      durationMinutes: z.number().int().min(1).max(1440),
-      visitType: z.enum(["consultation", "procedure", "hospitalization", "followUp"]),
-      status: z.enum(["planned", "inProgress", "completed", "cancelled", "noShow"]),
-      reason: z.string().trim().min(1).max(1000),
-      location: z.string().trim().max(200),
-      outcome: z.string().trim().max(10000),
-      followUpOn: z.union([z.literal(""), z.iso.date()]),
-      cancellationReason: z.string().trim().max(1000),
-    }),
+    studyVisitPayloadSchema,
+    z.object({ ...visitFields, kind: z.literal("visit") }),
     z.object({ ...common, kind: z.literal("history"), text: z.string().trim().min(1).max(10000) }),
     z.object({
       ...common,
@@ -53,7 +43,7 @@ export const clinicalPayloadSchema = z
     }),
   ])
   .superRefine((value, ctx) => {
-    if (value.kind === "visit") {
+    if (value.kind === "visit" || value.kind === "studyVisit") {
       if (
         visitTimeSchema.safeParse(value.scheduledFor).success &&
         visitTime(value.scheduledFor).date !== value.occurredOn
@@ -122,7 +112,26 @@ export function validateClinicalTransition(previous: ClinicalPayload, next: Clin
         throw new Error("AMENDMENT_REASON_REQUIRED");
     }
   }
-  if (previous.kind === "visit" && next.kind === "visit") {
+  if (previous.kind === "studyVisit" && next.kind === "studyVisit") {
+    if (
+      previous.enrollmentClientId !== next.enrollmentClientId ||
+      previous.projectClientId !== next.projectClientId ||
+      previous.protocolClientId !== next.protocolClientId ||
+      previous.protocolVersion !== next.protocolVersion
+    )
+      throw new Error("STUDY_VISIT_BINDING_IMMUTABLE");
+    if (["completed", "cancelled", "noShow"].includes(previous.status) && !next.amendmentReason)
+      throw new Error("AMENDMENT_REASON_REQUIRED");
+    if (
+      ["completed", "cancelled", "noShow"].includes(previous.status) &&
+      (previous.windowFrom !== next.windowFrom || previous.windowTo !== next.windowTo)
+    )
+      throw new Error("VISIT_SCHEDULE_IMMUTABLE");
+  }
+  if (
+    (previous.kind === "visit" || previous.kind === "studyVisit") &&
+    (next.kind === "visit" || next.kind === "studyVisit")
+  ) {
     if (!visitTransitions[previous.status].includes(next.status))
       throw new Error("INVALID_VISIT_TRANSITION");
     if (

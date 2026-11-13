@@ -52,6 +52,7 @@ import { Route as DProjectsIdEnrollmentRouteImport } from './routes/d_.projects_
 import { Route as DProjectsIdFormsRouteImport } from './routes/d_.projects_.$id.forms'
 import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
 import { Route as DProjectsIdTeamRouteImport } from './routes/d_.projects_.$id.team'
+import { Route as DProjectsIdVisitsRouteImport } from './routes/d_.projects_.$id.visits'
 import { Route as DProjectsIdWorkRouteImport } from './routes/d_.projects_.$id.work'
 import { Route as MPatientsIdConsentsRouteImport } from './routes/m_.patients_.$id_.consents'
 import { Route as MPatientsIdEnrollmentRouteImport } from './routes/m_.patients_.$id_.enrollment'
@@ -61,6 +62,7 @@ import { Route as MProjectsIdEnrollmentRouteImport } from './routes/m_.projects_
 import { Route as MProjectsIdFormsRouteImport } from './routes/m_.projects_.$id.forms'
 import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
 import { Route as MProjectsIdTeamRouteImport } from './routes/m_.projects_.$id.team'
+import { Route as MProjectsIdVisitsRouteImport } from './routes/m_.projects_.$id.visits'
 import { Route as MProjectsIdWorkRouteImport } from './routes/m_.projects_.$id.work'
 
 const IndexRoute = IndexRouteImport.update({
@@ -278,6 +280,11 @@ const DProjectsIdTeamRoute = DProjectsIdTeamRouteImport.update({
   path: '/d/projects/$id/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DProjectsIdVisitsRoute = DProjectsIdVisitsRouteImport.update({
+  id: '/d_/projects_/$id/visits',
+  path: '/d/projects/$id/visits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DProjectsIdWorkRoute = DProjectsIdWorkRouteImport.update({
   id: '/d_/projects_/$id/work',
   path: '/d/projects/$id/work',
@@ -321,6 +328,11 @@ const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
 const MProjectsIdTeamRoute = MProjectsIdTeamRouteImport.update({
   id: '/m_/projects_/$id/team',
   path: '/m/projects/$id/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdVisitsRoute = MProjectsIdVisitsRouteImport.update({
+  id: '/m_/projects_/$id/visits',
+  path: '/m/projects/$id/visits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MProjectsIdWorkRoute = MProjectsIdWorkRouteImport.update({
@@ -373,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/d/projects/$id/forms': typeof DProjectsIdFormsRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
+  '/d/projects/$id/visits': typeof DProjectsIdVisitsRoute
   '/d/projects/$id/work': typeof DProjectsIdWorkRoute
   '/m/patients/$id/consents': typeof MPatientsIdConsentsRoute
   '/m/patients/$id/enrollment': typeof MPatientsIdEnrollmentRoute
@@ -382,6 +395,7 @@ export interface FileRoutesByFullPath {
   '/m/projects/$id/forms': typeof MProjectsIdFormsRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
+  '/m/projects/$id/visits': typeof MProjectsIdVisitsRoute
   '/m/projects/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRoutesByTo {
@@ -428,6 +442,7 @@ export interface FileRoutesByTo {
   '/d/projects/$id/forms': typeof DProjectsIdFormsRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
+  '/d/projects/$id/visits': typeof DProjectsIdVisitsRoute
   '/d/projects/$id/work': typeof DProjectsIdWorkRoute
   '/m/patients/$id/consents': typeof MPatientsIdConsentsRoute
   '/m/patients/$id/enrollment': typeof MPatientsIdEnrollmentRoute
@@ -437,6 +452,7 @@ export interface FileRoutesByTo {
   '/m/projects/$id/forms': typeof MProjectsIdFormsRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
+  '/m/projects/$id/visits': typeof MProjectsIdVisitsRoute
   '/m/projects/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRoutesById {
@@ -484,6 +500,7 @@ export interface FileRoutesById {
   '/d_/projects_/$id/forms': typeof DProjectsIdFormsRoute
   '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d_/projects_/$id/team': typeof DProjectsIdTeamRoute
+  '/d_/projects_/$id/visits': typeof DProjectsIdVisitsRoute
   '/d_/projects_/$id/work': typeof DProjectsIdWorkRoute
   '/m_/patients_/$id_/consents': typeof MPatientsIdConsentsRoute
   '/m_/patients_/$id_/enrollment': typeof MPatientsIdEnrollmentRoute
@@ -493,6 +510,7 @@ export interface FileRoutesById {
   '/m_/projects_/$id/forms': typeof MProjectsIdFormsRoute
   '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m_/projects_/$id/team': typeof MProjectsIdTeamRoute
+  '/m_/projects_/$id/visits': typeof MProjectsIdVisitsRoute
   '/m_/projects_/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRouteTypes {
@@ -541,6 +559,7 @@ export interface FileRouteTypes {
     | '/d/projects/$id/forms'
     | '/d/projects/$id/protocol'
     | '/d/projects/$id/team'
+    | '/d/projects/$id/visits'
     | '/d/projects/$id/work'
     | '/m/patients/$id/consents'
     | '/m/patients/$id/enrollment'
@@ -550,6 +569,7 @@ export interface FileRouteTypes {
     | '/m/projects/$id/forms'
     | '/m/projects/$id/protocol'
     | '/m/projects/$id/team'
+    | '/m/projects/$id/visits'
     | '/m/projects/$id/work'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -596,6 +616,7 @@ export interface FileRouteTypes {
     | '/d/projects/$id/forms'
     | '/d/projects/$id/protocol'
     | '/d/projects/$id/team'
+    | '/d/projects/$id/visits'
     | '/d/projects/$id/work'
     | '/m/patients/$id/consents'
     | '/m/patients/$id/enrollment'
@@ -605,6 +626,7 @@ export interface FileRouteTypes {
     | '/m/projects/$id/forms'
     | '/m/projects/$id/protocol'
     | '/m/projects/$id/team'
+    | '/m/projects/$id/visits'
     | '/m/projects/$id/work'
   id:
     | '__root__'
@@ -651,6 +673,7 @@ export interface FileRouteTypes {
     | '/d_/projects_/$id/forms'
     | '/d_/projects_/$id/protocol'
     | '/d_/projects_/$id/team'
+    | '/d_/projects_/$id/visits'
     | '/d_/projects_/$id/work'
     | '/m_/patients_/$id_/consents'
     | '/m_/patients_/$id_/enrollment'
@@ -660,6 +683,7 @@ export interface FileRouteTypes {
     | '/m_/projects_/$id/forms'
     | '/m_/projects_/$id/protocol'
     | '/m_/projects_/$id/team'
+    | '/m_/projects_/$id/visits'
     | '/m_/projects_/$id/work'
   fileRoutesById: FileRoutesById
 }
@@ -707,6 +731,7 @@ export interface RootRouteChildren {
   DProjectsIdFormsRoute: typeof DProjectsIdFormsRoute
   DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
   DProjectsIdTeamRoute: typeof DProjectsIdTeamRoute
+  DProjectsIdVisitsRoute: typeof DProjectsIdVisitsRoute
   DProjectsIdWorkRoute: typeof DProjectsIdWorkRoute
   MPatientsIdConsentsRoute: typeof MPatientsIdConsentsRoute
   MPatientsIdEnrollmentRoute: typeof MPatientsIdEnrollmentRoute
@@ -716,6 +741,7 @@ export interface RootRouteChildren {
   MProjectsIdFormsRoute: typeof MProjectsIdFormsRoute
   MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
   MProjectsIdTeamRoute: typeof MProjectsIdTeamRoute
+  MProjectsIdVisitsRoute: typeof MProjectsIdVisitsRoute
   MProjectsIdWorkRoute: typeof MProjectsIdWorkRoute
 }
 
@@ -1022,6 +1048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DProjectsIdTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/projects_/$id/visits': {
+      id: '/d_/projects_/$id/visits'
+      path: '/d/projects/$id/visits'
+      fullPath: '/d/projects/$id/visits'
+      preLoaderRoute: typeof DProjectsIdVisitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/projects_/$id/work': {
       id: '/d_/projects_/$id/work'
       path: '/d/projects/$id/work'
@@ -1085,6 +1118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MProjectsIdTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/m_/projects_/$id/visits': {
+      id: '/m_/projects_/$id/visits'
+      path: '/m/projects/$id/visits'
+      fullPath: '/m/projects/$id/visits'
+      preLoaderRoute: typeof MProjectsIdVisitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/m_/projects_/$id/work': {
       id: '/m_/projects_/$id/work'
       path: '/m/projects/$id/work'
@@ -1139,6 +1179,7 @@ const rootRouteChildren: RootRouteChildren = {
   DProjectsIdFormsRoute: DProjectsIdFormsRoute,
   DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
   DProjectsIdTeamRoute: DProjectsIdTeamRoute,
+  DProjectsIdVisitsRoute: DProjectsIdVisitsRoute,
   DProjectsIdWorkRoute: DProjectsIdWorkRoute,
   MPatientsIdConsentsRoute: MPatientsIdConsentsRoute,
   MPatientsIdEnrollmentRoute: MPatientsIdEnrollmentRoute,
@@ -1148,6 +1189,7 @@ const rootRouteChildren: RootRouteChildren = {
   MProjectsIdFormsRoute: MProjectsIdFormsRoute,
   MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
   MProjectsIdTeamRoute: MProjectsIdTeamRoute,
+  MProjectsIdVisitsRoute: MProjectsIdVisitsRoute,
   MProjectsIdWorkRoute: MProjectsIdWorkRoute,
 }
 export const routeTree = rootRouteImport

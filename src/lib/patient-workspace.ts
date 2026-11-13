@@ -47,6 +47,10 @@ import type { Vault } from "@/src/lib/patient-vault";
 import { analysisValuesSchema, readAnalysis, sealAnalysis } from "@/src/lib/saved-analysis-model";
 import type { AnalysisCommand } from "@/src/lib/saved-analysis-model";
 import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
+import {
+  studyVisitNeedsAuthorization,
+  validateStudyVisitParticipation,
+} from "@/src/lib/study-visit-model";
 export { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
 import { reportFailure } from "@/src/observability/events";
 
@@ -261,14 +265,17 @@ export async function openPatientWorkspace(config: {
         );
         const original =
           change.type !== "insert" &&
-          (row.deleted || ["questionnaire", "enrollment"].includes(row.payload?.kind ?? ""))
+          (row.deleted ||
+            ["questionnaire", "enrollment", "studyVisit"].includes(row.payload?.kind ?? ""))
             ? openClinicalRecord(change.original as ClinicalEnvelope, config.vault, clinicalScope)
             : undefined;
         const versionedWrite =
           row.payload?.kind === "questionnaire" ||
           original?.payload?.kind === "questionnaire" ||
           row.payload?.kind === "enrollment" ||
-          original?.payload?.kind === "enrollment";
+          original?.payload?.kind === "enrollment" ||
+          row.payload?.kind === "studyVisit" ||
+          original?.payload?.kind === "studyVisit";
         return {
           actorId: config.userId,
           organizationId: config.organizationId,
@@ -278,7 +285,8 @@ export async function openPatientWorkspace(config: {
             ? {
                 expectedWriteId:
                   original?.payload?.kind === "questionnaire" ||
-                  original?.payload?.kind === "enrollment"
+                  original?.payload?.kind === "enrollment" ||
+                  original?.payload?.kind === "studyVisit"
                     ? original.payload.writeId
                     : null,
               }
@@ -361,6 +369,13 @@ export async function openPatientWorkspace(config: {
               "PROTOCOL_OUTDATED",
               "RECRUITMENT_CLOSED",
               "ETHICS_APPROVAL_REQUIRED",
+              "STUDY_VISIT_BINDING_IMMUTABLE",
+              "ENROLLMENT_CHANGED",
+              "PARTICIPATION_INACTIVE",
+              "INVALID_VISIT_WINDOW",
+              "VISIT_DEVIATION_REQUIRED",
+              "VISIT_ACTUAL_DATE_REQUIRED",
+              "INVALID_CLINICAL_DATE",
               "PROJECT_ARCHIVED",
               "PROJECT_COMPLETED",
               "INVALID_VISIT_TRANSITION",
@@ -529,7 +544,9 @@ export async function openPatientWorkspace(config: {
         const parsedPayload =
           command.action === "delete" ? null : clinicalPayloadSchema.parse(command.payload);
         const payload =
-          parsedPayload?.kind === "questionnaire" || parsedPayload?.kind === "enrollment"
+          parsedPayload?.kind === "questionnaire" ||
+          parsedPayload?.kind === "enrollment" ||
+          parsedPayload?.kind === "studyVisit"
             ? { ...parsedPayload, writeId: crypto.randomUUID() }
             : parsedPayload;
         if (prior?.payload && payload) validateClinicalTransition(prior.payload, payload);
@@ -553,6 +570,31 @@ export async function openPatientWorkspace(config: {
               )
           )
             throw new Error("ENROLLMENT_EXISTS");
+        }
+        if (payload?.kind === "studyVisit") {
+          if (command.action === "create" && payload.status !== "planned")
+            throw new Error("INVALID_VISIT_TRANSITION");
+          if (payload.performedOn > new Date().toISOString().slice(0, 10))
+            throw new Error("INVALID_CLINICAL_DATE");
+          const enrollmentEnvelope = clinicalRecords.get(payload.enrollmentClientId);
+          const enrollment =
+            enrollmentEnvelope && !enrollmentEnvelope.deleted
+              ? openClinicalRecord(enrollmentEnvelope, config.vault, clinicalScope)
+              : undefined;
+          if (
+            studyVisitNeedsAuthorization(
+              prior?.payload?.kind === "studyVisit" ? prior.payload : null,
+              payload,
+            )
+          ) {
+            if (
+              !enrollment ||
+              enrollment.patientClientId !== command.patientClientId ||
+              enrollment.payload?.kind !== "enrollment"
+            )
+              throw new Error("PARTICIPATION_INACTIVE");
+            validateStudyVisitParticipation(payload, enrollment.payload, Date.now());
+          }
         }
         const now = Date.now();
         const envelope = clinicalEnvelope(

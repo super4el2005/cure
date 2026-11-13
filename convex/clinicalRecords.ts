@@ -5,10 +5,12 @@ import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
 import { enrollmentAccess, checkRecruitment } from "@/convex/lib/enrollment";
 import { operationReceipt, projectAccess, requireClientId } from "@/convex/lib/research";
+import { studyVisitAccess, checkStudyVisit } from "@/convex/lib/studyVisit";
 import { clinicalPayload } from "@/convex/schema";
 import { clinicalPayloadSchema, validateClinicalTransition } from "@/src/lib/clinical-record-model";
 import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
+import { studyVisitNeedsAuthorization } from "@/src/lib/study-visit-model";
 
 export const list = query({
   args: { actorId: v.string(), organizationId: v.id("organizations") },
@@ -84,7 +86,9 @@ export const apply = mutation({
       payload?.kind === "questionnaire" ||
       existing?.payload?.kind === "questionnaire" ||
       payload?.kind === "enrollment" ||
-      existing?.payload?.kind === "enrollment";
+      existing?.payload?.kind === "enrollment" ||
+      payload?.kind === "studyVisit" ||
+      existing?.payload?.kind === "studyVisit";
     if (args.expectedWriteId !== undefined && args.expectedWriteId !== null)
       requireClientId(args.expectedWriteId);
     if (
@@ -96,6 +100,14 @@ export const apply = mutation({
     const enrollmentProject =
       payload?.kind === "enrollment"
         ? await enrollmentAccess(ctx, args.organizationId, payload, args.action === "create")
+        : undefined;
+    const studyProject =
+      payload?.kind === "studyVisit" &&
+      studyVisitNeedsAuthorization(
+        existing?.payload?.kind === "studyVisit" ? existing.payload : null,
+        payload,
+      )
+        ? await studyVisitAccess(ctx, args.organizationId, payload)
         : undefined;
     let questionnaireProjectCompleted = false;
     if (payload?.kind === "questionnaire") {
@@ -160,17 +172,37 @@ export const apply = mutation({
     if (
       versionedWrite &&
       args.action !== "create" &&
-      ((existing?.payload?.kind !== "questionnaire" && existing?.payload?.kind !== "enrollment") ||
+      ((existing?.payload?.kind !== "questionnaire" &&
+        existing?.payload?.kind !== "enrollment" &&
+        existing?.payload?.kind !== "studyVisit") ||
         existing.payload.writeId !== args.expectedWriteId)
     )
       throw new ConvexError("REVISION_CONFLICT");
     if (
       args.action === "update" &&
-      (existing?.payload?.kind === "questionnaire" || existing?.payload?.kind === "enrollment") &&
-      (payload?.kind === "questionnaire" || payload?.kind === "enrollment") &&
+      (existing?.payload?.kind === "questionnaire" ||
+        existing?.payload?.kind === "enrollment" ||
+        existing?.payload?.kind === "studyVisit") &&
+      (payload?.kind === "questionnaire" ||
+        payload?.kind === "enrollment" ||
+        payload?.kind === "studyVisit") &&
       existing.payload.writeId === payload.writeId
     )
       throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (payload?.kind === "studyVisit") {
+      if (args.action === "create" && payload.status !== "planned")
+        throw new ConvexError("INVALID_VISIT_TRANSITION");
+      if (payload.performedOn > new Date().toISOString().slice(0, 10))
+        throw new ConvexError("INVALID_CLINICAL_DATE");
+      if (studyProject)
+        await checkStudyVisit(
+          ctx,
+          args.organizationId,
+          args.patientClientId,
+          payload,
+          studyProject,
+        );
+    }
     if (payload?.kind === "enrollment") {
       try {
         validateEnrollmentChange(

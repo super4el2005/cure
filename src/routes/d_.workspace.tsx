@@ -192,15 +192,28 @@ function WorkspaceOverview() {
                       {time.epoch + payload.durationMinutes * 60000 < Date.now() && (
                         <Badge color="orange">{t`Плановое время прошло; уточните результат визита`}</Badge>
                       )}
-                      <Anchor
-                        renderRoot={(props) => (
-                          <Link
-                            {...props}
-                            to="/d/patients/$id/visits"
-                            params={{ id: record.patientClientId }}
-                          />
-                        )}
-                      >{t`Визиты пациента`}</Anchor>
+                      {payload.kind === "visit" && (
+                        <Anchor
+                          renderRoot={(props) => (
+                            <Link
+                              {...props}
+                              to="/d/patients/$id/visits"
+                              params={{ id: record.patientClientId }}
+                            />
+                          )}
+                        >{t`Визиты пациента`}</Anchor>
+                      )}
+                      {payload.kind === "studyVisit" && (
+                        <Anchor
+                          renderRoot={(props) => (
+                            <Link
+                              {...props}
+                              to="/d/projects/$id/visits"
+                              params={{ id: payload.projectClientId }}
+                            />
+                          )}
+                        >{t`Визиты исследования`}</Anchor>
+                      )}
                     </Stack>
                   </Paper>
                 ))}
