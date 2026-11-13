@@ -242,7 +242,7 @@ export function usePatientWorkspace() {
     queryFn: async () => ({
       pending: workspace!.executor.getPendingCount() + workspace!.executor.getRunningCount(),
       leader: workspace!.canWrite(),
-      online: workspace!.executor.isOnline(),
+      online: workspace!.executor.isOnline() && convex.connectionState().isWebSocketConnected,
       failures: await workspace!.failedActions(),
     }),
   });

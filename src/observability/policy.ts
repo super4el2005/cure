@@ -131,7 +131,7 @@ export function safePath(value: unknown): string {
       .pathname;
     if (paths.has(path)) return path;
     if (
-      /^\/[dm]\/(profile|patients|projects|invitations|specialists|organizations|research|tools)$/.test(
+      /^\/[dm]\/(workspace|profile|patients|projects|invitations|specialists|organizations|research|tools)$/.test(
         path,
       )
     )

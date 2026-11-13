@@ -330,3 +330,17 @@ test("patient record and consent routes render protected entries without listing
     }
   }
 });
+
+test("workspace overview renders without live subscriptions or private records on the server", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/workspace`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Your studies, upcoming tasks and invitations/);
+    assert.doesNotMatch(html, /Test Patient|Private clinical note|Private research discussion/);
+  }
+});
