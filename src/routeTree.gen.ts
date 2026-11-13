@@ -13,9 +13,41 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DRouteImport } from './routes/d'
 import { Route as MRouteImport } from './routes/m'
 import { Route as AuthErrorRouteImport } from './routes/auth.error'
+import { Route as DInvitationsRouteImport } from './routes/d_.invitations'
+import { Route as DOrganizationsRouteImport } from './routes/d_.organizations'
+import { Route as DPatientsRouteImport } from './routes/d_.patients'
+import { Route as DProfileRouteImport } from './routes/d_.profile'
+import { Route as DProjectsRouteImport } from './routes/d_.projects'
+import { Route as DResearchRouteImport } from './routes/d_.research'
+import { Route as DSpecialistsRouteImport } from './routes/d_.specialists'
+import { Route as DToolsRouteImport } from './routes/d_.tools'
+import { Route as MInvitationsRouteImport } from './routes/m_.invitations'
+import { Route as MOrganizationsRouteImport } from './routes/m_.organizations'
+import { Route as MPatientsRouteImport } from './routes/m_.patients'
+import { Route as MProfileRouteImport } from './routes/m_.profile'
+import { Route as MProjectsRouteImport } from './routes/m_.projects'
+import { Route as MResearchRouteImport } from './routes/m_.research'
+import { Route as MSpecialistsRouteImport } from './routes/m_.specialists'
+import { Route as MToolsRouteImport } from './routes/m_.tools'
 import { Route as ApiAiChatRouteImport } from './routes/api.ai.chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiMedicalSearchRouteImport } from './routes/api.medical.search'
+import { Route as DOrganizationsIdRouteImport } from './routes/d_.organizations_.$id'
+import { Route as DPatientsIdRouteImport } from './routes/d_.patients_.$id'
+import { Route as DResearchIdRouteImport } from './routes/d_.research_.$id'
+import { Route as DSpecialistsIdRouteImport } from './routes/d_.specialists_.$id'
+import { Route as MOrganizationsIdRouteImport } from './routes/m_.organizations_.$id'
+import { Route as MPatientsIdRouteImport } from './routes/m_.patients_.$id'
+import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
+import { Route as MSpecialistsIdRouteImport } from './routes/m_.specialists_.$id'
+import { Route as DPatientsIdConsentsRouteImport } from './routes/d_.patients_.$id_.consents'
+import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
+import { Route as DProjectsIdTeamRouteImport } from './routes/d_.projects_.$id.team'
+import { Route as DProjectsIdWorkRouteImport } from './routes/d_.projects_.$id.work'
+import { Route as MPatientsIdConsentsRouteImport } from './routes/m_.patients_.$id_.consents'
+import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
+import { Route as MProjectsIdTeamRouteImport } from './routes/m_.projects_.$id.team'
+import { Route as MProjectsIdWorkRouteImport } from './routes/m_.projects_.$id.work'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,6 +69,86 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/auth/error',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DInvitationsRoute = DInvitationsRouteImport.update({
+  id: '/d_/invitations',
+  path: '/d/invitations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DOrganizationsRoute = DOrganizationsRouteImport.update({
+  id: '/d_/organizations',
+  path: '/d/organizations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DPatientsRoute = DPatientsRouteImport.update({
+  id: '/d_/patients',
+  path: '/d/patients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProfileRoute = DProfileRouteImport.update({
+  id: '/d_/profile',
+  path: '/d/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProjectsRoute = DProjectsRouteImport.update({
+  id: '/d_/projects',
+  path: '/d/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DResearchRoute = DResearchRouteImport.update({
+  id: '/d_/research',
+  path: '/d/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DSpecialistsRoute = DSpecialistsRouteImport.update({
+  id: '/d_/specialists',
+  path: '/d/specialists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DToolsRoute = DToolsRouteImport.update({
+  id: '/d_/tools',
+  path: '/d/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MInvitationsRoute = MInvitationsRouteImport.update({
+  id: '/m_/invitations',
+  path: '/m/invitations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MOrganizationsRoute = MOrganizationsRouteImport.update({
+  id: '/m_/organizations',
+  path: '/m/organizations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MPatientsRoute = MPatientsRouteImport.update({
+  id: '/m_/patients',
+  path: '/m/patients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProfileRoute = MProfileRouteImport.update({
+  id: '/m_/profile',
+  path: '/m/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsRoute = MProjectsRouteImport.update({
+  id: '/m_/projects',
+  path: '/m/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MResearchRoute = MResearchRouteImport.update({
+  id: '/m_/research',
+  path: '/m/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MSpecialistsRoute = MSpecialistsRouteImport.update({
+  id: '/m_/specialists',
+  path: '/m/specialists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MToolsRoute = MToolsRouteImport.update({
+  id: '/m_/tools',
+  path: '/m/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
   id: '/api/ai/chat',
   path: '/api/ai/chat',
@@ -52,24 +164,168 @@ const ApiMedicalSearchRoute = ApiMedicalSearchRouteImport.update({
   path: '/api/medical/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DOrganizationsIdRoute = DOrganizationsIdRouteImport.update({
+  id: '/d_/organizations_/$id',
+  path: '/d/organizations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DPatientsIdRoute = DPatientsIdRouteImport.update({
+  id: '/d_/patients_/$id',
+  path: '/d/patients/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DResearchIdRoute = DResearchIdRouteImport.update({
+  id: '/d_/research_/$id',
+  path: '/d/research/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DSpecialistsIdRoute = DSpecialistsIdRouteImport.update({
+  id: '/d_/specialists_/$id',
+  path: '/d/specialists/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MOrganizationsIdRoute = MOrganizationsIdRouteImport.update({
+  id: '/m_/organizations_/$id',
+  path: '/m/organizations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MPatientsIdRoute = MPatientsIdRouteImport.update({
+  id: '/m_/patients_/$id',
+  path: '/m/patients/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MResearchIdRoute = MResearchIdRouteImport.update({
+  id: '/m_/research_/$id',
+  path: '/m/research/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MSpecialistsIdRoute = MSpecialistsIdRouteImport.update({
+  id: '/m_/specialists_/$id',
+  path: '/m/specialists/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DPatientsIdConsentsRoute = DPatientsIdConsentsRouteImport.update({
+  id: '/d_/patients_/$id_/consents',
+  path: '/d/patients/$id/consents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProjectsIdProtocolRoute = DProjectsIdProtocolRouteImport.update({
+  id: '/d_/projects_/$id/protocol',
+  path: '/d/projects/$id/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProjectsIdTeamRoute = DProjectsIdTeamRouteImport.update({
+  id: '/d_/projects_/$id/team',
+  path: '/d/projects/$id/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProjectsIdWorkRoute = DProjectsIdWorkRouteImport.update({
+  id: '/d_/projects_/$id/work',
+  path: '/d/projects/$id/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MPatientsIdConsentsRoute = MPatientsIdConsentsRouteImport.update({
+  id: '/m_/patients_/$id_/consents',
+  path: '/m/patients/$id/consents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
+  id: '/m_/projects_/$id/protocol',
+  path: '/m/projects/$id/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdTeamRoute = MProjectsIdTeamRouteImport.update({
+  id: '/m_/projects_/$id/team',
+  path: '/m/projects/$id/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdWorkRoute = MProjectsIdWorkRouteImport.update({
+  id: '/m_/projects_/$id/work',
+  path: '/m/projects/$id/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d/invitations': typeof DInvitationsRoute
+  '/d/organizations': typeof DOrganizationsRoute
+  '/d/patients': typeof DPatientsRoute
+  '/d/profile': typeof DProfileRoute
+  '/d/projects': typeof DProjectsRoute
+  '/d/research': typeof DResearchRoute
+  '/d/specialists': typeof DSpecialistsRoute
+  '/d/tools': typeof DToolsRoute
+  '/m/invitations': typeof MInvitationsRoute
+  '/m/organizations': typeof MOrganizationsRoute
+  '/m/patients': typeof MPatientsRoute
+  '/m/profile': typeof MProfileRoute
+  '/m/projects': typeof MProjectsRoute
+  '/m/research': typeof MResearchRoute
+  '/m/specialists': typeof MSpecialistsRoute
+  '/m/tools': typeof MToolsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d/organizations/$id': typeof DOrganizationsIdRoute
+  '/d/patients/$id': typeof DPatientsIdRoute
+  '/d/research/$id': typeof DResearchIdRoute
+  '/d/specialists/$id': typeof DSpecialistsIdRoute
+  '/m/organizations/$id': typeof MOrganizationsIdRoute
+  '/m/patients/$id': typeof MPatientsIdRoute
+  '/m/research/$id': typeof MResearchIdRoute
+  '/m/specialists/$id': typeof MSpecialistsIdRoute
+  '/d/patients/$id/consents': typeof DPatientsIdConsentsRoute
+  '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d/projects/$id/team': typeof DProjectsIdTeamRoute
+  '/d/projects/$id/work': typeof DProjectsIdWorkRoute
+  '/m/patients/$id/consents': typeof MPatientsIdConsentsRoute
+  '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m/projects/$id/team': typeof MProjectsIdTeamRoute
+  '/m/projects/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d/invitations': typeof DInvitationsRoute
+  '/d/organizations': typeof DOrganizationsRoute
+  '/d/patients': typeof DPatientsRoute
+  '/d/profile': typeof DProfileRoute
+  '/d/projects': typeof DProjectsRoute
+  '/d/research': typeof DResearchRoute
+  '/d/specialists': typeof DSpecialistsRoute
+  '/d/tools': typeof DToolsRoute
+  '/m/invitations': typeof MInvitationsRoute
+  '/m/organizations': typeof MOrganizationsRoute
+  '/m/patients': typeof MPatientsRoute
+  '/m/profile': typeof MProfileRoute
+  '/m/projects': typeof MProjectsRoute
+  '/m/research': typeof MResearchRoute
+  '/m/specialists': typeof MSpecialistsRoute
+  '/m/tools': typeof MToolsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d/organizations/$id': typeof DOrganizationsIdRoute
+  '/d/patients/$id': typeof DPatientsIdRoute
+  '/d/research/$id': typeof DResearchIdRoute
+  '/d/specialists/$id': typeof DSpecialistsIdRoute
+  '/m/organizations/$id': typeof MOrganizationsIdRoute
+  '/m/patients/$id': typeof MPatientsIdRoute
+  '/m/research/$id': typeof MResearchIdRoute
+  '/m/specialists/$id': typeof MSpecialistsIdRoute
+  '/d/patients/$id/consents': typeof DPatientsIdConsentsRoute
+  '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d/projects/$id/team': typeof DProjectsIdTeamRoute
+  '/d/projects/$id/work': typeof DProjectsIdWorkRoute
+  '/m/patients/$id/consents': typeof MPatientsIdConsentsRoute
+  '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m/projects/$id/team': typeof MProjectsIdTeamRoute
+  '/m/projects/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,9 +333,41 @@ export interface FileRoutesById {
   '/d': typeof DRoute
   '/m': typeof MRoute
   '/auth/error': typeof AuthErrorRoute
+  '/d_/invitations': typeof DInvitationsRoute
+  '/d_/organizations': typeof DOrganizationsRoute
+  '/d_/patients': typeof DPatientsRoute
+  '/d_/profile': typeof DProfileRoute
+  '/d_/projects': typeof DProjectsRoute
+  '/d_/research': typeof DResearchRoute
+  '/d_/specialists': typeof DSpecialistsRoute
+  '/d_/tools': typeof DToolsRoute
+  '/m_/invitations': typeof MInvitationsRoute
+  '/m_/organizations': typeof MOrganizationsRoute
+  '/m_/patients': typeof MPatientsRoute
+  '/m_/profile': typeof MProfileRoute
+  '/m_/projects': typeof MProjectsRoute
+  '/m_/research': typeof MResearchRoute
+  '/m_/specialists': typeof MSpecialistsRoute
+  '/m_/tools': typeof MToolsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d_/organizations_/$id': typeof DOrganizationsIdRoute
+  '/d_/patients_/$id': typeof DPatientsIdRoute
+  '/d_/research_/$id': typeof DResearchIdRoute
+  '/d_/specialists_/$id': typeof DSpecialistsIdRoute
+  '/m_/organizations_/$id': typeof MOrganizationsIdRoute
+  '/m_/patients_/$id': typeof MPatientsIdRoute
+  '/m_/research_/$id': typeof MResearchIdRoute
+  '/m_/specialists_/$id': typeof MSpecialistsIdRoute
+  '/d_/patients_/$id_/consents': typeof DPatientsIdConsentsRoute
+  '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d_/projects_/$id/team': typeof DProjectsIdTeamRoute
+  '/d_/projects_/$id/work': typeof DProjectsIdWorkRoute
+  '/m_/patients_/$id_/consents': typeof MPatientsIdConsentsRoute
+  '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m_/projects_/$id/team': typeof MProjectsIdTeamRoute
+  '/m_/projects_/$id/work': typeof MProjectsIdWorkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,27 +376,123 @@ export interface FileRouteTypes {
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d/invitations'
+    | '/d/organizations'
+    | '/d/patients'
+    | '/d/profile'
+    | '/d/projects'
+    | '/d/research'
+    | '/d/specialists'
+    | '/d/tools'
+    | '/m/invitations'
+    | '/m/organizations'
+    | '/m/patients'
+    | '/m/profile'
+    | '/m/projects'
+    | '/m/research'
+    | '/m/specialists'
+    | '/m/tools'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d/organizations/$id'
+    | '/d/patients/$id'
+    | '/d/research/$id'
+    | '/d/specialists/$id'
+    | '/m/organizations/$id'
+    | '/m/patients/$id'
+    | '/m/research/$id'
+    | '/m/specialists/$id'
+    | '/d/patients/$id/consents'
+    | '/d/projects/$id/protocol'
+    | '/d/projects/$id/team'
+    | '/d/projects/$id/work'
+    | '/m/patients/$id/consents'
+    | '/m/projects/$id/protocol'
+    | '/m/projects/$id/team'
+    | '/m/projects/$id/work'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d/invitations'
+    | '/d/organizations'
+    | '/d/patients'
+    | '/d/profile'
+    | '/d/projects'
+    | '/d/research'
+    | '/d/specialists'
+    | '/d/tools'
+    | '/m/invitations'
+    | '/m/organizations'
+    | '/m/patients'
+    | '/m/profile'
+    | '/m/projects'
+    | '/m/research'
+    | '/m/specialists'
+    | '/m/tools'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d/organizations/$id'
+    | '/d/patients/$id'
+    | '/d/research/$id'
+    | '/d/specialists/$id'
+    | '/m/organizations/$id'
+    | '/m/patients/$id'
+    | '/m/research/$id'
+    | '/m/specialists/$id'
+    | '/d/patients/$id/consents'
+    | '/d/projects/$id/protocol'
+    | '/d/projects/$id/team'
+    | '/d/projects/$id/work'
+    | '/m/patients/$id/consents'
+    | '/m/projects/$id/protocol'
+    | '/m/projects/$id/team'
+    | '/m/projects/$id/work'
   id:
     | '__root__'
     | '/'
     | '/d'
     | '/m'
     | '/auth/error'
+    | '/d_/invitations'
+    | '/d_/organizations'
+    | '/d_/patients'
+    | '/d_/profile'
+    | '/d_/projects'
+    | '/d_/research'
+    | '/d_/specialists'
+    | '/d_/tools'
+    | '/m_/invitations'
+    | '/m_/organizations'
+    | '/m_/patients'
+    | '/m_/profile'
+    | '/m_/projects'
+    | '/m_/research'
+    | '/m_/specialists'
+    | '/m_/tools'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d_/organizations_/$id'
+    | '/d_/patients_/$id'
+    | '/d_/research_/$id'
+    | '/d_/specialists_/$id'
+    | '/m_/organizations_/$id'
+    | '/m_/patients_/$id'
+    | '/m_/research_/$id'
+    | '/m_/specialists_/$id'
+    | '/d_/patients_/$id_/consents'
+    | '/d_/projects_/$id/protocol'
+    | '/d_/projects_/$id/team'
+    | '/d_/projects_/$id/work'
+    | '/m_/patients_/$id_/consents'
+    | '/m_/projects_/$id/protocol'
+    | '/m_/projects_/$id/team'
+    | '/m_/projects_/$id/work'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,9 +500,41 @@ export interface RootRouteChildren {
   DRoute: typeof DRoute
   MRoute: typeof MRoute
   AuthErrorRoute: typeof AuthErrorRoute
+  DInvitationsRoute: typeof DInvitationsRoute
+  DOrganizationsRoute: typeof DOrganizationsRoute
+  DPatientsRoute: typeof DPatientsRoute
+  DProfileRoute: typeof DProfileRoute
+  DProjectsRoute: typeof DProjectsRoute
+  DResearchRoute: typeof DResearchRoute
+  DSpecialistsRoute: typeof DSpecialistsRoute
+  DToolsRoute: typeof DToolsRoute
+  MInvitationsRoute: typeof MInvitationsRoute
+  MOrganizationsRoute: typeof MOrganizationsRoute
+  MPatientsRoute: typeof MPatientsRoute
+  MProfileRoute: typeof MProfileRoute
+  MProjectsRoute: typeof MProjectsRoute
+  MResearchRoute: typeof MResearchRoute
+  MSpecialistsRoute: typeof MSpecialistsRoute
+  MToolsRoute: typeof MToolsRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiMedicalSearchRoute: typeof ApiMedicalSearchRoute
+  DOrganizationsIdRoute: typeof DOrganizationsIdRoute
+  DPatientsIdRoute: typeof DPatientsIdRoute
+  DResearchIdRoute: typeof DResearchIdRoute
+  DSpecialistsIdRoute: typeof DSpecialistsIdRoute
+  MOrganizationsIdRoute: typeof MOrganizationsIdRoute
+  MPatientsIdRoute: typeof MPatientsIdRoute
+  MResearchIdRoute: typeof MResearchIdRoute
+  MSpecialistsIdRoute: typeof MSpecialistsIdRoute
+  DPatientsIdConsentsRoute: typeof DPatientsIdConsentsRoute
+  DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
+  DProjectsIdTeamRoute: typeof DProjectsIdTeamRoute
+  DProjectsIdWorkRoute: typeof DProjectsIdWorkRoute
+  MPatientsIdConsentsRoute: typeof MPatientsIdConsentsRoute
+  MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
+  MProjectsIdTeamRoute: typeof MProjectsIdTeamRoute
+  MProjectsIdWorkRoute: typeof MProjectsIdWorkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -151,6 +567,118 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/invitations': {
+      id: '/d_/invitations'
+      path: '/d/invitations'
+      fullPath: '/d/invitations'
+      preLoaderRoute: typeof DInvitationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/organizations': {
+      id: '/d_/organizations'
+      path: '/d/organizations'
+      fullPath: '/d/organizations'
+      preLoaderRoute: typeof DOrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/patients': {
+      id: '/d_/patients'
+      path: '/d/patients'
+      fullPath: '/d/patients'
+      preLoaderRoute: typeof DPatientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/profile': {
+      id: '/d_/profile'
+      path: '/d/profile'
+      fullPath: '/d/profile'
+      preLoaderRoute: typeof DProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/projects': {
+      id: '/d_/projects'
+      path: '/d/projects'
+      fullPath: '/d/projects'
+      preLoaderRoute: typeof DProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/research': {
+      id: '/d_/research'
+      path: '/d/research'
+      fullPath: '/d/research'
+      preLoaderRoute: typeof DResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/specialists': {
+      id: '/d_/specialists'
+      path: '/d/specialists'
+      fullPath: '/d/specialists'
+      preLoaderRoute: typeof DSpecialistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/tools': {
+      id: '/d_/tools'
+      path: '/d/tools'
+      fullPath: '/d/tools'
+      preLoaderRoute: typeof DToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/invitations': {
+      id: '/m_/invitations'
+      path: '/m/invitations'
+      fullPath: '/m/invitations'
+      preLoaderRoute: typeof MInvitationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/organizations': {
+      id: '/m_/organizations'
+      path: '/m/organizations'
+      fullPath: '/m/organizations'
+      preLoaderRoute: typeof MOrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/patients': {
+      id: '/m_/patients'
+      path: '/m/patients'
+      fullPath: '/m/patients'
+      preLoaderRoute: typeof MPatientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/profile': {
+      id: '/m_/profile'
+      path: '/m/profile'
+      fullPath: '/m/profile'
+      preLoaderRoute: typeof MProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects': {
+      id: '/m_/projects'
+      path: '/m/projects'
+      fullPath: '/m/projects'
+      preLoaderRoute: typeof MProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/research': {
+      id: '/m_/research'
+      path: '/m/research'
+      fullPath: '/m/research'
+      preLoaderRoute: typeof MResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/specialists': {
+      id: '/m_/specialists'
+      path: '/m/specialists'
+      fullPath: '/m/specialists'
+      preLoaderRoute: typeof MSpecialistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/tools': {
+      id: '/m_/tools'
+      path: '/m/tools'
+      fullPath: '/m/tools'
+      preLoaderRoute: typeof MToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ai/chat': {
       id: '/api/ai/chat'
       path: '/api/ai/chat'
@@ -172,6 +700,118 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMedicalSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/organizations_/$id': {
+      id: '/d_/organizations_/$id'
+      path: '/d/organizations/$id'
+      fullPath: '/d/organizations/$id'
+      preLoaderRoute: typeof DOrganizationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/patients_/$id': {
+      id: '/d_/patients_/$id'
+      path: '/d/patients/$id'
+      fullPath: '/d/patients/$id'
+      preLoaderRoute: typeof DPatientsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/research_/$id': {
+      id: '/d_/research_/$id'
+      path: '/d/research/$id'
+      fullPath: '/d/research/$id'
+      preLoaderRoute: typeof DResearchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/specialists_/$id': {
+      id: '/d_/specialists_/$id'
+      path: '/d/specialists/$id'
+      fullPath: '/d/specialists/$id'
+      preLoaderRoute: typeof DSpecialistsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/organizations_/$id': {
+      id: '/m_/organizations_/$id'
+      path: '/m/organizations/$id'
+      fullPath: '/m/organizations/$id'
+      preLoaderRoute: typeof MOrganizationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/patients_/$id': {
+      id: '/m_/patients_/$id'
+      path: '/m/patients/$id'
+      fullPath: '/m/patients/$id'
+      preLoaderRoute: typeof MPatientsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/research_/$id': {
+      id: '/m_/research_/$id'
+      path: '/m/research/$id'
+      fullPath: '/m/research/$id'
+      preLoaderRoute: typeof MResearchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/specialists_/$id': {
+      id: '/m_/specialists_/$id'
+      path: '/m/specialists/$id'
+      fullPath: '/m/specialists/$id'
+      preLoaderRoute: typeof MSpecialistsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/patients_/$id_/consents': {
+      id: '/d_/patients_/$id_/consents'
+      path: '/d/patients/$id/consents'
+      fullPath: '/d/patients/$id/consents'
+      preLoaderRoute: typeof DPatientsIdConsentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/projects_/$id/protocol': {
+      id: '/d_/projects_/$id/protocol'
+      path: '/d/projects/$id/protocol'
+      fullPath: '/d/projects/$id/protocol'
+      preLoaderRoute: typeof DProjectsIdProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/projects_/$id/team': {
+      id: '/d_/projects_/$id/team'
+      path: '/d/projects/$id/team'
+      fullPath: '/d/projects/$id/team'
+      preLoaderRoute: typeof DProjectsIdTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/projects_/$id/work': {
+      id: '/d_/projects_/$id/work'
+      path: '/d/projects/$id/work'
+      fullPath: '/d/projects/$id/work'
+      preLoaderRoute: typeof DProjectsIdWorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/patients_/$id_/consents': {
+      id: '/m_/patients_/$id_/consents'
+      path: '/m/patients/$id/consents'
+      fullPath: '/m/patients/$id/consents'
+      preLoaderRoute: typeof MPatientsIdConsentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/protocol': {
+      id: '/m_/projects_/$id/protocol'
+      path: '/m/projects/$id/protocol'
+      fullPath: '/m/projects/$id/protocol'
+      preLoaderRoute: typeof MProjectsIdProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/team': {
+      id: '/m_/projects_/$id/team'
+      path: '/m/projects/$id/team'
+      fullPath: '/m/projects/$id/team'
+      preLoaderRoute: typeof MProjectsIdTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/work': {
+      id: '/m_/projects_/$id/work'
+      path: '/m/projects/$id/work'
+      fullPath: '/m/projects/$id/work'
+      preLoaderRoute: typeof MProjectsIdWorkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -180,9 +820,41 @@ const rootRouteChildren: RootRouteChildren = {
   DRoute: DRoute,
   MRoute: MRoute,
   AuthErrorRoute: AuthErrorRoute,
+  DInvitationsRoute: DInvitationsRoute,
+  DOrganizationsRoute: DOrganizationsRoute,
+  DPatientsRoute: DPatientsRoute,
+  DProfileRoute: DProfileRoute,
+  DProjectsRoute: DProjectsRoute,
+  DResearchRoute: DResearchRoute,
+  DSpecialistsRoute: DSpecialistsRoute,
+  DToolsRoute: DToolsRoute,
+  MInvitationsRoute: MInvitationsRoute,
+  MOrganizationsRoute: MOrganizationsRoute,
+  MPatientsRoute: MPatientsRoute,
+  MProfileRoute: MProfileRoute,
+  MProjectsRoute: MProjectsRoute,
+  MResearchRoute: MResearchRoute,
+  MSpecialistsRoute: MSpecialistsRoute,
+  MToolsRoute: MToolsRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiMedicalSearchRoute: ApiMedicalSearchRoute,
+  DOrganizationsIdRoute: DOrganizationsIdRoute,
+  DPatientsIdRoute: DPatientsIdRoute,
+  DResearchIdRoute: DResearchIdRoute,
+  DSpecialistsIdRoute: DSpecialistsIdRoute,
+  MOrganizationsIdRoute: MOrganizationsIdRoute,
+  MPatientsIdRoute: MPatientsIdRoute,
+  MResearchIdRoute: MResearchIdRoute,
+  MSpecialistsIdRoute: MSpecialistsIdRoute,
+  DPatientsIdConsentsRoute: DPatientsIdConsentsRoute,
+  DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
+  DProjectsIdTeamRoute: DProjectsIdTeamRoute,
+  DProjectsIdWorkRoute: DProjectsIdWorkRoute,
+  MPatientsIdConsentsRoute: MPatientsIdConsentsRoute,
+  MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
+  MProjectsIdTeamRoute: MProjectsIdTeamRoute,
+  MProjectsIdWorkRoute: MProjectsIdWorkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

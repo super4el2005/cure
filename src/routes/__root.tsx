@@ -3,6 +3,9 @@ import type { ConvexQueryClient } from "@convex-dev/react-query";
 import { I18nProvider } from "@lingui/react";
 import { useLingui } from "@lingui/react/macro";
 import {
+  Anchor,
+  NativeSelect,
+  useMantineColorScheme,
   Alert,
   Button,
   ColorSchemeScript,
@@ -19,24 +22,29 @@ import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
 import { Serwist } from "@serwist/window";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { createRootRouteWithContext } from "@tanstack/react-router";
 import { Outlet, Scripts, HeadContent } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import * as React from "react";
+
+import { createI18n } from "@/src/i18n";
+import { authClient } from "@/src/lib/auth-client";
 
 import "@mantine/notifications/styles.css";
 import "@mantine/nprogress/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/dates/styles.css";
 
-import * as React from "react";
-
-import { createI18n } from "@/src/i18n";
-import { authClient } from "@/src/lib/auth-client";
 import { getToken } from "@/src/lib/auth-server";
+import { signOutClinicalSession } from "@/src/lib/clinical-identity";
+import { saveLanguage } from "@/src/lib/language";
+import type { Locale } from "@/src/lib/locale";
 import { defaultLocale, lastLocaleKey } from "@/src/lib/locale";
 import { getRequestDevice } from "@/src/lib/request-device";
 import { getRequestLocale } from "@/src/lib/request-locale";
+import { useRetainedWorkspaces } from "@/src/lib/use-retained-workspaces";
 import { observePromise } from "@/src/observability/events";
 
 import mantineCoreStyles from "@mantine/core/styles.css?url";
@@ -132,6 +140,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  useRetainedWorkspaces();
   const { t, i18n } = useLingui();
   const { online } = useNetwork();
   const [pwa, setPwa] = useSetState<{
@@ -193,12 +202,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       {...mantineHtmlProps}
     >
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="auto" />
         <HeadContent />
       </head>
       <body>
-        <MantineProvider>
+        <MantineProvider defaultColorScheme="auto">
           <ModalsProvider>
+            <ApplicationNavigation />
             <Container py="md">
               <Paper component="aside" aria-label={t`Приложение`}>
                 <Stack>
@@ -241,5 +251,109 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function ApplicationNavigation() {
+  const { t, i18n } = useLingui();
+  const router = useRouter();
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const base = pathname.startsWith("/m") ? "/m" : "/d";
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const queryClient = useQueryClient();
+  const session = authClient.useSession();
+  const authentication = useMutation({
+    mutationKey: ["authentication"],
+    retry: false,
+    networkMode: "always",
+    mutationFn: async (action: "sign-in" | "sign-out") => {
+      if (action === "sign-in") {
+        const result = await authClient.signIn.social({
+          provider: "google",
+          callbackURL: window.location.href,
+          errorCallbackURL: new URL("/auth/error", window.location.origin).href,
+        });
+        if (result.error) throw new Error("SIGN_IN_FAILED");
+      } else {
+        const result = await signOutClinicalSession(queryClient);
+        if (result.error) throw new Error("SIGN_OUT_FAILED");
+        await queryClient.cancelQueries();
+        queryClient.clear();
+        await router.invalidate();
+      }
+    },
+  });
+  const language = useMutation({
+    mutationKey: ["language"],
+    networkMode: "always",
+    retry: false,
+    mutationFn: async (locale: Locale) => {
+      saveLanguage(locale);
+      await router.invalidate();
+    },
+  });
+  const appearance = useMutation({
+    mutationKey: ["appearance"],
+    networkMode: "always",
+    retry: false,
+    mutationFn: async (scheme: "auto" | "light" | "dark") => setColorScheme(scheme),
+  });
+  return (
+    <Container py="md">
+      <Stack>
+        <Group component="nav" aria-label={t`Основная навигация`}>
+          <Anchor component={Link} to={base}>
+            Cure
+          </Anchor>
+          <Anchor component={Link} to={`${base}/specialists`}>{t`Специалисты`}</Anchor>
+          <Anchor component={Link} to={`${base}/organizations`}>{t`Организации`}</Anchor>
+          <Anchor component={Link} to={`${base}/research`}>{t`Исследования`}</Anchor>
+          <Anchor component={Link} to={`${base}/projects`}>{t`Мои исследования`}</Anchor>
+          <Anchor component={Link} to={`${base}/invitations`}>{t`Мои приглашения`}</Anchor>
+          <Anchor component={Link} to={`${base}/patients`}>{t`Пациенты`}</Anchor>
+          <Anchor component={Link} to={`${base}/profile`}>{t`Мой профиль`}</Anchor>
+          <Anchor component={Link} to={`${base}/tools`}>{t`Справочники и AI`}</Anchor>
+        </Group>
+        <Group>
+          <Button
+            loading={authentication.isPending}
+            onClick={() => authentication.mutate(session.data?.user ? "sign-out" : "sign-in")}
+          >
+            {session.data?.user ? t`Выйти` : t`Войти через Google`}
+          </Button>
+          <NativeSelect
+            label={t`Язык интерфейса`}
+            value={i18n.locale}
+            disabled={language.isPending}
+            onChange={(event) => {
+              const locale = event.currentTarget.value;
+              if (locale === "ru" || locale === "en") language.mutate(locale);
+            }}
+            data={[
+              { value: "ru", label: "Русский" },
+              { value: "en", label: "English" },
+            ]}
+          />
+          <NativeSelect
+            label={t`Тема`}
+            value={colorScheme}
+            onChange={(event) => {
+              const scheme = event.currentTarget.value;
+              if (scheme === "auto" || scheme === "light" || scheme === "dark")
+                appearance.mutate(scheme);
+            }}
+            data={[
+              { value: "auto", label: t`Как на устройстве` },
+              { value: "light", label: t`Светлая` },
+              { value: "dark", label: t`Тёмная` },
+            ]}
+          />
+        </Group>
+        {authentication.isError && (
+          <Alert color="red">{t`Не удалось выполнить вход или выход. Для проверки серверной сессии нужен интернет.`}</Alert>
+        )}
+        {language.isError && <Alert color="red">{t`Не удалось сменить язык.`}</Alert>}
+      </Stack>
+    </Container>
   );
 }

@@ -4,6 +4,31 @@ import type { Breadcrumb, ErrorEvent, Log } from "@sentry/tanstackstart-react";
 // One catalog for semantic user actions. Never derive event names from user input.
 export const actions: Record<string, string> = {
   authentication: "account.authentication",
+  "profile-save": "profile.save",
+  "patients-open": "patients.open",
+  "patients-save": "patients.save",
+  "patients-delete": "patients.delete",
+  "patients-lock": "patients.lock",
+  "patients-resume": "patients.resume",
+  "patients-share": "patients.share",
+  "patients-consent": "patients.consent",
+  "patients-restore": "patients.restore",
+  "task-save": "task.save",
+  "message-save": "message.save",
+  "project-work-action": "work.action",
+  "project-work-restore": "work.restore",
+  "team-save": "team.save",
+  "team-invite": "team.invite",
+  "team-restore": "team.restore",
+  "protocol-save": "protocol.save",
+  "protocol-restore": "protocol.restore",
+  "projects-open": "projects.open",
+  "projects-save": "projects.save",
+  "projects-resume": "projects.resume",
+  "projects-lock": "projects.lock",
+  "projects-restore": "projects.restore",
+  "research-loadmore": "research.loadmore",
+  appearance: "preferences.theme",
   language: "preferences.language",
   "device-counter": "counter.increment",
   "ai-preferences": "ai.preferences.save",
@@ -39,6 +64,52 @@ export const errorCodes = new Set([
   "STORAGE_UNAVAILABLE",
   "ACCOUNT_CHANGED",
   "INTERNAL_ERROR",
+  "ACCESS_DENIED",
+  "WORKSPACE_NOT_READY",
+  "INVALID_TASK",
+  "ASSIGNEE_UNAVAILABLE",
+  "INVALID_MESSAGE",
+  "MESSAGE_DELETED",
+  "PROJECT_ARCHIVED",
+  "INVALID_WORK_OPERATION",
+  "INVALID_TEAM_OPERATION",
+  "INVITEE_UNAVAILABLE",
+  "ALREADY_MEMBER",
+  "INVITE_ALREADY_PENDING",
+  "INVITE_EXPIRED",
+  "INVITE_NOT_PENDING",
+  "AFFILIATION_REQUIRED",
+  "NEW_INVITATION_REQUIRED",
+  "INVALID_PROTOCOL",
+  "PROJECT_COMPLETED",
+  "INVALID_PROJECT",
+  "INVALID_RESEARCH_TRANSITION",
+  "PROJECT_NOT_PUBLISHABLE",
+  "ETHICS_APPROVAL_REQUIRED",
+  "PROJECT_SYNC_REJECTED",
+  "PROJECT_SYNC_UNCONFIRMED",
+  "PATIENT_NOT_FOUND",
+  "INVALID_PATIENT",
+  "REVISION_CONFLICT",
+  "IDEMPOTENCY_KEY_REUSED",
+  "INVALID_PROFILE",
+  "VERIFIED_ROLE_CHANGE_REQUIRES_REVIEW",
+  "INVALID_GRANT",
+  "INVALID_CONSENT",
+  "CONSENT_EXPIRED",
+  "CONSENT_HISTORY_IMMUTABLE",
+  "INVALID_CONSENT_RECIPIENT",
+  "CONSENT_REQUIRED",
+  "VAULT_LOCKED",
+  "VAULT_UNLOCK_FAILED",
+  "INVALID_VAULT_DATA",
+  "INVALID_VAULT_PASSPHRASE",
+  "WORKSPACE_LOCKED",
+  "OFFLINE_NOT_PREPARED",
+  "OFFLINE_ACCESS_EXPIRED",
+  "WORKSPACE_READ_ONLY_TAB",
+  "PATIENT_SYNC_REJECTED",
+  "PATIENT_SYNC_UNCONFIRMED",
   "PERSISTENCE_FAILED",
   "RUNTIME_ERROR",
   "NETWORK_ERROR",
@@ -59,6 +130,23 @@ export function safePath(value: unknown): string {
     const path = new URL(typeof value === "string" ? value : "/", "https://application.invalid")
       .pathname;
     if (paths.has(path)) return path;
+    if (
+      /^\/[dm]\/(profile|patients|projects|invitations|specialists|organizations|research|tools)$/.test(
+        path,
+      )
+    )
+      return path;
+    const detail = path.match(
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work))?$/,
+    );
+    if (
+      detail &&
+      (!detail[3] ||
+        (detail[2] === "patients" && detail[3] === "consents") ||
+        (detail[2] === "projects" && ["protocol", "team", "work"].includes(detail[3])))
+    )
+      return `/${detail[1]}/${detail[2]}/:id${detail[3] ? `/${detail[3]}` : ""}`;
+
     if (path.startsWith("/api/auth/")) return "/api/auth/:action";
     if (path.startsWith("/_serverFn/")) return "/_serverFn/:function";
     if (path.startsWith("/icd/")) return "/icd/:classification";
@@ -102,6 +190,12 @@ export function safeAttributes(
           typeof value === "string" &&
           (Object.values(actions).includes(value) ||
             [
+              "patients.close",
+              "patients.sync",
+              "patients.queue",
+              "storage.clinical",
+              "directory.open",
+              "directory.close",
               "query.load",
               "route.render",
               "user.operation",

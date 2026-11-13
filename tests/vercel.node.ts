@@ -91,7 +91,7 @@ test("root routing selects /d or /m from request signals and preserves SSR local
       html,
       new RegExp(`data-page="${device === "mobile" ? "desktop" : "mobile"}"`),
     );
-    assert.match(html, /Hello, world!/);
+    assert.match(html, /Doctors and researchers — together/);
   }
 });
 
@@ -125,7 +125,10 @@ test("SSR negotiates language from request headers and cookies, independently of
     assert.match(response.headers.get("vary") ?? "", /Cookie/i);
     const html = await response.text();
     assert.match(html, new RegExp(`<html[^>]*lang="${expected}"`));
-    assert.match(html, expected === "en" ? /Hello, world!/ : /Привет, мир!/);
+    assert.match(
+      html,
+      expected === "en" ? /Doctors and researchers — together/ : /Врачи и исследователи — вместе/,
+    );
     assert.doesNotMatch(html, /href="[^"]*[?&]lang=/);
   }
 });
@@ -186,4 +189,144 @@ test("request observation adds correlation IDs and preserves safe API errors", a
   assert.match(response.headers.get("x-request-id") ?? "", /^[a-f0-9-]{36}$/);
   assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.deepEqual(await response.json(), { error: "INVALID_SEARCH" });
+});
+
+test("public directories and protected entry pages render without patient data or live backend calls", async () => {
+  for (const base of ["/d", "/m"]) {
+    for (const [path, heading] of [
+      ["/specialists", "Specialists"],
+      ["/organizations", "Organizations"],
+      ["/profile", "My professional profile"],
+      ["/patients", "Patients"],
+    ]) {
+      const response = await app.fetch(
+        new Request(`https://cure-sooty.vercel.app${base}${path}`, {
+          headers: { "accept-language": "en" },
+        }),
+      );
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.ok(html.includes(heading!));
+      assert.ok(html.includes(`${base}/profile`));
+      assert.doesNotMatch(html, /Private patient|Private clinical notes/);
+    }
+  }
+});
+
+test("offline shell precaches the SQLite worker and WASM runtime", () => {
+  const worker = readFileSync("dist/client/sw.js", "utf8");
+  assert.match(worker, /opfs-worker[^"\s]*\.js/);
+  assert.match(worker, /\.wasm/);
+});
+
+test("research detail and project workspace are independent desktop/mobile routes", async () => {
+  for (const device of ["d", "m"]) {
+    const headers = { "accept-language": "en-US,en;q=0.9" };
+    const detail = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/research/8df7de54-a59e-41fd-8a44-480b44a12f0c`,
+        { headers },
+      ),
+    );
+    assert.equal(detail.status, 200);
+    const html = await detail.text();
+    assert.match(html, /All studies/);
+    assert.doesNotMatch(html, /Search downloaded studies/);
+    const workspace = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/projects`, { headers }),
+    );
+    assert.equal(workspace.status, 200);
+    assert.match(await workspace.text(), /Private projects, study stages/);
+  }
+});
+
+test("public specialist and organization detail routes do not render directory parents", async () => {
+  for (const device of ["d", "m"]) {
+    for (const [section, title, directoryText] of [
+      ["specialists", "Specialist profile", "Search"],
+      ["organizations", "Organization page", "open to collaboration"],
+    ] as const) {
+      const response = await app.fetch(
+        new Request(`https://cure-sooty.vercel.app/${device}/${section}/unknown`, {
+          headers: { "accept-language": "en" },
+        }),
+      );
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.match(html, new RegExp(title));
+      assert.doesNotMatch(html, new RegExp(directoryText));
+    }
+  }
+});
+
+test("protocol pages render their own protected entry without the project list parent", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/protocol`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Study protocol/);
+    assert.doesNotMatch(html, /Private projects, study stages/);
+  }
+});
+
+test("team and invitation routes render independent protected entries without live backend calls", async () => {
+  for (const device of ["d", "m"]) {
+    const team = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/team`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(team.status, 200);
+    const html = await team.text();
+    assert.match(html, /Study team/);
+    assert.doesNotMatch(html, /Private projects, study stages/);
+    const invitations = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/invitations`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(invitations.status, 200);
+    assert.match(await invitations.text(), /The decision is saved for the selected organization/);
+  }
+});
+
+test("project work routes render independent protected entries on both device paths", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/work`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Study discussion and tasks/);
+    assert.doesNotMatch(html, /Private projects, study stages/);
+  }
+});
+
+test("patient record and consent routes render protected entries without listing patient data", async () => {
+  for (const device of ["d", "m"]) {
+    for (const [suffix, title] of [
+      ["", "Patient record"],
+      ["/consents", "Patient consents"],
+    ] as const) {
+      const response = await app.fetch(
+        new Request(
+          `https://cure-sooty.vercel.app/${device}/patients/f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258${suffix}`,
+          { headers: { "accept-language": "en" } },
+        ),
+      );
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.match(html, new RegExp(title));
+      assert.doesNotMatch(html, /Test Patient|Private clinical note|Signed consent reference/);
+    }
+  }
 });
