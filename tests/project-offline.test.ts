@@ -87,6 +87,7 @@ function leader(): LeaderElection {
 const modules = {
   "../convex/_generated/server.js": () => import("@/convex/_generated/server.js"),
   "../convex/projectTeams.ts": () => import("@/convex/projectTeams"),
+  "../convex/studyForms.ts": () => import("@/convex/studyForms"),
   "../convex/protocols.ts": () => import("@/convex/protocols"),
   "../convex/projects.ts": () => import("@/convex/projects"),
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
@@ -112,17 +113,30 @@ describe("durable research projects", () => {
     let protocolResult:
       | Awaited<ReturnType<typeof actor.query<typeof api.protocols.mine>>>
       | undefined = [];
+    let formResult:
+      | Awaited<ReturnType<typeof actor.query<typeof api.studyForms.mine>>>
+      | undefined = [];
     const listeners = new Set<() => void>();
     let calls = 0;
     const client = {
       watchQuery(fn: FunctionReference<"query">) {
+        const isForm = getFunctionName(fn) === getFunctionName(api.studyForms.mine);
         const protocols = getFunctionName(fn) === getFunctionName(api.protocols.mine);
         const team =
+          getFunctionName(fn) === getFunctionName(api.studyForms.mine) ||
           getFunctionName(fn) === getFunctionName(api.projectTeams.workspace) ||
           getFunctionName(fn) === getFunctionName(api.projectWork.workspace);
         return {
           localQueryResult: () =>
-            team ? (result === undefined ? undefined : []) : protocols ? protocolResult : result,
+            isForm
+              ? formResult
+              : team
+                ? result === undefined
+                  ? undefined
+                  : []
+                : protocols
+                  ? protocolResult
+                  : result,
           onUpdate(callback: () => void) {
             listeners.add(callback);
             return () => {
@@ -133,19 +147,31 @@ describe("durable research projects", () => {
       },
       async mutation(
         fn: FunctionReference<"mutation">,
-        args: FunctionArgs<typeof api.projects.apply> | FunctionArgs<typeof api.protocols.append>,
+        args:
+          | FunctionArgs<typeof api.projects.apply>
+          | FunctionArgs<typeof api.protocols.append>
+          | FunctionArgs<typeof api.studyForms.append>,
       ) {
         calls++;
         const response =
-          getFunctionName(fn) === getFunctionName(api.protocols.append)
+          getFunctionName(fn) === getFunctionName(api.studyForms.append)
             ? await actor.mutation(
-                api.protocols.append,
-                args as FunctionArgs<typeof api.protocols.append>,
+                api.studyForms.append,
+                args as FunctionArgs<typeof api.studyForms.append>,
               )
-            : await actor.mutation(
-                api.projects.apply,
-                args as FunctionArgs<typeof api.projects.apply>,
-              );
+            : getFunctionName(fn) === getFunctionName(api.protocols.append)
+              ? await actor.mutation(
+                  api.protocols.append,
+                  args as FunctionArgs<typeof api.protocols.append>,
+                )
+              : await actor.mutation(
+                  api.projects.apply,
+                  args as FunctionArgs<typeof api.projects.apply>,
+                );
+        formResult = await actor.query(api.studyForms.mine, {
+          organizationId,
+          actorId: "researcher",
+        });
         protocolResult = await actor.query(api.protocols.mine, {
           organizationId,
           actorId: "researcher",
@@ -180,14 +206,17 @@ describe("durable research projects", () => {
       failureStorage,
       onAuthRequired() {},
     };
-    const open = async (onlineDetector: ReturnType<typeof network>) =>
-      openProjectWorkspace({
+    const open = async (onlineDetector: ReturnType<typeof network>) => {
+      const opened = await openProjectWorkspace({
         ...config,
         onlineDetector,
         persistence: createBrowserWASQLitePersistence({ database }),
         leaderElection: leader(),
         vault: await unlockVault("private research workspace password", salt),
       });
+      await opened.forms.preload();
+      return opened;
+    };
     let workspace = await open(network());
     await Promise.all([
       workspace.collection.preload(),
@@ -366,6 +395,134 @@ describe("durable research projects", () => {
         actorId: "researcher",
       }),
     ).toHaveLength(2);
+    expect(await workspace.executor.peekOutbox()).toEqual([]);
+
+    finalNetwork.disconnect();
+    const formClientId = crypto.randomUUID();
+    const versionId = crypto.randomUUID();
+    const definition = {
+      title: "Confidential form title",
+      description: "Confidential form description",
+      fields: [
+        {
+          id: crypto.randomUUID(),
+          type: "text" as const,
+          label: "Confidential question",
+          help: "",
+          required: true,
+          maxLength: 100,
+        },
+      ],
+    };
+    const queuedForm = await workspace.saveForm({
+      clientId: versionId,
+      projectClientId: clientId,
+      formClientId,
+      expectedVersion: 0,
+      baseVersionClientId: null,
+      definition,
+      status: "published",
+    });
+    expect(JSON.stringify([...storage.values.values()])).not.toContain(definition.title);
+    await workspace.close();
+    result = undefined;
+    protocolResult = undefined;
+    formResult = undefined;
+    let formNetwork = network();
+    workspace = await open(formNetwork);
+    expect(workspace.readForm(workspace.forms.get(versionId)!).definition).toEqual(definition);
+    expect(workspace.readForm(workspace.forms.get(versionId)!).confirmed).toBe(false);
+    result = await actor.query(api.projects.mine, { organizationId, actorId: "researcher" });
+    protocolResult = await actor.query(api.protocols.mine, {
+      organizationId,
+      actorId: "researcher",
+    });
+    formResult = [];
+    const formSettled = workspace.executor.waitForTransactionCompletion(queuedForm.transactionId);
+    formNetwork.connect();
+    workspace.setAuthenticated(true);
+    await formSettled;
+    expect(workspace.readForm(workspace.forms.get(versionId)!).confirmed).toBe(true);
+    expect(
+      await actor.query(api.studyForms.mine, { organizationId, actorId: "researcher" }),
+    ).toHaveLength(1);
+    formNetwork.disconnect();
+    const rejectedVersionId = crypto.randomUUID();
+    const rejectedForm = await workspace.saveForm({
+      clientId: rejectedVersionId,
+      projectClientId: clientId,
+      formClientId,
+      expectedVersion: 1,
+      baseVersionClientId: versionId,
+      definition: { ...definition, title: "Rejected form title" },
+      status: "published",
+    });
+    const dependentForm = await workspace.saveForm({
+      clientId: crypto.randomUUID(),
+      projectClientId: clientId,
+      formClientId,
+      expectedVersion: 2,
+      baseVersionClientId: rejectedVersionId,
+      definition: { ...definition, title: "Dependent form title" },
+      status: "published",
+    });
+    await actor.mutation(api.studyForms.append, {
+      actorId: "researcher",
+      organizationId,
+      clientId: crypto.randomUUID(),
+      projectClientId: clientId,
+      formClientId,
+      expectedVersion: 1,
+      baseVersionClientId: versionId,
+      definition: { ...definition, title: "Authoritative form title" },
+      status: "retired",
+      idempotencyKey: "another-tab-form",
+    });
+    await workspace.close();
+    result = undefined;
+    protocolResult = undefined;
+    formResult = undefined;
+    formNetwork = network();
+    workspace = await open(formNetwork);
+    await workspace.collection.preload();
+    result = await actor.query(api.projects.mine, { organizationId, actorId: "researcher" });
+    protocolResult = await actor.query(api.protocols.mine, {
+      organizationId,
+      actorId: "researcher",
+    });
+    formResult = await actor.query(api.studyForms.mine, { organizationId, actorId: "researcher" });
+    for (const listener of listeners) listener();
+    const rejectedSettled = workspace.executor.waitForTransactionCompletion(
+      rejectedForm.transactionId,
+    );
+    const dependentSettled = workspace.executor.waitForTransactionCompletion(
+      dependentForm.transactionId,
+    );
+    const both = Promise.allSettled([rejectedSettled, dependentSettled]);
+    formNetwork.connect();
+    workspace.setAuthenticated(true);
+    expect((await both).map((result) => result.status)).toEqual(["rejected", "rejected"]);
+    expect(
+      await actor.query(api.studyForms.mine, { organizationId, actorId: "researcher" }),
+    ).toHaveLength(2);
+    expect(await workspace.failedActions("form")).toHaveLength(2);
+    const archived = (await workspace.failedActions("form"))[0]!;
+    expect(archived.code).toBe("REVISION_CONFLICT");
+    expect(workspace.readForm(archived.envelope).definition.title).toBe("Rejected form title");
+    expect(JSON.stringify([...failureStorage.values.values()])).not.toContain(
+      "Rejected form title",
+    );
+    await expect(
+      workspace.saveForm({
+        clientId: crypto.randomUUID(),
+        projectClientId: clientId,
+        formClientId,
+        expectedVersion: 1,
+        baseVersionClientId: versionId,
+        definition,
+        status: "published",
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
     expect(await workspace.executor.peekOutbox()).toEqual([]);
     await workspace.close();
     sqlite.close();

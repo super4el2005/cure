@@ -317,6 +317,7 @@ test("patient record and consent routes render protected entries without listing
       ["", "Patient record"],
       ["/consents", "Patient consents"],
       ["/visits", "Patient visits"],
+      ["/forms", "Patient questionnaires"],
     ] as const) {
       const response = await app.fetch(
         new Request(
@@ -357,5 +358,23 @@ test("analytics routes render protected entries without calculations or private 
     const html = await response.text();
     assert.match(html, /Descriptive analysis of available records/);
     assert.doesNotMatch(html, /Test Patient|Private clinical note|Included in the cohort/);
+  }
+});
+
+test("study form pages are independent protected routes without private data or subscriptions", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/forms`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Each save creates a separate template version/);
+    assert.doesNotMatch(
+      html,
+      /Private clinical|Confidential questionnaire|Private projects, study stages/,
+    );
   }
 });

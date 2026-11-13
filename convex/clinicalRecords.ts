@@ -3,9 +3,10 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "@/convex/_generated/api";
 import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
-import { operationReceipt, requireClientId } from "@/convex/lib/research";
+import { operationReceipt, projectAccess, requireClientId } from "@/convex/lib/research";
 import { clinicalPayload } from "@/convex/schema";
 import { clinicalPayloadSchema, validateClinicalTransition } from "@/src/lib/clinical-record-model";
+import { formDefinitionSchema } from "@/src/lib/study-form-model";
 
 export const list = query({
   args: { actorId: v.string(), organizationId: v.id("organizations") },
@@ -46,6 +47,7 @@ export const apply = mutation({
     clientId: v.string(),
     patientClientId: v.string(),
     expectedRevision: v.number(),
+    expectedWriteId: v.optional(v.union(v.string(), v.null())),
     action: v.union(v.literal("create"), v.literal("update"), v.literal("delete")),
     payload: v.optional(clinicalPayload),
     idempotencyKey: v.string(),
@@ -76,8 +78,50 @@ export const apply = mutation({
       .unique();
     if (existing && existing.patientClientId !== args.patientClientId)
       throw new ConvexError("ACCESS_DENIED");
+    const questionnaire =
+      payload?.kind === "questionnaire" || existing?.payload?.kind === "questionnaire";
+    if (args.expectedWriteId !== undefined && args.expectedWriteId !== null)
+      requireClientId(args.expectedWriteId);
+    if (
+      questionnaire &&
+      (args.expectedWriteId === undefined ||
+        (args.action === "create" ? args.expectedWriteId !== null : args.expectedWriteId === null))
+    )
+      throw new ConvexError("INVALID_CLINICAL_RECORD");
+    let questionnaireProjectCompleted = false;
+    if (payload?.kind === "questionnaire") {
+      if (args.action === "create") {
+        const { member, project } = await projectAccess(ctx, payload.projectClientId, "contribute");
+        questionnaireProjectCompleted = project.status === "completed";
+        if (member.organizationId !== args.organizationId) throw new ConvexError("ACCESS_DENIED");
+      }
+      // Correcting a clinic-owned record is a physician right independent of
+      // current research participation. Its template binding still cannot move.
+      if (
+        existing?.payload?.kind === "questionnaire" &&
+        (existing.payload.projectClientId !== payload.projectClientId ||
+          existing.payload.formVersionClientId !== payload.formVersionClientId ||
+          existing.payload.formClientId !== payload.formClientId ||
+          existing.payload.formVersion !== payload.formVersion)
+      )
+        throw new ConvexError("FORM_VERSION_IMMUTABLE");
+      const template = await ctx.db
+        .query("studyForms")
+        .withIndex("by_client", (q) => q.eq("clientId", payload.formVersionClientId))
+        .unique();
+      if (
+        !template ||
+        template.projectClientId !== payload.projectClientId ||
+        template.formClientId !== payload.formClientId ||
+        template.version !== payload.formVersion ||
+        JSON.stringify(formDefinitionSchema.parse(template.definition)) !==
+          JSON.stringify(payload.definition)
+      )
+        throw new ConvexError("INVALID_STUDY_FORM");
+    }
     const receipt = await operationReceipt(ctx, userId, args.idempotencyKey, {
-      domain: "clinical.record.v1",
+      domain: args.expectedWriteId === undefined ? "clinical.record.v1" : "clinical.record.v2",
+      ...(args.expectedWriteId === undefined ? {} : { expectedWriteId: args.expectedWriteId }),
       organizationId: args.organizationId,
       patientClientId: args.patientClientId,
       clientId: args.clientId,
@@ -86,6 +130,18 @@ export const apply = mutation({
       payload,
     });
     if (receipt.previous) return { revision: receipt.previous.revision };
+    if (args.action === "create" && payload?.kind === "questionnaire") {
+      if (questionnaireProjectCompleted) throw new ConvexError("PROJECT_COMPLETED");
+      const latest = await ctx.db
+        .query("studyForms")
+        .withIndex("by_form_version", (q) =>
+          q.eq("projectClientId", payload.projectClientId).eq("formClientId", payload.formClientId),
+        )
+        .order("desc")
+        .first();
+      if (latest?.clientId !== payload.formVersionClientId || latest.status !== "published")
+        throw new ConvexError("FORM_VERSION_OUTDATED");
+    }
     if (
       args.action === "create"
         ? existing !== null || args.expectedRevision !== 0
@@ -99,6 +155,20 @@ export const apply = mutation({
         throw new ConvexError(error instanceof Error ? error.message : "INVALID_CLINICAL_RECORD");
       }
     }
+    if (
+      questionnaire &&
+      args.action !== "create" &&
+      (existing?.payload?.kind !== "questionnaire" ||
+        existing.payload.writeId !== args.expectedWriteId)
+    )
+      throw new ConvexError("REVISION_CONFLICT");
+    if (
+      args.action === "update" &&
+      existing?.payload?.kind === "questionnaire" &&
+      payload?.kind === "questionnaire" &&
+      existing.payload.writeId === payload.writeId
+    )
+      throw new ConvexError("INVALID_CLINICAL_RECORD");
     const revision = args.expectedRevision + 1;
     const now = Date.now();
     if (existing)

@@ -47,6 +47,8 @@ import {
   validateResearchTransition,
 } from "@/src/lib/research-model";
 import type { ProtocolValues, ProjectValues, ProjectRole } from "@/src/lib/research-model";
+import { formDefinitionSchema, formVersionSchema } from "@/src/lib/study-form-model";
+import type { FormCommand, FormVersion } from "@/src/lib/study-form-model";
 import { teamRecordSchema, teamCommandSchema, teamOperationSchema } from "@/src/lib/team-model";
 import type { TeamRecord, TeamCommand, TeamOperation } from "@/src/lib/team-model";
 import { reportFailure } from "@/src/observability/events";
@@ -72,7 +74,7 @@ type Envelope = z.infer<typeof envelopeSchema>;
 const failureSchema = z.object({
   id: z.string(),
   code: z.string(),
-  domain: z.enum(["project", "protocol", "team", "task", "message"]).default("project"),
+  domain: z.enum(["project", "protocol", "team", "task", "message", "form"]).default("project"),
   operation: teamOperationSchema.optional(),
   envelope: envelopeSchema,
   at: z.number(),
@@ -151,6 +153,20 @@ export async function openProjectWorkspace(config: {
     revision: row.revision,
     ciphertext: config.vault.seal(row, `${workScope}:${row.key}`),
   });
+  const formScope = `${scope}:forms`;
+  const readForm = (envelope: Envelope) => {
+    const row = formVersionSchema.parse(
+      config.vault.open(envelope.ciphertext, `${formScope}:${envelope.clientId}`),
+    );
+    if (row.clientId !== envelope.clientId || row.version !== envelope.revision)
+      throw new Error("INVALID_VAULT_DATA");
+    return row;
+  };
+  const sealForm = (row: FormVersion): Envelope => ({
+    clientId: row.clientId,
+    revision: row.version,
+    ciphertext: config.vault.seal(row, `${formScope}:${row.clientId}`),
+  });
   let persistence = config.persistence;
   if (!persistence) {
     database = await openBrowserWASQLiteOPFSDatabase({
@@ -168,6 +184,7 @@ export async function openProjectWorkspace(config: {
   const protocolSnapshotId = "__protocol_snapshot__";
   const teamSnapshotId = "__team_snapshot__";
   const workSnapshotId = "__work_snapshot__";
+  const formSnapshotId = "__form_snapshot__";
   const snapshot = (clientId: string): Envelope => ({
     clientId,
     revision: 1,
@@ -251,6 +268,27 @@ export async function openProjectWorkspace(config: {
         ],
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
+      }),
+      persistence,
+      schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
+    }),
+  );
+  const forms = createCollection(
+    persistedCollectionOptions({
+      ...convexCollectionOptions({
+        id: formScope,
+        startSync: true,
+        gcTime: Infinity,
+        client: config.client,
+        query: api.studyForms.mine,
+        queryArgs: { actorId: config.userId, organizationId: config.organizationId },
+        select: (rows) => [
+          snapshot(formSnapshotId),
+          ...rows.map((row) => sealForm(formVersionSchema.parse({ ...row, confirmed: true }))),
+        ],
+        getKey: (row) => row.clientId,
+        onError: (error) => reportFailure(error, "forms.sync"),
       }),
       persistence,
       schemaVersion: 1,
@@ -439,10 +477,31 @@ export async function openProjectWorkspace(config: {
         };
       },
     });
+    const formMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.studyForms.append,
+      collections: [forms],
+      getArgs: ({ transaction }) => {
+        if (transaction.mutations.length !== 1 || transaction.mutations[0]?.type !== "insert")
+          throw new NonRetriableError("INVALID_STUDY_FORM");
+        const row = readForm(transaction.mutations[0]!.modified as Envelope);
+        return {
+          actorId: config.userId,
+          organizationId: config.organizationId,
+          clientId: row.clientId,
+          projectClientId: row.projectClientId,
+          formClientId: row.formClientId,
+          expectedVersion: row.version - 1,
+          baseVersionClientId: row.baseVersionClientId,
+          definition: row.definition,
+          status: row.status,
+        };
+      },
+    });
     const guarded =
       (
         invoke: typeof mutation,
-        domain: "project" | "protocol" | "team" | "task" | "message",
+        domain: "project" | "protocol" | "team" | "task" | "message" | "form",
         operation?: TeamOperation,
       ) =>
       async (params: Parameters<typeof mutation>[0]) => {
@@ -464,6 +523,7 @@ export async function openProjectWorkspace(config: {
           const code =
             [
               "INVALID_TASK",
+              "INVALID_STUDY_FORM",
               "ASSIGNEE_UNAVAILABLE",
               "INVALID_MESSAGE",
               "MESSAGE_DELETED",
@@ -511,6 +571,7 @@ export async function openProjectWorkspace(config: {
         [protocolScope]: protocols,
         [teamScope]: team,
         [workScope]: work,
+        [formScope]: forms,
       },
       storage: receipts.storage,
       mutationCodec: convexMutationCodec,
@@ -522,6 +583,7 @@ export async function openProjectWorkspace(config: {
           : new BroadcastChannelLeader(`${scope}:leader`)),
       maxConcurrency: 1,
       mutationFns: {
+        "form.append.v1": guarded(formMutation, "form"),
         "work.task.v1": guarded(taskMutation, "task"),
         "work.message.v1": guarded(messageMutation, "message"),
         "project.apply.v1": guarded(mutation, "project"),
@@ -616,6 +678,50 @@ export async function openProjectWorkspace(config: {
               clientId: command.clientId,
               projectClientId: command.projectClientId,
               version,
+            }),
+          ),
+        );
+      },
+    });
+    const appendForm = executor.createOfflineAction<FormCommand>({
+      mutationFnName: "form.append.v1",
+      onMutate: (command) => {
+        if (closed) throw new Error("WORKSPACE_LOCKED");
+        if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        if (forms.status !== "ready") throw new Error("WORKSPACE_NOT_READY");
+        const parentEnvelope = collection.get(command.projectClientId);
+        const parent = parentEnvelope ? read(parentEnvelope) : undefined;
+        if (!parent || !["owner", "coordinator"].includes(parent.selfRole))
+          throw new Error("ACCESS_DENIED");
+        if (["completed", "archived"].includes(parent.status)) throw new Error("PROJECT_COMPLETED");
+        const previous = Array.from(forms.values())
+          .filter((row) => row.clientId !== formSnapshotId)
+          .map(readForm)
+          .filter(
+            (row) =>
+              row.projectClientId === command.projectClientId &&
+              row.formClientId === command.formClientId,
+          )
+          .sort((a, b) => b.version - a.version || b.createdAt - a.createdAt)[0];
+        const latest = previous?.version ?? 0;
+        if (
+          latest !== command.expectedVersion ||
+          (previous?.clientId ?? null) !== command.baseVersionClientId
+        )
+          throw new Error("REVISION_CONFLICT");
+        if (!latest && command.status === "retired") throw new Error("INVALID_STUDY_FORM");
+        forms.insert(
+          sealForm(
+            formVersionSchema.parse({
+              clientId: command.clientId,
+              formClientId: command.formClientId,
+              projectClientId: command.projectClientId,
+              version: latest + 1,
+              baseVersionClientId: command.baseVersionClientId,
+              definition: formDefinitionSchema.parse(command.definition),
+              status: command.status,
+              createdAt: Date.now(),
+              createdBy: config.userId,
             }),
           ),
         );
@@ -856,6 +962,8 @@ export async function openProjectWorkspace(config: {
       protocolSnapshotId,
       teamSnapshotId,
       workSnapshotId,
+      formSnapshotId,
+      forms,
       protocols,
       team,
       work,
@@ -884,6 +992,14 @@ export async function openProjectWorkspace(config: {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         return readWork(row);
       },
+      readForm(row: Envelope) {
+        if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        return readForm(row);
+      },
+      async saveForm(command: FormCommand) {
+        if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
+        return saveTransaction(appendForm(command));
+      },
       async saveWork(command: WorkCommand) {
         if (!executor.isOfflineEnabled) throw new Error("WORKSPACE_READ_ONLY_TAB");
         const parsed = workCommandSchema.parse(command);
@@ -903,7 +1019,7 @@ export async function openProjectWorkspace(config: {
         return saveTransaction(appendProtocol(command));
       },
       async failedActions(
-        domain: "project" | "protocol" | "team" | "task" | "message" = "project",
+        domain: "project" | "protocol" | "team" | "task" | "message" | "form" = "project",
       ) {
         const rows = await Promise.all(
           (await failures.keys()).map(async (key) =>
@@ -928,6 +1044,7 @@ export async function openProjectWorkspace(config: {
             protocols.cleanup(),
             team.cleanup(),
             work.cleanup(),
+            forms.cleanup(),
           ]);
         } catch (error) {
           reportFailure(error, "projects.close");
@@ -949,6 +1066,7 @@ export async function openProjectWorkspace(config: {
         protocols.cleanup(),
         team.cleanup(),
         work.cleanup(),
+        forms.cleanup(),
       ]);
     } catch (cleanupError) {
       reportFailure(cleanupError, "projects.close");

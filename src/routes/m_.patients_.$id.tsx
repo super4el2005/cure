@@ -60,6 +60,7 @@ function Patient() {
     editClinical,
   } = useClinicalRecords(id);
   const clinicalKinds = {
+    questionnaire: t`Опросник`,
     visit: t`Визит`,
     history: t`Анамнез`,
     allergy: t`Аллергии`,
@@ -274,6 +275,11 @@ function Patient() {
                         <Link {...props} to="/m/patients/$id/visits" params={{ id }} />
                       )}
                     >{t`Визиты пациента`}</Anchor>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/m/patients/$id/forms" params={{ id }} />
+                      )}
+                    >{t`Опросники пациента`}</Anchor>
                     <Title order={2}>{t`Клиническая история`}</Title>
                     <Button
                       disabled={!workspace.canWrite()}
@@ -298,7 +304,9 @@ function Patient() {
                                 label={t`Раздел карты`}
                                 disabled={Boolean(clinicalForm.values.clientId)}
                                 data={Object.entries(clinicalKinds)
-                                  .filter(([value]) => value !== "visit")
+                                  .filter(
+                                    ([value]) => value !== "visit" && value !== "questionnaire",
+                                  )
                                   .map(([value, label]) => ({
                                     value,
                                     label,

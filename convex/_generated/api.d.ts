@@ -1,3 +1,4 @@
+import type * as studyForms from "@/convex/studyForms";
 import type * as clinicalRecords from "@/convex/clinicalRecords";
 import type * as analyses from "@/convex/analyses";
 import type * as projectWork from "../projectWork.js";
@@ -28,6 +29,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  studyForms: typeof studyForms;
   analyses: typeof analyses;
   clinicalRecords: typeof clinicalRecords;
   projectTeams: typeof projectTeams;

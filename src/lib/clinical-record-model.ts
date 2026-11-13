@@ -1,11 +1,13 @@
 import { z } from "zod";
 
 import type { Vault } from "@/src/lib/patient-vault";
+import { formDefinitionSchema, questionnairePayloadSchema } from "@/src/lib/study-form-model";
 import { visitTime, visitTimeSchema } from "@/src/lib/visit-time";
 
 const common = { occurredOn: z.iso.date(), notes: z.string().trim().max(2000) };
 export const clinicalPayloadSchema = z
   .discriminatedUnion("kind", [
+    questionnairePayloadSchema,
     z.object({
       ...common,
       kind: z.literal("visit"),
@@ -89,6 +91,35 @@ export const visitTransitions: Record<VisitPayload["status"], readonly VisitPayl
 };
 export function validateClinicalTransition(previous: ClinicalPayload, next: ClinicalPayload) {
   if (previous.kind !== next.kind) throw new Error("CLINICAL_KIND_IMMUTABLE");
+  if (previous.kind === "questionnaire" && next.kind === "questionnaire") {
+    if (
+      previous.formVersionClientId !== next.formVersionClientId ||
+      previous.formClientId !== next.formClientId ||
+      previous.formVersion !== next.formVersion ||
+      previous.projectClientId !== next.projectClientId ||
+      JSON.stringify(formDefinitionSchema.parse(previous.definition)) !==
+        JSON.stringify(formDefinitionSchema.parse(next.definition))
+    )
+      throw new Error("FORM_VERSION_IMMUTABLE");
+    if (previous.status === "final") {
+      if (next.status !== "final") throw new Error("FINAL_ANSWER_IMMUTABLE");
+      const original = previous.definition.fields.map((field) => [
+        field.id,
+        previous.answers[field.id] ?? null,
+      ]);
+      const modified = next.definition.fields.map((field) => [
+        field.id,
+        next.answers[field.id] ?? null,
+      ]);
+      if (
+        (JSON.stringify(original) !== JSON.stringify(modified) ||
+          previous.occurredOn !== next.occurredOn ||
+          previous.notes !== next.notes) &&
+        !next.amendmentReason
+      )
+        throw new Error("AMENDMENT_REASON_REQUIRED");
+    }
+  }
   if (previous.kind === "visit" && next.kind === "visit") {
     if (!visitTransitions[previous.status].includes(next.status))
       throw new Error("INVALID_VISIT_TRANSITION");
