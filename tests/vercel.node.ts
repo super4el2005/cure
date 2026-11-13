@@ -344,3 +344,17 @@ test("workspace overview renders without live subscriptions or private records o
     assert.doesNotMatch(html, /Test Patient|Private clinical note|Private research discussion/);
   }
 });
+
+test("analytics routes render protected entries without calculations or private data on the server", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/analytics`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Descriptive analysis of available records/);
+    assert.doesNotMatch(html, /Test Patient|Private clinical note|Included in the cohort/);
+  }
+});
