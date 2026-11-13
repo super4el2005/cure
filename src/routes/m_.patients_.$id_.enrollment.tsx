@@ -360,6 +360,15 @@ function Enrollment() {
                                   />
                                 )}
                               >{t`Журнал набора клиники`}</Anchor>
+                              <Anchor
+                                renderRoot={(props) => (
+                                  <Link
+                                    {...props}
+                                    to="/m/projects/$id/visits"
+                                    params={{ id: payload.projectClientId }}
+                                  />
+                                )}
+                              >{t`Визиты исследования`}</Anchor>
                               <Text>
                                 {t`Версия протокола:`} {payload.protocolVersion} ·{" "}
                                 {payload.protocolClientId}

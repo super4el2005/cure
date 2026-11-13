@@ -20,7 +20,10 @@ const initialValues = {
   patientClientId: "",
   expectedRevision: 0,
   failureId: "",
-  kind: "history" as Exclude<ClinicalPayload["kind"], "questionnaire" | "enrollment">,
+  kind: "history" as Exclude<
+    ClinicalPayload["kind"],
+    "questionnaire" | "enrollment" | "studyVisit"
+  >,
   occurredOn: null as string | null,
   notes: "",
   text: "",
@@ -130,7 +133,8 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
                   ? row.payload?.kind === "visit"
                   : row.payload?.kind !== "visit" &&
                     row.payload?.kind !== "questionnaire" &&
-                    row.payload?.kind !== "enrollment")
+                    row.payload?.kind !== "enrollment" &&
+                    row.payload?.kind !== "studyVisit")
                 ? [row]
                 : [];
             } catch (error) {
@@ -196,7 +200,8 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
               ? row.payload?.kind === "visit"
               : row.payload?.kind !== "visit" &&
                 row.payload?.kind !== "questionnaire" &&
-                row.payload?.kind !== "enrollment")
+                row.payload?.kind !== "enrollment" &&
+                row.payload?.kind !== "studyVisit")
           );
         } catch (error) {
           if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return false;
@@ -213,7 +218,8 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     if (
       !record.payload ||
       record.payload.kind === "questionnaire" ||
-      record.payload.kind === "enrollment"
+      record.payload.kind === "enrollment" ||
+      record.payload.kind === "studyVisit"
     )
       throw new Error("INVALID_CLINICAL_RECORD");
     const value = record.payload;

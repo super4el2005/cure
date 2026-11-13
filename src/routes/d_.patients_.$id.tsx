@@ -60,6 +60,7 @@ function Patient() {
     editClinical,
   } = useClinicalRecords(id);
   const clinicalKinds = {
+    studyVisit: t`Визит исследования`,
     enrollment: t`Участие в исследовании`,
     questionnaire: t`Опросник`,
     visit: t`Визит`,

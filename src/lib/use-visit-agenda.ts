@@ -24,7 +24,10 @@ export function useVisitAgenda(userId: string | undefined) {
           try {
             const record = workspace.readClinical(row);
             const payload = record.payload;
-            if (payload?.kind !== "visit" || !["planned", "inProgress"].includes(payload.status))
+            if (
+              (payload?.kind !== "visit" && payload?.kind !== "studyVisit") ||
+              !["planned", "inProgress"].includes(payload.status)
+            )
               return [];
             const patient = workspace.collection.get(record.patientClientId);
             if (!patient || patient.deleted) return [];
