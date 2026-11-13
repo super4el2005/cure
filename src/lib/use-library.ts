@@ -113,7 +113,10 @@ export function useLibrary() {
       return result.success
         ? {}
         : Object.fromEntries(
-            result.error.issues.map((issue) => [issue.path.join("."), t`Проверьте значение поля`]),
+            result.error.issues.map((issue) => [
+              String(issue.path[0] ?? "_form"),
+              t`Проверьте значение поля`,
+            ]),
           );
     },
   });

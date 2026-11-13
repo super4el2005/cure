@@ -196,6 +196,7 @@ function Library() {
                 <form onSubmit={form.onSubmit((input) => save.mutate(input))}>
                   <Stack>
                     <Title order={2}>{t`Карточка источника`}</Title>
+                    {form.errors._form && <Alert color="red">{form.errors._form}</Alert>}
                     {form.values.failureId && (
                       <Alert color="yellow">{t`Открыт отклонённый черновик. Сравните его с текущими данными перед сохранением.`}</Alert>
                     )}
@@ -242,6 +243,7 @@ function Library() {
                     />
                     <TagsInput
                       label={t`Метки`}
+                      description={t`До 20 меток, до 50 символов в каждой`}
                       data={tags}
                       maxTags={20}
                       {...form.getInputProps("tags")}
