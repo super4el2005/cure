@@ -317,6 +317,15 @@ function Projects() {
                   >{t`Протокол исследования`}</Anchor>
                   <Anchor
                     renderRoot={(props) => (
+                      <Link
+                        {...props}
+                        to="/m/projects/$id/enrollment"
+                        params={{ id: row.clientId }}
+                      />
+                    )}
+                  >{t`Журнал набора клиники`}</Anchor>
+                  <Anchor
+                    renderRoot={(props) => (
                       <Link {...props} to="/m/projects/$id/forms" params={{ id: row.clientId }} />
                     )}
                   >{t`Формы исследования`}</Anchor>

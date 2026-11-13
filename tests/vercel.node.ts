@@ -379,3 +379,21 @@ test("study form pages are independent protected routes without private data or 
     );
   }
 });
+
+test("clinic recruitment register has independent protected device routes", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/enrollment`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Clinic recruitment register/);
+    assert.doesNotMatch(
+      html,
+      /Private projects, study stages|Test Patient|Private clinical note|Confidential recruitment reason/,
+    );
+  }
+});
