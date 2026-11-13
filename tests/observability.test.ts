@@ -121,6 +121,10 @@ it("identifies clinical and project routes without recording record IDs or query
 
 it("observes library and research actions without exposing record identifiers or private notes", () => {
   expect(safePath("/d/library")).toBe("/d/library");
+  for (const operation of ["clinical.sync", "forms.sync", "projects.queue"])
+    expect(safeAttributes({ "app.operation": operation, notes: "SECRET" })).toEqual({
+      "app.operation": operation,
+    });
   expect(
     safeAttributes({
       "app.operation": "library.sync",

@@ -259,6 +259,8 @@ export function safeAttributes(
               "projects.sync",
               "projects.queue",
               "analyses.sync",
+              "clinical.sync",
+              "forms.sync",
               "workspace.close",
               "patients.close",
               "patients.sync",
