@@ -124,6 +124,43 @@ export const analysisValues = v.object({
 export const clinicalPayload = v.union(
   v.object({
     ...clinicalCommon,
+    kind: v.literal("enrollment"),
+    writeId: v.string(),
+    projectClientId: v.string(),
+    protocolClientId: v.string(),
+    protocolVersion: v.number(),
+    events: v.array(
+      v.object({
+        id: v.string(),
+        status: v.union(
+          v.literal("screening"),
+          v.literal("ineligible"),
+          v.literal("enrolled"),
+          v.literal("declined"),
+          v.literal("withdrawn"),
+          v.literal("completed"),
+        ),
+        occurredOn: v.string(),
+        reason: v.string(),
+        recordedBy: v.string(),
+        recordedAt: v.number(),
+        eligibilityEvidence: v.string(),
+        inclusionConfirmed: v.boolean(),
+        exclusionAbsent: v.boolean(),
+        consent: v.union(
+          v.null(),
+          v.object({
+            documentReference: v.string(),
+            version: v.string(),
+            signedOn: v.string(),
+            expiresOn: v.string(),
+          }),
+        ),
+      }),
+    ),
+  }),
+  v.object({
+    ...clinicalCommon,
     kind: v.literal("questionnaire"),
     writeId: v.string(),
     projectClientId: v.string(),

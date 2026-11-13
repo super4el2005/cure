@@ -60,6 +60,7 @@ function Patient() {
     editClinical,
   } = useClinicalRecords(id);
   const clinicalKinds = {
+    enrollment: t`Участие в исследовании`,
     questionnaire: t`Опросник`,
     visit: t`Визит`,
     history: t`Анамнез`,
@@ -275,6 +276,11 @@ function Patient() {
                         <Link {...props} to="/m/patients/$id/visits" params={{ id }} />
                       )}
                     >{t`Визиты пациента`}</Anchor>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/m/patients/$id/enrollment" params={{ id }} />
+                      )}
+                    >{t`Участие в исследованиях`}</Anchor>
                     <Anchor
                       renderRoot={(props) => (
                         <Link {...props} to="/m/patients/$id/forms" params={{ id }} />

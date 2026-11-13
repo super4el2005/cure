@@ -267,6 +267,12 @@ describe("durable research projects", () => {
       },
     });
 
+    expect(
+      [...workspace.protocols.values()]
+        .filter((row) => row.clientId !== workspace.protocolSnapshotId)
+        .map(workspace.readProtocol)
+        .every((row) => !row.confirmed),
+    ).toBe(true);
     expect(calls).toBe(0);
     expect(await workspace.executor.peekOutbox()).toHaveLength(2);
     expect(JSON.stringify([...storage.values.values()])).not.toContain(values.title);
@@ -389,6 +395,12 @@ describe("durable research projects", () => {
     finalNetwork.connect();
     workspace.setAuthenticated(true);
     await protocolSettled;
+    expect(
+      [...workspace.protocols.values()]
+        .filter((row) => row.clientId !== workspace.protocolSnapshotId)
+        .map(workspace.readProtocol)
+        .every((row) => row.confirmed),
+    ).toBe(true);
     expect(
       await actor.query(api.protocols.history, {
         projectClientId: clientId,

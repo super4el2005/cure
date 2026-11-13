@@ -3,9 +3,11 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "@/convex/_generated/api";
 import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
+import { enrollmentAccess, checkRecruitment } from "@/convex/lib/enrollment";
 import { operationReceipt, projectAccess, requireClientId } from "@/convex/lib/research";
 import { clinicalPayload } from "@/convex/schema";
 import { clinicalPayloadSchema, validateClinicalTransition } from "@/src/lib/clinical-record-model";
+import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
 
 export const list = query({
@@ -78,16 +80,23 @@ export const apply = mutation({
       .unique();
     if (existing && existing.patientClientId !== args.patientClientId)
       throw new ConvexError("ACCESS_DENIED");
-    const questionnaire =
-      payload?.kind === "questionnaire" || existing?.payload?.kind === "questionnaire";
+    const versionedWrite =
+      payload?.kind === "questionnaire" ||
+      existing?.payload?.kind === "questionnaire" ||
+      payload?.kind === "enrollment" ||
+      existing?.payload?.kind === "enrollment";
     if (args.expectedWriteId !== undefined && args.expectedWriteId !== null)
       requireClientId(args.expectedWriteId);
     if (
-      questionnaire &&
+      versionedWrite &&
       (args.expectedWriteId === undefined ||
         (args.action === "create" ? args.expectedWriteId !== null : args.expectedWriteId === null))
     )
       throw new ConvexError("INVALID_CLINICAL_RECORD");
+    const enrollmentProject =
+      payload?.kind === "enrollment"
+        ? await enrollmentAccess(ctx, args.organizationId, payload, args.action === "create")
+        : undefined;
     let questionnaireProjectCompleted = false;
     if (payload?.kind === "questionnaire") {
       if (args.action === "create") {
@@ -148,6 +157,53 @@ export const apply = mutation({
         : !existing || existing.deleted || existing.revision !== args.expectedRevision
     )
       throw new ConvexError("REVISION_CONFLICT");
+    if (
+      versionedWrite &&
+      args.action !== "create" &&
+      ((existing?.payload?.kind !== "questionnaire" && existing?.payload?.kind !== "enrollment") ||
+        existing.payload.writeId !== args.expectedWriteId)
+    )
+      throw new ConvexError("REVISION_CONFLICT");
+    if (
+      args.action === "update" &&
+      (existing?.payload?.kind === "questionnaire" || existing?.payload?.kind === "enrollment") &&
+      (payload?.kind === "questionnaire" || payload?.kind === "enrollment") &&
+      existing.payload.writeId === payload.writeId
+    )
+      throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (payload?.kind === "enrollment") {
+      try {
+        validateEnrollmentChange(
+          existing?.payload?.kind === "enrollment" ? existing.payload : null,
+          payload,
+          userId,
+          Date.now(),
+        );
+      } catch (error) {
+        throw new ConvexError(error instanceof Error ? error.message : "INVALID_ENROLLMENT");
+      }
+      if (args.action === "create" || payload.events.at(-1)?.status === "enrolled")
+        await checkRecruitment(ctx, payload, enrollmentProject);
+      if (args.action === "create") {
+        const candidates = await ctx.db
+          .query("clinicalRecords")
+          .withIndex("by_patient_active", (q) =>
+            q
+              .eq("organizationId", args.organizationId)
+              .eq("patientClientId", args.patientClientId)
+              .eq("deleted", false),
+          )
+          .collect();
+        if (
+          candidates.some(
+            (row) =>
+              row.payload?.kind === "enrollment" &&
+              row.payload.projectClientId === payload.projectClientId,
+          )
+        )
+          throw new ConvexError("ENROLLMENT_EXISTS");
+      }
+    }
     if (existing?.payload && payload) {
       try {
         validateClinicalTransition(existing.payload, payload);
@@ -155,20 +211,6 @@ export const apply = mutation({
         throw new ConvexError(error instanceof Error ? error.message : "INVALID_CLINICAL_RECORD");
       }
     }
-    if (
-      questionnaire &&
-      args.action !== "create" &&
-      (existing?.payload?.kind !== "questionnaire" ||
-        existing.payload.writeId !== args.expectedWriteId)
-    )
-      throw new ConvexError("REVISION_CONFLICT");
-    if (
-      args.action === "update" &&
-      existing?.payload?.kind === "questionnaire" &&
-      payload?.kind === "questionnaire" &&
-      existing.payload.writeId === payload.writeId
-    )
-      throw new ConvexError("INVALID_CLINICAL_RECORD");
     const revision = args.expectedRevision + 1;
     const now = Date.now();
     if (existing)

@@ -61,6 +61,7 @@ const rowSchema = projectValuesSchema.extend({
   updatedAt: z.number().default(0),
 });
 const protocolRowSchema = protocolValuesSchema.extend({
+  confirmed: z.boolean().default(false),
   clientId: z.uuid(),
   projectClientId: z.uuid(),
   version: z.number().int().positive(),
@@ -222,7 +223,7 @@ export async function openProjectWorkspace(config: {
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
         select: (rows) => [
           snapshot(protocolSnapshotId),
-          ...rows.map((row) => sealProtocol(protocolRowSchema.parse(row))),
+          ...rows.map((row) => sealProtocol(protocolRowSchema.parse({ ...row, confirmed: true }))),
         ],
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
