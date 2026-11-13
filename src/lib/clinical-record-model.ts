@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { Vault } from "@/src/lib/patient-vault";
+import { enrollmentPayloadSchema } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema, questionnairePayloadSchema } from "@/src/lib/study-form-model";
 import { visitTime, visitTimeSchema } from "@/src/lib/visit-time";
 
@@ -8,6 +9,7 @@ const common = { occurredOn: z.iso.date(), notes: z.string().trim().max(2000) };
 export const clinicalPayloadSchema = z
   .discriminatedUnion("kind", [
     questionnairePayloadSchema,
+    enrollmentPayloadSchema,
     z.object({
       ...common,
       kind: z.literal("visit"),

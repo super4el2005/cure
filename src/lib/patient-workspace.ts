@@ -46,6 +46,7 @@ import { encryptedStorage } from "@/src/lib/patient-vault";
 import type { Vault } from "@/src/lib/patient-vault";
 import { analysisValuesSchema, readAnalysis, sealAnalysis } from "@/src/lib/saved-analysis-model";
 import type { AnalysisCommand } from "@/src/lib/saved-analysis-model";
+import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
 export { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
 import { reportFailure } from "@/src/observability/events";
 
@@ -259,20 +260,27 @@ export async function openPatientWorkspace(config: {
           clinicalScope,
         );
         const original =
-          change.type !== "insert" && (row.deleted || row.payload?.kind === "questionnaire")
+          change.type !== "insert" &&
+          (row.deleted || ["questionnaire", "enrollment"].includes(row.payload?.kind ?? ""))
             ? openClinicalRecord(change.original as ClinicalEnvelope, config.vault, clinicalScope)
             : undefined;
-        const questionnaire =
-          row.payload?.kind === "questionnaire" || original?.payload?.kind === "questionnaire";
+        const versionedWrite =
+          row.payload?.kind === "questionnaire" ||
+          original?.payload?.kind === "questionnaire" ||
+          row.payload?.kind === "enrollment" ||
+          original?.payload?.kind === "enrollment";
         return {
           actorId: config.userId,
           organizationId: config.organizationId,
           clientId: row.clientId,
           patientClientId: row.patientClientId,
-          ...(questionnaire
+          ...(versionedWrite
             ? {
                 expectedWriteId:
-                  original?.payload?.kind === "questionnaire" ? original.payload.writeId : null,
+                  original?.payload?.kind === "questionnaire" ||
+                  original?.payload?.kind === "enrollment"
+                    ? original.payload.writeId
+                    : null,
               }
             : {}),
           action:
@@ -343,6 +351,16 @@ export async function openPatientWorkspace(config: {
               "AMENDMENT_REASON_REQUIRED",
               "FORM_VERSION_OUTDATED",
               "INVALID_STUDY_FORM",
+              "INVALID_ENROLLMENT",
+              "INVALID_ENROLLMENT_TRANSITION",
+              "ENROLLMENT_BINDING_IMMUTABLE",
+              "ENROLLMENT_HISTORY_IMMUTABLE",
+              "ENROLLMENT_EXISTS",
+              "PARTICIPATION_CONSENT_REQUIRED",
+              "PARTICIPATION_CONSENT_EXPIRED",
+              "PROTOCOL_OUTDATED",
+              "RECRUITMENT_CLOSED",
+              "ETHICS_APPROVAL_REQUIRED",
               "PROJECT_ARCHIVED",
               "PROJECT_COMPLETED",
               "INVALID_VISIT_TRANSITION",
@@ -511,10 +529,31 @@ export async function openPatientWorkspace(config: {
         const parsedPayload =
           command.action === "delete" ? null : clinicalPayloadSchema.parse(command.payload);
         const payload =
-          parsedPayload?.kind === "questionnaire"
+          parsedPayload?.kind === "questionnaire" || parsedPayload?.kind === "enrollment"
             ? { ...parsedPayload, writeId: crypto.randomUUID() }
             : parsedPayload;
         if (prior?.payload && payload) validateClinicalTransition(prior.payload, payload);
+        if (payload?.kind === "enrollment") {
+          validateEnrollmentChange(
+            prior?.payload?.kind === "enrollment" ? prior.payload : null,
+            payload,
+            config.userId,
+            Date.now(),
+          );
+          if (
+            command.action === "create" &&
+            Array.from(clinicalRecords.values())
+              .filter((row) => row.clientId !== snapshotId && !row.deleted)
+              .map((row) => openClinicalRecord(row, config.vault, clinicalScope))
+              .some(
+                (row) =>
+                  row.patientClientId === command.patientClientId &&
+                  row.payload?.kind === "enrollment" &&
+                  row.payload.projectClientId === payload.projectClientId,
+              )
+          )
+            throw new Error("ENROLLMENT_EXISTS");
+        }
         const now = Date.now();
         const envelope = clinicalEnvelope(
           {
