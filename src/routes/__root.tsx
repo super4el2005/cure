@@ -305,6 +305,7 @@ function ApplicationNavigation() {
           <Anchor component={Link} to={base}>
             Cure
           </Anchor>
+          <Anchor component={Link} to={`${base}/workspace`}>{t`Обзор работы`}</Anchor>
           <Anchor component={Link} to={`${base}/specialists`}>{t`Специалисты`}</Anchor>
           <Anchor component={Link} to={`${base}/organizations`}>{t`Организации`}</Anchor>
           <Anchor component={Link} to={`${base}/research`}>{t`Исследования`}</Anchor>

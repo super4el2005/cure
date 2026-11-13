@@ -21,6 +21,7 @@ import { Route as DProjectsRouteImport } from './routes/d_.projects'
 import { Route as DResearchRouteImport } from './routes/d_.research'
 import { Route as DSpecialistsRouteImport } from './routes/d_.specialists'
 import { Route as DToolsRouteImport } from './routes/d_.tools'
+import { Route as DWorkspaceRouteImport } from './routes/d_.workspace'
 import { Route as MInvitationsRouteImport } from './routes/m_.invitations'
 import { Route as MOrganizationsRouteImport } from './routes/m_.organizations'
 import { Route as MPatientsRouteImport } from './routes/m_.patients'
@@ -29,6 +30,7 @@ import { Route as MProjectsRouteImport } from './routes/m_.projects'
 import { Route as MResearchRouteImport } from './routes/m_.research'
 import { Route as MSpecialistsRouteImport } from './routes/m_.specialists'
 import { Route as MToolsRouteImport } from './routes/m_.tools'
+import { Route as MWorkspaceRouteImport } from './routes/m_.workspace'
 import { Route as ApiAiChatRouteImport } from './routes/api.ai.chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiMedicalSearchRouteImport } from './routes/api.medical.search'
@@ -109,6 +111,11 @@ const DToolsRoute = DToolsRouteImport.update({
   path: '/d/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DWorkspaceRoute = DWorkspaceRouteImport.update({
+  id: '/d_/workspace',
+  path: '/d/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MInvitationsRoute = MInvitationsRouteImport.update({
   id: '/m_/invitations',
   path: '/m/invitations',
@@ -147,6 +154,11 @@ const MSpecialistsRoute = MSpecialistsRouteImport.update({
 const MToolsRoute = MToolsRouteImport.update({
   id: '/m_/tools',
   path: '/m/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MWorkspaceRoute = MWorkspaceRouteImport.update({
+  id: '/m_/workspace',
+  path: '/m/workspace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
@@ -258,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/d/research': typeof DResearchRoute
   '/d/specialists': typeof DSpecialistsRoute
   '/d/tools': typeof DToolsRoute
+  '/d/workspace': typeof DWorkspaceRoute
   '/m/invitations': typeof MInvitationsRoute
   '/m/organizations': typeof MOrganizationsRoute
   '/m/patients': typeof MPatientsRoute
@@ -266,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/m/research': typeof MResearchRoute
   '/m/specialists': typeof MSpecialistsRoute
   '/m/tools': typeof MToolsRoute
+  '/m/workspace': typeof MWorkspaceRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
@@ -299,6 +313,7 @@ export interface FileRoutesByTo {
   '/d/research': typeof DResearchRoute
   '/d/specialists': typeof DSpecialistsRoute
   '/d/tools': typeof DToolsRoute
+  '/d/workspace': typeof DWorkspaceRoute
   '/m/invitations': typeof MInvitationsRoute
   '/m/organizations': typeof MOrganizationsRoute
   '/m/patients': typeof MPatientsRoute
@@ -307,6 +322,7 @@ export interface FileRoutesByTo {
   '/m/research': typeof MResearchRoute
   '/m/specialists': typeof MSpecialistsRoute
   '/m/tools': typeof MToolsRoute
+  '/m/workspace': typeof MWorkspaceRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
@@ -341,6 +357,7 @@ export interface FileRoutesById {
   '/d_/research': typeof DResearchRoute
   '/d_/specialists': typeof DSpecialistsRoute
   '/d_/tools': typeof DToolsRoute
+  '/d_/workspace': typeof DWorkspaceRoute
   '/m_/invitations': typeof MInvitationsRoute
   '/m_/organizations': typeof MOrganizationsRoute
   '/m_/patients': typeof MPatientsRoute
@@ -349,6 +366,7 @@ export interface FileRoutesById {
   '/m_/research': typeof MResearchRoute
   '/m_/specialists': typeof MSpecialistsRoute
   '/m_/tools': typeof MToolsRoute
+  '/m_/workspace': typeof MWorkspaceRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
@@ -384,6 +402,7 @@ export interface FileRouteTypes {
     | '/d/research'
     | '/d/specialists'
     | '/d/tools'
+    | '/d/workspace'
     | '/m/invitations'
     | '/m/organizations'
     | '/m/patients'
@@ -392,6 +411,7 @@ export interface FileRouteTypes {
     | '/m/research'
     | '/m/specialists'
     | '/m/tools'
+    | '/m/workspace'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
@@ -425,6 +445,7 @@ export interface FileRouteTypes {
     | '/d/research'
     | '/d/specialists'
     | '/d/tools'
+    | '/d/workspace'
     | '/m/invitations'
     | '/m/organizations'
     | '/m/patients'
@@ -433,6 +454,7 @@ export interface FileRouteTypes {
     | '/m/research'
     | '/m/specialists'
     | '/m/tools'
+    | '/m/workspace'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
@@ -466,6 +488,7 @@ export interface FileRouteTypes {
     | '/d_/research'
     | '/d_/specialists'
     | '/d_/tools'
+    | '/d_/workspace'
     | '/m_/invitations'
     | '/m_/organizations'
     | '/m_/patients'
@@ -474,6 +497,7 @@ export interface FileRouteTypes {
     | '/m_/research'
     | '/m_/specialists'
     | '/m_/tools'
+    | '/m_/workspace'
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
@@ -508,6 +532,7 @@ export interface RootRouteChildren {
   DResearchRoute: typeof DResearchRoute
   DSpecialistsRoute: typeof DSpecialistsRoute
   DToolsRoute: typeof DToolsRoute
+  DWorkspaceRoute: typeof DWorkspaceRoute
   MInvitationsRoute: typeof MInvitationsRoute
   MOrganizationsRoute: typeof MOrganizationsRoute
   MPatientsRoute: typeof MPatientsRoute
@@ -516,6 +541,7 @@ export interface RootRouteChildren {
   MResearchRoute: typeof MResearchRoute
   MSpecialistsRoute: typeof MSpecialistsRoute
   MToolsRoute: typeof MToolsRoute
+  MWorkspaceRoute: typeof MWorkspaceRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiMedicalSearchRoute: typeof ApiMedicalSearchRoute
@@ -623,6 +649,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/workspace': {
+      id: '/d_/workspace'
+      path: '/d/workspace'
+      fullPath: '/d/workspace'
+      preLoaderRoute: typeof DWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/m_/invitations': {
       id: '/m_/invitations'
       path: '/m/invitations'
@@ -677,6 +710,13 @@ declare module '@tanstack/react-router' {
       path: '/m/tools'
       fullPath: '/m/tools'
       preLoaderRoute: typeof MToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/workspace': {
+      id: '/m_/workspace'
+      path: '/m/workspace'
+      fullPath: '/m/workspace'
+      preLoaderRoute: typeof MWorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ai/chat': {
@@ -828,6 +868,7 @@ const rootRouteChildren: RootRouteChildren = {
   DResearchRoute: DResearchRoute,
   DSpecialistsRoute: DSpecialistsRoute,
   DToolsRoute: DToolsRoute,
+  DWorkspaceRoute: DWorkspaceRoute,
   MInvitationsRoute: MInvitationsRoute,
   MOrganizationsRoute: MOrganizationsRoute,
   MPatientsRoute: MPatientsRoute,
@@ -836,6 +877,7 @@ const rootRouteChildren: RootRouteChildren = {
   MResearchRoute: MResearchRoute,
   MSpecialistsRoute: MSpecialistsRoute,
   MToolsRoute: MToolsRoute,
+  MWorkspaceRoute: MWorkspaceRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiMedicalSearchRoute: ApiMedicalSearchRoute,

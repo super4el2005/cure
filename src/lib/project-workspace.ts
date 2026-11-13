@@ -56,6 +56,7 @@ const rowSchema = projectValuesSchema.extend({
   organizationId: z.string(),
   revision: z.number().int().positive(),
   selfRole: projectRoleSchema,
+  updatedAt: z.number().default(0),
 });
 const protocolRowSchema = protocolValuesSchema.extend({
   clientId: z.uuid(),
@@ -529,7 +530,10 @@ export async function openProjectWorkspace(config: {
           if (!["owner", "coordinator"].includes(row.selfRole)) throw new Error("ACCESS_DENIED");
           validateResearchTransition(row.status, values.status, row.selfRole);
           collection.update(command.clientId, (draft) =>
-            Object.assign(draft, seal({ ...row, ...values, revision: row.revision + 1 })),
+            Object.assign(
+              draft,
+              seal({ ...row, ...values, revision: row.revision + 1, updatedAt: Date.now() }),
+            ),
           );
         } else {
           if (values.status !== "draft" || values.published)
@@ -542,6 +546,7 @@ export async function openProjectWorkspace(config: {
                 revision: 1,
                 organizationId: config.organizationId,
                 selfRole: "owner" satisfies ProjectRole,
+                updatedAt: Date.now(),
               }),
             ),
           );
