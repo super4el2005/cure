@@ -10,7 +10,7 @@ export const actions: Record<string, string> = {
   "library-save": "library.save",
   "library-delete": "library.delete",
   "library-restore": "library.restore",
-  "library-import": "library.import",
+  "library-import": "library.metadata.review",
   "library-cache-publications": "library.references.persist",
   "enrollment-save": "enrollment.save",
   "enrollment-delete": "enrollment.delete",

@@ -62,12 +62,12 @@ export function useLibrary() {
     retry: false,
     gcTime: 0,
     mutationFn: async (result: MedicalResult) => {
-      if (!catalog) return false;
+      if (!catalog) throw new Error("STORAGE_UNAVAILABLE");
       try {
         await saveMedicalRecords(catalog, result.records);
         return true;
       } catch {
-        return false;
+        throw new Error("STORAGE_UNAVAILABLE");
       }
     },
   });
@@ -78,7 +78,7 @@ export function useLibrary() {
       gcTime: 0,
       onMutate: () => cacheResult.reset(),
       onSuccess: async (result) => {
-        await cacheResult.mutateAsync(medicalResultSchema.parse(result));
+        await cacheResult.mutateAsync(medicalResultSchema.parse(result)).catch(() => undefined);
       },
     },
   });
