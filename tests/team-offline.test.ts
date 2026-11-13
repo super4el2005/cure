@@ -92,6 +92,7 @@ const modules = {
   "../convex/profiles.ts": () => import("@/convex/profiles"),
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
   "../convex/projects.ts": () => import("@/convex/projects"),
+  "../convex/studyForms.ts": () => import("@/convex/studyForms"),
   "../convex/protocols.ts": () => import("@/convex/protocols"),
   "../convex/projectWork.ts": () => import("@/convex/projectWork"),
   "../convex/projectTeams.ts": () => import("@/convex/projectTeams"),
@@ -160,6 +161,7 @@ describe("durable cross-organization collaboration", () => {
       const listeners = new Set<() => void>();
       async function refresh() {
         for (const fn of [
+          api.studyForms.mine,
           api.projects.mine,
           api.protocols.mine,
           api.projectTeams.workspace,

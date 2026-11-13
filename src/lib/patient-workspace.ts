@@ -258,11 +258,23 @@ export async function openPatientWorkspace(config: {
           config.vault,
           clinicalScope,
         );
+        const original =
+          change.type !== "insert" && (row.deleted || row.payload?.kind === "questionnaire")
+            ? openClinicalRecord(change.original as ClinicalEnvelope, config.vault, clinicalScope)
+            : undefined;
+        const questionnaire =
+          row.payload?.kind === "questionnaire" || original?.payload?.kind === "questionnaire";
         return {
           actorId: config.userId,
           organizationId: config.organizationId,
           clientId: row.clientId,
           patientClientId: row.patientClientId,
+          ...(questionnaire
+            ? {
+                expectedWriteId:
+                  original?.payload?.kind === "questionnaire" ? original.payload.writeId : null,
+              }
+            : {}),
           action:
             change.type === "insert"
               ? ("create" as const)
@@ -326,6 +338,13 @@ export async function openPatientWorkspace(config: {
               "INVALID_CLINICAL_RECORD",
               "INVALID_ANALYSIS",
               "CLINICAL_KIND_IMMUTABLE",
+              "FORM_VERSION_IMMUTABLE",
+              "FINAL_ANSWER_IMMUTABLE",
+              "AMENDMENT_REASON_REQUIRED",
+              "FORM_VERSION_OUTDATED",
+              "INVALID_STUDY_FORM",
+              "PROJECT_ARCHIVED",
+              "PROJECT_COMPLETED",
               "INVALID_VISIT_TRANSITION",
               "VISIT_SCHEDULE_IMMUTABLE",
               "REVISION_CONFLICT",
@@ -489,8 +508,12 @@ export async function openPatientWorkspace(config: {
           throw new Error("REVISION_CONFLICT");
         if (prior && prior.patientClientId !== command.patientClientId)
           throw new Error("ACCESS_DENIED");
-        const payload =
+        const parsedPayload =
           command.action === "delete" ? null : clinicalPayloadSchema.parse(command.payload);
+        const payload =
+          parsedPayload?.kind === "questionnaire"
+            ? { ...parsedPayload, writeId: crypto.randomUUID() }
+            : parsedPayload;
         if (prior?.payload && payload) validateClinicalTransition(prior.payload, payload);
         const now = Date.now();
         const envelope = clinicalEnvelope(

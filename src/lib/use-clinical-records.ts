@@ -20,7 +20,7 @@ const initialValues = {
   patientClientId: "",
   expectedRevision: 0,
   failureId: "",
-  kind: "history" as ClinicalPayload["kind"],
+  kind: "history" as Exclude<ClinicalPayload["kind"], "questionnaire">,
   occurredOn: null as string | null,
   notes: "",
   text: "",
@@ -126,7 +126,9 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
             try {
               const row = workspace.readClinical(envelope);
               return row.patientClientId === patientId &&
-                (view === "visits" ? row.payload?.kind === "visit" : row.payload?.kind !== "visit")
+                (view === "visits"
+                  ? row.payload?.kind === "visit"
+                  : row.payload?.kind !== "visit" && row.payload?.kind !== "questionnaire")
                 ? [row]
                 : [];
             } catch (error) {
@@ -188,7 +190,9 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
           const row = workspace!.readClinical(failure.envelope);
           return (
             row.patientClientId === patientId &&
-            (view === "visits" ? row.payload?.kind === "visit" : row.payload?.kind !== "visit")
+            (view === "visits"
+              ? row.payload?.kind === "visit"
+              : row.payload?.kind !== "visit" && row.payload?.kind !== "questionnaire")
           );
         } catch (error) {
           if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return false;
@@ -202,7 +206,8 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     expectedRevision = record.revision,
     clientId = record.clientId,
   ) => {
-    if (!record.payload) throw new Error("INVALID_CLINICAL_RECORD");
+    if (!record.payload || record.payload.kind === "questionnaire")
+      throw new Error("INVALID_CLINICAL_RECORD");
     const value = record.payload;
     clinicalForm.reset();
     clinicalForm.setValues({

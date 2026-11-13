@@ -45,12 +45,16 @@ import { Route as MPatientsIdRouteImport } from './routes/m_.patients_.$id'
 import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
 import { Route as MSpecialistsIdRouteImport } from './routes/m_.specialists_.$id'
 import { Route as DPatientsIdConsentsRouteImport } from './routes/d_.patients_.$id_.consents'
+import { Route as DPatientsIdFormsRouteImport } from './routes/d_.patients_.$id_.forms'
 import { Route as DPatientsIdVisitsRouteImport } from './routes/d_.patients_.$id_.visits'
+import { Route as DProjectsIdFormsRouteImport } from './routes/d_.projects_.$id.forms'
 import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
 import { Route as DProjectsIdTeamRouteImport } from './routes/d_.projects_.$id.team'
 import { Route as DProjectsIdWorkRouteImport } from './routes/d_.projects_.$id.work'
 import { Route as MPatientsIdConsentsRouteImport } from './routes/m_.patients_.$id_.consents'
+import { Route as MPatientsIdFormsRouteImport } from './routes/m_.patients_.$id_.forms'
 import { Route as MPatientsIdVisitsRouteImport } from './routes/m_.patients_.$id_.visits'
+import { Route as MProjectsIdFormsRouteImport } from './routes/m_.projects_.$id.forms'
 import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
 import { Route as MProjectsIdTeamRouteImport } from './routes/m_.projects_.$id.team'
 import { Route as MProjectsIdWorkRouteImport } from './routes/m_.projects_.$id.work'
@@ -235,9 +239,19 @@ const DPatientsIdConsentsRoute = DPatientsIdConsentsRouteImport.update({
   path: '/d/patients/$id/consents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DPatientsIdFormsRoute = DPatientsIdFormsRouteImport.update({
+  id: '/d_/patients_/$id_/forms',
+  path: '/d/patients/$id/forms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DPatientsIdVisitsRoute = DPatientsIdVisitsRouteImport.update({
   id: '/d_/patients_/$id_/visits',
   path: '/d/patients/$id/visits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DProjectsIdFormsRoute = DProjectsIdFormsRouteImport.update({
+  id: '/d_/projects_/$id/forms',
+  path: '/d/projects/$id/forms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DProjectsIdProtocolRoute = DProjectsIdProtocolRouteImport.update({
@@ -260,9 +274,19 @@ const MPatientsIdConsentsRoute = MPatientsIdConsentsRouteImport.update({
   path: '/m/patients/$id/consents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MPatientsIdFormsRoute = MPatientsIdFormsRouteImport.update({
+  id: '/m_/patients_/$id_/forms',
+  path: '/m/patients/$id/forms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MPatientsIdVisitsRoute = MPatientsIdVisitsRouteImport.update({
   id: '/m_/patients_/$id_/visits',
   path: '/m/patients/$id/visits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdFormsRoute = MProjectsIdFormsRouteImport.update({
+  id: '/m_/projects_/$id/forms',
+  path: '/m/projects/$id/forms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
@@ -318,12 +342,16 @@ export interface FileRoutesByFullPath {
   '/m/research/$id': typeof MResearchIdRoute
   '/m/specialists/$id': typeof MSpecialistsIdRoute
   '/d/patients/$id/consents': typeof DPatientsIdConsentsRoute
+  '/d/patients/$id/forms': typeof DPatientsIdFormsRoute
   '/d/patients/$id/visits': typeof DPatientsIdVisitsRoute
+  '/d/projects/$id/forms': typeof DProjectsIdFormsRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
   '/d/projects/$id/work': typeof DProjectsIdWorkRoute
   '/m/patients/$id/consents': typeof MPatientsIdConsentsRoute
+  '/m/patients/$id/forms': typeof MPatientsIdFormsRoute
   '/m/patients/$id/visits': typeof MPatientsIdVisitsRoute
+  '/m/projects/$id/forms': typeof MProjectsIdFormsRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
   '/m/projects/$id/work': typeof MProjectsIdWorkRoute
@@ -365,12 +393,16 @@ export interface FileRoutesByTo {
   '/m/research/$id': typeof MResearchIdRoute
   '/m/specialists/$id': typeof MSpecialistsIdRoute
   '/d/patients/$id/consents': typeof DPatientsIdConsentsRoute
+  '/d/patients/$id/forms': typeof DPatientsIdFormsRoute
   '/d/patients/$id/visits': typeof DPatientsIdVisitsRoute
+  '/d/projects/$id/forms': typeof DProjectsIdFormsRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
   '/d/projects/$id/work': typeof DProjectsIdWorkRoute
   '/m/patients/$id/consents': typeof MPatientsIdConsentsRoute
+  '/m/patients/$id/forms': typeof MPatientsIdFormsRoute
   '/m/patients/$id/visits': typeof MPatientsIdVisitsRoute
+  '/m/projects/$id/forms': typeof MProjectsIdFormsRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
   '/m/projects/$id/work': typeof MProjectsIdWorkRoute
@@ -413,12 +445,16 @@ export interface FileRoutesById {
   '/m_/research_/$id': typeof MResearchIdRoute
   '/m_/specialists_/$id': typeof MSpecialistsIdRoute
   '/d_/patients_/$id_/consents': typeof DPatientsIdConsentsRoute
+  '/d_/patients_/$id_/forms': typeof DPatientsIdFormsRoute
   '/d_/patients_/$id_/visits': typeof DPatientsIdVisitsRoute
+  '/d_/projects_/$id/forms': typeof DProjectsIdFormsRoute
   '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
   '/d_/projects_/$id/team': typeof DProjectsIdTeamRoute
   '/d_/projects_/$id/work': typeof DProjectsIdWorkRoute
   '/m_/patients_/$id_/consents': typeof MPatientsIdConsentsRoute
+  '/m_/patients_/$id_/forms': typeof MPatientsIdFormsRoute
   '/m_/patients_/$id_/visits': typeof MPatientsIdVisitsRoute
+  '/m_/projects_/$id/forms': typeof MProjectsIdFormsRoute
   '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
   '/m_/projects_/$id/team': typeof MProjectsIdTeamRoute
   '/m_/projects_/$id/work': typeof MProjectsIdWorkRoute
@@ -462,12 +498,16 @@ export interface FileRouteTypes {
     | '/m/research/$id'
     | '/m/specialists/$id'
     | '/d/patients/$id/consents'
+    | '/d/patients/$id/forms'
     | '/d/patients/$id/visits'
+    | '/d/projects/$id/forms'
     | '/d/projects/$id/protocol'
     | '/d/projects/$id/team'
     | '/d/projects/$id/work'
     | '/m/patients/$id/consents'
+    | '/m/patients/$id/forms'
     | '/m/patients/$id/visits'
+    | '/m/projects/$id/forms'
     | '/m/projects/$id/protocol'
     | '/m/projects/$id/team'
     | '/m/projects/$id/work'
@@ -509,12 +549,16 @@ export interface FileRouteTypes {
     | '/m/research/$id'
     | '/m/specialists/$id'
     | '/d/patients/$id/consents'
+    | '/d/patients/$id/forms'
     | '/d/patients/$id/visits'
+    | '/d/projects/$id/forms'
     | '/d/projects/$id/protocol'
     | '/d/projects/$id/team'
     | '/d/projects/$id/work'
     | '/m/patients/$id/consents'
+    | '/m/patients/$id/forms'
     | '/m/patients/$id/visits'
+    | '/m/projects/$id/forms'
     | '/m/projects/$id/protocol'
     | '/m/projects/$id/team'
     | '/m/projects/$id/work'
@@ -556,12 +600,16 @@ export interface FileRouteTypes {
     | '/m_/research_/$id'
     | '/m_/specialists_/$id'
     | '/d_/patients_/$id_/consents'
+    | '/d_/patients_/$id_/forms'
     | '/d_/patients_/$id_/visits'
+    | '/d_/projects_/$id/forms'
     | '/d_/projects_/$id/protocol'
     | '/d_/projects_/$id/team'
     | '/d_/projects_/$id/work'
     | '/m_/patients_/$id_/consents'
+    | '/m_/patients_/$id_/forms'
     | '/m_/patients_/$id_/visits'
+    | '/m_/projects_/$id/forms'
     | '/m_/projects_/$id/protocol'
     | '/m_/projects_/$id/team'
     | '/m_/projects_/$id/work'
@@ -604,12 +652,16 @@ export interface RootRouteChildren {
   MResearchIdRoute: typeof MResearchIdRoute
   MSpecialistsIdRoute: typeof MSpecialistsIdRoute
   DPatientsIdConsentsRoute: typeof DPatientsIdConsentsRoute
+  DPatientsIdFormsRoute: typeof DPatientsIdFormsRoute
   DPatientsIdVisitsRoute: typeof DPatientsIdVisitsRoute
+  DProjectsIdFormsRoute: typeof DProjectsIdFormsRoute
   DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
   DProjectsIdTeamRoute: typeof DProjectsIdTeamRoute
   DProjectsIdWorkRoute: typeof DProjectsIdWorkRoute
   MPatientsIdConsentsRoute: typeof MPatientsIdConsentsRoute
+  MPatientsIdFormsRoute: typeof MPatientsIdFormsRoute
   MPatientsIdVisitsRoute: typeof MPatientsIdVisitsRoute
+  MProjectsIdFormsRoute: typeof MProjectsIdFormsRoute
   MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
   MProjectsIdTeamRoute: typeof MProjectsIdTeamRoute
   MProjectsIdWorkRoute: typeof MProjectsIdWorkRoute
@@ -869,11 +921,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DPatientsIdConsentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/patients_/$id_/forms': {
+      id: '/d_/patients_/$id_/forms'
+      path: '/d/patients/$id/forms'
+      fullPath: '/d/patients/$id/forms'
+      preLoaderRoute: typeof DPatientsIdFormsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/patients_/$id_/visits': {
       id: '/d_/patients_/$id_/visits'
       path: '/d/patients/$id/visits'
       fullPath: '/d/patients/$id/visits'
       preLoaderRoute: typeof DPatientsIdVisitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/d_/projects_/$id/forms': {
+      id: '/d_/projects_/$id/forms'
+      path: '/d/projects/$id/forms'
+      fullPath: '/d/projects/$id/forms'
+      preLoaderRoute: typeof DProjectsIdFormsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/d_/projects_/$id/protocol': {
@@ -904,11 +970,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MPatientsIdConsentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/m_/patients_/$id_/forms': {
+      id: '/m_/patients_/$id_/forms'
+      path: '/m/patients/$id/forms'
+      fullPath: '/m/patients/$id/forms'
+      preLoaderRoute: typeof MPatientsIdFormsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/m_/patients_/$id_/visits': {
       id: '/m_/patients_/$id_/visits'
       path: '/m/patients/$id/visits'
       fullPath: '/m/patients/$id/visits'
       preLoaderRoute: typeof MPatientsIdVisitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/forms': {
+      id: '/m_/projects_/$id/forms'
+      path: '/m/projects/$id/forms'
+      fullPath: '/m/projects/$id/forms'
+      preLoaderRoute: typeof MProjectsIdFormsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m_/projects_/$id/protocol': {
@@ -972,12 +1052,16 @@ const rootRouteChildren: RootRouteChildren = {
   MResearchIdRoute: MResearchIdRoute,
   MSpecialistsIdRoute: MSpecialistsIdRoute,
   DPatientsIdConsentsRoute: DPatientsIdConsentsRoute,
+  DPatientsIdFormsRoute: DPatientsIdFormsRoute,
   DPatientsIdVisitsRoute: DPatientsIdVisitsRoute,
+  DProjectsIdFormsRoute: DProjectsIdFormsRoute,
   DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
   DProjectsIdTeamRoute: DProjectsIdTeamRoute,
   DProjectsIdWorkRoute: DProjectsIdWorkRoute,
   MPatientsIdConsentsRoute: MPatientsIdConsentsRoute,
+  MPatientsIdFormsRoute: MPatientsIdFormsRoute,
   MPatientsIdVisitsRoute: MPatientsIdVisitsRoute,
+  MProjectsIdFormsRoute: MProjectsIdFormsRoute,
   MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
   MProjectsIdTeamRoute: MProjectsIdTeamRoute,
   MProjectsIdWorkRoute: MProjectsIdWorkRoute,

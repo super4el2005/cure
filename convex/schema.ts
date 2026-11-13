@@ -77,6 +77,39 @@ export const taskFields = {
   dueAt: v.number(),
   archived: v.boolean(),
 };
+const studyFieldCommon = {
+  id: v.string(),
+  label: v.string(),
+  help: v.string(),
+  required: v.boolean(),
+};
+const studyChoices = v.array(v.object({ value: v.string(), label: v.string() }));
+export const formDefinition = v.object({
+  title: v.string(),
+  description: v.string(),
+  fields: v.array(
+    v.union(
+      v.object({ ...studyFieldCommon, type: v.literal("text"), maxLength: v.number() }),
+      v.object({
+        ...studyFieldCommon,
+        type: v.literal("number"),
+        minimum: v.union(v.number(), v.null()),
+        maximum: v.union(v.number(), v.null()),
+        unit: v.string(),
+      }),
+      v.object({
+        ...studyFieldCommon,
+        type: v.literal("date"),
+        minDate: v.string(),
+        maxDate: v.string(),
+      }),
+      v.object({ ...studyFieldCommon, type: v.literal("boolean") }),
+      v.object({ ...studyFieldCommon, type: v.literal("choice"), choices: studyChoices }),
+      v.object({ ...studyFieldCommon, type: v.literal("multiChoice"), choices: studyChoices }),
+    ),
+  ),
+});
+export const formStatus = v.union(v.literal("published"), v.literal("retired"));
 const clinicalCommon = { occurredOn: v.string(), notes: v.string() };
 export const analysisValues = v.object({
   title: v.string(),
@@ -89,6 +122,22 @@ export const analysisValues = v.object({
   }),
 });
 export const clinicalPayload = v.union(
+  v.object({
+    ...clinicalCommon,
+    kind: v.literal("questionnaire"),
+    writeId: v.string(),
+    projectClientId: v.string(),
+    formVersionClientId: v.string(),
+    formClientId: v.string(),
+    formVersion: v.number(),
+    definition: formDefinition,
+    answers: v.record(
+      v.string(),
+      v.union(v.string(), v.number(), v.boolean(), v.array(v.string())),
+    ),
+    status: v.union(v.literal("draft"), v.literal("final")),
+    amendmentReason: v.string(),
+  }),
   v.object({
     ...clinicalCommon,
     kind: v.literal("visit"),
@@ -148,6 +197,20 @@ export const clinicalPayload = v.union(
   }),
 );
 export default defineSchema({
+  studyForms: defineTable({
+    baseVersionClientId: v.union(v.string(), v.null()),
+    clientId: v.string(),
+    formClientId: v.string(),
+    projectClientId: v.string(),
+    version: v.number(),
+    definition: formDefinition,
+    status: formStatus,
+    createdAt: v.number(),
+    createdBy: v.string(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_project", ["projectClientId"])
+    .index("by_form_version", ["projectClientId", "formClientId", "version"]),
   savedAnalyses: defineTable({
     organizationId: v.id("organizations"),
     userId: v.string(),

@@ -89,9 +89,11 @@ const modules = {
   "../convex/patients.ts": () => import("@/convex/patients"),
   "../convex/analyses.ts": () => import("@/convex/analyses"),
   "../convex/clinicalRecords.ts": () => import("@/convex/clinicalRecords"),
+  "../convex/projects.ts": () => import("@/convex/projects"),
+  "../convex/studyForms.ts": () => import("@/convex/studyForms"),
   "../convex/provisioning.ts": () => import("@/convex/provisioning"),
 };
-it.each(["history", "visit"] as const)(
+it.each(["history", "visit", "questionnaire"] as const)(
   "restores the empty snapshot and encrypted %s create/update/delete queue",
   async (kind) => {
     const t = convexTest(schema, modules);
@@ -109,6 +111,56 @@ it.each(["history", "visit"] as const)(
       role: "doctor",
     });
     const doctor = t.withIdentity({ subject: "doctor" });
+    const projectClientId = crypto.randomUUID();
+    const formClientId = crypto.randomUUID();
+    const formVersionClientId = crypto.randomUUID();
+    const fieldId = crypto.randomUUID();
+    const definition = {
+      title: "Confidential questionnaire title",
+      description: "",
+      fields: [
+        {
+          id: fieldId,
+          type: "text" as const,
+          label: "Confidential question",
+          help: "",
+          required: true,
+          maxLength: 1000,
+        },
+      ],
+    };
+    if (kind === "questionnaire") {
+      await doctor.mutation(api.projects.apply, {
+        actorId: "doctor",
+        organizationId,
+        clientId: projectClientId,
+        expectedRevision: 0,
+        idempotencyKey: "project",
+        values: {
+          title: "Study",
+          summary: "",
+          topic: "",
+          kind: "retrospective",
+          status: "draft",
+          published: false,
+          publicEligibility: "",
+          publicContact: "",
+        },
+      });
+      await doctor.mutation(api.studyForms.append, {
+        actorId: "doctor",
+        organizationId,
+        projectClientId,
+        formClientId,
+        clientId: formVersionClientId,
+        expectedVersion: 0,
+        baseVersionClientId: null,
+        definition,
+        status: "published",
+        idempotencyKey: "form",
+      });
+    }
+
     const patientClientId = crypto.randomUUID();
     await doctor.mutation(api.patients.apply, {
       actorId: "doctor",
@@ -203,7 +255,7 @@ it.each(["history", "visit"] as const)(
     expect(workspace.clinicalRecords.status).toBe("ready");
     const clientId = crypto.randomUUID();
     const privateContent = "Confidential clinical content";
-    const payload: ClinicalPayload =
+    let payload: ClinicalPayload =
       kind === "history"
         ? {
             kind: "history",
@@ -211,20 +263,35 @@ it.each(["history", "visit"] as const)(
             notes: "Private clinical note",
             text: privateContent,
           }
-        : {
-            kind: "visit",
-            occurredOn: "2026-11-01",
-            notes: "Private clinical note",
-            scheduledFor: "2026-11-01T01:30:00-04:00[America/New_York]",
-            durationMinutes: 30,
-            visitType: "consultation",
-            status: "planned",
-            reason: privateContent,
-            location: "Private place",
-            outcome: "",
-            followUpOn: "",
-            cancellationReason: "",
-          };
+        : kind === "questionnaire"
+          ? {
+              kind: "questionnaire",
+              writeId: crypto.randomUUID(),
+              occurredOn: "2020-01-01",
+              notes: "Private clinical note",
+              projectClientId,
+              formClientId,
+              formVersionClientId,
+              formVersion: 1,
+              definition,
+              answers: { [fieldId]: privateContent },
+              status: "draft",
+              amendmentReason: "",
+            }
+          : {
+              kind: "visit",
+              occurredOn: "2026-11-01",
+              notes: "Private clinical note",
+              scheduledFor: "2026-11-01T01:30:00-04:00[America/New_York]",
+              durationMinutes: 30,
+              visitType: "consultation",
+              status: "planned",
+              reason: privateContent,
+              location: "Private place",
+              outcome: "",
+              followUpOn: "",
+              cancellationReason: "",
+            };
     const queued = await workspace.saveClinical({
       clientId,
       patientClientId,
@@ -232,6 +299,8 @@ it.each(["history", "visit"] as const)(
       action: "create",
       payload,
     });
+    if (kind === "questionnaire")
+      payload = workspace.readClinical(workspace.clinicalRecords.get(clientId)!).payload!;
     expect(calls).toBe(0);
     expect(JSON.stringify([...storage.values.values()])).not.toContain(privateContent);
     await workspace.close();
@@ -273,6 +342,16 @@ it.each(["history", "visit"] as const)(
       action: "update",
       payload: { ...payload, notes: "Rejected local clinical draft" },
     });
+    const dependent =
+      kind === "questionnaire"
+        ? await workspace.saveClinical({
+            clientId,
+            patientClientId,
+            expectedRevision: 2,
+            action: "update",
+            payload: { ...payload, notes: "Dependent clinical draft" },
+          })
+        : null;
     await doctor.mutation(api.clinicalRecords.apply, {
       actorId: "doctor",
       organizationId,
@@ -280,16 +359,35 @@ it.each(["history", "visit"] as const)(
       patientClientId,
       expectedRevision: 1,
       action: "update",
-      payload: { ...payload, notes: "Authoritative clinical history" },
+      ...(payload.kind === "questionnaire" ? { expectedWriteId: payload.writeId } : {}),
+      payload: {
+        ...payload,
+        notes: "Authoritative clinical history",
+        ...(payload.kind === "questionnaire" ? { writeId: crypto.randomUUID() } : {}),
+      },
       idempotencyKey: "another-doctor",
     });
+    if (kind === "questionnaire") {
+      await workspace.close();
+      snapshots = new Map();
+      workspace = await open();
+    }
     await refresh();
     const conflictSettled = workspace.executor.waitForTransactionCompletion(conflict.transactionId);
+    const dependentSettled = dependent
+      ? workspace.executor.waitForTransactionCompletion(dependent.transactionId)
+      : null;
+    const settledConflicts = Promise.allSettled([
+      conflictSettled,
+      ...(dependentSettled ? [dependentSettled] : []),
+    ]);
     connection.connect();
     workspace.setAuthenticated(true);
-    await expect(conflictSettled).rejects.toThrow();
+    expect((await settledConflicts).map((result) => result.status)).toEqual(
+      dependent ? ["rejected", "rejected"] : ["rejected"],
+    );
     const rejected = await workspace.failedActions("clinical");
-    expect(rejected).toHaveLength(1);
+    expect(rejected).toHaveLength(kind === "questionnaire" ? 2 : 1);
     expect(rejected[0]?.code).toBe("REVISION_CONFLICT");
     expect(workspace.readClinical(rejected[0]!.envelope).payload).toMatchObject({
       notes: "Rejected local clinical draft",
@@ -343,6 +441,38 @@ it.each(["history", "visit"] as const)(
       (await doctor.query(api.clinicalRecords.list, { actorId: "doctor", organizationId }))[0],
     ).toMatchObject({ deleted: true, payload: null, revision: 4 });
     expect(await workspace.executor.peekOutbox()).toEqual([]);
+
+    if (kind === "questionnaire") {
+      connection.disconnect();
+      const stale = await workspace.saveClinical({
+        clientId: crypto.randomUUID(),
+        patientClientId,
+        expectedRevision: 0,
+        action: "create",
+        payload,
+      });
+      await doctor.mutation(api.studyForms.append, {
+        actorId: "doctor",
+        organizationId,
+        projectClientId,
+        formClientId,
+        clientId: crypto.randomUUID(),
+        expectedVersion: 1,
+        baseVersionClientId: formVersionClientId,
+        definition,
+        status: "published",
+        idempotencyKey: "changed-form",
+      });
+      const completion = workspace.executor.waitForTransactionCompletion(stale.transactionId);
+      connection.connect();
+      await expect(completion).rejects.toThrow();
+      const failure = (await workspace.failedActions("clinical")).find(
+        (row) => row.code === "FORM_VERSION_OUTDATED",
+      );
+      expect(failure).toBeDefined();
+      const saved = workspace.readClinical(failure!.envelope).payload;
+      expect(saved?.kind === "questionnaire" ? saved.answers[fieldId] : null).toBe(privateContent);
+    }
     await workspace.close();
     sqlite.close();
   },
