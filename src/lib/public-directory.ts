@@ -48,6 +48,7 @@ export async function openPublicDirectory(
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   const organizations = createCollection(
@@ -61,6 +62,7 @@ export async function openPublicDirectory(
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   const research = createCollection(
@@ -78,6 +80,7 @@ export async function openPublicDirectory(
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   const researchDetails = researchId
@@ -93,6 +96,7 @@ export async function openPublicDirectory(
           }),
           persistence,
           schemaVersion: 1,
+          initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
         }),
       )
     : undefined;
@@ -109,6 +113,7 @@ export async function openPublicDirectory(
           }),
           persistence,
           schemaVersion: 1,
+          initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
         }),
       )
     : undefined;
@@ -125,6 +130,7 @@ export async function openPublicDirectory(
           }),
           persistence,
           schemaVersion: 1,
+          initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
         }),
       )
     : undefined;

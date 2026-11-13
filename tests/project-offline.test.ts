@@ -189,7 +189,26 @@ describe("durable research projects", () => {
         vault: await unlockVault("private research workspace password", salt),
       });
     let workspace = await open(network());
-    await workspace.collection.preload();
+    await Promise.all([
+      workspace.collection.preload(),
+      workspace.protocols.preload(),
+      workspace.team.preload(),
+      workspace.work.preload(),
+    ]);
+    await workspace.close();
+    result = undefined;
+    protocolResult = undefined;
+    workspace = await open(network());
+    await Promise.all([
+      workspace.collection.preload(),
+      workspace.protocols.preload(),
+      workspace.team.preload(),
+      workspace.work.preload(),
+    ]);
+    expect(workspace.collection.status).toBe("ready");
+    expect(workspace.protocols.status).toBe("ready");
+    expect(workspace.team.status).toBe("ready");
+    expect(workspace.work.status).toBe("ready");
     const values: ProjectValues = {
       title: "Private research question",
       summary: "Confidential draft",
@@ -329,6 +348,7 @@ describe("durable research projects", () => {
     workspace = await open(finalNetwork);
     expect(
       [...workspace.protocols.values()]
+        .filter((row) => row.clientId !== workspace.protocolSnapshotId)
         .map(workspace.readProtocol)
         .some((row) => row.hypothesis === protocolValues.hypothesis),
     ).toBe(true);

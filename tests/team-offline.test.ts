@@ -264,6 +264,7 @@ describe("durable cross-organization collaboration", () => {
     host.forget();
     hostSpace = await host.open();
     const draft = [...hostSpace.team.values()]
+      .filter((row) => row.clientId !== hostSpace.teamSnapshotId)
       .map(hostSpace.readTeam)
       .find((row) => row.entity === "invitation");
     expect(draft?.delivery).toBe("local");
@@ -277,6 +278,7 @@ describe("durable cross-organization collaboration", () => {
     const recipient = await harness("guest", guestOrg);
     let recipientSpace = await recipient.open();
     const incoming = [...recipientSpace.team.values()]
+      .filter((row) => row.clientId !== recipientSpace.teamSnapshotId)
       .map(recipientSpace.readTeam)
       .find((row) => row.entity === "invitation")!;
     expect(incoming.entity).toBe("invitation");
@@ -285,6 +287,7 @@ describe("durable cross-organization collaboration", () => {
     ).toEqual([]);
     expect(
       [...recipientSpace.team.values()]
+        .filter((row) => row.clientId !== recipientSpace.teamSnapshotId)
         .map(recipientSpace.readTeam)
         .filter((row) => row.entity === "member"),
     ).toEqual([]);
@@ -294,12 +297,13 @@ describe("durable cross-organization collaboration", () => {
       key: incoming.key,
       decision: "accept",
     });
-    expect(recipientSpace.collection.size).toBe(0);
+    expect(recipientSpace.collection.size).toBe(1);
     await recipientSpace.close();
     recipient.forget();
     recipientSpace = await recipient.open();
     expect(
       [...recipientSpace.team.values()]
+        .filter((row) => row.clientId !== recipientSpace.teamSnapshotId)
         .map(recipientSpace.readTeam)
         .find((row) => row.key === incoming.key),
     ).toMatchObject({ status: "accepted", delivery: "local" });
@@ -309,7 +313,7 @@ describe("durable cross-organization collaboration", () => {
     recipientSpace.setAuthenticated(true);
     await acceptance;
     expect(recipient.calls()).toBe(1);
-    expect(recipientSpace.collection.size).toBe(1);
+    expect(recipientSpace.collection.size).toBe(2);
     expect(
       (await guest.query(api.projects.details, { actorId: "guest", clientId: projectId }))
         .affiliationId,
@@ -350,11 +354,13 @@ describe("durable cross-organization collaboration", () => {
     recipientSpace = await recipient.open();
     expect(
       [...recipientSpace.work.values()]
+        .filter((row) => row.clientId !== recipientSpace.workSnapshotId)
         .map(recipientSpace.readWork)
         .find((row) => row.entity === "message"),
     ).toMatchObject({ body: "Private research discussion", delivery: "local" });
     expect(
       [...recipientSpace.work.values()]
+        .filter((row) => row.clientId !== recipientSpace.workSnapshotId)
         .map(recipientSpace.readWork)
         .find((row) => row.entity === "task"),
     ).toMatchObject({ title: taskValues.title, delivery: "local" });
@@ -420,6 +426,7 @@ describe("durable cross-organization collaboration", () => {
     expect(await recipientSpace.executor.peekOutbox()).toEqual([]);
     expect(
       [...recipientSpace.work.values()]
+        .filter((row) => row.clientId !== recipientSpace.workSnapshotId)
         .map(recipientSpace.readWork)
         .find((row) => row.entity === "message"),
     ).toMatchObject({ body: "New authoritative message", revision: 2 });
@@ -427,6 +434,7 @@ describe("durable cross-organization collaboration", () => {
     await host.refresh();
     host.disconnect();
     const member = [...hostSpace.team.values()]
+      .filter((row) => row.clientId !== hostSpace.teamSnapshotId)
       .map(hostSpace.readTeam)
       .find(
         (row): row is Extract<TeamRecord, { entity: "member" }> =>
@@ -481,7 +489,10 @@ describe("durable cross-organization collaboration", () => {
       role: "member",
     });
     expect(
-      [...hostSpace.team.values()].map(hostSpace.readTeam).find((row) => row.key === member.key),
+      [...hostSpace.team.values()]
+        .filter((row) => row.clientId !== hostSpace.teamSnapshotId)
+        .map(hostSpace.readTeam)
+        .find((row) => row.key === member.key),
     ).toMatchObject({ active: true, role: "viewer" });
     expect(JSON.stringify([...host.failureStorage.values.values()])).not.toContain(
       "Invited investigator",
@@ -558,6 +569,7 @@ describe("durable cross-organization collaboration", () => {
     hostSpace = await host.open();
     expect(
       [...hostSpace.team.values()]
+        .filter((row) => row.clientId !== hostSpace.teamSnapshotId)
         .map(hostSpace.readTeam)
         .find((row) => row.key === `invitation:${secondId}`),
     ).toMatchObject({ status: "revoked", delivery: "local" });

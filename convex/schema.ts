@@ -77,7 +77,71 @@ export const taskFields = {
   dueAt: v.number(),
   archived: v.boolean(),
 };
+const clinicalCommon = { occurredOn: v.string(), notes: v.string() };
+export const clinicalPayload = v.union(
+  v.object({ ...clinicalCommon, kind: v.literal("history"), text: v.string() }),
+  v.object({
+    ...clinicalCommon,
+    kind: v.literal("allergy"),
+    substance: v.string(),
+    reaction: v.string(),
+    severity: v.union(
+      v.literal("unknown"),
+      v.literal("mild"),
+      v.literal("moderate"),
+      v.literal("severe"),
+    ),
+    status: v.union(v.literal("active"), v.literal("inactive")),
+  }),
+  v.object({
+    ...clinicalCommon,
+    kind: v.literal("medication"),
+    drug: v.string(),
+    code: v.string(),
+    dosage: v.string(),
+    route: v.string(),
+    endedOn: v.string(),
+    status: v.union(v.literal("active"), v.literal("completed"), v.literal("stopped")),
+  }),
+  v.object({
+    ...clinicalCommon,
+    kind: v.literal("observation"),
+    name: v.string(),
+    code: v.string(),
+    numericValue: v.union(v.number(), v.null()),
+    textValue: v.string(),
+    unit: v.string(),
+  }),
+);
 export default defineSchema({
+  clinicalRecords: defineTable({
+    organizationId: v.id("organizations"),
+    clientId: v.string(),
+    patientClientId: v.string(),
+    payload: v.union(clinicalPayload, v.null()),
+    revision: v.number(),
+    deleted: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    updatedBy: v.string(),
+  })
+    .index("by_organization", ["organizationId"])
+    .index("by_client", ["organizationId", "clientId"])
+    .index("by_patient_active", ["organizationId", "patientClientId", "deleted"]),
+  clinicalAudit: defineTable({
+    organizationId: v.id("organizations"),
+    patientClientId: v.string(),
+    recordClientId: v.string(),
+    actorId: v.string(),
+    action: v.union(
+      v.literal("create"),
+      v.literal("update"),
+      v.literal("delete"),
+      v.literal("patient-delete"),
+    ),
+    revision: v.number(),
+    at: v.number(),
+  }).index("by_patient", ["organizationId", "patientClientId"]),
   projectTasks: defineTable({
     clientId: v.string(),
     projectClientId: v.string(),

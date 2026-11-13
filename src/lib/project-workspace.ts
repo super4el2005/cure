@@ -164,6 +164,15 @@ export async function openProjectWorkspace(config: {
       schemaMismatchPolicy: "throw",
     });
   }
+  const projectSnapshotId = "__project_snapshot__";
+  const protocolSnapshotId = "__protocol_snapshot__";
+  const teamSnapshotId = "__team_snapshot__";
+  const workSnapshotId = "__work_snapshot__";
+  const snapshot = (clientId: string): Envelope => ({
+    clientId,
+    revision: 1,
+    ciphertext: config.vault.seal({ prepared: true }, `${scope}:snapshot:${clientId}`),
+  });
   const collection = createCollection(
     persistedCollectionOptions({
       ...convexCollectionOptions({
@@ -173,12 +182,16 @@ export async function openProjectWorkspace(config: {
         client: config.client,
         query: api.projects.mine,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
-        select: (rows) => rows.map((row) => seal(rowSchema.parse(row))),
+        select: (rows) => [
+          snapshot(projectSnapshotId),
+          ...rows.map((row) => seal(rowSchema.parse(row))),
+        ],
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   const protocols = createCollection(
@@ -190,12 +203,16 @@ export async function openProjectWorkspace(config: {
         client: config.client,
         query: api.protocols.mine,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
-        select: (rows) => rows.map((row) => sealProtocol(protocolRowSchema.parse(row))),
+        select: (rows) => [
+          snapshot(protocolSnapshotId),
+          ...rows.map((row) => sealProtocol(protocolRowSchema.parse(row))),
+        ],
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   const team = createCollection(
@@ -207,12 +224,16 @@ export async function openProjectWorkspace(config: {
         client: config.client,
         query: api.projectTeams.workspace,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
-        select: (rows) => rows.map((row) => sealTeam(teamRecordSchema.parse(row))),
+        select: (rows) => [
+          snapshot(teamSnapshotId),
+          ...rows.map((row) => sealTeam(teamRecordSchema.parse(row))),
+        ],
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   const work = createCollection(
@@ -224,12 +245,16 @@ export async function openProjectWorkspace(config: {
         client: config.client,
         query: api.projectWork.workspace,
         queryArgs: { organizationId: config.organizationId, actorId: config.userId },
-        select: (rows) => rows.map((row) => sealWork(workRecordSchema.parse(row))),
+        select: (rows) => [
+          snapshot(workSnapshotId),
+          ...rows.map((row) => sealWork(workRecordSchema.parse(row))),
+        ],
         getKey: (row) => row.clientId,
         onError: (error) => reportFailure(error, "projects.sync"),
       }),
       persistence,
       schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
   let disposeExecutor: (() => void) | undefined;
@@ -574,6 +599,7 @@ export async function openProjectWorkspace(config: {
           throw new Error("ETHICS_APPROVAL_REQUIRED");
         const version =
           Array.from(protocols.values())
+            .filter((row) => row.clientId !== protocolSnapshotId)
             .map(readProtocol)
             .reduce(
               (latest, row) =>
@@ -770,6 +796,7 @@ export async function openProjectWorkspace(config: {
                 throw new Error("ACCESS_DENIED");
               if (!existing || command.values.assigneeId !== existing.assigneeId) {
                 const assignee = Array.from(team.values())
+                  .filter((row) => row.clientId !== teamSnapshotId)
                   .map(readTeam)
                   .find(
                     (row) =>
@@ -825,6 +852,10 @@ export async function openProjectWorkspace(config: {
     };
     return {
       collection,
+      projectSnapshotId,
+      protocolSnapshotId,
+      teamSnapshotId,
+      workSnapshotId,
       protocols,
       team,
       work,

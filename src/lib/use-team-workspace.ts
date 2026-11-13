@@ -10,7 +10,9 @@ export function useTeamWorkspace() {
   const local = useLiveQuery(() => workspace?.team);
   const records =
     workspace && Date.now() < workspace.expiresAt
-      ? (local.data?.map(workspace.readTeam) ?? [])
+      ? (local.data
+          ?.filter((row) => row.clientId !== workspace.teamSnapshotId)
+          .map(workspace.readTeam) ?? [])
       : [];
   const failures = useQuery({
     queryKey: ["team-failures", workspace?.scope],

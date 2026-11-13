@@ -10,6 +10,8 @@ import type {
 } from "@tanstack/offline-transactions";
 import { convexTest } from "convex-test";
 import type { ConvexReactClient } from "convex/react";
+import { getFunctionName } from "convex/server";
+import type { FunctionReference } from "convex/server";
 
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
@@ -148,9 +150,10 @@ describe("durable patient operations", () => {
     let calls = 0;
     let clientFailure: unknown;
     const client = {
-      watchQuery() {
+      watchQuery(fn: FunctionReference<"query">) {
+        const clinical = getFunctionName(fn) === getFunctionName(api.clinicalRecords.list);
         return {
-          localQueryResult: () => result,
+          localQueryResult: () => (clinical ? (result === undefined ? undefined : []) : result),
           onUpdate(callback: () => void) {
             listeners.add(callback);
             return () => {
