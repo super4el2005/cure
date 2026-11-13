@@ -47,6 +47,20 @@ const payloads: ClinicalPayload[] = [
     textValue: "",
     unit: "recorded unit",
   },
+  {
+    kind: "visit",
+    occurredOn: "2026-11-01",
+    notes: "Private note",
+    scheduledFor: "2026-11-01T01:30:00-04:00[America/New_York]",
+    durationMinutes: 30,
+    visitType: "consultation",
+    status: "planned",
+    reason: "Private visit reason",
+    location: "",
+    outcome: "",
+    followUpOn: "",
+    cancellationReason: "",
+  },
 ];
 async function setup() {
   const t = convexTest(schema, modules);
@@ -127,13 +141,13 @@ describe("normalized clinical records", () => {
       actorId: "doctor",
       organizationId,
     });
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(5);
     expect(rows.every((row) => row.deleted && row.payload === null && row.revision === 3)).toBe(
       true,
     );
     expect(rows[0]).not.toHaveProperty("updatedBy");
     const audit = await t.run((ctx) => ctx.db.query("clinicalAudit").collect());
-    expect(audit).toHaveLength(12);
+    expect(audit).toHaveLength(15);
     expect(JSON.stringify(audit)).not.toMatch(/Private|Revised|Recorded/);
   });
   it("denies researcher writes, unrelated organizations, mixed-patient IDs and account changes", async () => {
@@ -209,6 +223,56 @@ describe("normalized clinical records", () => {
         payload: { ...payloads[0]!, notes: "Changed" },
       }),
     ).rejects.toThrow("IDEMPOTENCY_KEY_REUSED");
+  });
+
+  it("enforces visit status transitions and terminal schedule on the server", async () => {
+    const { doctor, organizationId, patientClientId } = await setup();
+    const payload = payloads.find((row) => row.kind === "visit")!;
+    const args = {
+      actorId: "doctor",
+      organizationId,
+      patientClientId,
+      clientId: crypto.randomUUID(),
+      expectedRevision: 0,
+      action: "create" as const,
+      payload,
+      idempotencyKey: "visit",
+    };
+    await doctor.mutation(api.clinicalRecords.apply, args);
+    await doctor.mutation(api.clinicalRecords.apply, {
+      ...args,
+      action: "update",
+      expectedRevision: 1,
+      payload: { ...payload, status: "completed", outcome: "Recorded result" },
+      idempotencyKey: "finish",
+    });
+    await expect(
+      doctor.mutation(api.clinicalRecords.apply, {
+        ...args,
+        action: "update",
+        expectedRevision: 2,
+        idempotencyKey: "reopen",
+      }),
+    ).rejects.toThrow("INVALID_VISIT_TRANSITION");
+    await expect(
+      doctor.mutation(api.clinicalRecords.apply, {
+        ...args,
+        action: "update",
+        expectedRevision: 2,
+        payload: {
+          ...payload,
+          status: "completed",
+          outcome: "Recorded result",
+          durationMinutes: 60,
+        },
+        idempotencyKey: "reschedule",
+      }),
+    ).rejects.toThrow("VISIT_SCHEDULE_IMMUTABLE");
+    const result = await doctor.query(api.clinicalRecords.list, {
+      actorId: "doctor",
+      organizationId,
+    });
+    expect(result[0]?.revision).toBe(2);
   });
   it("validates calendar dates, medication intervals and observation value types", async () => {
     const { doctor, organizationId, patientClientId } = await setup();

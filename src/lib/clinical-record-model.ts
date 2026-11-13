@@ -1,10 +1,24 @@
 import { z } from "zod";
 
 import type { Vault } from "@/src/lib/patient-vault";
+import { visitTime, visitTimeSchema } from "@/src/lib/visit-time";
 
 const common = { occurredOn: z.iso.date(), notes: z.string().trim().max(2000) };
 export const clinicalPayloadSchema = z
   .discriminatedUnion("kind", [
+    z.object({
+      ...common,
+      kind: z.literal("visit"),
+      scheduledFor: visitTimeSchema,
+      durationMinutes: z.number().int().min(1).max(1440),
+      visitType: z.enum(["consultation", "procedure", "hospitalization", "followUp"]),
+      status: z.enum(["planned", "inProgress", "completed", "cancelled", "noShow"]),
+      reason: z.string().trim().min(1).max(1000),
+      location: z.string().trim().max(200),
+      outcome: z.string().trim().max(10000),
+      followUpOn: z.union([z.literal(""), z.iso.date()]),
+      cancellationReason: z.string().trim().max(1000),
+    }),
     z.object({ ...common, kind: z.literal("history"), text: z.string().trim().min(1).max(10000) }),
     z.object({
       ...common,
@@ -35,6 +49,23 @@ export const clinicalPayloadSchema = z
     }),
   ])
   .superRefine((value, ctx) => {
+    if (value.kind === "visit") {
+      if (
+        visitTimeSchema.safeParse(value.scheduledFor).success &&
+        visitTime(value.scheduledFor).date !== value.occurredOn
+      )
+        ctx.addIssue({ code: "custom", path: ["scheduledFor"], message: "INVALID_VISIT_TIME" });
+      if (value.status === "completed" && !value.outcome)
+        ctx.addIssue({ code: "custom", path: ["outcome"], message: "VISIT_OUTCOME_REQUIRED" });
+      if (value.status === "cancelled" && !value.cancellationReason)
+        ctx.addIssue({
+          code: "custom",
+          path: ["cancellationReason"],
+          message: "VISIT_CANCELLATION_REQUIRED",
+        });
+      if (value.followUpOn && value.followUpOn < value.occurredOn)
+        ctx.addIssue({ code: "custom", path: ["followUpOn"], message: "INVALID_CLINICAL_DATE" });
+    }
     if (value.kind === "medication" && value.endedOn && value.endedOn < value.occurredOn)
       ctx.addIssue({ code: "custom", path: ["endedOn"], message: "INVALID_CLINICAL_DATE" });
     if (
@@ -48,6 +79,27 @@ export const clinicalPayloadSchema = z
       });
   });
 export type ClinicalPayload = z.infer<typeof clinicalPayloadSchema>;
+export type VisitPayload = Extract<ClinicalPayload, { kind: "visit" }>;
+export const visitTransitions: Record<VisitPayload["status"], readonly VisitPayload["status"][]> = {
+  planned: ["planned", "inProgress", "completed", "cancelled", "noShow"],
+  inProgress: ["inProgress", "completed", "cancelled"],
+  completed: ["completed"],
+  cancelled: ["cancelled"],
+  noShow: ["noShow"],
+};
+export function validateClinicalTransition(previous: ClinicalPayload, next: ClinicalPayload) {
+  if (previous.kind !== next.kind) throw new Error("CLINICAL_KIND_IMMUTABLE");
+  if (previous.kind === "visit" && next.kind === "visit") {
+    if (!visitTransitions[previous.status].includes(next.status))
+      throw new Error("INVALID_VISIT_TRANSITION");
+    if (
+      ["completed", "cancelled", "noShow"].includes(previous.status) &&
+      (previous.scheduledFor !== next.scheduledFor ||
+        previous.durationMinutes !== next.durationMinutes)
+    )
+      throw new Error("VISIT_SCHEDULE_IMMUTABLE");
+  }
+}
 export const clinicalRecordSchema = z
   .object({
     clientId: z.uuid(),

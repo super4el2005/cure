@@ -316,6 +316,7 @@ test("patient record and consent routes render protected entries without listing
     for (const [suffix, title] of [
       ["", "Patient record"],
       ["/consents", "Patient consents"],
+      ["/visits", "Patient visits"],
     ] as const) {
       const response = await app.fetch(
         new Request(

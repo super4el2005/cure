@@ -5,7 +5,7 @@ import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
 import { operationReceipt, requireClientId } from "@/convex/lib/research";
 import { clinicalPayload } from "@/convex/schema";
-import { clinicalPayloadSchema } from "@/src/lib/clinical-record-model";
+import { clinicalPayloadSchema, validateClinicalTransition } from "@/src/lib/clinical-record-model";
 
 export const list = query({
   args: { actorId: v.string(), organizationId: v.id("organizations") },
@@ -92,8 +92,13 @@ export const apply = mutation({
         : !existing || existing.deleted || existing.revision !== args.expectedRevision
     )
       throw new ConvexError("REVISION_CONFLICT");
-    if (existing?.payload && payload && existing.payload.kind !== payload.kind)
-      throw new ConvexError("CLINICAL_KIND_IMMUTABLE");
+    if (existing?.payload && payload) {
+      try {
+        validateClinicalTransition(existing.payload, payload);
+      } catch (error) {
+        throw new ConvexError(error instanceof Error ? error.message : "INVALID_CLINICAL_RECORD");
+      }
+    }
     const revision = args.expectedRevision + 1;
     const now = Date.now();
     if (existing)

@@ -79,6 +79,30 @@ export const taskFields = {
 };
 const clinicalCommon = { occurredOn: v.string(), notes: v.string() };
 export const clinicalPayload = v.union(
+  v.object({
+    ...clinicalCommon,
+    kind: v.literal("visit"),
+    scheduledFor: v.string(),
+    durationMinutes: v.number(),
+    visitType: v.union(
+      v.literal("consultation"),
+      v.literal("procedure"),
+      v.literal("hospitalization"),
+      v.literal("followUp"),
+    ),
+    status: v.union(
+      v.literal("planned"),
+      v.literal("inProgress"),
+      v.literal("completed"),
+      v.literal("cancelled"),
+      v.literal("noShow"),
+    ),
+    reason: v.string(),
+    location: v.string(),
+    outcome: v.string(),
+    followUpOn: v.string(),
+    cancellationReason: v.string(),
+  }),
   v.object({ ...clinicalCommon, kind: v.literal("history"), text: v.string() }),
   v.object({
     ...clinicalCommon,

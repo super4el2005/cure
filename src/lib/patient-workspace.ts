@@ -34,6 +34,7 @@ import {
   clinicalEnvelope,
   openClinicalRecord,
   clinicalPayloadSchema,
+  validateClinicalTransition,
 } from "@/src/lib/clinical-record-model";
 import type { ClinicalCommand, ClinicalEnvelope } from "@/src/lib/clinical-record-model";
 import { consentEventSchema, validateConsentTransition } from "@/src/lib/consent-model";
@@ -269,6 +270,8 @@ export async function openPatientWorkspace(config: {
               "PATIENT_NOT_FOUND",
               "INVALID_CLINICAL_RECORD",
               "CLINICAL_KIND_IMMUTABLE",
+              "INVALID_VISIT_TRANSITION",
+              "VISIT_SCHEDULE_IMMUTABLE",
               "REVISION_CONFLICT",
               "ACCESS_DENIED",
               "INVALID_PATIENT",
@@ -427,8 +430,7 @@ export async function openPatientWorkspace(config: {
           throw new Error("ACCESS_DENIED");
         const payload =
           command.action === "delete" ? null : clinicalPayloadSchema.parse(command.payload);
-        if (prior?.payload && payload && prior.payload.kind !== payload.kind)
-          throw new Error("CLINICAL_KIND_IMMUTABLE");
+        if (prior?.payload && payload) validateClinicalTransition(prior.payload, payload);
         const now = Date.now();
         const envelope = clinicalEnvelope(
           {
