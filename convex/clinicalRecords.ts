@@ -90,9 +90,21 @@ export const apply = mutation({
       throw new ConvexError("INVALID_CLINICAL_RECORD");
     let questionnaireProjectCompleted = false;
     if (payload?.kind === "questionnaire") {
-      const { member, project } = await projectAccess(ctx, payload.projectClientId, "contribute");
-      questionnaireProjectCompleted = project.status === "completed";
-      if (member.organizationId !== args.organizationId) throw new ConvexError("ACCESS_DENIED");
+      if (args.action === "create") {
+        const { member, project } = await projectAccess(ctx, payload.projectClientId, "contribute");
+        questionnaireProjectCompleted = project.status === "completed";
+        if (member.organizationId !== args.organizationId) throw new ConvexError("ACCESS_DENIED");
+      }
+      // Correcting a clinic-owned record is a physician right independent of
+      // current research participation. Its template binding still cannot move.
+      if (
+        existing?.payload?.kind === "questionnaire" &&
+        (existing.payload.projectClientId !== payload.projectClientId ||
+          existing.payload.formVersionClientId !== payload.formVersionClientId ||
+          existing.payload.formClientId !== payload.formClientId ||
+          existing.payload.formVersion !== payload.formVersion)
+      )
+        throw new ConvexError("FORM_VERSION_IMMUTABLE");
       const template = await ctx.db
         .query("studyForms")
         .withIndex("by_client", (q) => q.eq("clientId", payload.formVersionClientId))

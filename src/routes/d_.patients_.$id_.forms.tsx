@@ -186,7 +186,7 @@ function Questionnaires() {
                     <Title order={2}>{patient.fullName}</Title>
                     {!projects && (
                       <Alert>
-                        <Text>{t`Для заполнения откройте исследовательское пространство той же организации, затем вернитесь к пациенту. Ранее сохранённые ответы доступны для чтения.`}</Text>
+                        <Text>{t`Для нового ответа откройте исследовательское пространство той же организации. Сохранённые ответы врач может просматривать и исправлять без участия в проекте.`}</Text>
                         <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
                       </Alert>
                     )}
@@ -396,7 +396,9 @@ function Questionnaires() {
                                   <Button
                                     type="submit"
                                     disabled={
-                                      !workspace.canWrite() || !projects || !form.values.template
+                                      !workspace.canWrite() ||
+                                      (!form.values.clientId && !projects) ||
+                                      !form.values.template
                                     }
                                     loading={saveResponse.isPending}
                                   >{t`Сохранить на устройстве`}</Button>

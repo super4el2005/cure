@@ -346,7 +346,7 @@ describe("questionnaire clinical permissions and version binding", () => {
       }),
     ).rejects.toThrow("FORM_VERSION_OUTDATED");
   });
-  it("rechecks revoked project participation before receipt replay and still lets the clinic delete its record", async () => {
+  it("rechecks research participation for new responses but preserves clinic correction and deletion rights", async () => {
     const { t, doctor, args, formArgs, clinic, apply } = await setup();
     await apply(args);
     await t.run(async (ctx) => {
@@ -359,11 +359,18 @@ describe("questionnaire clinical permissions and version binding", () => {
       await ctx.db.patch(member!._id, { active: false });
     });
     await expect(apply(args)).rejects.toThrow("ACCESS_DENIED");
+    await apply({
+      ...args,
+      action: "update",
+      expectedRevision: 1,
+      payload: { ...args.payload, notes: "Clinic care correction" },
+      idempotencyKey: "care-correction",
+    });
     const { payload: _payload, ...remove } = args;
     await apply({
       ...remove,
       action: "delete",
-      expectedRevision: 1,
+      expectedRevision: 2,
       idempotencyKey: "delete",
     });
     expect(

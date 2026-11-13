@@ -216,13 +216,8 @@ export function useQuestionnaires(patientId: string) {
         }
       }),
   });
-  const canEditResponse = (value: QuestionnairePayload) =>
-    Boolean(
-      projects &&
-      projectMap.has(value.projectClientId) &&
-      projectMap.get(value.projectClientId)!.selfRole !== "viewer" &&
-      projectMap.get(value.projectClientId)!.status !== "archived",
-    );
+  const canEditResponse = (_value: QuestionnairePayload) =>
+    Boolean(workspace && opened?.role === "doctor");
   const saveResponse = useMutation({
     mutationKey: ["questionnaire-save"],
     networkMode: "always",
