@@ -9,7 +9,9 @@ export function useProjectWork() {
   const localWork = useLiveQuery(() => workspace?.work);
   const workRecords =
     workspace && Date.now() < workspace.expiresAt
-      ? (localWork.data?.map(workspace.readWork) ?? [])
+      ? (localWork.data
+          ?.filter((row) => row.clientId !== workspace.workSnapshotId)
+          .map(workspace.readWork) ?? [])
       : [];
   const workFailures = useQuery({
     queryKey: ["project-work-failures", workspace?.scope],

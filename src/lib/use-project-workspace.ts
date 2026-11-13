@@ -186,14 +186,16 @@ export function useProjectWorkspace() {
   });
   const rows =
     workspace && Date.now() < workspace.expiresAt
-      ? (downloaded.data?.flatMap((row) => {
-          try {
-            return [workspace.read(row)];
-          } catch (error) {
-            if (error instanceof Error && error.message === "ACCESS_DENIED") return [];
-            throw error;
-          }
-        }) ?? [])
+      ? (downloaded.data
+          ?.filter((row) => row.clientId !== workspace.projectSnapshotId)
+          .flatMap((row) => {
+            try {
+              return [workspace.read(row)];
+            } catch (error) {
+              if (error instanceof Error && error.message === "ACCESS_DENIED") return [];
+              throw error;
+            }
+          }) ?? [])
       : [];
   useEffect(
     () => () => {

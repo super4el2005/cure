@@ -55,7 +55,8 @@ function Protocol() {
   const history =
     workspace && Date.now() < workspace.expiresAt
       ? (local.data
-          ?.map(workspace.readProtocol)
+          ?.filter((row) => row.clientId !== workspace.protocolSnapshotId)
+          .map(workspace.readProtocol)
           .filter((row) => row.projectClientId === id)
           .sort((a, b) => b.version - a.version) ?? [])
       : [];

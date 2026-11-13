@@ -249,7 +249,7 @@ export function usePatientWorkspace() {
   const rows =
     workspace && Date.now() < workspace.expiresAt
       ? (downloaded.data
-          ?.filter((row) => !row.deleted)
+          ?.filter((row) => !row.deleted && row.clientId !== workspace.patientSnapshotId)
           .flatMap((row) => {
             try {
               return [workspace.read(row)];

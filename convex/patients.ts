@@ -1,5 +1,6 @@
 import { ConvexError, v } from "convex/values";
 
+import { internal } from "@/convex/_generated/api";
 import { mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
 import { patientFields } from "@/convex/schema";
@@ -196,7 +197,7 @@ export const apply = mutation({
           clientId: args.clientId,
           organizationId: args.organizationId,
         });
-    } else if (existing)
+    } else if (existing) {
       await ctx.db.patch(existing._id, {
         consentHistory: [],
         fullName: "",
@@ -209,6 +210,22 @@ export const apply = mutation({
         updatedAt: now,
         updatedBy: userId,
       });
+      const remaining = await ctx.db
+        .query("clinicalRecords")
+        .withIndex("by_patient_active", (q) =>
+          q
+            .eq("organizationId", args.organizationId)
+            .eq("patientClientId", args.clientId)
+            .eq("deleted", false),
+        )
+        .first();
+      if (remaining)
+        await ctx.scheduler.runAfter(0, internal.clinicalRecords.erasePatientBatch, {
+          organizationId: args.organizationId,
+          patientClientId: args.clientId,
+          actorId: userId,
+        });
+    }
     await ctx.db.insert("operationReceipts", {
       userId,
       idempotencyKey: args.idempotencyKey,
