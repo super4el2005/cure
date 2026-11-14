@@ -93,6 +93,7 @@ function PatientTimeline() {
     questionnaire: t`Опросник`,
     enrollment: t`Участие в исследовании`,
     studyVisit: t`Визит исследования`,
+    qualityReview: t`Проверка качества данных`,
     studyIssue: t`Безопасность исследования`,
   };
   const eventLabels: Record<TimelineEventType, string> = {

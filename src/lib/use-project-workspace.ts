@@ -111,6 +111,9 @@ export function useProjectWorkspace() {
           organizationId: existing.organizationId as Id<"organizations">,
           role: existing.role,
           expiresAt: existing.expiresAt,
+          ...(existing.qualityReviewVersion
+            ? { qualityReviewVersion: existing.qualityReviewVersion }
+            : {}),
         };
         organizationName = existing.organizationName;
       }

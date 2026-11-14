@@ -53,6 +53,7 @@ const headerSchema = z.object({
   organizationName: z.string(),
   role: z.enum(["doctor", "researcher"]),
   expiresAt: z.number(),
+  qualityReviewVersion: z.string().max(100).exactOptional(),
   salt: z.string(),
   proof: z.string(),
 });
@@ -62,6 +63,7 @@ export type ClinicalLease = {
   organizationId: Id<"organizations">;
   role: "doctor" | "researcher";
   expiresAt: number;
+  qualityReviewVersion?: string;
 };
 const registryKey = "cure.clinical-vaults.v1";
 export function clinicalHeaders(userId: string, storage: Storage = window.localStorage) {
@@ -96,6 +98,12 @@ export async function prepareClinicalVault(
   );
   if (existing && !input.onlineVerified && existing.expiresAt !== input.lease.expiresAt)
     throw new Error("INVALID_VAULT_DATA");
+  if (
+    existing &&
+    !input.onlineVerified &&
+    (existing.qualityReviewVersion ?? null) !== (input.lease.qualityReviewVersion ?? null)
+  )
+    throw new Error("INVALID_VAULT_DATA");
   if (!existing && !input.onlineVerified) throw new Error("OFFLINE_NOT_PREPARED");
   if (!input.onlineVerified && input.lease.expiresAt <= Date.now())
     throw new Error("OFFLINE_ACCESS_EXPIRED");
@@ -108,17 +116,13 @@ export async function prepareClinicalVault(
         .parse(vault.open(existing.proof, "cure-vault-proof-v1"));
       if (
         JSON.stringify(proof) !==
-        JSON.stringify({
-          userId: existing.userId,
-          organizationId: existing.organizationId,
-          organizationName: existing.organizationName,
-          role: existing.role,
-          expiresAt: existing.expiresAt,
-        })
+        JSON.stringify(headerSchema.omit({ proof: true, salt: true }).parse(existing))
       )
         throw new Error("INVALID_VAULT_DATA");
     }
-    const claims = { ...input.lease, organizationName: input.organizationName };
+    const claims = headerSchema
+      .omit({ proof: true, salt: true })
+      .parse({ ...input.lease, organizationName: input.organizationName });
     const header = { ...claims, salt, proof: vault.seal(claims, "cure-vault-proof-v1") };
     return { vault, header };
   } catch (error) {

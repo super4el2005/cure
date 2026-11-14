@@ -104,6 +104,9 @@ export const offlineLease = query({
       organizationId: args.organizationId,
       role: membership.role,
       expiresAt: Date.now() + 8 * 60 * 60 * 1000,
+      ...(membership.role === "doctor"
+        ? { qualityReviewVersion: "patient-quality-v1" as const }
+        : {}),
     };
   },
 });

@@ -159,3 +159,10 @@ it("records timeline and membership route names without patient IDs or query val
   expect(safePath("/m/projects/private-study/timeline")).toBe("/:redacted");
   expect(safePath("/d/organization/members?userId=private-user")).toBe("/d/organization/members");
 });
+
+it("redacts patient identity and notes from data quality route events", () => {
+  expect(safePath("/d/patients/private-patient/quality?notes=Private")).toBe(
+    "/d/patients/:id/quality",
+  );
+  expect(safePath("/m/projects/private-study/quality")).toBe("/:redacted");
+});

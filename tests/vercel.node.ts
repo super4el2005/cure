@@ -568,3 +568,21 @@ test("application routes share the root shell with left navigation and a separat
     assert.match(html, /mantine-Select-input/);
   }
 });
+
+test("data quality routes are independent protected entries without clinical findings on the server", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/patients/f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258/quality`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Patient data quality/);
+    assert.doesNotMatch(
+      html,
+      /Private patient|Private review note|Confidential quality decision|Confidential stale quality decision/,
+    );
+  }
+});

@@ -52,6 +52,7 @@ import { Route as DPatientsIdConsentsRouteImport } from './routes/d_.patients_.$
 import { Route as DPatientsIdEnrollmentRouteImport } from './routes/d_.patients_.$id_.enrollment'
 import { Route as DPatientsIdFormsRouteImport } from './routes/d_.patients_.$id_.forms'
 import { Route as DPatientsIdHistoryRouteImport } from './routes/d_.patients_.$id_.history'
+import { Route as DPatientsIdQualityRouteImport } from './routes/d_.patients_.$id_.quality'
 import { Route as DPatientsIdTimelineRouteImport } from './routes/d_.patients_.$id_.timeline'
 import { Route as DPatientsIdVisitsRouteImport } from './routes/d_.patients_.$id_.visits'
 import { Route as DProjectsIdCreditsRouteImport } from './routes/d_.projects_.$id.credits'
@@ -66,6 +67,7 @@ import { Route as MPatientsIdConsentsRouteImport } from './routes/m_.patients_.$
 import { Route as MPatientsIdEnrollmentRouteImport } from './routes/m_.patients_.$id_.enrollment'
 import { Route as MPatientsIdFormsRouteImport } from './routes/m_.patients_.$id_.forms'
 import { Route as MPatientsIdHistoryRouteImport } from './routes/m_.patients_.$id_.history'
+import { Route as MPatientsIdQualityRouteImport } from './routes/m_.patients_.$id_.quality'
 import { Route as MPatientsIdTimelineRouteImport } from './routes/m_.patients_.$id_.timeline'
 import { Route as MPatientsIdVisitsRouteImport } from './routes/m_.patients_.$id_.visits'
 import { Route as MProjectsIdCreditsRouteImport } from './routes/m_.projects_.$id.credits'
@@ -292,6 +294,11 @@ const DPatientsIdHistoryRoute = DPatientsIdHistoryRouteImport.update({
   path: '/d/patients/$id/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DPatientsIdQualityRoute = DPatientsIdQualityRouteImport.update({
+  id: '/d_/patients_/$id_/quality',
+  path: '/d/patients/$id/quality',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DPatientsIdTimelineRoute = DPatientsIdTimelineRouteImport.update({
   id: '/d_/patients_/$id_/timeline',
   path: '/d/patients/$id/timeline',
@@ -360,6 +367,11 @@ const MPatientsIdFormsRoute = MPatientsIdFormsRouteImport.update({
 const MPatientsIdHistoryRoute = MPatientsIdHistoryRouteImport.update({
   id: '/m_/patients_/$id_/history',
   path: '/m/patients/$id/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MPatientsIdQualityRoute = MPatientsIdQualityRouteImport.update({
+  id: '/m_/patients_/$id_/quality',
+  path: '/m/patients/$id/quality',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MPatientsIdTimelineRoute = MPatientsIdTimelineRouteImport.update({
@@ -457,6 +469,7 @@ export interface FileRoutesByFullPath {
   '/d/patients/$id/enrollment': typeof DPatientsIdEnrollmentRoute
   '/d/patients/$id/forms': typeof DPatientsIdFormsRoute
   '/d/patients/$id/history': typeof DPatientsIdHistoryRoute
+  '/d/patients/$id/quality': typeof DPatientsIdQualityRoute
   '/d/patients/$id/timeline': typeof DPatientsIdTimelineRoute
   '/d/patients/$id/visits': typeof DPatientsIdVisitsRoute
   '/d/projects/$id/credits': typeof DProjectsIdCreditsRoute
@@ -471,6 +484,7 @@ export interface FileRoutesByFullPath {
   '/m/patients/$id/enrollment': typeof MPatientsIdEnrollmentRoute
   '/m/patients/$id/forms': typeof MPatientsIdFormsRoute
   '/m/patients/$id/history': typeof MPatientsIdHistoryRoute
+  '/m/patients/$id/quality': typeof MPatientsIdQualityRoute
   '/m/patients/$id/timeline': typeof MPatientsIdTimelineRoute
   '/m/patients/$id/visits': typeof MPatientsIdVisitsRoute
   '/m/projects/$id/credits': typeof MProjectsIdCreditsRoute
@@ -526,6 +540,7 @@ export interface FileRoutesByTo {
   '/d/patients/$id/enrollment': typeof DPatientsIdEnrollmentRoute
   '/d/patients/$id/forms': typeof DPatientsIdFormsRoute
   '/d/patients/$id/history': typeof DPatientsIdHistoryRoute
+  '/d/patients/$id/quality': typeof DPatientsIdQualityRoute
   '/d/patients/$id/timeline': typeof DPatientsIdTimelineRoute
   '/d/patients/$id/visits': typeof DPatientsIdVisitsRoute
   '/d/projects/$id/credits': typeof DProjectsIdCreditsRoute
@@ -540,6 +555,7 @@ export interface FileRoutesByTo {
   '/m/patients/$id/enrollment': typeof MPatientsIdEnrollmentRoute
   '/m/patients/$id/forms': typeof MPatientsIdFormsRoute
   '/m/patients/$id/history': typeof MPatientsIdHistoryRoute
+  '/m/patients/$id/quality': typeof MPatientsIdQualityRoute
   '/m/patients/$id/timeline': typeof MPatientsIdTimelineRoute
   '/m/patients/$id/visits': typeof MPatientsIdVisitsRoute
   '/m/projects/$id/credits': typeof MProjectsIdCreditsRoute
@@ -596,6 +612,7 @@ export interface FileRoutesById {
   '/d_/patients_/$id_/enrollment': typeof DPatientsIdEnrollmentRoute
   '/d_/patients_/$id_/forms': typeof DPatientsIdFormsRoute
   '/d_/patients_/$id_/history': typeof DPatientsIdHistoryRoute
+  '/d_/patients_/$id_/quality': typeof DPatientsIdQualityRoute
   '/d_/patients_/$id_/timeline': typeof DPatientsIdTimelineRoute
   '/d_/patients_/$id_/visits': typeof DPatientsIdVisitsRoute
   '/d_/projects_/$id/credits': typeof DProjectsIdCreditsRoute
@@ -610,6 +627,7 @@ export interface FileRoutesById {
   '/m_/patients_/$id_/enrollment': typeof MPatientsIdEnrollmentRoute
   '/m_/patients_/$id_/forms': typeof MPatientsIdFormsRoute
   '/m_/patients_/$id_/history': typeof MPatientsIdHistoryRoute
+  '/m_/patients_/$id_/quality': typeof MPatientsIdQualityRoute
   '/m_/patients_/$id_/timeline': typeof MPatientsIdTimelineRoute
   '/m_/patients_/$id_/visits': typeof MPatientsIdVisitsRoute
   '/m_/projects_/$id/credits': typeof MProjectsIdCreditsRoute
@@ -667,6 +685,7 @@ export interface FileRouteTypes {
     | '/d/patients/$id/enrollment'
     | '/d/patients/$id/forms'
     | '/d/patients/$id/history'
+    | '/d/patients/$id/quality'
     | '/d/patients/$id/timeline'
     | '/d/patients/$id/visits'
     | '/d/projects/$id/credits'
@@ -681,6 +700,7 @@ export interface FileRouteTypes {
     | '/m/patients/$id/enrollment'
     | '/m/patients/$id/forms'
     | '/m/patients/$id/history'
+    | '/m/patients/$id/quality'
     | '/m/patients/$id/timeline'
     | '/m/patients/$id/visits'
     | '/m/projects/$id/credits'
@@ -736,6 +756,7 @@ export interface FileRouteTypes {
     | '/d/patients/$id/enrollment'
     | '/d/patients/$id/forms'
     | '/d/patients/$id/history'
+    | '/d/patients/$id/quality'
     | '/d/patients/$id/timeline'
     | '/d/patients/$id/visits'
     | '/d/projects/$id/credits'
@@ -750,6 +771,7 @@ export interface FileRouteTypes {
     | '/m/patients/$id/enrollment'
     | '/m/patients/$id/forms'
     | '/m/patients/$id/history'
+    | '/m/patients/$id/quality'
     | '/m/patients/$id/timeline'
     | '/m/patients/$id/visits'
     | '/m/projects/$id/credits'
@@ -805,6 +827,7 @@ export interface FileRouteTypes {
     | '/d_/patients_/$id_/enrollment'
     | '/d_/patients_/$id_/forms'
     | '/d_/patients_/$id_/history'
+    | '/d_/patients_/$id_/quality'
     | '/d_/patients_/$id_/timeline'
     | '/d_/patients_/$id_/visits'
     | '/d_/projects_/$id/credits'
@@ -819,6 +842,7 @@ export interface FileRouteTypes {
     | '/m_/patients_/$id_/enrollment'
     | '/m_/patients_/$id_/forms'
     | '/m_/patients_/$id_/history'
+    | '/m_/patients_/$id_/quality'
     | '/m_/patients_/$id_/timeline'
     | '/m_/patients_/$id_/visits'
     | '/m_/projects_/$id/credits'
@@ -875,6 +899,7 @@ export interface RootRouteChildren {
   DPatientsIdEnrollmentRoute: typeof DPatientsIdEnrollmentRoute
   DPatientsIdFormsRoute: typeof DPatientsIdFormsRoute
   DPatientsIdHistoryRoute: typeof DPatientsIdHistoryRoute
+  DPatientsIdQualityRoute: typeof DPatientsIdQualityRoute
   DPatientsIdTimelineRoute: typeof DPatientsIdTimelineRoute
   DPatientsIdVisitsRoute: typeof DPatientsIdVisitsRoute
   DProjectsIdCreditsRoute: typeof DProjectsIdCreditsRoute
@@ -889,6 +914,7 @@ export interface RootRouteChildren {
   MPatientsIdEnrollmentRoute: typeof MPatientsIdEnrollmentRoute
   MPatientsIdFormsRoute: typeof MPatientsIdFormsRoute
   MPatientsIdHistoryRoute: typeof MPatientsIdHistoryRoute
+  MPatientsIdQualityRoute: typeof MPatientsIdQualityRoute
   MPatientsIdTimelineRoute: typeof MPatientsIdTimelineRoute
   MPatientsIdVisitsRoute: typeof MPatientsIdVisitsRoute
   MProjectsIdCreditsRoute: typeof MProjectsIdCreditsRoute
@@ -1204,6 +1230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DPatientsIdHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/patients_/$id_/quality': {
+      id: '/d_/patients_/$id_/quality'
+      path: '/d/patients/$id/quality'
+      fullPath: '/d/patients/$id/quality'
+      preLoaderRoute: typeof DPatientsIdQualityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/patients_/$id_/timeline': {
       id: '/d_/patients_/$id_/timeline'
       path: '/d/patients/$id/timeline'
@@ -1300,6 +1333,13 @@ declare module '@tanstack/react-router' {
       path: '/m/patients/$id/history'
       fullPath: '/m/patients/$id/history'
       preLoaderRoute: typeof MPatientsIdHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/patients_/$id_/quality': {
+      id: '/m_/patients_/$id_/quality'
+      path: '/m/patients/$id/quality'
+      fullPath: '/m/patients/$id/quality'
+      preLoaderRoute: typeof MPatientsIdQualityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m_/patients_/$id_/timeline': {
@@ -1419,6 +1459,7 @@ const rootRouteChildren: RootRouteChildren = {
   DPatientsIdEnrollmentRoute: DPatientsIdEnrollmentRoute,
   DPatientsIdFormsRoute: DPatientsIdFormsRoute,
   DPatientsIdHistoryRoute: DPatientsIdHistoryRoute,
+  DPatientsIdQualityRoute: DPatientsIdQualityRoute,
   DPatientsIdTimelineRoute: DPatientsIdTimelineRoute,
   DPatientsIdVisitsRoute: DPatientsIdVisitsRoute,
   DProjectsIdCreditsRoute: DProjectsIdCreditsRoute,
@@ -1433,6 +1474,7 @@ const rootRouteChildren: RootRouteChildren = {
   MPatientsIdEnrollmentRoute: MPatientsIdEnrollmentRoute,
   MPatientsIdFormsRoute: MPatientsIdFormsRoute,
   MPatientsIdHistoryRoute: MPatientsIdHistoryRoute,
+  MPatientsIdQualityRoute: MPatientsIdQualityRoute,
   MPatientsIdTimelineRoute: MPatientsIdTimelineRoute,
   MPatientsIdVisitsRoute: MPatientsIdVisitsRoute,
   MProjectsIdCreditsRoute: MProjectsIdCreditsRoute,

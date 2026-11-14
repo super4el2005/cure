@@ -24,7 +24,7 @@ const initialValues = {
   failureId: "",
   kind: "history" as Exclude<
     ClinicalPayload["kind"],
-    "questionnaire" | "enrollment" | "studyVisit" | "studyIssue"
+    "questionnaire" | "enrollment" | "studyVisit" | "studyIssue" | "qualityReview"
   >,
   occurredOn: null as string | null,
   notes: "",
@@ -137,6 +137,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
                     row.payload?.kind !== "questionnaire" &&
                     row.payload?.kind !== "enrollment" &&
                     row.payload?.kind !== "studyVisit" &&
+                    row.payload?.kind !== "qualityReview" &&
                     row.payload?.kind !== "studyIssue")
                 ? [row]
                 : [];
@@ -205,6 +206,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
                 row.payload?.kind !== "questionnaire" &&
                 row.payload?.kind !== "enrollment" &&
                 row.payload?.kind !== "studyVisit" &&
+                row.payload?.kind !== "qualityReview" &&
                 row.payload?.kind !== "studyIssue")
           );
         } catch (error) {
@@ -225,6 +227,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
       record.payload.kind === "questionnaire" ||
       record.payload.kind === "enrollment" ||
       record.payload.kind === "studyVisit" ||
+      record.payload.kind === "qualityReview" ||
       record.payload.kind === "studyIssue"
     )
       throw new Error("INVALID_CLINICAL_RECORD");

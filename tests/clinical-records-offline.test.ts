@@ -17,6 +17,8 @@ import type { Value } from "convex/values";
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
 import type { ClinicalPayload } from "@/src/lib/clinical-record-model";
+import { qualityReviewPayloadSchema } from "@/src/lib/data-quality-model";
+import { analyzePatientQuality } from "@/src/lib/patient-data-quality";
 import { patientTimeline } from "@/src/lib/patient-timeline";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
@@ -260,13 +262,14 @@ it.each(["history", "visit", "questionnaire"] as const)(
     const metadataStorage = memoryStorage();
     const salt = newVaultSalt();
     let connection = network();
-    const open = async () => {
+    const open = async (qualitySupported = true) => {
       connection = network();
       const space = await openPatientWorkspace({
         client,
         userId: "doctor",
         organizationId,
         role: "doctor",
+        ...(qualitySupported ? { qualityReviewVersion: "patient-quality-v1" } : {}),
         expiresAt: Date.now() + 60000,
         storage,
         failureStorage,
@@ -527,6 +530,162 @@ it.each(["history", "visit", "questionnaire"] as const)(
     ).toMatchObject({ deleted: true, payload: null, revision: 4 });
     expect(await workspace.executor.peekOutbox()).toEqual([]);
 
+    if (kind === "history") {
+      connection.disconnect();
+      const localPatient = workspace.read(workspace.collection.get(patientClientId)!);
+      const day = new Date().toISOString().slice(0, 10);
+      const qualitySourceId = crypto.randomUUID();
+      const queuedSource = await workspace.saveClinical({
+        clientId: qualitySourceId,
+        patientClientId,
+        expectedRevision: 0,
+        expectedHistoryId: null,
+        action: "create",
+        payload: {
+          kind: "observation",
+          occurredOn: "2020-01-01",
+          notes: "Confidential pending source",
+          name: "Pending source result",
+          code: "",
+          numericValue: 0,
+          textValue: "",
+          unit: "",
+        },
+      });
+      const report = analyzePatientQuality(
+        localPatient,
+        [workspace.readClinical(workspace.clinicalRecords.get(qualitySourceId)!)],
+        day,
+      );
+      const finding = report.findings.find((finding) => finding.code === "allergiesUndocumented")!;
+      const review = qualityReviewPayloadSchema.parse({
+        kind: "qualityReview",
+        writeId: crypto.randomUUID(),
+        occurredOn: day,
+        notes: "Confidential quality decision",
+        algorithmVersion: "patient-quality-v1",
+        evaluationDate: day,
+        sourceSignature: report.sourceSignature,
+        findingKey: finding.key,
+        code: finding.code,
+        decision: "needsClarification",
+        reviewedBy: "doctor",
+      });
+      // A cached workspace without the server capability must preserve older
+      // pending work while refusing to queue a new, unsupported payload kind.
+      await workspace.close();
+      workspace = await open(false);
+      const beforeUnsupported = await workspace.executor.peekOutbox();
+      expect(beforeUnsupported).toHaveLength(1);
+      await expect(
+        workspace.saveClinical({
+          clientId: crypto.randomUUID(),
+          patientClientId,
+          expectedRevision: 0,
+          expectedHistoryId: null,
+          action: "create",
+          payload: review,
+        }),
+      ).rejects.toThrow("QUALITY_NOT_PREPARED");
+      expect(await workspace.executor.peekOutbox()).toHaveLength(beforeUnsupported.length);
+      expect(
+        workspace.readClinical(workspace.clinicalRecords.get(qualitySourceId)!).payload?.kind,
+      ).toBe("observation");
+      await workspace.close();
+      workspace = await open();
+      const reviewId = crypto.randomUUID();
+      const queuedReview = await workspace.saveClinical({
+        clientId: reviewId,
+        patientClientId,
+        expectedRevision: 0,
+        expectedHistoryId: null,
+        action: "create",
+        payload: review,
+      });
+      expect(JSON.stringify([...storage.values.values()])).not.toContain(review.notes);
+      await workspace.close();
+      snapshots = new Map();
+      workspace = await open();
+      expect(workspace.readClinical(workspace.clinicalRecords.get(reviewId)!).payload?.notes).toBe(
+        review.notes,
+      );
+      await refresh();
+      const delivered = workspace.executor.waitForTransactionCompletion(queuedReview.transactionId);
+      const sourceDelivered = workspace.executor.waitForTransactionCompletion(
+        queuedSource.transactionId,
+      );
+      connection.connect();
+      workspace.setAuthenticated(true);
+      await Promise.all([sourceDelivered, delivered]);
+      expect(
+        analyzePatientQuality(
+          workspace.read(workspace.collection.get(patientClientId)!),
+          [workspace.readClinical(workspace.clinicalRecords.get(qualitySourceId)!)],
+          day,
+        ).sourceSignature,
+      ).toBe(report.sourceSignature);
+      expect(
+        (
+          await doctor.query(api.clinicalRecords.list, { actorId: "doctor", organizationId })
+        ).filter((row) => row.payload?.kind === "qualityReview"),
+      ).toHaveLength(1);
+      connection.disconnect();
+      const rejectedReview = await workspace.saveClinical({
+        clientId: crypto.randomUUID(),
+        patientClientId,
+        expectedRevision: 0,
+        expectedHistoryId: null,
+        action: "create",
+        payload: { ...review, notes: "Confidential stale quality decision" },
+      });
+      await doctor.mutation(api.clinicalRecords.apply, {
+        actorId: "doctor",
+        organizationId,
+        patientClientId,
+        clientId: crypto.randomUUID(),
+        expectedRevision: 0,
+        action: "create",
+        payload: {
+          kind: "observation",
+          occurredOn: "2020-01-01",
+          notes: "",
+          name: "New external record",
+          code: "",
+          numericValue: 1,
+          textValue: "",
+          unit: "",
+        },
+        idempotencyKey: "external-quality-source",
+      });
+      const settled = workspace.executor.waitForTransactionCompletion(rejectedReview.transactionId);
+      connection.connect();
+      await expect(settled).rejects.toThrow();
+      const failure = (await workspace.failedActions("clinical")).find(
+        (row) => row.code === "QUALITY_SOURCE_CHANGED",
+      );
+      expect(failure).toBeDefined();
+      expect(
+        (
+          await doctor.query(api.clinicalRecords.list, { actorId: "doctor", organizationId })
+        ).filter((row) => row.payload?.kind === "qualityReview"),
+      ).toHaveLength(1);
+      expect(JSON.stringify([...failureStorage.values.values()])).not.toContain(
+        "Confidential stale quality decision",
+      );
+      expect(workspace.readClinical(failure!.envelope).payload?.notes).toBe(
+        "Confidential stale quality decision",
+      );
+      await workspace.close();
+      snapshots = new Map();
+      workspace = await open();
+      const preserved = (await workspace.failedActions("clinical")).find(
+        (row) => row.id === failure!.id,
+      );
+      expect(preserved).toBeDefined();
+      expect(workspace.readClinical(preserved!.envelope).payload?.notes).toBe(
+        "Confidential stale quality decision",
+      );
+    }
     if (kind === "questionnaire") {
       connection.disconnect();
       const stale = await workspace.saveClinical({

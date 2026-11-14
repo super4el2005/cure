@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { qualityReviewPayloadSchema } from "@/src/lib/data-quality-model";
 import type { Vault } from "@/src/lib/patient-vault";
 import { enrollmentPayloadSchema } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema, questionnairePayloadSchema } from "@/src/lib/study-form-model";
@@ -10,6 +11,7 @@ import { visitTime, visitTimeSchema } from "@/src/lib/visit-time";
 const common = { occurredOn: z.iso.date(), notes: z.string().trim().max(2000) };
 export const clinicalPayloadSchema = z
   .discriminatedUnion("kind", [
+    qualityReviewPayloadSchema,
     questionnairePayloadSchema,
     enrollmentPayloadSchema,
     studyVisitPayloadSchema,
@@ -85,6 +87,7 @@ export const visitTransitions: Record<VisitPayload["status"], readonly VisitPayl
 };
 export function validateClinicalTransition(previous: ClinicalPayload, next: ClinicalPayload) {
   if (previous.kind !== next.kind) throw new Error("CLINICAL_KIND_IMMUTABLE");
+  if (previous.kind === "qualityReview") throw new Error("QUALITY_REVIEW_IMMUTABLE");
   if (previous.kind === "questionnaire" && next.kind === "questionnaire") {
     if (
       previous.formVersionClientId !== next.formVersionClientId ||
