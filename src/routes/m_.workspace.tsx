@@ -18,6 +18,7 @@ import { useForceUpdate, useInterval } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import { issueOverdue } from "@/src/lib/study-issue-model";
 import { useProjectWork } from "@/src/lib/use-project-work";
 import { useVisitAgenda } from "@/src/lib/use-visit-agenda";
 
@@ -152,7 +153,7 @@ function WorkspaceOverview() {
         )}
         {userId && (
           <>
-            <Title order={2}>{t`Ближайшие и незавершённые визиты`}</Title>
+            <Title order={2}>{t`Клиническая повестка`}</Title>
             {!agenda.workspace && (
               <Alert>
                 <Text>{t`Откройте клиническое пространство для просмотра визитов.`}</Text>
@@ -165,6 +166,40 @@ function WorkspaceOverview() {
                   {options.find((option) => option.value === agenda.workspace!.organizationId)
                     ?.label ?? t`Клиническое пространство`}
                 </Text>
+                <Title order={2}>{t`Назначенные мне рассмотрения событий`}</Title>
+                <Text>{t`События открытой клиники, по которым вы назначены ответственным. Сначала показаны ближайшие сроки, включая просроченные.`}</Text>
+                {agenda.ready && agenda.reviews.length === 0 && (
+                  <Text>{t`Открытых рассмотрений, назначенных вам, нет.`}</Text>
+                )}
+                {agenda.reviews.slice(0, 10).map(({ record, payload, patientName }) => (
+                  <Paper withBorder p="md" key={record.clientId}>
+                    <Stack>
+                      <Title order={3}>{payload.title}</Title>
+                      <Text>{patientName}</Text>
+                      <Text>
+                        {t`Срок рассмотрения (UTC)`}: {payload.reviewDueOn}
+                      </Text>
+                      <Badge>
+                        {payload.details.type === "adverseEvent"
+                          ? t`Нежелательное явление`
+                          : t`Отклонение от протокола`}
+                      </Badge>
+                      {issueOverdue(payload, Date.now()) && (
+                        <Badge color="red">{t`Срок рассмотрения прошёл`}</Badge>
+                      )}
+                      <Anchor
+                        renderRoot={(props) => (
+                          <Link
+                            {...props}
+                            to="/m/projects/$id/safety"
+                            params={{ id: payload.projectClientId }}
+                          />
+                        )}
+                      >{t`Безопасность и отклонения исследования`}</Anchor>
+                    </Stack>
+                  </Paper>
+                ))}
+                <Title order={2}>{t`Ближайшие и незавершённые визиты`}</Title>
                 <Text>{t`Визиты открытого клинического пространства; время указано в часовом поясе приёма.`}</Text>
                 {!agenda.ready && <Text>{t`Загрузка локальных данных…`}</Text>}
                 {agenda.ready && agenda.visits.length === 0 && (

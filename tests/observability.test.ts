@@ -132,6 +132,7 @@ it("observes library and research actions without exposing record identifiers or
       notes: "SECRET",
     }),
   ).toEqual({ "app.operation": "library.sync", "app.code": "REVISION_CONFLICT" });
+  expect(safePath("/d/projects/private-study/safety")).toBe("/d/projects/:id/safety");
   expect(safePath("/m/projects/private-study/visits")).toBe("/m/projects/:id/visits");
   expect(safePath("/d/patients/private-patient/enrollment")).toBe("/d/patients/:id/enrollment");
   expect(

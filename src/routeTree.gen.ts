@@ -53,6 +53,7 @@ import { Route as DPatientsIdVisitsRouteImport } from './routes/d_.patients_.$id
 import { Route as DProjectsIdEnrollmentRouteImport } from './routes/d_.projects_.$id.enrollment'
 import { Route as DProjectsIdFormsRouteImport } from './routes/d_.projects_.$id.forms'
 import { Route as DProjectsIdProtocolRouteImport } from './routes/d_.projects_.$id.protocol'
+import { Route as DProjectsIdSafetyRouteImport } from './routes/d_.projects_.$id.safety'
 import { Route as DProjectsIdTeamRouteImport } from './routes/d_.projects_.$id.team'
 import { Route as DProjectsIdVisitsRouteImport } from './routes/d_.projects_.$id.visits'
 import { Route as DProjectsIdWorkRouteImport } from './routes/d_.projects_.$id.work'
@@ -63,6 +64,7 @@ import { Route as MPatientsIdVisitsRouteImport } from './routes/m_.patients_.$id
 import { Route as MProjectsIdEnrollmentRouteImport } from './routes/m_.projects_.$id.enrollment'
 import { Route as MProjectsIdFormsRouteImport } from './routes/m_.projects_.$id.forms'
 import { Route as MProjectsIdProtocolRouteImport } from './routes/m_.projects_.$id.protocol'
+import { Route as MProjectsIdSafetyRouteImport } from './routes/m_.projects_.$id.safety'
 import { Route as MProjectsIdTeamRouteImport } from './routes/m_.projects_.$id.team'
 import { Route as MProjectsIdVisitsRouteImport } from './routes/m_.projects_.$id.visits'
 import { Route as MProjectsIdWorkRouteImport } from './routes/m_.projects_.$id.work'
@@ -287,6 +289,11 @@ const DProjectsIdProtocolRoute = DProjectsIdProtocolRouteImport.update({
   path: '/d/projects/$id/protocol',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DProjectsIdSafetyRoute = DProjectsIdSafetyRouteImport.update({
+  id: '/d_/projects_/$id/safety',
+  path: '/d/projects/$id/safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DProjectsIdTeamRoute = DProjectsIdTeamRouteImport.update({
   id: '/d_/projects_/$id/team',
   path: '/d/projects/$id/team',
@@ -335,6 +342,11 @@ const MProjectsIdFormsRoute = MProjectsIdFormsRouteImport.update({
 const MProjectsIdProtocolRoute = MProjectsIdProtocolRouteImport.update({
   id: '/m_/projects_/$id/protocol',
   path: '/m/projects/$id/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MProjectsIdSafetyRoute = MProjectsIdSafetyRouteImport.update({
+  id: '/m_/projects_/$id/safety',
+  path: '/m/projects/$id/safety',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MProjectsIdTeamRoute = MProjectsIdTeamRouteImport.update({
@@ -398,6 +410,7 @@ export interface FileRoutesByFullPath {
   '/d/projects/$id/enrollment': typeof DProjectsIdEnrollmentRoute
   '/d/projects/$id/forms': typeof DProjectsIdFormsRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d/projects/$id/safety': typeof DProjectsIdSafetyRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
   '/d/projects/$id/visits': typeof DProjectsIdVisitsRoute
   '/d/projects/$id/work': typeof DProjectsIdWorkRoute
@@ -408,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/m/projects/$id/enrollment': typeof MProjectsIdEnrollmentRoute
   '/m/projects/$id/forms': typeof MProjectsIdFormsRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m/projects/$id/safety': typeof MProjectsIdSafetyRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
   '/m/projects/$id/visits': typeof MProjectsIdVisitsRoute
   '/m/projects/$id/work': typeof MProjectsIdWorkRoute
@@ -457,6 +471,7 @@ export interface FileRoutesByTo {
   '/d/projects/$id/enrollment': typeof DProjectsIdEnrollmentRoute
   '/d/projects/$id/forms': typeof DProjectsIdFormsRoute
   '/d/projects/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d/projects/$id/safety': typeof DProjectsIdSafetyRoute
   '/d/projects/$id/team': typeof DProjectsIdTeamRoute
   '/d/projects/$id/visits': typeof DProjectsIdVisitsRoute
   '/d/projects/$id/work': typeof DProjectsIdWorkRoute
@@ -467,6 +482,7 @@ export interface FileRoutesByTo {
   '/m/projects/$id/enrollment': typeof MProjectsIdEnrollmentRoute
   '/m/projects/$id/forms': typeof MProjectsIdFormsRoute
   '/m/projects/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m/projects/$id/safety': typeof MProjectsIdSafetyRoute
   '/m/projects/$id/team': typeof MProjectsIdTeamRoute
   '/m/projects/$id/visits': typeof MProjectsIdVisitsRoute
   '/m/projects/$id/work': typeof MProjectsIdWorkRoute
@@ -517,6 +533,7 @@ export interface FileRoutesById {
   '/d_/projects_/$id/enrollment': typeof DProjectsIdEnrollmentRoute
   '/d_/projects_/$id/forms': typeof DProjectsIdFormsRoute
   '/d_/projects_/$id/protocol': typeof DProjectsIdProtocolRoute
+  '/d_/projects_/$id/safety': typeof DProjectsIdSafetyRoute
   '/d_/projects_/$id/team': typeof DProjectsIdTeamRoute
   '/d_/projects_/$id/visits': typeof DProjectsIdVisitsRoute
   '/d_/projects_/$id/work': typeof DProjectsIdWorkRoute
@@ -527,6 +544,7 @@ export interface FileRoutesById {
   '/m_/projects_/$id/enrollment': typeof MProjectsIdEnrollmentRoute
   '/m_/projects_/$id/forms': typeof MProjectsIdFormsRoute
   '/m_/projects_/$id/protocol': typeof MProjectsIdProtocolRoute
+  '/m_/projects_/$id/safety': typeof MProjectsIdSafetyRoute
   '/m_/projects_/$id/team': typeof MProjectsIdTeamRoute
   '/m_/projects_/$id/visits': typeof MProjectsIdVisitsRoute
   '/m_/projects_/$id/work': typeof MProjectsIdWorkRoute
@@ -578,6 +596,7 @@ export interface FileRouteTypes {
     | '/d/projects/$id/enrollment'
     | '/d/projects/$id/forms'
     | '/d/projects/$id/protocol'
+    | '/d/projects/$id/safety'
     | '/d/projects/$id/team'
     | '/d/projects/$id/visits'
     | '/d/projects/$id/work'
@@ -588,6 +607,7 @@ export interface FileRouteTypes {
     | '/m/projects/$id/enrollment'
     | '/m/projects/$id/forms'
     | '/m/projects/$id/protocol'
+    | '/m/projects/$id/safety'
     | '/m/projects/$id/team'
     | '/m/projects/$id/visits'
     | '/m/projects/$id/work'
@@ -637,6 +657,7 @@ export interface FileRouteTypes {
     | '/d/projects/$id/enrollment'
     | '/d/projects/$id/forms'
     | '/d/projects/$id/protocol'
+    | '/d/projects/$id/safety'
     | '/d/projects/$id/team'
     | '/d/projects/$id/visits'
     | '/d/projects/$id/work'
@@ -647,6 +668,7 @@ export interface FileRouteTypes {
     | '/m/projects/$id/enrollment'
     | '/m/projects/$id/forms'
     | '/m/projects/$id/protocol'
+    | '/m/projects/$id/safety'
     | '/m/projects/$id/team'
     | '/m/projects/$id/visits'
     | '/m/projects/$id/work'
@@ -696,6 +718,7 @@ export interface FileRouteTypes {
     | '/d_/projects_/$id/enrollment'
     | '/d_/projects_/$id/forms'
     | '/d_/projects_/$id/protocol'
+    | '/d_/projects_/$id/safety'
     | '/d_/projects_/$id/team'
     | '/d_/projects_/$id/visits'
     | '/d_/projects_/$id/work'
@@ -706,6 +729,7 @@ export interface FileRouteTypes {
     | '/m_/projects_/$id/enrollment'
     | '/m_/projects_/$id/forms'
     | '/m_/projects_/$id/protocol'
+    | '/m_/projects_/$id/safety'
     | '/m_/projects_/$id/team'
     | '/m_/projects_/$id/visits'
     | '/m_/projects_/$id/work'
@@ -756,6 +780,7 @@ export interface RootRouteChildren {
   DProjectsIdEnrollmentRoute: typeof DProjectsIdEnrollmentRoute
   DProjectsIdFormsRoute: typeof DProjectsIdFormsRoute
   DProjectsIdProtocolRoute: typeof DProjectsIdProtocolRoute
+  DProjectsIdSafetyRoute: typeof DProjectsIdSafetyRoute
   DProjectsIdTeamRoute: typeof DProjectsIdTeamRoute
   DProjectsIdVisitsRoute: typeof DProjectsIdVisitsRoute
   DProjectsIdWorkRoute: typeof DProjectsIdWorkRoute
@@ -766,6 +791,7 @@ export interface RootRouteChildren {
   MProjectsIdEnrollmentRoute: typeof MProjectsIdEnrollmentRoute
   MProjectsIdFormsRoute: typeof MProjectsIdFormsRoute
   MProjectsIdProtocolRoute: typeof MProjectsIdProtocolRoute
+  MProjectsIdSafetyRoute: typeof MProjectsIdSafetyRoute
   MProjectsIdTeamRoute: typeof MProjectsIdTeamRoute
   MProjectsIdVisitsRoute: typeof MProjectsIdVisitsRoute
   MProjectsIdWorkRoute: typeof MProjectsIdWorkRoute
@@ -1081,6 +1107,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DProjectsIdProtocolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/projects_/$id/safety': {
+      id: '/d_/projects_/$id/safety'
+      path: '/d/projects/$id/safety'
+      fullPath: '/d/projects/$id/safety'
+      preLoaderRoute: typeof DProjectsIdSafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/projects_/$id/team': {
       id: '/d_/projects_/$id/team'
       path: '/d/projects/$id/team'
@@ -1149,6 +1182,13 @@ declare module '@tanstack/react-router' {
       path: '/m/projects/$id/protocol'
       fullPath: '/m/projects/$id/protocol'
       preLoaderRoute: typeof MProjectsIdProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/projects_/$id/safety': {
+      id: '/m_/projects_/$id/safety'
+      path: '/m/projects/$id/safety'
+      fullPath: '/m/projects/$id/safety'
+      preLoaderRoute: typeof MProjectsIdSafetyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m_/projects_/$id/team': {
@@ -1220,6 +1260,7 @@ const rootRouteChildren: RootRouteChildren = {
   DProjectsIdEnrollmentRoute: DProjectsIdEnrollmentRoute,
   DProjectsIdFormsRoute: DProjectsIdFormsRoute,
   DProjectsIdProtocolRoute: DProjectsIdProtocolRoute,
+  DProjectsIdSafetyRoute: DProjectsIdSafetyRoute,
   DProjectsIdTeamRoute: DProjectsIdTeamRoute,
   DProjectsIdVisitsRoute: DProjectsIdVisitsRoute,
   DProjectsIdWorkRoute: DProjectsIdWorkRoute,
@@ -1230,6 +1271,7 @@ const rootRouteChildren: RootRouteChildren = {
   MProjectsIdEnrollmentRoute: MProjectsIdEnrollmentRoute,
   MProjectsIdFormsRoute: MProjectsIdFormsRoute,
   MProjectsIdProtocolRoute: MProjectsIdProtocolRoute,
+  MProjectsIdSafetyRoute: MProjectsIdSafetyRoute,
   MProjectsIdTeamRoute: MProjectsIdTeamRoute,
   MProjectsIdVisitsRoute: MProjectsIdVisitsRoute,
   MProjectsIdWorkRoute: MProjectsIdWorkRoute,

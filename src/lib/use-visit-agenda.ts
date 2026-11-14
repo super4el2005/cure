@@ -46,5 +46,28 @@ export function useVisitAgenda(userId: string | undefined) {
         })
         .sort((a, b) => a.time.epoch - b.time.epoch)
     : [];
-  return { workspace, visits, ready: clinical.isReady && patients.isReady };
+  const reviews = workspace
+    ? (clinical.data ?? [])
+        .filter((row) => row.clientId !== workspace.clinicalSnapshotId && !row.deleted)
+        .flatMap((row) => {
+          try {
+            const record = workspace.readClinical(row);
+            const payload = record.payload;
+            if (
+              payload?.kind !== "studyIssue" ||
+              payload.reviewerId !== userId ||
+              !["open", "underReview"].includes(payload.status)
+            )
+              return [];
+            const patient = workspace.collection.get(record.patientClientId);
+            if (!patient || patient.deleted) return [];
+            return [{ record, payload, patientName: workspace.read(patient).fullName }];
+          } catch (error) {
+            if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
+            throw error;
+          }
+        })
+        .sort((a, b) => a.payload.reviewDueOn.localeCompare(b.payload.reviewDueOn))
+    : [];
+  return { workspace, visits, reviews, ready: clinical.isReady && patients.isReady };
 }
