@@ -17,6 +17,7 @@ import type { Value } from "convex/values";
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
 import { defaultCohortCriteria } from "@/src/lib/cohort-analysis";
+import { defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
 rstest.mock("@/src/observability/events", () => ({ reportFailure: rstest.fn() }));
@@ -189,6 +190,10 @@ it("restores a researcher analysis and encrypted CAS failures across offline res
   expect(workspace.analyses.status).toBe("ready");
   const clientId = crypto.randomUUID();
   const values = {
+    comparison: {
+      ...defaultCohortComparison,
+      outcome: { kind: "diagnosis" as const, code: "F41" },
+    },
     title: "Confidential analysis title",
     description: "Confidential analysis description",
     criteria: { ...defaultCohortCriteria, include: ["F41"] },

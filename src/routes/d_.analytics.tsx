@@ -1,6 +1,7 @@
 import { useLingui } from "@lingui/react/macro";
 import { BarChart } from "@mantine/charts";
 import {
+  Checkbox,
   Fieldset,
   TextInput,
   Textarea,
@@ -29,6 +30,10 @@ export const Route = createFileRoute("/d_/analytics")({ component: Analytics });
 function Analytics() {
   const { t, i18n } = useLingui();
   const {
+    comparison,
+    comparisonKey,
+    comparisonResult,
+    comparisonStale,
     userId,
     workspace,
     opened,
@@ -55,6 +60,14 @@ function Analytics() {
     loadAnalysis,
   } = useSavedAnalyses();
   const report = analyzeCohort(rows, opened?.role ?? "researcher", criteria, Date.now());
+  const comparisonReasons = {
+    duplicate: t`Обнаружены повторные идентификаторы. Статистический вывод недоступен; проверьте исходный набор.`,
+    overlap: t`Группы пересекаются. Критерий для независимых групп не применяется.`,
+    selection: t`Сравниваемый признак участвует в отборе групп. Статистический вывод отключён.`,
+    independence: t`Для статистического теста необходимо подтвердить независимость наблюдений и дизайн.`,
+    empty: t`Пустой знаменатель или отсутствие вариации признака. Статистический тест недоступен.`,
+    small: t`Ожидаемая частота хотя бы в одной ячейке меньше 5. Приближение χ² не применяется.`,
+  };
   const sexLabels = { female: t`Женский`, male: t`Мужской`, unknown: t`Не указан` };
   const selectionSteps = [
     { label: t`Доступно записей до отбора`, value: report.flow.available },
@@ -334,6 +347,138 @@ function Analytics() {
                             }
                           >{t`Сбросить критерии`}</Button>
                           <Text>{t`Коды сравниваются целиком без учёта регистра; выбор F41 не включает F41.1 автоматически. Исключение имеет приоритет над включением.`}</Text>
+                          <Checkbox
+                            label={t`Сравнить две когорты`}
+                            {...analysisForm.getInputProps("comparisonEnabled", {
+                              type: "checkbox",
+                            })}
+                          />
+                          {analysisForm.values.comparisonEnabled && (
+                            <Stack>
+                              <Title order={3}>{t`Референтная когорта`}</Title>
+                              <MultiSelect
+                                label={t`Диагнозы включения второй группы`}
+                                searchable
+                                clearable
+                                data={[
+                                  ...new Set([
+                                    ...report.availableCodes,
+                                    ...analysisForm.values.comparison.reference.include,
+                                  ]),
+                                ].sort()}
+                                {...analysisForm.getInputProps("comparison.reference.include")}
+                              />
+                              <NativeSelect
+                                label={t`Совпадение диагнозов включения`}
+                                data={[
+                                  { value: "any", label: t`Хотя бы один` },
+                                  { value: "all", label: t`Все выбранные` },
+                                ]}
+                                {...analysisForm.getInputProps(
+                                  "comparison.reference.diagnosisMatch",
+                                )}
+                              />
+                              <MultiSelect
+                                label={t`Диагнозы исключения второй группы`}
+                                searchable
+                                clearable
+                                data={[
+                                  ...new Set([
+                                    ...report.availableCodes,
+                                    ...analysisForm.values.comparison.reference.exclude,
+                                  ]),
+                                ].sort()}
+                                {...analysisForm.getInputProps("comparison.reference.exclude")}
+                              />
+                              <NativeSelect
+                                label={t`Пол второй группы`}
+                                data={[
+                                  { value: "any", label: t`Любой` },
+                                  ...Object.entries(sexLabels).map(([value, label]) => ({
+                                    value,
+                                    label,
+                                  })),
+                                ]}
+                                {...analysisForm.getInputProps("comparison.reference.sex")}
+                              />
+                              <NativeSelect
+                                label={t`Бинарный признак`}
+                                value={analysisForm.values.comparison.outcome.kind}
+                                onChange={(event) =>
+                                  analysisForm.setFieldValue(
+                                    "comparison.outcome",
+                                    event.currentTarget.value === "sex"
+                                      ? { kind: "sex", value: "female" }
+                                      : { kind: "diagnosis", code: "" },
+                                  )
+                                }
+                                data={[
+                                  { value: "diagnosis", label: t`Код диагноза записан в карте` },
+                                  { value: "sex", label: t`Указанный пол` },
+                                ]}
+                              />
+                              {analysisForm.values.comparison.outcome.kind === "diagnosis" ? (
+                                <TextInput
+                                  label={t`Точный код сравниваемого диагноза`}
+                                  {...analysisForm.getInputProps("comparison.outcome.code")}
+                                />
+                              ) : (
+                                <NativeSelect
+                                  label={t`Значение признака`}
+                                  data={[
+                                    { value: "female", label: t`Женский` },
+                                    { value: "male", label: t`Мужской` },
+                                  ]}
+                                  {...analysisForm.getInputProps("comparison.outcome.value")}
+                                />
+                              )}
+                              <NativeSelect
+                                label={t`Доверительный уровень`}
+                                value={analysisForm.values.comparison.confidence}
+                                onChange={(event) =>
+                                  analysisForm.setFieldValue(
+                                    "comparison.confidence",
+                                    Number(event.currentTarget.value) as 90 | 95 | 99,
+                                  )
+                                }
+                                data={["90", "95", "99"]}
+                              />
+                              <NativeSelect
+                                label={t`Назначение сравнения`}
+                                data={[
+                                  { value: "exploratory", label: t`Разведочный анализ` },
+                                  { value: "prespecified", label: t`Гипотеза определена заранее` },
+                                ]}
+                                {...analysisForm.getInputProps("comparison.intent")}
+                              />
+                              <Textarea
+                                label={t`Гипотеза и обоснование дизайна`}
+                                maxLength={2000}
+                                {...analysisForm.getInputProps("comparison.hypothesis")}
+                              />
+                              <Checkbox
+                                label={t`Подтверждаю независимость наблюдений и обоснованность дизайна сравнения`}
+                                {...analysisForm.getInputProps("comparison.independent", {
+                                  type: "checkbox",
+                                })}
+                              />
+                              <Text>{t`Отметка о заранее определённой гипотезе является заявлением автора, а не регистрацией протокола. Кластеризация, смешивающие факторы и множественные сравнения автоматически не проверяются.`}</Text>
+                              <Button
+                                variant="default"
+                                loading={comparison.isPending}
+                                onClick={() => {
+                                  if (!analysisForm.validate().hasErrors)
+                                    comparison.mutate({
+                                      scope: workspace.scope,
+                                      key: comparisonKey,
+                                    });
+                                }}
+                              >{t`Рассчитать сравнение`}</Button>
+                              {comparison.isError && (
+                                <Alert color="red">{t`Не удалось выполнить локальный расчёт. Проверьте параметры и доступ к данным.`}</Alert>
+                              )}
+                            </Stack>
+                          )}
                           {analysisForm.values.failureId && !analysisForm.values.clientId && (
                             <Alert>{t`Черновик сохранится как новый анализ; удалённая запись не восстанавливается автоматически.`}</Alert>
                           )}
@@ -345,6 +490,102 @@ function Analytics() {
                         </Stack>
                       </Fieldset>
                     </form>
+                  </Paper>
+                )}
+                {comparisonResult && (
+                  <Paper withBorder p="md">
+                    <Stack>
+                      <Title order={2}>{t`Сравнение когорт`}</Title>
+                      {comparisonStale ? (
+                        <Alert color="yellow">{t`Данные или параметры изменились. Выполните расчёт повторно; предыдущий результат скрыт.`}</Alert>
+                      ) : (
+                        <>
+                          <Text>
+                            {t`Время расчёта:`}{" "}
+                            {i18n.date(new Date(comparisonResult.report.calculatedAt), {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </Text>
+                          <Text>{t`Интервалы Клоппера — Пирсона относятся к каждой доле отдельно. Они не являются интервалами разности или отношения долей.`}</Text>
+                          <Table.ScrollContainer minWidth={650}>
+                            <Table>
+                              <Table.Thead>
+                                <Table.Tr>
+                                  <Table.Th>{t`Группа`}</Table.Th>
+                                  <Table.Th>{t`Выбрано`}</Table.Th>
+                                  <Table.Th>{t`Признак / знаменатель`}</Table.Th>
+                                  <Table.Th>{t`Доля и доверительный интервал`}</Table.Th>
+                                  <Table.Th>{t`Недоступно / не указано`}</Table.Th>
+                                </Table.Tr>
+                              </Table.Thead>
+                              <Table.Tbody>
+                                {comparisonResult.report.groups.map((group, index) => (
+                                  <Table.Tr key={index}>
+                                    <Table.Td>
+                                      {index === 0 ? t`Основная` : t`Референтная`}
+                                    </Table.Td>
+                                    <Table.Td>{group.selected}</Table.Td>
+                                    <Table.Td>
+                                      {group.positive} / {group.total}
+                                    </Table.Td>
+                                    <Table.Td>
+                                      {group.interval
+                                        ? [
+                                            group.interval.proportion,
+                                            group.interval.lower,
+                                            group.interval.upper,
+                                          ]
+                                            .map((value) =>
+                                              i18n.number(value, {
+                                                style: "percent",
+                                                maximumFractionDigits: 2,
+                                              }),
+                                            )
+                                            .join(" / ")
+                                        : "—"}
+                                    </Table.Td>
+                                    <Table.Td>
+                                      {group.unavailable} / {group.unknown}
+                                    </Table.Td>
+                                  </Table.Tr>
+                                ))}
+                              </Table.Tbody>
+                            </Table>
+                          </Table.ScrollContainer>
+                          <Text>
+                            {t`Описательная разность долей, процентные пункты:`}{" "}
+                            {comparisonResult.report.difference === null
+                              ? "—"
+                              : i18n.number(comparisonResult.report.difference * 100, {
+                                  maximumFractionDigits: 2,
+                                })}
+                          </Text>
+                          <Text>
+                            {t`Описательное отношение долей:`}{" "}
+                            {comparisonResult.report.ratio === null
+                              ? "—"
+                              : i18n.number(comparisonResult.report.ratio, {
+                                  maximumFractionDigits: 3,
+                                })}
+                          </Text>
+                          {comparisonResult.report.reason && (
+                            <Alert>{comparisonReasons[comparisonResult.report.reason]}</Alert>
+                          )}
+                          {comparisonResult.report.test && (
+                            <Text>
+                              {t`Критерий χ² с поправкой Йейтса, df = 1; p-value:`}{" "}
+                              {comparisonResult.report.test.pValue < 0.000001
+                                ? "< 0.000001"
+                                : i18n.number(comparisonResult.report.test.pValue, {
+                                    maximumFractionDigits: 6,
+                                  })}
+                            </Text>
+                          )}
+                          <Alert>{t`Сравниваются записи в разрешённых локальных данных, а не риск заболевания в популяции. Пустой список диагнозов означает отсутствие записанного кода, а не отсутствие заболевания. Результат не доказывает причинность и не является рекомендацией по лечению. При повторных проверках возрастает вероятность случайных находок.`}</Alert>
+                        </>
+                      )}
+                    </Stack>
                   </Paper>
                 )}
                 <Title order={2}>{t`Схема отбора`}</Title>

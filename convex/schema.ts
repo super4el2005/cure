@@ -212,6 +212,33 @@ export const analysisValues = v.object({
     diagnosisMatch: v.union(v.literal("any"), v.literal("all")),
     sex: v.union(v.literal("any"), v.literal("female"), v.literal("male"), v.literal("unknown")),
   }),
+  comparison: v.optional(
+    v.object({
+      calculationVersion: v.literal("cohort-2x2-v1"),
+      reference: v.object({
+        include: v.array(v.string()),
+        exclude: v.array(v.string()),
+        diagnosisMatch: v.union(v.literal("any"), v.literal("all")),
+        sex: v.union(
+          v.literal("any"),
+          v.literal("female"),
+          v.literal("male"),
+          v.literal("unknown"),
+        ),
+      }),
+      outcome: v.union(
+        v.object({ kind: v.literal("diagnosis"), code: v.string() }),
+        v.object({
+          kind: v.literal("sex"),
+          value: v.union(v.literal("female"), v.literal("male")),
+        }),
+      ),
+      confidence: v.union(v.literal(90), v.literal(95), v.literal(99)),
+      independent: v.boolean(),
+      intent: v.union(v.literal("exploratory"), v.literal("prespecified")),
+      hypothesis: v.string(),
+    }),
+  ),
 });
 export const clinicalPayload = v.union(
   v.object({

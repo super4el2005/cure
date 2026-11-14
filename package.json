@@ -61,6 +61,8 @@
     "@sentry/core": "^11.11.0",
     "@sentry/tanstackstart-react": "^11.11.0",
     "@serwist/window": "^9.5.13",
+    "@stdlib/stats-base-dists-beta-quantile": "0.2.3",
+    "@stdlib/stats-chi2test": "0.2.2",
     "@tanstack/ai": "^1.2.0",
     "@tanstack/ai-anthropic": "^1.1.1",
     "@tanstack/ai-gemini": "^1.2.0",
@@ -86,6 +88,7 @@
     "js-cookie": "^3.0.8",
     "lru-cache": "^11.5.3",
     "negotiator": "^1.1.0",
+    "ohash": "2.0.12",
     "openid-client": "^6.8.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -111,6 +114,7 @@
     "@rstest/core": "^0.12.6",
     "@sentry/webpack-plugin": "^11.11.0",
     "@serwist/webpack-plugin": "^9.5.13",
+    "@stdlib/types": "0.5.1",
     "@types/html-to-text": "^9.0.4",
     "@types/js-cookie": "^3.0.6",
     "@types/negotiator": "^0.6.5",
@@ -137,6 +141,10 @@
     },
     "@serwist/webpack-plugin": {
       "zod": "^4.6.6"
-    }
+    },
+    "@stdlib/blas-base-dscal": "0.4.1",
+    "@stdlib/blas-ext-base-dapx": "0.3.1",
+    "@stdlib/blas-ext-base-dsumpw": "0.3.1",
+    "@stdlib/stats-strided-dmin": "0.1.1"
   }
 }

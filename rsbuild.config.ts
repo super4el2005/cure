@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { createRequire } from "node:module";
 import { resolve } from "node:path";
 
 import { defineConfig, loadEnv } from "@rsbuild/core";
@@ -11,6 +12,18 @@ import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
 
 // Convex's deployment URL is public and is needed by both client and SSR.
 const { publicVars } = loadEnv({ prefixes: ["CONVEX_URL", "CONVEX_SITE_URL", "PUBLIC_SENTRY_"] });
+const resolveModule = createRequire(import.meta.url).resolve;
+// These four pinned stdlib kernels expose their JS fallback through lib/main.js.
+// Their default entries probe native addons with __dirname, incompatible with
+// bundled ESM and browsers. Remove these aliases when upstream offers a JS export.
+const statisticsAliases = Object.fromEntries(
+  [
+    "@stdlib/blas-base-dscal",
+    "@stdlib/blas-ext-base-dapx",
+    "@stdlib/blas-ext-base-dsumpw",
+    "@stdlib/stats-strided-dmin",
+  ].map((name) => [`${name}$`, resolveModule(`${name}/lib/main.js`)]),
+);
 const shellRevision = randomUUID();
 const linguiConfigPath = resolve(import.meta.dirname, "lingui.config.ts");
 
@@ -18,6 +31,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": import.meta.dirname,
+      ...statisticsAliases,
     },
   },
   source: {
