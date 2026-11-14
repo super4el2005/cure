@@ -148,6 +148,9 @@ describe("durable patient operations", () => {
     });
     const doctor = t.withIdentity({ subject: "doctor" });
     let result: Awaited<ReturnType<typeof doctor.query<typeof api.patients.list>>> | undefined = [];
+    let versionResult:
+      | Awaited<ReturnType<typeof doctor.query<typeof api.patients.versions>>>
+      | undefined;
     const listeners = new Set<() => void>();
     let calls = 0;
     let clientFailure: unknown;
@@ -155,7 +158,14 @@ describe("durable patient operations", () => {
       watchQuery(fn: FunctionReference<"query">) {
         const clinical = getFunctionName(fn) !== getFunctionName(api.patients.list);
         return {
-          localQueryResult: () => (clinical ? (result === undefined ? undefined : []) : result),
+          localQueryResult: () =>
+            getFunctionName(fn) === getFunctionName(api.patients.versions)
+              ? versionResult
+              : clinical
+                ? result === undefined
+                  ? undefined
+                  : []
+                : result,
           onUpdate(callback: () => void) {
             listeners.add(callback);
             return () => {
@@ -179,6 +189,10 @@ describe("durable patient operations", () => {
             clientFailure = error;
             throw error;
           });
+        versionResult = await doctor.query(api.patients.versions, {
+          actorId: "doctor",
+          organizationId,
+        });
         for (const listener of listeners) {
           try {
             listener();
@@ -237,11 +251,20 @@ describe("durable patient operations", () => {
       clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
       values,
     });
+    const initialHistoryId = first.read(
+      first.collection.get("f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258")!,
+    ).historyId!;
+    expect(first.readPatientVersion(first.patientVersions.get(initialHistoryId)!)).toMatchObject({
+      revision: 1,
+      values,
+      confirmed: false,
+    });
     expect(calls).toBe(0);
     expect((await first.executor.peekOutbox()).length).toBe(1);
     expect(JSON.stringify([...storage.values.values()])).not.toContain(values.fullName);
     await first.close();
     result = undefined;
+    versionResult = undefined;
     let nextNetwork = network();
     let restored = await openPatientWorkspace({
       ...config,
@@ -253,6 +276,12 @@ describe("durable patient operations", () => {
     const local = restored.collection.get("f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258");
     expect(local).toBeDefined();
     expect(restored.read(local!).fullName).toBe(values.fullName);
+    const initialVersion = restored.patientVersions.get(initialHistoryId)!;
+    expect(restored.readPatientVersion(initialVersion)).toMatchObject({
+      revision: 1,
+      values,
+      confirmed: false,
+    });
     const offlineAnalysis = analyzeCohort(
       [...restored.collection.values()]
         .filter((row) => row.clientId !== restored.patientSnapshotId && !row.deleted)
@@ -289,6 +318,9 @@ describe("durable patient operations", () => {
     });
     expect(calls).toBe(1);
     expect(
+      restored.readPatientVersion(restored.patientVersions.get(initialHistoryId)!),
+    ).toMatchObject({ revision: 1, values, confirmed: true, recordedBy: "doctor" });
+    expect(
       await doctor.query(api.patients.list, { actorId: "doctor", organizationId }),
     ).toHaveLength(1);
     expect(await restored.executor.peekOutbox()).toEqual([]);
@@ -320,6 +352,7 @@ describe("durable patient operations", () => {
     expect(JSON.stringify([...storage.values.values()])).not.toContain(event.documentReference);
     await restored.close();
     result = undefined;
+    versionResult = undefined;
     nextNetwork = network();
     restored = await openPatientWorkspace({
       ...config,
@@ -367,6 +400,16 @@ describe("durable patient operations", () => {
       clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
       values: { ...values, notes: "Unsent local note" },
     });
+    const capturedBranchId = restored.read(
+      restored.collection.get("f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258")!,
+    ).historyId!;
+    const dependent = await restored.save({
+      expectedRevision: 3,
+      expectedHistoryId: capturedBranchId,
+      action: "update",
+      clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
+      values: { ...values, notes: "Dependent local note" },
+    });
     await doctor.mutation(api.patients.apply, {
       actorId: "doctor",
       organizationId,
@@ -379,14 +422,27 @@ describe("durable patient operations", () => {
     const rejected = expect(
       restored.executor.waitForTransactionCompletion(conflict.transactionId),
     ).rejects.toThrow("REVISION_CONFLICT");
+    const rejectedDependent = expect(
+      restored.executor.waitForTransactionCompletion(dependent.transactionId),
+    ).rejects.toThrow("REVISION_CONFLICT");
     result = await doctor.query(api.patients.list, { actorId: "doctor", organizationId });
     for (const listener of listeners) listener();
     await restored.collection.utils.awaitSync();
     nextNetwork.connect();
     restored.setAuthenticated(true);
     await rejected;
+    await rejectedDependent;
+    await expect(
+      restored.save({
+        expectedRevision: 3,
+        expectedHistoryId: capturedBranchId,
+        action: "update",
+        clientId: "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258",
+        values: { ...values, notes: "Stale editor after rollback" },
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
     const archived = await restored.failedActions();
-    expect(archived).toHaveLength(1);
+    expect(archived).toHaveLength(2);
     expect(archived[0]?.code).toBe("REVISION_CONFLICT");
     expect(restored.read(archived[0]!.envelope).notes).toBe("Unsent local note");
     expect(
@@ -423,7 +479,7 @@ describe("durable patient operations", () => {
     restored.setAuthenticated(true);
     await consentFailure;
     const preservedConsent = (await restored.failedActions()).find(
-      (item) => item.id !== archived[0]!.id,
+      (item) => item.consentId === rejectedEvent.id,
     );
     expect(preservedConsent?.consentId).toBe(rejectedEvent.id);
     const restoredEvent = restored
@@ -439,8 +495,78 @@ describe("durable patient operations", () => {
       const rows = sqlite.prepare(`SELECT * FROM "${name.replaceAll('"', '""')}"`).all();
       expect(JSON.stringify(rows)).not.toContain(values.fullName);
       expect(JSON.stringify(rows)).not.toContain(values.notes);
+      expect(JSON.stringify(rows)).not.toContain(event.documentReference);
     }
+    nextNetwork.disconnect();
+    const beforeDelete = restored.read(
+      restored.collection.get("f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258")!,
+    );
+    const refusedDelete = await restored.save({
+      action: "delete",
+      clientId: beforeDelete.clientId,
+      expectedRevision: beforeDelete.revision,
+      expectedHistoryId: beforeDelete.historyId ?? null,
+    });
+    expect(() => restored.readPatientVersion(initialVersion)).toThrow("PATIENT_NOT_FOUND");
+    await doctor.mutation(api.patients.apply, {
+      actorId: "doctor",
+      organizationId,
+      clientId: beforeDelete.clientId,
+      action: "update",
+      expectedRevision: beforeDelete.revision,
+      idempotencyKey: "concurrent-before-delete",
+      values: { ...values, notes: "Authoritative before deletion" },
+    });
+    result = await doctor.query(api.patients.list, { actorId: "doctor", organizationId });
+    for (const listener of listeners) listener();
+    const refusedDeleteSent = expect(
+      restored.executor.waitForTransactionCompletion(refusedDelete.transactionId),
+    ).rejects.toThrow("REVISION_CONFLICT");
+    nextNetwork.connect();
+    restored.setAuthenticated(true);
+    await refusedDeleteSent;
+    const deletedProposal = (await restored.failedActions()).find(
+      (row) => row.action === "delete",
+    )!;
+    expect(deletedProposal.action).toBe("delete");
+    expect(restored.read(deletedProposal.envelope)).toMatchObject({
+      fullName: values.fullName,
+      notes: beforeDelete.notes,
+      deleted: false,
+    });
+    expect(restored.readPatientVersion(initialVersion)).toMatchObject({ values });
+    nextNetwork.disconnect();
+    const prior = restored.read(restored.collection.get("f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258")!);
+    const pendingDelete = await restored.save({
+      action: "delete",
+      clientId: prior.clientId,
+      expectedRevision: prior.revision,
+      expectedHistoryId: prior.historyId ?? null,
+    });
+    expect(() => restored.readPatientVersion(initialVersion)).toThrow("PATIENT_NOT_FOUND");
     await restored.close();
+    result = undefined;
+    versionResult = undefined;
+    nextNetwork = network();
+    restored = await openPatientWorkspace({
+      ...config,
+      persistence: createBrowserWASQLitePersistence({ database }),
+      vault: await unlockVault(passphrase, salt),
+      onlineDetector: nextNetwork,
+      leaderElection: leader(),
+    });
+    expect(() => restored.readPatientVersion(initialVersion)).toThrow("PATIENT_NOT_FOUND");
+    result = await doctor.query(api.patients.list, { actorId: "doctor", organizationId });
+    const deleteSent = restored.executor.waitForTransactionCompletion(pendingDelete.transactionId);
+    nextNetwork.connect();
+    restored.setAuthenticated(true);
+    await deleteSent;
+    expect(
+      await doctor.query(api.patients.versions, { actorId: "doctor", organizationId }),
+    ).toEqual([]);
+    expect(await restored.executor.peekOutbox()).toEqual([]);
+    await restored.close();
+    expect(() => restored.readPatientVersion(initialVersion)).toThrow("WORKSPACE_LOCKED");
     sqlite.close();
   });
 });

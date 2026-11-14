@@ -192,7 +192,7 @@ function Patient() {
                     renderRoot={(props) => (
                       <Link {...props} to="/d/patients/$id/history" params={{ id }} />
                     )}
-                  >{t`История клинических записей`}</Anchor>
+                  >{t`История карты и клинических записей`}</Anchor>
                 )}
 
                 {opened.role === "doctor" && (
@@ -203,6 +203,8 @@ function Patient() {
                         patientForm.setValues({
                           ...patient,
                           expectedRevision: patient.revision,
+                          expectedHistoryId: patient.historyId ?? null,
+                          workspaceScope: workspace.scope,
                           diagnosisCodes: patient.diagnosisCodes.join(", "),
                           failureId: "",
                         });
@@ -221,7 +223,12 @@ function Patient() {
                           ),
                           labels: { confirm: t`Удалить`, cancel: t`Отмена` },
                           onConfirm: () =>
-                            remove.mutate({ clientId: id, expectedRevision: patient.revision }),
+                            remove.mutate({
+                              clientId: id,
+                              expectedRevision: patient.revision,
+                              expectedHistoryId: patient.historyId ?? null,
+                              workspaceScope: workspace.scope,
+                            }),
                         })
                       }
                     >{t`Удалить запись`}</Button>
@@ -229,7 +236,11 @@ function Patient() {
                 )}
                 {editing && opened.role === "doctor" && patientForm.values.clientId === id && (
                   <Paper withBorder p="md">
-                    <form onSubmit={patientForm.onSubmit((values) => save.mutate(values))}>
+                    <form
+                      onSubmit={patientForm.onSubmit((values) =>
+                        save.mutateAsync(values).catch(() => undefined),
+                      )}
+                    >
                       <Stack>
                         <TextInput
                           label={t`ФИО`}

@@ -170,6 +170,8 @@ function Consents() {
                         consentForm.setValues({
                           clientId: id,
                           expectedRevision: patient.revision,
+                          expectedHistoryId: patient.historyId ?? null,
+                          workspaceScope: workspace.scope,
                           kind: "granted",
                           purpose: latest?.purpose ?? "",
                           recipients: latest?.recipients ?? [],
@@ -188,6 +190,7 @@ function Consents() {
                       disabled={!status.data?.online}
                       onClick={() => {
                         shareForm.setValues({
+                          workspaceScope: workspace.scope,
                           clientId: id,
                           researcherId: "",
                           days: 30,
@@ -203,7 +206,11 @@ function Consents() {
                       consentForm.values.clientId === id &&
                       opened.role === "doctor" && (
                         <Paper withBorder p="md">
-                          <form onSubmit={consentForm.onSubmit((values) => consent.mutate(values))}>
+                          <form
+                            onSubmit={consentForm.onSubmit((values) =>
+                              consent.mutateAsync(values).catch(() => undefined),
+                            )}
+                          >
                             <Stack>
                               <Title
                                 order={2}
@@ -324,7 +331,11 @@ function Consents() {
                     {share.isSuccess && <Alert>{t`Права доступа обновлены на сервере.`}</Alert>}
                     {sharing && shareForm.values.clientId === id && opened.role === "doctor" && (
                       <Paper withBorder p="md">
-                        <form onSubmit={shareForm.onSubmit((values) => share.mutate(values))}>
+                        <form
+                          onSubmit={shareForm.onSubmit((values) =>
+                            share.mutateAsync(values).catch(() => undefined),
+                          )}
+                        >
                           <Stack>
                             <Title order={2}>{t`Доступ исследователя к записи`}</Title>
                             <NativeSelect

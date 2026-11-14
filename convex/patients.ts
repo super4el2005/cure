@@ -1,10 +1,15 @@
 import { ConvexError, v } from "convex/values";
 
 import { internal } from "@/convex/_generated/api";
-import { mutation, query } from "@/convex/_generated/server";
+import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
+import { requireClientId } from "@/convex/lib/research";
 import { patientFields } from "@/convex/schema";
 import { activeResearchConsent, validateConsentTransition } from "@/src/lib/consent-model";
+import {
+  legacyPatientVersionId,
+  patientVersionValuesSchema,
+} from "@/src/lib/patient-version-model";
 
 export const list = query({
   args: { organizationId: v.id("organizations"), actorId: v.string() },
@@ -65,6 +70,8 @@ export const apply = mutation({
     clientId: v.string(),
     idempotencyKey: v.string(),
     expectedRevision: v.number(),
+    historyId: v.optional(v.string()),
+    expectedHistoryId: v.optional(v.union(v.string(), v.null())),
     action: v.union(v.literal("create"), v.literal("update"), v.literal("delete")),
     values: v.optional(v.object(patientFields)),
   },
@@ -82,6 +89,14 @@ export const apply = mutation({
       args.expectedRevision < 0
     )
       throw new ConvexError("INVALID_PATIENT");
+    if (args.historyId !== undefined) {
+      requireClientId(args.historyId);
+      if (args.expectedHistoryId === undefined) throw new ConvexError("INVALID_PATIENT");
+    }
+    if (args.expectedHistoryId !== undefined && args.historyId === undefined)
+      throw new ConvexError("INVALID_PATIENT");
+    if (args.expectedHistoryId !== undefined && args.expectedHistoryId !== null)
+      requireClientId(args.expectedHistoryId);
     const digest = await crypto.subtle.digest(
       "SHA-256",
       new TextEncoder().encode(
@@ -103,6 +118,9 @@ export const apply = mutation({
                   : {}),
               }
             : null,
+          ...(args.historyId !== undefined
+            ? { historyId: args.historyId, expectedHistoryId: args.expectedHistoryId }
+            : {}),
         }),
       ),
     );
@@ -131,6 +149,23 @@ export const apply = mutation({
         : !existing || existing.deleted || existing.revision !== args.expectedRevision
     )
       throw new ConvexError("REVISION_CONFLICT");
+    if (
+      args.expectedHistoryId !== undefined &&
+      (existing?.historyId ?? null) !== args.expectedHistoryId
+    )
+      throw new ConvexError("REVISION_CONFLICT");
+    if (
+      args.historyId !== undefined &&
+      (args.historyId === existing?.historyId ||
+        (await ctx.db
+          .query("patientVersions")
+          .withIndex("by_client", (q) =>
+            q.eq("organizationId", args.organizationId).eq("clientId", args.historyId!),
+          )
+          .unique()))
+    )
+      throw new ConvexError("INVALID_PATIENT");
+    const historyId = args.historyId ?? crypto.randomUUID();
     const revision = args.expectedRevision + 1;
     const now = Date.now();
     if (args.action !== "delete") {
@@ -189,7 +224,37 @@ export const apply = mutation({
         updatedAt: now,
         updatedBy: userId,
         deleted: false,
+        historyId,
       };
+      if (existing && !existing.historyId) {
+        const baselineId = legacyPatientVersionId(existing.clientId, existing.revision);
+        if (
+          !(await ctx.db
+            .query("patientVersions")
+            .withIndex("by_client", (q) =>
+              q.eq("organizationId", args.organizationId).eq("clientId", baselineId),
+            )
+            .unique())
+        )
+          await ctx.db.insert("patientVersions", {
+            organizationId: args.organizationId,
+            clientId: baselineId,
+            patientClientId: args.clientId,
+            revision: existing.revision,
+            values: patientVersionValuesSchema.parse(existing),
+            recordedAt: existing.updatedAt,
+            recordedBy: existing.updatedBy,
+          });
+      }
+      await ctx.db.insert("patientVersions", {
+        organizationId: args.organizationId,
+        clientId: historyId,
+        patientClientId: args.clientId,
+        revision,
+        values: patientVersionValuesSchema.parse(values),
+        recordedAt: now,
+        recordedBy: userId,
+      });
       if (existing) await ctx.db.patch(existing._id, values);
       else
         await ctx.db.insert("patients", {
@@ -199,6 +264,7 @@ export const apply = mutation({
         });
     } else if (existing) {
       await ctx.db.patch(existing._id, {
+        historyId,
         consentHistory: [],
         fullName: "",
         birthDate: "",
@@ -210,6 +276,21 @@ export const apply = mutation({
         updatedAt: now,
         updatedBy: userId,
       });
+      await ctx.scheduler.runAfter(0, internal.patients.eraseVersions, {
+        organizationId: args.organizationId,
+        patientClientId: args.clientId,
+      });
+      const archivedClinical = await ctx.db
+        .query("clinicalVersions")
+        .withIndex("by_patient", (q) =>
+          q.eq("organizationId", args.organizationId).eq("patientClientId", args.clientId),
+        )
+        .first();
+      if (archivedClinical)
+        await ctx.scheduler.runAfter(0, internal.clinicalRecords.eraseVersions, {
+          organizationId: args.organizationId,
+          patientClientId: args.clientId,
+        });
       const remaining = await ctx.db
         .query("clinicalRecords")
         .withIndex("by_patient_active", (q) =>
@@ -329,5 +410,51 @@ export const researchers = query({
           return { userId: m.userId, displayName: profile?.displayName ?? "" };
         }),
     );
+  },
+});
+
+export const versions = query({
+  args: { organizationId: v.id("organizations"), actorId: v.string() },
+  handler: async (ctx, args) => {
+    const { userId, membership } = await organizationAccess(ctx, args.organizationId);
+    if (userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
+    if (membership.role !== "doctor") return [];
+    const rows = await ctx.db
+      .query("patientVersions")
+      .withIndex("by_organization", (q) => q.eq("organizationId", args.organizationId))
+      .collect();
+    const visible = new Set<string>();
+    for (const clientId of new Set(rows.map((row) => row.patientClientId))) {
+      const patient = await ctx.db
+        .query("patients")
+        .withIndex("by_client", (q) =>
+          q.eq("organizationId", args.organizationId).eq("clientId", clientId),
+        )
+        .unique();
+      if (patient && !patient.deleted) visible.add(clientId);
+    }
+    return rows
+      .filter((row) => visible.has(row.patientClientId))
+      .map(({ _id, _creationTime, organizationId, ...row }) => ({ ...row, confirmed: true }));
+  },
+});
+export const eraseVersions = internalMutation({
+  args: { organizationId: v.id("organizations"), patientClientId: v.string() },
+  handler: async (ctx, args): Promise<void> => {
+    const patient = await ctx.db
+      .query("patients")
+      .withIndex("by_client", (q) =>
+        q.eq("organizationId", args.organizationId).eq("clientId", args.patientClientId),
+      )
+      .unique();
+    if (!patient?.deleted) return;
+    const rows = await ctx.db
+      .query("patientVersions")
+      .withIndex("by_patient", (q) =>
+        q.eq("organizationId", args.organizationId).eq("patientClientId", args.patientClientId),
+      )
+      .take(50);
+    for (const row of rows) await ctx.db.delete(row._id);
+    if (rows.length === 50) await ctx.scheduler.runAfter(0, internal.patients.eraseVersions, args);
   },
 });

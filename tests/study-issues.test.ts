@@ -505,6 +505,7 @@ it.each(["adverseEvent", "deviation"] as const)(
     const refresh = async () => {
       for (const fn of [
         api.patients.list,
+        api.patients.versions,
         api.clinicalRecords.list,
         api.clinicalRecords.versions,
         api.analyses.list,

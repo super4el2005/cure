@@ -462,7 +462,7 @@ test("clinical history routes render protected clinic entries independently", as
     );
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /Clinical record history/);
+    assert.match(html, /Patient card and clinical record history/);
     assert.doesNotMatch(
       html,
       /Private projects, study stages|Confidential research outcome|Test Patient/,
