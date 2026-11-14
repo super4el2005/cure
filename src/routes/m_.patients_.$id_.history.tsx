@@ -19,6 +19,7 @@ import { useForm } from "@mantine/form";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { clinicalHistoryContent } from "@/src/lib/clinical-history-content";
+import { patientHistoryContent } from "@/src/lib/patient-history-content";
 import { useClinicalHistory } from "@/src/lib/use-clinical-history";
 
 export const Route = createFileRoute("/m_/patients_/$id_/history")({ component: ClinicalHistory });
@@ -38,6 +39,8 @@ function ClinicalHistory() {
     unlock,
     lock,
     resume,
+    cardVersions,
+    cardHistory,
     versions,
     current,
     patients,
@@ -89,7 +92,7 @@ function ClinicalHistory() {
         <Anchor
           renderRoot={(props) => <Link {...props} to="/m/patients/$id" params={{ id }} />}
         >{t`Карта пациента`}</Anchor>
-        <Title>{t`История клинических записей`}</Title>
+        <Title>{t`История карты и клинических записей`}</Title>
         <Text>{t`Сохранённые редакции анамнеза, терапии, обследований, визитов и исследовательских записей. Это история содержимого, а не только список действий.`}</Text>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
@@ -166,6 +169,63 @@ function ClinicalHistory() {
                   !workspace.clinicalVersions.has(workspace.versionSnapshotId)) && (
                   <Alert color="yellow">{t`Серверная история ещё не подготовлена на устройстве. Показаны только доступные локальные редакции и текущие записи.`}</Alert>
                 )}
+
+                <Title order={2}>{t`Редакции карты пациента`}</Title>
+                <Alert>{t`Исторические сведения не восстанавливают согласие или доступ исследователя. Действующие разрешения определяются текущей картой и выданным доступом.`}</Alert>
+                {(!cardVersions.isReady ||
+                  !workspace.patientVersions.has(workspace.patientVersionSnapshotId)) && (
+                  <Alert color="yellow">{t`История карты ещё не подготовлена на устройстве. Новые локальные редакции сохраняются вместе с очередью; ранее не загруженные сведения требуют сети.`}</Alert>
+                )}
+                <Accordion multiple>
+                  {cardHistory.map((record) => (
+                    <Accordion.Item value={record.clientId} key={record.clientId}>
+                      <Accordion.Control>
+                        {t`Карта пациента`} — {t`Редакция`} {record.revision} —{" "}
+                        {i18n.date(new Date(record.recordedAt), {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </Accordion.Control>
+                      <Accordion.Panel>
+                        <Stack>
+                          <Text>
+                            {t`Автор записи`}:{" "}
+                            {names.get(record.recordedBy) ??
+                              (record.recordedBy || t`Автор не указан`)}
+                          </Text>
+                          <Badge>
+                            {record.confirmed
+                              ? t`Подтверждено сервером`
+                              : t`Локальная редакция; ожидает подтверждения`}
+                          </Badge>
+                          {patientHistoryContent(record.values, i18n, names).map(
+                            ([label, value], index) => (
+                              <Stack key={index}>
+                                <Text fw={600}>{label}</Text>
+                                <Text>{value}</Text>
+                              </Stack>
+                            ),
+                          )}
+                        </Stack>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  ))}
+                </Accordion>
+                {!cardHistory.some((record) => record.revision === patient.revision) && (
+                  <Paper withBorder p="md">
+                    <Stack>
+                      <Title order={3}>{t`Текущая карта без загруженной архивной редакции`}</Title>
+                      <Text>{t`Показана текущая запись. Архивная редакция появится после подготовки истории или следующего изменения.`}</Text>
+                      {patientHistoryContent(patient, i18n, names).map(([label, value], index) => (
+                        <Stack key={index}>
+                          <Text fw={600}>{label}</Text>
+                          <Text>{value}</Text>
+                        </Stack>
+                      ))}
+                    </Stack>
+                  </Paper>
+                )}
+                <Title order={2}>{t`Редакции клинических записей`}</Title>
                 <TextInput
                   label={t`Поиск по содержимому истории`}
                   {...filters.getInputProps("query")}

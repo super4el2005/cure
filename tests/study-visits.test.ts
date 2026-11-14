@@ -590,6 +590,7 @@ it("restores encrypted research visits, archives withdrawal-before-delivery and 
   const refresh = async () => {
     for (const fn of [
       api.patients.list,
+      api.patients.versions,
       api.clinicalRecords.list,
       api.clinicalRecords.versions,
       api.analyses.list,

@@ -203,6 +203,7 @@ function Patients() {
                 disabled={!status.data?.leader || !downloaded.isReady}
                 onClick={() => {
                   patientForm.reset();
+                  patientForm.setFieldValue("workspaceScope", workspace.scope);
                   editor.open();
                 }}
               >{t`Добавить пациента`}</Button>
@@ -212,7 +213,11 @@ function Patients() {
             )}
             {editing && opened.role === "doctor" && (
               <Paper withBorder p="md">
-                <form onSubmit={patientForm.onSubmit((values) => save.mutate(values))}>
+                <form
+                  onSubmit={patientForm.onSubmit((values) =>
+                    save.mutateAsync(values).catch(() => undefined),
+                  )}
+                >
                   <Stack>
                     <TextInput
                       label={t`Имя пациента`}
@@ -259,7 +264,11 @@ function Patients() {
             )}
             {consenting && opened.role === "doctor" && (
               <Paper withBorder p="md">
-                <form onSubmit={consentForm.onSubmit((values) => consent.mutate(values))}>
+                <form
+                  onSubmit={consentForm.onSubmit((values) =>
+                    consent.mutateAsync(values).catch(() => undefined),
+                  )}
+                >
                   <Stack>
                     <Title order={2}>{t`Согласие на исследовательское использование данных`}</Title>
                     <Text>{t`Врач фиксирует уже полученное согласие или его отзыв. Запись в системе не заменяет подпись пациента.`}</Text>
@@ -390,7 +399,11 @@ function Patients() {
             {share.isSuccess && <Alert>{t`Права доступа обновлены на сервере.`}</Alert>}
             {sharing && opened.role === "doctor" && (
               <Paper withBorder p="md">
-                <form onSubmit={shareForm.onSubmit((values) => share.mutate(values))}>
+                <form
+                  onSubmit={shareForm.onSubmit((values) =>
+                    share.mutateAsync(values).catch(() => undefined),
+                  )}
+                >
                   <Stack>
                     <Title order={2}>{t`Доступ исследователя к записи`}</Title>
                     <NativeSelect
@@ -601,6 +614,8 @@ function Patients() {
                                 patientForm.setValues({
                                   ...row,
                                   expectedRevision: row.revision,
+                                  expectedHistoryId: row.historyId ?? null,
+                                  workspaceScope: workspace.scope,
                                   diagnosisCodes: row.diagnosisCodes.join(", "),
                                   failureId: "",
                                 });
@@ -618,6 +633,8 @@ function Patients() {
                                   failureId: "",
                                   clientId: row.clientId,
                                   expectedRevision: row.revision,
+                                  expectedHistoryId: row.historyId ?? null,
+                                  workspaceScope: workspace.scope,
                                   kind: "granted",
                                   purpose: latest?.purpose ?? "",
                                   recipients: latest?.recipients ?? [],
@@ -634,6 +651,7 @@ function Patients() {
                               disabled={!status.data?.online}
                               onClick={() => {
                                 shareForm.setFieldValue("clientId", row.clientId);
+                                shareForm.setFieldValue("workspaceScope", workspace.scope);
                                 sharingDialog.open();
                               }}
                             >{t`Доступ исследователю`}</Button>
@@ -648,6 +666,8 @@ function Patients() {
                                     remove.mutate({
                                       clientId: row.clientId,
                                       expectedRevision: row.revision,
+                                      expectedHistoryId: row.historyId ?? null,
+                                      workspaceScope: workspace.scope,
                                     }),
                                 })
                               }
@@ -675,10 +695,25 @@ function Patients() {
                       ? t`Запись изменена другим участником. Проверьте актуальные данные перед повторным сохранением.`
                       : t`Сервер отклонил изменение. Локальная версия сохранена для разбора.`}
                   </Text>
-                  <Button
-                    variant="default"
-                    onClick={() => restore.mutate(failure)}
-                  >{t`Восстановить данные в форме`}</Button>
+                  {failure.action === "delete" ? (
+                    <Stack>
+                      <Text>{t`Удаление не выполнено. Откройте актуальную карту и повторно рассмотрите удаление; исходные данные сохранены в архиве решения.`}</Text>
+                      <Anchor
+                        renderRoot={(props) => (
+                          <Link
+                            {...props}
+                            to="/m/patients/$id"
+                            params={{ id: failure.envelope.clientId }}
+                          />
+                        )}
+                      >{t`Открыть актуальную карту`}</Anchor>
+                    </Stack>
+                  ) : (
+                    <Button
+                      variant="default"
+                      onClick={() => restore.mutate(failure)}
+                    >{t`Восстановить данные в форме`}</Button>
+                  )}
                 </Stack>
               </Alert>
             ))}

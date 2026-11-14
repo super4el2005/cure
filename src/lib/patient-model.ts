@@ -13,6 +13,8 @@ export const patientValueSchema = z.object({
 });
 export type PatientValues = z.input<typeof patientValueSchema>;
 export const patientRowSchema = z.object({
+  historyId: z.uuid().exactOptional(),
+  updatedBy: z.string().exactOptional(),
   consentHistory: z.array(consentEventSchema).default([]),
   consentApproved: z.boolean().default(false),
   consentScope: z.array(z.enum(["sex", "diagnoses"])).default([]),

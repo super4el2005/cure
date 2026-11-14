@@ -80,9 +80,12 @@ export function usePatientWorkspace() {
   const [sharing, sharingDialog] = useDisclosure(false);
   const [consenting, consentDialog] = useDisclosure(false);
   const consentForm = useForm({
+    enhanceGetInputProps: ({ form }) => (form.submitting ? { disabled: true } : {}),
     initialValues: {
       clientId: "",
       expectedRevision: 0,
+      expectedHistoryId: null as string | null,
+      workspaceScope: "",
       kind: "granted" as "granted" | "withdrawn",
       purpose: "",
       recipients: [] as string[],
@@ -109,7 +112,14 @@ export function usePatientWorkspace() {
     },
   });
   const shareForm = useForm({
-    initialValues: { clientId: "", researcherId: "", days: 30 as number | string, active: true },
+    enhanceGetInputProps: ({ form }) => (form.submitting ? { disabled: true } : {}),
+    initialValues: {
+      workspaceScope: "",
+      clientId: "",
+      researcherId: "",
+      days: 30 as number | string,
+      active: true,
+    },
     validate: {
       researcherId: (value) => (value ? null : t`Выберите исследователя`),
       days: (value) =>
@@ -117,9 +127,12 @@ export function usePatientWorkspace() {
     },
   });
   const patientForm = useForm({
+    enhanceGetInputProps: ({ form }) => (form.submitting ? { disabled: true } : {}),
     initialValues: {
       clientId: "",
       expectedRevision: 0,
+      expectedHistoryId: null as string | null,
+      workspaceScope: "",
       fullName: "",
       birthDate: "",
       sex: "unknown" as "female" | "male" | "unknown",
@@ -272,13 +285,20 @@ export function usePatientWorkspace() {
     retry: false,
     mutationFn: async (failure: FailedPatientAction) => {
       if (!workspace) throw new Error("WORKSPACE_LOCKED");
+      if (failure.action === "delete") throw new Error("INVALID_PATIENT");
       const row = workspace.read(failure.envelope);
+      const currentEnvelope = workspace.collection.get(row.clientId);
+      const current =
+        currentEnvelope && !currentEnvelope.deleted ? workspace.read(currentEnvelope) : undefined;
       if (failure.consentId) {
+        if (!current) throw new Error("PATIENT_NOT_FOUND");
         const event = row.consentHistory.find((item) => item.id === failure.consentId);
         if (!event) throw new Error("INVALID_VAULT_DATA");
         consentForm.setValues({
           clientId: row.clientId,
-          expectedRevision: workspace.collection.get(row.clientId)?.revision ?? 0,
+          expectedRevision: current?.revision ?? 0,
+          expectedHistoryId: current?.historyId ?? null,
+          workspaceScope: workspace.scope,
           kind: event.kind,
           purpose: event.purpose,
           recipients: event.recipients,
@@ -294,7 +314,11 @@ export function usePatientWorkspace() {
       }
       patientForm.setValues({
         ...row,
-        expectedRevision: workspace.collection.get(row.clientId)?.revision ?? 0,
+        clientId: current ? row.clientId : "",
+        consentHistory: current ? row.consentHistory : [],
+        expectedRevision: current?.revision ?? 0,
+        expectedHistoryId: current?.historyId ?? null,
+        workspaceScope: workspace.scope,
         diagnosisCodes: row.diagnosisCodes.join(", "),
         failureId: failure.id,
       });
@@ -307,21 +331,30 @@ export function usePatientWorkspace() {
     networkMode: "always",
     retry: false,
     mutationFn: async (input: typeof patientForm.values) => {
-      if (!workspace) throw new Error("WORKSPACE_LOCKED");
+      if (!workspace || input.workspaceScope !== workspace.scope)
+        throw new Error("WORKSPACE_LOCKED");
       const values = patientFormSchema.parse(input);
       const clientId = input.clientId || crypto.randomUUID();
       const result = await workspace.save({
         clientId,
         expectedRevision: input.expectedRevision,
+        expectedHistoryId: input.expectedHistoryId,
         action: workspace.collection.has(clientId) ? "update" : "create",
         values: patientValueSchema.parse(values),
       });
       if (input.failureId) await workspace.dismissFailure(input.failureId);
       return result;
     },
-    onSuccess: () => {
-      patientForm.reset();
-      editor.close();
+    onSuccess: (_result, input) => {
+      if (
+        JSON.stringify(patientForm.getValues()) === JSON.stringify(input) &&
+        patientForm.getValues().workspaceScope === input.workspaceScope &&
+        patientForm.getValues().clientId === input.clientId &&
+        patientForm.getValues().expectedHistoryId === input.expectedHistoryId
+      ) {
+        patientForm.reset();
+        editor.close();
+      }
       void status.refetch();
     },
   });
@@ -330,8 +363,14 @@ export function usePatientWorkspace() {
     gcTime: 0,
     networkMode: "always",
     retry: false,
-    mutationFn: async (input: { clientId: string; expectedRevision: number }) => {
-      if (!workspace) throw new Error("WORKSPACE_LOCKED");
+    mutationFn: async (input: {
+      clientId: string;
+      expectedRevision: number;
+      expectedHistoryId: string | null;
+      workspaceScope: string;
+    }) => {
+      if (!workspace || input.workspaceScope !== workspace.scope)
+        throw new Error("WORKSPACE_LOCKED");
       return workspace.save({ action: "delete", ...input });
     },
     onSuccess: () => {
@@ -360,7 +399,8 @@ export function usePatientWorkspace() {
     networkMode: "always",
     retry: false,
     mutationFn: async (input: typeof consentForm.values) => {
-      if (!workspace || !opened) throw new Error("WORKSPACE_LOCKED");
+      if (!workspace || !opened || input.workspaceScope !== workspace.scope)
+        throw new Error("WORKSPACE_LOCKED");
       const envelope = workspace.collection.get(input.clientId);
       if (!envelope) throw new Error("PATIENT_NOT_FOUND");
       const row = workspace.read(envelope);
@@ -382,6 +422,7 @@ export function usePatientWorkspace() {
       };
       const result = await workspace.save({
         action: "consent",
+        expectedHistoryId: input.expectedHistoryId,
         expectedRevision: input.expectedRevision,
         clientId: input.clientId,
         consent: event,
@@ -389,9 +430,16 @@ export function usePatientWorkspace() {
       if (input.failureId) await workspace.dismissFailure(input.failureId);
       return result;
     },
-    onSuccess: () => {
-      consentDialog.close();
-      consentForm.reset();
+    onSuccess: (_result, input) => {
+      if (
+        JSON.stringify(consentForm.getValues()) === JSON.stringify(input) &&
+        consentForm.getValues().workspaceScope === input.workspaceScope &&
+        consentForm.getValues().clientId === input.clientId &&
+        consentForm.getValues().expectedHistoryId === input.expectedHistoryId
+      ) {
+        consentDialog.close();
+        consentForm.reset();
+      }
       void status.refetch();
     },
   });
@@ -399,7 +447,14 @@ export function usePatientWorkspace() {
     mutationKey: ["patients-share"],
     retry: false,
     mutationFn: async (values: typeof shareForm.values) => {
-      if (!workspace || !opened || !online || !isAuthenticated) throw new Error("UNAUTHENTICATED");
+      if (
+        !workspace ||
+        !opened ||
+        values.workspaceScope !== workspace.scope ||
+        !online ||
+        !isAuthenticated
+      )
+        throw new Error("UNAUTHENTICATED");
       return convex.mutation(api.patients.share, {
         actorId: opened.userId,
         organizationId: workspace.organizationId,
@@ -409,9 +464,11 @@ export function usePatientWorkspace() {
         active: values.active,
       });
     },
-    onSuccess: () => {
-      sharingDialog.close();
-      shareForm.reset();
+    onSuccess: (_result, input) => {
+      if (JSON.stringify(shareForm.getValues()) === JSON.stringify(input)) {
+        sharingDialog.close();
+        shareForm.reset();
+      }
     },
   });
   const resume = useMutation({
@@ -463,11 +520,13 @@ export function usePatientWorkspace() {
     headers,
     unlockForm,
     unlock,
-    editing,
+    editing:
+      editing && Boolean(workspace) && patientForm.values.workspaceScope === workspace?.scope,
     editor,
-    sharing,
+    sharing: sharing && Boolean(workspace) && shareForm.values.workspaceScope === workspace?.scope,
     sharingDialog,
-    consenting,
+    consenting:
+      consenting && Boolean(workspace) && consentForm.values.workspaceScope === workspace?.scope,
     consentDialog,
     patientForm,
     consentForm,

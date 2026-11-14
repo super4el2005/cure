@@ -676,7 +676,20 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_organization_user", ["organizationId", "userId"]),
+  patientVersions: defineTable({
+    organizationId: v.id("organizations"),
+    clientId: v.string(),
+    patientClientId: v.string(),
+    revision: v.number(),
+    values: v.object(patientFields),
+    recordedAt: v.number(),
+    recordedBy: v.string(),
+  })
+    .index("by_client", ["organizationId", "clientId"])
+    .index("by_organization", ["organizationId"])
+    .index("by_patient", ["organizationId", "patientClientId"]),
   patients: defineTable({
+    historyId: v.optional(v.string()),
     clientId: v.string(),
     organizationId: v.id("organizations"),
     ...patientFields,

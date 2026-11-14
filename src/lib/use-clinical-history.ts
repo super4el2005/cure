@@ -9,10 +9,25 @@ export function useClinicalHistory(patientId: string) {
   const space = usePatientWorkspace();
   const { workspace, opened, userId, status } = space;
   const convex = useConvex();
+  const cardVersions = useLiveQuery(() => workspace?.patientVersions);
   const versions = useLiveQuery(() => workspace?.clinicalVersions);
   const current = useLiveQuery(() => workspace?.clinicalRecords);
   const patients = useLiveQuery(() => workspace?.collection);
   const allowed = workspace && opened?.role === "doctor" && Date.now() < workspace.expiresAt;
+  const cardHistory = allowed
+    ? (cardVersions.data ?? [])
+        .filter((row) => row.clientId !== workspace.patientVersionSnapshotId)
+        .flatMap((row) => {
+          try {
+            const record = workspace.readPatientVersion(row);
+            return record.patientClientId === patientId ? [record] : [];
+          } catch (error) {
+            if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
+            throw error;
+          }
+        })
+        .sort((a, b) => b.revision - a.revision)
+    : [];
   const history = allowed
     ? (versions.data ?? [])
         .filter((row) => row.clientId !== workspace.versionSnapshotId)
@@ -64,6 +79,22 @@ export function useClinicalHistory(patientId: string) {
       return workspace!.cachedReviewers();
     },
   });
-  const names = new Map((reviewers.data ?? []).map((row) => [row.userId, row.displayName]));
-  return { ...space, versions, current, patients, history, unarchived, names, reviewers };
+  const names = new Map(
+    [...(reviewers.data ?? []), ...(space.researchers.data ?? [])].map((row) => [
+      row.userId,
+      row.displayName,
+    ]),
+  );
+  return {
+    ...space,
+    cardVersions,
+    cardHistory,
+    versions,
+    current,
+    patients,
+    history,
+    unarchived,
+    names,
+    reviewers,
+  };
 }
