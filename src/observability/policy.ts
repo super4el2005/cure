@@ -15,6 +15,8 @@ export const actions: Record<string, string> = {
   "enrollment-save": "enrollment.save",
   "enrollment-delete": "enrollment.delete",
   "enrollment-restore": "enrollment.restore",
+  "credit-save": "research.credit.save",
+  "credit-restore": "research.credit.restore",
   "issue-save": "study.issue.save",
   "issue-delete": "study.issue.delete",
   "issue-restore": "study.issue.restore",
@@ -139,6 +141,10 @@ export const errorCodes = new Set([
   "INVALID_CLINICAL_DATE",
   "INVALID_OBSERVATION_VALUE",
   "INVALID_TASK",
+  "INVALID_RESEARCH_CREDIT",
+  "AUTHORSHIP_OUTDATED",
+  "DECLARATION_OUTDATED",
+  "AUTHOR_UNAVAILABLE",
   "ASSIGNEE_UNAVAILABLE",
   "INVALID_MESSAGE",
   "MESSAGE_DELETED",
@@ -209,7 +215,7 @@ export function safePath(value: unknown): string {
     )
       return path;
     const detail = path.match(
-      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety))?$/,
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits))?$/,
     );
     if (
       detail &&
@@ -217,9 +223,16 @@ export function safePath(value: unknown): string {
         (detail[2] === "patients" &&
           ["consents", "forms", "visits", "enrollment"].includes(detail[3])) ||
         (detail[2] === "projects" &&
-          ["protocol", "team", "work", "forms", "visits", "enrollment", "safety"].includes(
-            detail[3],
-          )))
+          [
+            "protocol",
+            "team",
+            "work",
+            "forms",
+            "visits",
+            "enrollment",
+            "safety",
+            "credits",
+          ].includes(detail[3])))
     )
       return `/${detail[1]}/${detail[2]}/:id${detail[3] ? `/${detail[3]}` : ""}`;
 

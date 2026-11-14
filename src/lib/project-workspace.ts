@@ -40,6 +40,7 @@ import {
   messageBodySchema,
 } from "@/src/lib/project-work-model";
 import type { WorkRecord, WorkCommand } from "@/src/lib/project-work-model";
+import { validateCreditEvent } from "@/src/lib/research-credit-model";
 import {
   protocolValuesSchema,
   projectRoleSchema,
@@ -75,7 +76,9 @@ type Envelope = z.infer<typeof envelopeSchema>;
 const failureSchema = z.object({
   id: z.string(),
   code: z.string(),
-  domain: z.enum(["project", "protocol", "team", "task", "message", "form"]).default("project"),
+  domain: z
+    .enum(["project", "protocol", "team", "task", "message", "credit", "form"])
+    .default("project"),
   operation: teamOperationSchema.optional(),
   envelope: envelopeSchema,
   at: z.number(),
@@ -478,6 +481,24 @@ export async function openProjectWorkspace(config: {
         };
       },
     });
+    const creditMutation = convexOfflineMutation({
+      client: config.client,
+      mutation: api.projectWork.appendCredit,
+      collections: [work],
+      getArgs: ({ transaction }) => {
+        const change = transaction.mutations[0];
+        if (transaction.mutations.length !== 1 || change?.type !== "insert")
+          throw new NonRetriableError("INVALID_RESEARCH_CREDIT");
+        const row = readWork(change.modified as Envelope);
+        if (row.entity !== "credit") throw new NonRetriableError("INVALID_RESEARCH_CREDIT");
+        return {
+          actorId: config.userId,
+          clientId: row.clientId,
+          projectClientId: row.projectClientId,
+          values: row.values,
+        };
+      },
+    });
     const formMutation = convexOfflineMutation({
       client: config.client,
       mutation: api.studyForms.append,
@@ -502,7 +523,7 @@ export async function openProjectWorkspace(config: {
     const guarded =
       (
         invoke: typeof mutation,
-        domain: "project" | "protocol" | "team" | "task" | "message" | "form",
+        domain: "project" | "protocol" | "team" | "task" | "message" | "credit" | "form",
         operation?: TeamOperation,
       ) =>
       async (params: Parameters<typeof mutation>[0]) => {
@@ -524,6 +545,10 @@ export async function openProjectWorkspace(config: {
           const code =
             [
               "INVALID_TASK",
+              "INVALID_RESEARCH_CREDIT",
+              "AUTHOR_UNAVAILABLE",
+              "AUTHORSHIP_OUTDATED",
+              "DECLARATION_OUTDATED",
               "INVALID_STUDY_FORM",
               "ASSIGNEE_UNAVAILABLE",
               "INVALID_MESSAGE",
@@ -585,6 +610,7 @@ export async function openProjectWorkspace(config: {
       maxConcurrency: 1,
       mutationFns: {
         "form.append.v1": guarded(formMutation, "form"),
+        "work.credit.v1": guarded(creditMutation, "credit"),
         "work.task.v1": guarded(taskMutation, "task"),
         "work.message.v1": guarded(messageMutation, "message"),
         "project.apply.v1": guarded(mutation, "project"),
@@ -845,7 +871,7 @@ export async function openProjectWorkspace(config: {
       ]),
     );
     const workActions = Object.fromEntries(
-      (["task", "message"] as const).map((entity) => [
+      (["task", "message", "credit"] as const).map((entity) => [
         entity,
         executor.createOfflineAction<WorkCommand>({
           mutationFnName: `work.${entity}.v1`,
@@ -876,7 +902,42 @@ export async function openProjectWorkspace(config: {
               updatedAt: now,
               delivery: "local" as const,
             };
-            if (command.entity === "task") {
+            if (command.entity === "credit") {
+              if (existing) throw new Error("REVISION_CONFLICT");
+              const entries = Array.from(work.values())
+                .filter((row) => row.clientId !== workSnapshotId)
+                .map(readWork)
+                .filter(
+                  (row) =>
+                    row.entity === "credit" && row.projectClientId === command.projectClientId,
+                );
+              validateCreditEvent(
+                entries.filter((row) => row.entity === "credit"),
+                config.userId,
+                manager,
+                command.values,
+              );
+              if (command.values.kind === "agreement")
+                for (const userId of command.values.authors) {
+                  const member = Array.from(team.values())
+                    .filter((row) => row.clientId !== teamSnapshotId)
+                    .map(readTeam)
+                    .find(
+                      (row) =>
+                        row.entity === "member" &&
+                        row.projectClientId === command.projectClientId &&
+                        row.userId === userId &&
+                        row.active &&
+                        row.role !== "viewer",
+                    );
+                  if (!member && userId !== config.userId) throw new Error("AUTHOR_UNAVAILABLE");
+                }
+              work.insert(
+                sealWork(
+                  workRecordSchema.parse({ ...common, entity: "credit", values: command.values }),
+                ),
+              );
+            } else if (command.entity === "task") {
               if (existing && existing.entity !== "task") throw new Error("INVALID_TASK");
               if (
                 existing &&
@@ -1020,7 +1081,14 @@ export async function openProjectWorkspace(config: {
         return saveTransaction(appendProtocol(command));
       },
       async failedActions(
-        domain: "project" | "protocol" | "team" | "task" | "message" | "form" = "project",
+        domain:
+          | "project"
+          | "protocol"
+          | "team"
+          | "task"
+          | "message"
+          | "credit"
+          | "form" = "project",
       ) {
         const rows = await Promise.all(
           (await failures.keys()).map(async (key) =>

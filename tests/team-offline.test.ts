@@ -19,6 +19,8 @@ import type { Id } from "@/convex/_generated/dataModel";
 import schema from "@/convex/schema";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { openProjectWorkspace } from "@/src/lib/project-workspace";
+import { currentDeclaration, currentDecision } from "@/src/lib/research-credit-model";
+import type { CreditEvent } from "@/src/lib/research-credit-model";
 import type { ProjectValues } from "@/src/lib/research-model";
 import type { TeamRecord } from "@/src/lib/team-model";
 rstest.mock("@/src/observability/events", () => ({ reportFailure: rstest.fn() }));
@@ -432,6 +434,225 @@ describe("durable cross-organization collaboration", () => {
         .map(recipientSpace.readWork)
         .find((row) => row.entity === "message"),
     ).toMatchObject({ body: "New authoritative message", revision: 2 });
+
+    // Credits share the native work source and executor, including durable
+    // dependencies across declarations, agreements and personal decisions.
+    await host.refresh();
+    host.disconnect();
+    const declarationId = crypto.randomUUID();
+    const declaration: Extract<CreditEvent, { kind: "declaration" }> = {
+      kind: "declaration",
+      previousClientId: null,
+      roles: ["methodology"],
+      contribution: "Confidential research contribution",
+      hasInterests: true,
+      interests: "Confidential funding disclosure",
+    };
+    const declarationQueued = await hostSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: declarationId,
+      expectedRevision: 0,
+      values: declaration,
+    });
+    const agreementId = crypto.randomUUID();
+    const agreement: Extract<CreditEvent, { kind: "agreement" }> = {
+      kind: "agreement",
+      groupId: crypto.randomUUID(),
+      version: 1,
+      previousClientId: null,
+      outputTitle: "Confidential manuscript",
+      terms: "Confidential final manuscript revision A",
+      authors: ["owner", "guest"],
+      correspondingAuthorId: "owner",
+      reason: "",
+    };
+    const agreementQueued = await hostSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: agreementId,
+      expectedRevision: 0,
+      values: agreement,
+    });
+    await hostSpace.close();
+    host.forget();
+    hostSpace = await host.open();
+    expect(hostSpace.readWork(hostSpace.work.get(`credit:${agreementId}`)!)).toMatchObject({
+      values: agreement,
+      delivery: "local",
+    });
+    expect(JSON.stringify([...host.storage.values.values()])).not.toContain("Confidential");
+    await host.refresh();
+    const creditsSent = Promise.all(
+      [declarationQueued, agreementQueued].map((tx) =>
+        hostSpace.executor.waitForTransactionCompletion(tx.transactionId),
+      ),
+    );
+    host.reconnect();
+    hostSpace.setAuthenticated(true);
+    await creditsSent;
+    await recipient.refresh();
+    recipient.disconnect();
+    const guestDeclarationId = crypto.randomUUID();
+    const guestDeclarationQueued = await recipientSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: guestDeclarationId,
+      expectedRevision: 0,
+      values: declaration,
+    });
+    const decisionId = crypto.randomUUID();
+    const decision: Extract<CreditEvent, { kind: "decision" }> = {
+      kind: "decision",
+      previousClientId: null,
+      agreementClientId: agreementId,
+      declarationClientId: guestDeclarationId,
+      decision: "accepted",
+      comment: "Confidential acceptance",
+      attestations: {
+        substantialContribution: true,
+        manuscriptWork: true,
+        finalApproval: true,
+        accountability: true,
+      },
+    };
+    const decisionQueued = await recipientSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: decisionId,
+      expectedRevision: 0,
+      values: decision,
+    });
+    await recipientSpace.close();
+    recipient.forget();
+    recipientSpace = await recipient.open();
+    expect(recipientSpace.readWork(recipientSpace.work.get(`credit:${decisionId}`)!)).toMatchObject(
+      { values: decision, delivery: "local" },
+    );
+    await recipient.refresh();
+    const decisionSent = Promise.all(
+      [guestDeclarationQueued, decisionQueued].map((tx) =>
+        recipientSpace.executor.waitForTransactionCompletion(tx.transactionId),
+      ),
+    );
+    recipient.reconnect();
+    recipientSpace.setAuthenticated(true);
+    await decisionSent;
+    expect(recipientSpace.readWork(recipientSpace.work.get(`credit:${decisionId}`)!)).toMatchObject(
+      { delivery: "confirmed" },
+    );
+    recipient.disconnect();
+    const proposedId = crypto.randomUUID();
+    const proposed = await recipientSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: proposedId,
+      expectedRevision: 0,
+      values: {
+        ...declaration,
+        previousClientId: guestDeclarationId,
+        interests: "Confidential proposed disclosure",
+      },
+    });
+    const dependent = await recipientSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: crypto.randomUUID(),
+      expectedRevision: 0,
+      values: {
+        ...declaration,
+        previousClientId: proposedId,
+        interests: "Confidential dependent disclosure",
+      },
+    });
+    const serverDeclarationId = crypto.randomUUID();
+    await guest.mutation(api.projectWork.appendCredit, {
+      actorId: "guest",
+      clientId: serverDeclarationId,
+      projectClientId: projectId,
+      values: {
+        ...declaration,
+        previousClientId: guestDeclarationId,
+        interests: "Confidential another-tab disclosure",
+      },
+      idempotencyKey: "credit-another-tab",
+    });
+    await recipientSpace.close();
+    recipient.forget();
+    recipientSpace = await recipient.open();
+    await recipient.refresh();
+    const rejectedCredits = Promise.allSettled(
+      [proposed, dependent].map((tx) =>
+        recipientSpace.executor.waitForTransactionCompletion(tx.transactionId),
+      ),
+    );
+    recipient.reconnect();
+    recipientSpace.setAuthenticated(true);
+    expect((await rejectedCredits).map((row) => row.status)).toEqual(["rejected", "rejected"]);
+    expect(await recipientSpace.failedActions("credit")).toHaveLength(2);
+    expect(JSON.stringify([...recipient.failureStorage.values.values()])).not.toContain(
+      "Confidential",
+    );
+    const creditRows = [...recipientSpace.work.values()]
+      .filter((row) => row.clientId !== recipientSpace.workSnapshotId)
+      .map(recipientSpace.readWork)
+      .filter((row) => row.entity === "credit");
+    expect(currentDeclaration(creditRows, "guest")?.clientId).toBe(serverDeclarationId);
+    expect(currentDecision(creditRows, agreementId, "guest")?.clientId).toBe(decisionId);
+    expect(currentDecision(creditRows, agreementId, "guest")?.values).toMatchObject({
+      declarationClientId: guestDeclarationId,
+    });
+    // An old-version acceptance cannot be silently retargeted by queue replay.
+    recipient.disconnect();
+    const outdated = await recipientSpace.saveWork({
+      entity: "credit",
+      projectClientId: projectId,
+      clientId: crypto.randomUUID(),
+      expectedRevision: 0,
+      values: {
+        ...decision,
+        previousClientId: decisionId,
+        declarationClientId: serverDeclarationId,
+      },
+    });
+    await owner.mutation(api.projectWork.appendCredit, {
+      actorId: "owner",
+      clientId: crypto.randomUUID(),
+      projectClientId: projectId,
+      idempotencyKey: "credit-next-agreement",
+      values: {
+        ...agreement,
+        previousClientId: agreementId,
+        version: 2,
+        reason: "Changed manuscript",
+        terms: "Confidential final manuscript revision B",
+      },
+    });
+    await recipientSpace.close();
+    recipient.forget();
+    recipientSpace = await recipient.open();
+    await recipient.refresh();
+    recipientSpace.setAuthenticated(false);
+    const before = recipient.calls();
+    recipient.reconnect();
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(recipient.calls()).toBe(before);
+    expect(await recipientSpace.executor.peekOutbox()).toHaveLength(1);
+    const outdatedSent = recipientSpace.executor.waitForTransactionCompletion(
+      outdated.transactionId,
+    );
+    recipientSpace.setAuthenticated(true);
+    await expect(outdatedSent).rejects.toThrow();
+    expect((await recipientSpace.failedActions("credit")).map((row) => row.code)).toContain(
+      "AUTHORSHIP_OUTDATED",
+    );
+    const persisted = recipient.sqlite
+      .prepare("SELECT name FROM sqlite_master WHERE type='table'")
+      .all()
+      .flatMap((row) =>
+        recipient.sqlite.prepare(`SELECT * FROM "${String(row.name).replaceAll('"', '""')}"`).all(),
+      );
+    expect(JSON.stringify(persisted)).not.toContain("Confidential");
     // Removing a guest belongs to the owner's scope even though their affiliation differs.
     await host.refresh();
     host.disconnect();

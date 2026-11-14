@@ -3,9 +3,95 @@ import { ConvexError, v } from "convex/values";
 import { mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
 import { projectAccess, operationReceipt, requireClientId } from "@/convex/lib/research";
-import { taskFields } from "@/convex/schema";
+import { creditEvent, taskFields } from "@/convex/schema";
 import { messageBodySchema, taskValuesSchema } from "@/src/lib/project-work-model";
+import { creditEventSchema, validateCreditEvent } from "@/src/lib/research-credit-model";
 
+export const appendCredit = mutation({
+  args: {
+    actorId: v.string(),
+    clientId: v.string(),
+    projectClientId: v.string(),
+    values: creditEvent,
+    idempotencyKey: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const access = await projectAccess(ctx, args.projectClientId, "contribute");
+    if (access.userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
+    requireClientId(args.clientId);
+    const parsed = creditEventSchema.safeParse(args.values);
+    if (!parsed.success) throw new ConvexError("INVALID_RESEARCH_CREDIT");
+    const values = parsed.data;
+    if (values.kind === "agreement" && !["owner", "coordinator"].includes(access.member.role))
+      throw new ConvexError("ACCESS_DENIED");
+    const receipt = await operationReceipt(ctx, access.userId, args.idempotencyKey, {
+      domain: "work.credit.v1",
+      clientId: args.clientId,
+      projectClientId: args.projectClientId,
+      values,
+    });
+    if (receipt.previous) return { revision: receipt.previous.revision };
+    if (
+      await ctx.db
+        .query("projectCredits")
+        .withIndex("by_client", (q) => q.eq("clientId", args.clientId))
+        .unique()
+    )
+      throw new ConvexError("REVISION_CONFLICT");
+    const entries = await ctx.db
+      .query("projectCredits")
+      .withIndex("by_project", (q) => q.eq("projectClientId", args.projectClientId))
+      .collect();
+    try {
+      validateCreditEvent(
+        entries.map((row) => ({ ...row, values: creditEventSchema.parse(row.values) })),
+        access.userId,
+        ["owner", "coordinator"].includes(access.member.role),
+        values,
+      );
+    } catch (error) {
+      throw new ConvexError(error instanceof Error ? error.message : "INVALID_RESEARCH_CREDIT");
+    }
+    if (values.kind === "agreement")
+      for (const userId of values.authors) {
+        const member = await ctx.db
+          .query("projectMembers")
+          .withIndex("by_project_user", (q) =>
+            q.eq("projectClientId", args.projectClientId).eq("userId", userId),
+          )
+          .unique();
+        if (!member?.active || member.role === "viewer")
+          throw new ConvexError("AUTHOR_UNAVAILABLE");
+        const affiliation = await ctx.db
+          .query("memberships")
+          .withIndex("by_organization_user", (q) =>
+            q.eq("organizationId", member.organizationId).eq("userId", userId),
+          )
+          .unique();
+        if (!affiliation?.active || !affiliation.verified || affiliation.role === "admin")
+          throw new ConvexError("AUTHOR_UNAVAILABLE");
+      }
+    const now = Date.now();
+    await ctx.db.insert("projectCredits", {
+      clientId: args.clientId,
+      projectClientId: args.projectClientId,
+      values,
+      revision: 1,
+      createdBy: access.userId,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await ctx.db.insert("researchAudit", {
+      projectClientId: args.projectClientId,
+      actorId: access.userId,
+      action: `credit.${values.kind}`,
+      entityClientId: args.clientId,
+      revision: 1,
+      at: now,
+    });
+    return receipt.commit(1);
+  },
+});
 export const saveTask = mutation({
   args: {
     actorId: v.string(),
@@ -196,7 +282,11 @@ export const workspace = query({
       own
         .filter((member) => member.active && member.organizationId === args.organizationId)
         .map(async (member) => {
-          const [tasks, messages] = await Promise.all([
+          const [credits, tasks, messages] = await Promise.all([
+            ctx.db
+              .query("projectCredits")
+              .withIndex("by_project", (q) => q.eq("projectClientId", member.projectClientId))
+              .collect(),
             ctx.db
               .query("projectTasks")
               .withIndex("by_project", (q) => q.eq("projectClientId", member.projectClientId))
@@ -207,6 +297,12 @@ export const workspace = query({
               .collect(),
           ]);
           return [
+            ...credits.map(({ _id, _creationTime, ...credit }) => ({
+              ...credit,
+              entity: "credit" as const,
+              key: `credit:${credit.clientId}`,
+              delivery: "confirmed" as const,
+            })),
             ...tasks.map(({ _id, _creationTime, ...task }) => ({
               ...task,
               entity: "task" as const,

@@ -86,13 +86,14 @@ function WorkspaceOverview() {
     queryFn: async () =>
       (
         await Promise.all(
-          (["project", "protocol", "team", "task", "message", "form"] as const).map((domain) =>
-            workspace!.failedActions(domain),
+          (["project", "protocol", "team", "task", "message", "credit", "form"] as const).map(
+            (domain) => workspace!.failedActions(domain),
           ),
         )
       ).flat(),
   });
   const domains = {
+    credit: t`Вклад и авторство`,
     form: t`Формы исследования`,
     project: t`Исследование`,
     protocol: t`Протокол исследования`,
@@ -409,6 +410,17 @@ function WorkspaceOverview() {
                     {i18n.date(new Date(failure.at), { dateStyle: "medium", timeStyle: "short" })}
                   </Text>
                   <Text>{t`Решение сохранено на устройстве. Откройте соответствующий раздел, чтобы сравнить его с текущими данными.`}</Text>
+                  {failure.domain === "credit" && (
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link
+                          {...props}
+                          to="/d/projects/$id/credits"
+                          params={{ id: workspace.readWork(failure.envelope).projectClientId }}
+                        />
+                      )}
+                    >{t`Вклад и авторство`}</Anchor>
+                  )}
                   {failure.domain === "project" && (
                     <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
                   )}

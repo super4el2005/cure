@@ -77,6 +77,41 @@ export const taskFields = {
   dueAt: v.number(),
   archived: v.boolean(),
 };
+export const creditEvent = v.union(
+  v.object({
+    kind: v.literal("declaration"),
+    previousClientId: v.union(v.string(), v.null()),
+    roles: v.array(v.string()),
+    contribution: v.string(),
+    hasInterests: v.boolean(),
+    interests: v.string(),
+  }),
+  v.object({
+    kind: v.literal("agreement"),
+    groupId: v.string(),
+    previousClientId: v.union(v.string(), v.null()),
+    version: v.number(),
+    outputTitle: v.string(),
+    terms: v.string(),
+    authors: v.array(v.string()),
+    correspondingAuthorId: v.string(),
+    reason: v.string(),
+  }),
+  v.object({
+    kind: v.literal("decision"),
+    previousClientId: v.union(v.string(), v.null()),
+    agreementClientId: v.string(),
+    declarationClientId: v.string(),
+    decision: v.union(v.literal("accepted"), v.literal("declined")),
+    attestations: v.object({
+      substantialContribution: v.boolean(),
+      manuscriptWork: v.boolean(),
+      finalApproval: v.boolean(),
+      accountability: v.boolean(),
+    }),
+    comment: v.string(),
+  }),
+);
 const studyFieldCommon = {
   visibleWhen: v.optional(
     v.object({
@@ -486,6 +521,17 @@ export default defineSchema({
     revision: v.number(),
     at: v.number(),
   }).index("by_patient", ["organizationId", "patientClientId"]),
+  projectCredits: defineTable({
+    clientId: v.string(),
+    projectClientId: v.string(),
+    values: creditEvent,
+    revision: v.number(),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_project", ["projectClientId"]),
   projectTasks: defineTable({
     clientId: v.string(),
     projectClientId: v.string(),
