@@ -19,9 +19,9 @@ const normalize = (codes: readonly string[]) => [
   ...new Set(codes.map((code) => code.trim().toUpperCase()).filter(Boolean)),
 ];
 
-// A descriptive local view, never a mutation of clinical records. Missing consent
-// and an authorized empty value have different denominators and exclusion reasons.
-export function analyzeCohort(
+type Disposition = "unavailableFields" | "sex" | "excluded" | "inclusion" | "selected";
+// Shared selection semantics for descriptive summaries and group comparisons.
+export function* cohortEntries(
   source: readonly PatientRow[],
   role: "doctor" | "researcher",
   input: CohortCriteria,
@@ -30,6 +30,42 @@ export function analyzeCohort(
   const criteria = cohortCriteriaSchema.parse(input);
   const include = normalize(criteria.include);
   const exclude = normalize(criteria.exclude);
+  for (const row of source) {
+    if (
+      row.deleted ||
+      (role === "researcher" &&
+        (!row.consentApproved || !row.accessExpiresAt || row.accessExpiresAt <= now))
+    )
+      continue;
+    const canSex = role === "doctor" || row.consentScope.includes("sex");
+    const canDiagnoses = role === "doctor" || row.consentScope.includes("diagnoses");
+    if (!canSex && !canDiagnoses) continue;
+    const codes = canDiagnoses ? normalize(row.diagnosisCodes) : [];
+    let reason: Disposition = "selected";
+    if (
+      (criteria.sex !== "any" && !canSex) ||
+      ((include.length > 0 || exclude.length > 0) && !canDiagnoses)
+    )
+      reason = "unavailableFields";
+    else if (criteria.sex !== "any" && row.sex !== criteria.sex) reason = "sex";
+    else if (exclude.some((code) => codes.includes(code))) reason = "excluded";
+    else if (
+      include.length > 0 &&
+      !(criteria.diagnosisMatch === "all"
+        ? include.every((code) => codes.includes(code))
+        : include.some((code) => codes.includes(code)))
+    )
+      reason = "inclusion";
+    yield { row, canSex, canDiagnoses, codes, reason };
+  }
+}
+// A descriptive local view, never a mutation of clinical records.
+export function analyzeCohort(
+  source: readonly PatientRow[],
+  role: "doctor" | "researcher",
+  input: CohortCriteria,
+  now: number,
+) {
   const flow = {
     available: 0,
     unavailableFields: 0,
@@ -44,41 +80,16 @@ export function analyzeCohort(
   let sexDenominator = 0;
   let diagnosisDenominator = 0;
   let emptyDiagnoses = 0;
-  for (const row of source) {
-    if (
-      row.deleted ||
-      (role === "researcher" &&
-        (!row.consentApproved || !row.accessExpiresAt || row.accessExpiresAt <= now))
-    )
-      continue;
-    const canSex = role === "doctor" || row.consentScope.includes("sex");
-    const canDiagnoses = role === "doctor" || row.consentScope.includes("diagnoses");
-    if (!canSex && !canDiagnoses) continue;
-    const codes = canDiagnoses ? normalize(row.diagnosisCodes) : [];
+  for (const { row, canSex, canDiagnoses, codes, reason } of cohortEntries(
+    source,
+    role,
+    input,
+    now,
+  )) {
     for (const code of codes) availableCodes.add(code);
     flow.available++;
-    if (
-      (criteria.sex !== "any" && !canSex) ||
-      ((include.length > 0 || exclude.length > 0) && !canDiagnoses)
-    ) {
-      flow.unavailableFields++;
-      continue;
-    }
-    if (criteria.sex !== "any" && row.sex !== criteria.sex) {
-      flow.sex++;
-      continue;
-    }
-    if (exclude.some((code) => codes.includes(code))) {
-      flow.excluded++;
-      continue;
-    }
-    if (
-      include.length > 0 &&
-      !(criteria.diagnosisMatch === "all"
-        ? include.every((code) => codes.includes(code))
-        : include.some((code) => codes.includes(code)))
-    ) {
-      flow.inclusion++;
+    if (reason !== "selected") {
+      flow[reason]++;
       continue;
     }
     flow.selected++;

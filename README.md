@@ -308,6 +308,7 @@
 - @internationalized/date — часовые пояса и точное время визитов.
 - Convex — backend и база данных.
 - Axios — HTTP; TanStack Query — запросы; TanStack DB — локальные данные.
+- stdlib — статистические расчёты; ohash — проверка актуальности локальных результатов.
 - Better Auth — авторизация.
 - Bowser — определение устройства.
 - Orval, Zod — API-клиенты, контракты и валидация.

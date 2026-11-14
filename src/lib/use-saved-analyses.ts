@@ -2,8 +2,11 @@ import { useLingui } from "@lingui/react/macro";
 import { useForm } from "@mantine/form";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { hash } from "ohash";
 
 import { defaultCohortCriteria } from "@/src/lib/cohort-analysis";
+import { compareCohorts, comparisonSourceSignature } from "@/src/lib/cohort-comparison";
+import { defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
 import { analysisValuesSchema } from "@/src/lib/saved-analysis-model";
 import type { SavedAnalysis } from "@/src/lib/saved-analysis-model";
@@ -17,7 +20,13 @@ const initial = {
   title: "",
   description: "",
   criteria: defaultCohortCriteria,
+  comparisonEnabled: false,
+  comparison: defaultCohortComparison,
 };
+function analysisInput(input: typeof initial) {
+  const { comparisonEnabled, comparison, ...values } = input;
+  return { ...values, ...(comparisonEnabled ? { comparison } : {}) };
+}
 export function useSavedAnalyses() {
   const space = usePatientWorkspace();
   const { workspace, status } = space;
@@ -33,7 +42,7 @@ export function useSavedAnalyses() {
   const analysisForm = useForm({
     initialValues: initial,
     validate: (input) => {
-      const result = analysisValuesSchema.safeParse(input);
+      const result = analysisValuesSchema.safeParse(analysisInput(input));
       return result.success
         ? {}
         : Object.fromEntries(
@@ -69,7 +78,7 @@ export function useSavedAnalyses() {
         clientId,
         expectedRevision: input.expectedRevision,
         action: input.clientId ? "update" : "create",
-        values: analysisValuesSchema.parse(input),
+        values: analysisValuesSchema.parse(analysisInput(input)),
       });
       if (input.failureId) await workspace.dismissFailure(input.failureId);
       return { ...result, clientId };
@@ -77,6 +86,7 @@ export function useSavedAnalyses() {
     onSuccess: (result, input) => {
       const current = analysisForm.getValues();
       if (
+        JSON.stringify(current) === JSON.stringify(input) &&
         current.scope === input.scope &&
         current.clientId === input.clientId &&
         current.expectedRevision === input.expectedRevision
@@ -124,7 +134,10 @@ export function useSavedAnalyses() {
       if (!record.values) throw new Error("INVALID_ANALYSIS");
       const current = workspace.analyses.get(record.clientId);
       assign({
+        ...initial,
         ...record.values,
+        comparisonEnabled: Boolean(record.values.comparison),
+        comparison: record.values.comparison ?? defaultCohortComparison,
         scope: workspace.scope,
         clientId: current && !current.deleted ? record.clientId : "",
         expectedRevision: current && !current.deleted ? current.revision : 0,
@@ -132,8 +145,56 @@ export function useSavedAnalyses() {
       });
     },
   });
+  const comparisonKey = hash({ criteria, comparison: analysisForm.values.comparison });
+  const comparison = useMutation({
+    mutationKey: ["analysis-compare"],
+    networkMode: "always",
+    retry: false,
+    gcTime: 0,
+    mutationFn: async (input: { scope: string; key: string }) => {
+      if (
+        !workspace ||
+        !currentAnalysis ||
+        input.scope !== workspace.scope ||
+        Date.now() >= workspace.expiresAt ||
+        !space.downloaded.isReady
+      )
+        throw new Error("WORKSPACE_LOCKED");
+      try {
+        return {
+          scope: workspace.scope,
+          key: input.key,
+          report: compareCohorts(
+            space.rows,
+            space.opened?.role ?? "researcher",
+            criteria,
+            analysisForm.values.comparison,
+            Date.now(),
+          ),
+        };
+      } catch {
+        throw new Error("ANALYSIS_CALCULATION_FAILED");
+      }
+    },
+  });
+  const comparisonResult =
+    currentAnalysis &&
+    analysisForm.values.comparisonEnabled &&
+    comparison.data?.scope === workspace?.scope
+      ? comparison.data
+      : undefined;
+  const comparisonStale = Boolean(
+    comparisonResult &&
+    (comparisonResult.key !== comparisonKey ||
+      comparisonResult.report.signature !==
+        comparisonSourceSignature(space.rows, space.opened?.role ?? "researcher", Date.now())),
+  );
   return {
     ...space,
+    comparison,
+    comparisonKey,
+    comparisonResult,
+    comparisonStale,
     analyses,
     localAnalyses,
     analysisForm,
@@ -151,6 +212,8 @@ export function useSavedAnalyses() {
         assign({
           ...initial,
           ...record.values,
+          comparisonEnabled: Boolean(record.values.comparison),
+          comparison: record.values.comparison ?? defaultCohortComparison,
           scope: workspace.scope,
           clientId: record.clientId,
           expectedRevision: record.revision,

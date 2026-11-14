@@ -4,6 +4,7 @@ import { convexTest } from "convex-test";
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
 import { defaultCohortCriteria } from "@/src/lib/cohort-analysis";
+import { defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
 
 const modules = {
   "../convex/_generated/server.js": () => import("@/convex/_generated/server.js"),
@@ -43,6 +44,40 @@ async function setup() {
   return { t, researcher, organizationId, args };
 }
 describe("owned saved analysis definitions", () => {
+  it("round-trips comparison settings without changing legacy receipts or storing results", async () => {
+    const { researcher, args } = await setup();
+    await researcher.mutation(api.analyses.apply, args);
+    const comparison = {
+      ...defaultCohortComparison,
+      outcome: { kind: "diagnosis" as const, code: "F41" },
+      hypothesis: "Private hypothesis",
+    };
+    await researcher.mutation(api.analyses.apply, {
+      ...args,
+      action: "update",
+      expectedRevision: 1,
+      idempotencyKey: "comparison",
+      values: { ...args.values, comparison },
+    });
+    expect(await researcher.mutation(api.analyses.apply, args)).toEqual({ revision: 1 });
+    const rows = await researcher.query(api.analyses.list, {
+      actorId: args.actorId,
+      organizationId: args.organizationId,
+    });
+    expect(rows[0]?.values?.comparison).toEqual(comparison);
+    expect(rows[0]?.values).not.toHaveProperty("results");
+    await expect(
+      researcher.mutation(api.analyses.apply, {
+        ...args,
+        clientId: crypto.randomUUID(),
+        idempotencyKey: "invalid-comparison",
+        values: {
+          ...args.values,
+          comparison: { ...comparison, intent: "prespecified", hypothesis: "" },
+        },
+      }),
+    ).rejects.toThrow("INVALID_ANALYSIS");
+  });
   it("lets researchers edit their own criteria with CAS and idempotency, without editing patients", async () => {
     const { t, researcher, args } = await setup();
     expect(await researcher.mutation(api.analyses.apply, args)).toEqual({ revision: 1 });

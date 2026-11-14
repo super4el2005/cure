@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { cohortCriteriaSchema } from "@/src/lib/cohort-analysis";
+import { cohortComparisonSchema } from "@/src/lib/cohort-comparison-model";
 import type { PatientEnvelope } from "@/src/lib/patient-model";
 import type { Vault } from "@/src/lib/patient-vault";
 
@@ -8,6 +9,7 @@ export const analysisValuesSchema = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000),
   criteria: cohortCriteriaSchema,
+  comparison: cohortComparisonSchema.exactOptional(),
 });
 export type AnalysisValues = z.infer<typeof analysisValuesSchema>;
 export const savedAnalysisSchema = z
