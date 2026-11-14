@@ -15,6 +15,7 @@ import { Route as MRouteImport } from './routes/m'
 import { Route as AuthErrorRouteImport } from './routes/auth.error'
 import { Route as DAnalyticsRouteImport } from './routes/d_.analytics'
 import { Route as DInvitationsRouteImport } from './routes/d_.invitations'
+import { Route as DLibraryRouteImport } from './routes/d_.library'
 import { Route as DOrganizationsRouteImport } from './routes/d_.organizations'
 import { Route as DPatientsRouteImport } from './routes/d_.patients'
 import { Route as DProfileRouteImport } from './routes/d_.profile'
@@ -25,6 +26,7 @@ import { Route as DToolsRouteImport } from './routes/d_.tools'
 import { Route as DWorkspaceRouteImport } from './routes/d_.workspace'
 import { Route as MAnalyticsRouteImport } from './routes/m_.analytics'
 import { Route as MInvitationsRouteImport } from './routes/m_.invitations'
+import { Route as MLibraryRouteImport } from './routes/m_.library'
 import { Route as MOrganizationsRouteImport } from './routes/m_.organizations'
 import { Route as MPatientsRouteImport } from './routes/m_.patients'
 import { Route as MProfileRouteImport } from './routes/m_.profile'
@@ -95,6 +97,11 @@ const DInvitationsRoute = DInvitationsRouteImport.update({
   path: '/d/invitations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DLibraryRoute = DLibraryRouteImport.update({
+  id: '/d_/library',
+  path: '/d/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DOrganizationsRoute = DOrganizationsRouteImport.update({
   id: '/d_/organizations',
   path: '/d/organizations',
@@ -143,6 +150,11 @@ const MAnalyticsRoute = MAnalyticsRouteImport.update({
 const MInvitationsRoute = MInvitationsRouteImport.update({
   id: '/m_/invitations',
   path: '/m/invitations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MLibraryRoute = MLibraryRouteImport.update({
+  id: '/m_/library',
+  path: '/m/library',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MOrganizationsRoute = MOrganizationsRouteImport.update({
@@ -348,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/auth/error': typeof AuthErrorRoute
   '/d/analytics': typeof DAnalyticsRoute
   '/d/invitations': typeof DInvitationsRoute
+  '/d/library': typeof DLibraryRoute
   '/d/organizations': typeof DOrganizationsRoute
   '/d/patients': typeof DPatientsRoute
   '/d/profile': typeof DProfileRoute
@@ -358,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/d/workspace': typeof DWorkspaceRoute
   '/m/analytics': typeof MAnalyticsRoute
   '/m/invitations': typeof MInvitationsRoute
+  '/m/library': typeof MLibraryRoute
   '/m/organizations': typeof MOrganizationsRoute
   '/m/patients': typeof MPatientsRoute
   '/m/profile': typeof MProfileRoute
@@ -405,6 +419,7 @@ export interface FileRoutesByTo {
   '/auth/error': typeof AuthErrorRoute
   '/d/analytics': typeof DAnalyticsRoute
   '/d/invitations': typeof DInvitationsRoute
+  '/d/library': typeof DLibraryRoute
   '/d/organizations': typeof DOrganizationsRoute
   '/d/patients': typeof DPatientsRoute
   '/d/profile': typeof DProfileRoute
@@ -415,6 +430,7 @@ export interface FileRoutesByTo {
   '/d/workspace': typeof DWorkspaceRoute
   '/m/analytics': typeof MAnalyticsRoute
   '/m/invitations': typeof MInvitationsRoute
+  '/m/library': typeof MLibraryRoute
   '/m/organizations': typeof MOrganizationsRoute
   '/m/patients': typeof MPatientsRoute
   '/m/profile': typeof MProfileRoute
@@ -463,6 +479,7 @@ export interface FileRoutesById {
   '/auth/error': typeof AuthErrorRoute
   '/d_/analytics': typeof DAnalyticsRoute
   '/d_/invitations': typeof DInvitationsRoute
+  '/d_/library': typeof DLibraryRoute
   '/d_/organizations': typeof DOrganizationsRoute
   '/d_/patients': typeof DPatientsRoute
   '/d_/profile': typeof DProfileRoute
@@ -473,6 +490,7 @@ export interface FileRoutesById {
   '/d_/workspace': typeof DWorkspaceRoute
   '/m_/analytics': typeof MAnalyticsRoute
   '/m_/invitations': typeof MInvitationsRoute
+  '/m_/library': typeof MLibraryRoute
   '/m_/organizations': typeof MOrganizationsRoute
   '/m_/patients': typeof MPatientsRoute
   '/m_/profile': typeof MProfileRoute
@@ -522,6 +540,7 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/d/analytics'
     | '/d/invitations'
+    | '/d/library'
     | '/d/organizations'
     | '/d/patients'
     | '/d/profile'
@@ -532,6 +551,7 @@ export interface FileRouteTypes {
     | '/d/workspace'
     | '/m/analytics'
     | '/m/invitations'
+    | '/m/library'
     | '/m/organizations'
     | '/m/patients'
     | '/m/profile'
@@ -579,6 +599,7 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/d/analytics'
     | '/d/invitations'
+    | '/d/library'
     | '/d/organizations'
     | '/d/patients'
     | '/d/profile'
@@ -589,6 +610,7 @@ export interface FileRouteTypes {
     | '/d/workspace'
     | '/m/analytics'
     | '/m/invitations'
+    | '/m/library'
     | '/m/organizations'
     | '/m/patients'
     | '/m/profile'
@@ -636,6 +658,7 @@ export interface FileRouteTypes {
     | '/auth/error'
     | '/d_/analytics'
     | '/d_/invitations'
+    | '/d_/library'
     | '/d_/organizations'
     | '/d_/patients'
     | '/d_/profile'
@@ -646,6 +669,7 @@ export interface FileRouteTypes {
     | '/d_/workspace'
     | '/m_/analytics'
     | '/m_/invitations'
+    | '/m_/library'
     | '/m_/organizations'
     | '/m_/patients'
     | '/m_/profile'
@@ -694,6 +718,7 @@ export interface RootRouteChildren {
   AuthErrorRoute: typeof AuthErrorRoute
   DAnalyticsRoute: typeof DAnalyticsRoute
   DInvitationsRoute: typeof DInvitationsRoute
+  DLibraryRoute: typeof DLibraryRoute
   DOrganizationsRoute: typeof DOrganizationsRoute
   DPatientsRoute: typeof DPatientsRoute
   DProfileRoute: typeof DProfileRoute
@@ -704,6 +729,7 @@ export interface RootRouteChildren {
   DWorkspaceRoute: typeof DWorkspaceRoute
   MAnalyticsRoute: typeof MAnalyticsRoute
   MInvitationsRoute: typeof MInvitationsRoute
+  MLibraryRoute: typeof MLibraryRoute
   MOrganizationsRoute: typeof MOrganizationsRoute
   MPatientsRoute: typeof MPatientsRoute
   MProfileRoute: typeof MProfileRoute
@@ -789,6 +815,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DInvitationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/library': {
+      id: '/d_/library'
+      path: '/d/library'
+      fullPath: '/d/library'
+      preLoaderRoute: typeof DLibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/organizations': {
       id: '/d_/organizations'
       path: '/d/organizations'
@@ -857,6 +890,13 @@ declare module '@tanstack/react-router' {
       path: '/m/invitations'
       fullPath: '/m/invitations'
       preLoaderRoute: typeof MInvitationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/library': {
+      id: '/m_/library'
+      path: '/m/library'
+      fullPath: '/m/library'
+      preLoaderRoute: typeof MLibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m_/organizations': {
@@ -1142,6 +1182,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthErrorRoute: AuthErrorRoute,
   DAnalyticsRoute: DAnalyticsRoute,
   DInvitationsRoute: DInvitationsRoute,
+  DLibraryRoute: DLibraryRoute,
   DOrganizationsRoute: DOrganizationsRoute,
   DPatientsRoute: DPatientsRoute,
   DProfileRoute: DProfileRoute,
@@ -1152,6 +1193,7 @@ const rootRouteChildren: RootRouteChildren = {
   DWorkspaceRoute: DWorkspaceRoute,
   MAnalyticsRoute: MAnalyticsRoute,
   MInvitationsRoute: MInvitationsRoute,
+  MLibraryRoute: MLibraryRoute,
   MOrganizationsRoute: MOrganizationsRoute,
   MPatientsRoute: MPatientsRoute,
   MProfileRoute: MProfileRoute,

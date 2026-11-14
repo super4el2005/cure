@@ -6,7 +6,7 @@ import { medicalSources } from "@/src/lib/medical-catalog";
 export const medicalSourceSchema = z.enum(medicalSources);
 const query = z.string().trim().max(100);
 const ordinarySearch = z.object({
-  source: z.enum(["ror", "geofabrik", "icd11", "icd10", "pubmed", "orphadata"]),
+  source: z.enum(["ror", "geofabrik", "icd11", "icd10", "orphadata"]),
   query: query.min(2),
 });
 const nearbySearch = z.object({
@@ -16,7 +16,16 @@ const nearbySearch = z.object({
   longitude: z.number().min(-180).max(180),
   radius: z.number().min(100).max(10000),
 });
-export const medicalSearchSchema = z.discriminatedUnion("source", [ordinarySearch, nearbySearch]);
+const publicationSearch = z.object({
+  source: z.literal("pubmed"),
+  query: query.min(2),
+  offset: z.number().int().min(0).max(9980).optional(),
+});
+export const medicalSearchSchema = z.discriminatedUnion("source", [
+  ordinarySearch,
+  nearbySearch,
+  publicationSearch,
+]);
 // The form accepts empty NumberInput values; the wire contract requires numbers.
 export const medicalFormSchema = z
   .object({
@@ -43,6 +52,14 @@ export const medicalRecordSchema = z.object({
   id: z.string(),
   source: medicalSourceSchema,
   sourceId: z.string(),
+  bibliography: z
+    .object({
+      doi: z.string(),
+      authors: z.array(z.string()),
+      year: z.number().int().nullable(),
+      journal: z.string(),
+    })
+    .optional(),
   title: z.string(),
   description: z.string(),
   code: z.string(),

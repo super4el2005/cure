@@ -151,7 +151,9 @@ it("loads PubMed summaries without returning credentials or full articles", asyn
           "123": {
             title: "<i>Asthma</i> in children",
             fulljournalname: "Journal",
-            pubdate: "2026",
+            pubdate: "2026 Nov",
+            authors: [{ name: "Author One" }, { name: "<i>Author Two</i>" }],
+            articleids: [{ idtype: "doi", value: "10.1234/example" }],
           },
         },
       },
@@ -163,6 +165,12 @@ it("loads PubMed summaries without returning credentials or full articles", asyn
     title: "Asthma in children",
     code: "PMID:123",
     url: "https://pubmed.ncbi.nlm.nih.gov/123/",
+    bibliography: {
+      doi: "10.1234/example",
+      authors: ["Author One", "Author Two"],
+      year: 2026,
+      journal: "Journal",
+    },
   });
   expect(value.truncated).toBe(true);
   expect(JSON.stringify(value)).not.toContain("secret");
@@ -566,4 +574,31 @@ it("preserves HTTP failures for non-JSON upstream errors and rejects malformed s
     code: "INVALID_SOURCE_RESPONSE",
     details: { failure: "json" },
   });
+});
+
+it("pages PubMed searches within the NCBI search window and stops at the final page", async () => {
+  const calls: URL[] = [];
+  const ids = Array.from({ length: 20 }, (_, index) => String(index + 21));
+  const search = createMedicalProviders(async (input) => {
+    const url = new URL(input instanceof Request ? input.url : String(input));
+    calls.push(url);
+    return Response.json(
+      url.pathname.endsWith("esearch.fcgi")
+        ? { esearchresult: { count: "40", idlist: ids } }
+        : {
+            result: Object.fromEntries(
+              ids.map((id) => [
+                id,
+                { title: `Publication ${id}`, pubdate: "2026", fulljournalname: "Journal" },
+              ]),
+            ),
+          },
+    );
+  }, {});
+  const result = await search({ source: "pubmed", query: "asthma", offset: 20 }, "en");
+  expect(calls[0]!.searchParams.get("retstart")).toBe("20");
+  expect(calls[0]!.searchParams.get("retmax")).toBe("20");
+  expect(result.records).toHaveLength(20);
+  expect(result.records[0]?.code).toBe("PMID:21");
+  expect(result.truncated).toBe(false);
 });

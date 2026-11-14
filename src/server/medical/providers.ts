@@ -164,6 +164,7 @@ export function createMedicalProviders(
         term: input.query,
         retmode: "json",
         retmax: "20",
+        retstart: String(input.offset ?? 0),
         tool: "cure",
       }).toString();
       if (env.NCBI_API_KEY) url.searchParams.set("api_key", env.NCBI_API_KEY);
@@ -187,6 +188,16 @@ export function createMedicalProviders(
           const item = object(result[id]);
           return record({
             sourceId: id,
+            bibliography: {
+              doi: text(rows(item.articleids).find((value) => text(value.idtype) === "doi")?.value),
+              authors: rows(item.authors)
+                .map((value) => plainText(value.name))
+                .filter(Boolean),
+              year: /\b(?:1[5-9]\d{2}|20\d{2}|21\d{2}|2200)\b/.test(text(item.pubdate))
+                ? Number(text(item.pubdate).match(/\b(?:1[5-9]\d{2}|20\d{2}|21\d{2}|2200)\b/)![0])
+                : null,
+              journal: plainText(item.fulljournalname),
+            },
             code: `PMID:${id}`,
             title: plainText(item.title),
             url: `https://pubmed.ncbi.nlm.nih.gov/${id}/`,
@@ -238,7 +249,8 @@ export function createMedicalProviders(
       source: input.source,
       records: unique.slice(0, limit),
       total,
-      truncated: total === null || total > limit,
+      truncated:
+        total === null || total > limit + (input.source === "pubmed" ? (input.offset ?? 0) : 0),
       fetchedAt: stamp,
       dataLanguage: language,
     };

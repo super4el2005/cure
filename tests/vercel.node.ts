@@ -415,3 +415,21 @@ test("study visit routes render protected clinic entries independently", async (
     );
   }
 });
+
+test("personal library routes render independent safe entries without private data or live calls", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/library`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /My scientific library/);
+    assert.match(html, /Search PubMed publications/);
+    assert.doesNotMatch(
+      html,
+      /Confidential research notes|Private research source|Private user decision/,
+    );
+  }
+});

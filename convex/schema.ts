@@ -111,6 +111,27 @@ export const formDefinition = v.object({
 });
 export const formStatus = v.union(v.literal("published"), v.literal("retired"));
 const clinicalCommon = { occurredOn: v.string(), notes: v.string() };
+export const libraryEntry = v.object({
+  title: v.string(),
+  doi: v.string(),
+  pmid: v.string(),
+  url: v.string(),
+  citation: v.string(),
+  authors: v.string(),
+  year: v.union(v.number(), v.null()),
+  collection: v.string(),
+  tags: v.array(v.string()),
+  notes: v.string(),
+  status: v.union(
+    v.literal("toRead"),
+    v.literal("reading"),
+    v.literal("included"),
+    v.literal("excluded"),
+  ),
+  exclusionReason: v.string(),
+  source: v.union(v.literal("manual"), v.literal("pubmed")),
+  fetchedAt: v.union(v.number(), v.null()),
+});
 export const analysisValues = v.object({
   title: v.string(),
   description: v.string(),
@@ -283,6 +304,36 @@ export default defineSchema({
     .index("by_client", ["clientId"])
     .index("by_project", ["projectClientId"])
     .index("by_form_version", ["projectClientId", "formClientId", "version"]),
+  libraryItems: defineTable({
+    userId: v.string(),
+    clientId: v.string(),
+    writeId: v.string(),
+    revision: v.number(),
+    deleted: v.boolean(),
+    entry: v.union(libraryEntry, v.null()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_owner", ["userId"])
+    .index("by_client", ["clientId"]),
+  libraryVersions: defineTable({
+    userId: v.string(),
+    clientId: v.string(),
+    itemClientId: v.string(),
+    revision: v.number(),
+    entry: libraryEntry,
+    recordedAt: v.number(),
+    recordedBy: v.string(),
+  })
+    .index("by_owner", ["userId"])
+    .index("by_item", ["itemClientId"]),
+  libraryAudit: defineTable({
+    actorId: v.string(),
+    clientId: v.string(),
+    revision: v.number(),
+    action: v.string(),
+    at: v.number(),
+  }).index("by_owner", ["actorId"]),
   savedAnalyses: defineTable({
     organizationId: v.id("organizations"),
     userId: v.string(),
