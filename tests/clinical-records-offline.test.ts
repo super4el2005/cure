@@ -206,7 +206,12 @@ it.each(["history", "visit", "questionnaire"] as const)(
     let snapshots = new Map<string, unknown>();
     const listeners = new Set<() => void>();
     const refresh = async () => {
-      for (const fn of [api.patients.list, api.clinicalRecords.list, api.analyses.list])
+      for (const fn of [
+        api.patients.list,
+        api.clinicalRecords.list,
+        api.clinicalRecords.versions,
+        api.analyses.list,
+      ])
         snapshots.set(
           getFunctionName(fn),
           await doctor.query(fn, { actorId: "doctor", organizationId }),
@@ -214,6 +219,8 @@ it.each(["history", "visit", "questionnaire"] as const)(
       for (const listener of listeners) listener();
     };
     await refresh();
+    // Upgrade an already prepared clinical workspace while the new history source is unavailable.
+    snapshots.delete(getFunctionName(api.clinicalRecords.versions));
     let calls = 0;
     const client = {
       watchQuery(fn: FunctionReference<"query">) {
@@ -332,6 +339,12 @@ it.each(["history", "visit", "questionnaire"] as const)(
         status: "calculated",
         value: 0,
       });
+    const initialHistoryId = workspace.readClinical(
+      workspace.clinicalRecords.get(clientId)!,
+    ).historyId!;
+    expect(
+      workspace.readClinicalVersion(workspace.clinicalVersions.get(initialHistoryId)!),
+    ).toMatchObject({ revision: 1, payload, confirmed: false });
     expect(calls).toBe(0);
     expect(JSON.stringify([...storage.values.values()])).not.toContain(privateContent);
     await workspace.close();
@@ -340,12 +353,18 @@ it.each(["history", "visit", "questionnaire"] as const)(
     expect(workspace.readClinical(workspace.clinicalRecords.get(clientId)!).payload).toEqual(
       payload,
     );
+    expect(
+      workspace.readClinicalVersion(workspace.clinicalVersions.get(initialHistoryId)!),
+    ).toMatchObject({ revision: 1, payload, confirmed: false });
     await refresh();
     const completion = workspace.executor.waitForTransactionCompletion(queued.transactionId);
     connection.connect();
     workspace.setAuthenticated(true);
     await completion;
     expect(calls).toBe(1);
+    expect(
+      workspace.readClinicalVersion(workspace.clinicalVersions.get(initialHistoryId)!),
+    ).toMatchObject({ revision: 1, payload, confirmed: true, recordedBy: "doctor" });
     expect(
       await doctor.query(api.clinicalRecords.list, { actorId: "doctor", organizationId }),
     ).toHaveLength(1);
@@ -374,16 +393,16 @@ it.each(["history", "visit", "questionnaire"] as const)(
       action: "update",
       payload: { ...payload, notes: "Rejected local clinical draft" },
     });
-    const dependent =
-      kind === "questionnaire"
-        ? await workspace.saveClinical({
-            clientId,
-            patientClientId,
-            expectedRevision: 2,
-            action: "update",
-            payload: { ...payload, notes: "Dependent clinical draft" },
-          })
-        : null;
+    const capturedBranchId = workspace.readClinical(
+      workspace.clinicalRecords.get(clientId)!,
+    ).historyId!;
+    const dependent = await workspace.saveClinical({
+      clientId,
+      patientClientId,
+      expectedRevision: 2,
+      action: "update",
+      payload: { ...payload, notes: "Dependent clinical draft" },
+    });
     await doctor.mutation(api.clinicalRecords.apply, {
       actorId: "doctor",
       organizationId,
@@ -399,11 +418,9 @@ it.each(["history", "visit", "questionnaire"] as const)(
       },
       idempotencyKey: "another-doctor",
     });
-    if (kind === "questionnaire") {
-      await workspace.close();
-      snapshots = new Map();
-      workspace = await open();
-    }
+    await workspace.close();
+    snapshots = new Map();
+    workspace = await open();
     await refresh();
     const conflictSettled = workspace.executor.waitForTransactionCompletion(conflict.transactionId);
     const dependentSettled = dependent
@@ -419,8 +436,18 @@ it.each(["history", "visit", "questionnaire"] as const)(
       dependent ? ["rejected", "rejected"] : ["rejected"],
     );
     const rejected = await workspace.failedActions("clinical");
-    expect(rejected).toHaveLength(kind === "questionnaire" ? 2 : 1);
+    expect(rejected).toHaveLength(2);
     expect(rejected[0]?.code).toBe("REVISION_CONFLICT");
+    await expect(
+      workspace.saveClinical({
+        clientId,
+        patientClientId,
+        expectedRevision: 2,
+        expectedHistoryId: capturedBranchId,
+        action: "update",
+        payload: { ...payload, notes: "Stale editor after rollback" },
+      }),
+    ).rejects.toThrow("REVISION_CONFLICT");
     expect(workspace.readClinical(rejected[0]!.envelope).payload).toMatchObject({
       notes: "Rejected local clinical draft",
     });
@@ -436,6 +463,15 @@ it.each(["history", "visit", "questionnaire"] as const)(
         payload,
       }),
     ).rejects.toThrow("REVISION_CONFLICT");
+    const serverHistory = await doctor.query(api.clinicalRecords.versions, {
+      actorId: "doctor",
+      organizationId,
+    });
+    expect(serverHistory).toHaveLength(2);
+    expect(serverHistory.map((row) => row.payload.notes)).not.toContain(
+      "Rejected local clinical draft",
+    );
+    expect(serverHistory.map((row) => row.payload.notes)).not.toContain("Dependent clinical draft");
     connection.disconnect();
     const updated = await workspace.saveClinical({
       clientId,
@@ -464,6 +500,9 @@ it.each(["history", "visit", "questionnaire"] as const)(
     snapshots = new Map();
     workspace = await open();
     expect(workspace.readClinical(workspace.clinicalRecords.get(clientId)!).payload).toBeNull();
+    expect(() =>
+      workspace.readClinicalVersion(workspace.clinicalVersions.get(initialHistoryId)!),
+    ).toThrow("PATIENT_NOT_FOUND");
     await refresh();
     const deletedSettled = workspace.executor.waitForTransactionCompletion(deleted.transactionId);
     connection.connect();

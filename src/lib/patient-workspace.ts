@@ -38,6 +38,12 @@ import {
   validateClinicalTransition,
 } from "@/src/lib/clinical-record-model";
 import type { ClinicalCommand, ClinicalEnvelope } from "@/src/lib/clinical-record-model";
+import {
+  clinicalVersionSchema,
+  legacyClinicalVersionId,
+  openClinicalVersion,
+  sealClinicalVersion,
+} from "@/src/lib/clinical-version-model";
 import { consentEventSchema, validateConsentTransition } from "@/src/lib/consent-model";
 import type { ConsentEvent } from "@/src/lib/consent-model";
 import { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
@@ -169,6 +175,36 @@ export async function openPatientWorkspace(config: {
       initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
     }),
   );
+  const versionScope = `${scope}:clinicalVersions`;
+  const versionSnapshotId = "__clinical_versions_snapshot__";
+  const clinicalVersions = createCollection(
+    persistedCollectionOptions({
+      ...convexCollectionOptions({
+        id: versionScope,
+        startSync: true,
+        gcTime: Infinity,
+        client: config.client,
+        query: api.clinicalRecords.versions,
+        queryArgs: { actorId: config.userId, organizationId: config.organizationId },
+        select: (rows) => [
+          {
+            clientId: versionSnapshotId,
+            revision: 1,
+            deleted: false,
+            ciphertext: config.vault.seal({ prepared: true }, `${versionScope}:snapshot`),
+          },
+          ...rows.map((row) =>
+            sealClinicalVersion(clinicalVersionSchema.parse(row), config.vault, versionScope),
+          ),
+        ],
+        getKey: (row) => row.clientId,
+        onError: (error) => reportFailure(error, "clinical.sync"),
+      }),
+      persistence,
+      schemaVersion: 1,
+      initialRender: { strategy: "network-first", networkTimeoutMs: 0 },
+    }),
+  );
   const analysisScope = `${scope}:analyses`;
   const analysisSnapshotId = "__analysis_snapshot__";
   const analyses = createCollection(
@@ -255,20 +291,46 @@ export async function openPatientWorkspace(config: {
     const clinicalMutation = convexOfflineMutation({
       client: config.client,
       mutation: api.clinicalRecords.apply,
-      collections: [clinicalRecords],
+      collections: [clinicalRecords, clinicalVersions],
       getArgs: ({ transaction }) => {
-        if (transaction.mutations.length !== 1 || transaction.mutations[0]!.type === "delete")
+        const changes = transaction.mutations.filter(
+          (change) => change.collection.id === clinicalScope,
+        );
+        if (
+          changes.length !== 1 ||
+          changes[0]!.type === "delete" ||
+          transaction.mutations.some(
+            (change) =>
+              change.collection.id !== clinicalScope && change.collection.id !== versionScope,
+          )
+        )
           throw new NonRetriableError("INVALID_CLINICAL_RECORD");
-        const change = transaction.mutations[0]!;
+        const change = changes[0]!;
         const row = openClinicalRecord(
           change.modified as ClinicalEnvelope,
           config.vault,
           clinicalScope,
         );
         const original =
-          change.type !== "insert" && (row.deleted || hasClinicalWriteId(row.payload))
+          change.type !== "insert"
             ? openClinicalRecord(change.original as ClinicalEnvelope, config.vault, clinicalScope)
             : undefined;
+        if (row.historyId && !row.deleted) {
+          const archive = transaction.mutations
+            .filter((change) => change.collection.id === versionScope)
+            .map((change) =>
+              openClinicalVersion(change.modified as ClinicalEnvelope, config.vault, versionScope),
+            );
+          const snapshot = archive.find((version) => version.clientId === row.historyId);
+          if (
+            !snapshot ||
+            snapshot.recordClientId !== row.clientId ||
+            snapshot.patientClientId !== row.patientClientId ||
+            snapshot.revision !== row.revision ||
+            JSON.stringify(snapshot.payload) !== JSON.stringify(row.payload)
+          )
+            throw new NonRetriableError("INVALID_CLINICAL_RECORD");
+        }
         const versionedWrite =
           hasClinicalWriteId(row.payload) || hasClinicalWriteId(original?.payload);
         return {
@@ -276,6 +338,9 @@ export async function openPatientWorkspace(config: {
           organizationId: config.organizationId,
           clientId: row.clientId,
           patientClientId: row.patientClientId,
+          ...(row.historyId
+            ? { historyId: row.historyId, expectedHistoryId: original?.historyId ?? null }
+            : {}),
           ...(versionedWrite
             ? {
                 expectedWriteId: hasClinicalWriteId(original?.payload)
@@ -390,7 +455,12 @@ export async function openPatientWorkspace(config: {
               "CONSENT_HISTORY_IMMUTABLE",
               "INVALID_CONSENT_RECIPIENT",
             ].find((c) => new RegExp(`\\b${c}\\b`).test(message)) ?? "PATIENT_SYNC_REJECTED";
-          const change = params.transaction.mutations[0];
+          const change =
+            domain === "clinical"
+              ? params.transaction.mutations.find(
+                  (change) => change.collection.id === clinicalScope,
+                )
+              : params.transaction.mutations[0];
           let consentChange: ConsentEvent | undefined;
           if (domain === "patient" && change?.type === "update") {
             const original = openPatient(change.original as PatientEnvelope, config.vault, scope);
@@ -431,6 +501,7 @@ export async function openPatientWorkspace(config: {
       collections: {
         [scope]: collection,
         [clinicalScope]: clinicalRecords,
+        [versionScope]: clinicalVersions,
         [analysisScope]: analyses,
       },
       storage: receipts.storage,
@@ -540,6 +611,11 @@ export async function openPatientWorkspace(config: {
           : undefined;
         if (command.action === "create" ? Boolean(prior) : !prior || prior.deleted)
           throw new Error("REVISION_CONFLICT");
+        if (
+          command.expectedHistoryId !== undefined &&
+          (prior?.historyId ?? null) !== command.expectedHistoryId
+        )
+          throw new Error("REVISION_CONFLICT");
         if (prior && prior.patientClientId !== command.patientClientId)
           throw new Error("ACCESS_DENIED");
         const parsedPayload =
@@ -622,10 +698,13 @@ export async function openPatientWorkspace(config: {
           }
         }
         const now = Date.now();
+        const historyId = crypto.randomUUID();
         const envelope = clinicalEnvelope(
           {
             clientId: command.clientId,
             patientClientId: command.patientClientId,
+            historyId,
+            updatedBy: config.userId,
             revision: command.expectedRevision + 1,
             deleted: command.action === "delete",
             payload,
@@ -638,6 +717,45 @@ export async function openPatientWorkspace(config: {
         if (previous)
           clinicalRecords.update(command.clientId, (draft) => Object.assign(draft, envelope));
         else clinicalRecords.insert(envelope);
+        if (payload) {
+          if (prior?.payload) {
+            const baselineId =
+              prior.historyId ?? legacyClinicalVersionId(prior.clientId, prior.revision);
+            if (!clinicalVersions.has(baselineId))
+              clinicalVersions.insert(
+                sealClinicalVersion(
+                  {
+                    clientId: baselineId,
+                    recordClientId: prior.clientId,
+                    patientClientId: prior.patientClientId,
+                    revision: prior.revision,
+                    payload: prior.payload,
+                    recordedAt: prior.updatedAt,
+                    recordedBy: prior.updatedBy ?? "",
+                    confirmed: false,
+                  },
+                  config.vault,
+                  versionScope,
+                ),
+              );
+          }
+          clinicalVersions.insert(
+            sealClinicalVersion(
+              {
+                clientId: historyId,
+                recordClientId: command.clientId,
+                patientClientId: command.patientClientId,
+                revision: command.expectedRevision + 1,
+                payload,
+                recordedAt: now,
+                recordedBy: config.userId,
+                confirmed: false,
+              },
+              config.vault,
+              versionScope,
+            ),
+          );
+        }
       },
     });
     const applyAnalysis = executor.createOfflineAction<AnalysisCommand>({
@@ -683,6 +801,8 @@ export async function openPatientWorkspace(config: {
       collection,
       patientSnapshotId,
       clinicalRecords,
+      clinicalVersions,
+      versionSnapshotId,
       clinicalSnapshotId: snapshotId,
       analyses,
       analysisSnapshotId,
@@ -706,6 +826,22 @@ export async function openPatientWorkspace(config: {
         )
           throw new Error("ACCESS_DENIED");
         return decoded;
+      },
+      readClinicalVersion(envelope: ClinicalEnvelope) {
+        if (closed) throw new Error("WORKSPACE_LOCKED");
+        if (Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
+        if (config.role !== "doctor") throw new Error("ACCESS_DENIED");
+        const row = openClinicalVersion(envelope, config.vault, versionScope);
+        const patient = collection.get(row.patientClientId);
+        const current = clinicalRecords.get(row.recordClientId);
+        if (!patient || patient.deleted || !current || current.deleted)
+          throw new Error("PATIENT_NOT_FOUND");
+        if (
+          openClinicalRecord(current, config.vault, clinicalScope).patientClientId !==
+          row.patientClientId
+        )
+          throw new Error("ACCESS_DENIED");
+        return row;
       },
       readClinical: (envelope: ClinicalEnvelope) => {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
@@ -782,7 +918,12 @@ export async function openPatientWorkspace(config: {
         executor.dispose();
         receipts.dispose();
         try {
-          await Promise.all([collection.cleanup(), clinicalRecords.cleanup(), analyses.cleanup()]);
+          await Promise.all([
+            collection.cleanup(),
+            clinicalRecords.cleanup(),
+            clinicalVersions.cleanup(),
+            analyses.cleanup(),
+          ]);
         } catch (error) {
           reportFailure(error, "patients.close");
         }
@@ -798,7 +939,12 @@ export async function openPatientWorkspace(config: {
     config.vault.lock();
     cleanupExecutor?.();
     try {
-      await Promise.all([collection.cleanup(), clinicalRecords.cleanup(), analyses.cleanup()]);
+      await Promise.all([
+        collection.cleanup(),
+        clinicalRecords.cleanup(),
+        clinicalVersions.cleanup(),
+        analyses.cleanup(),
+      ]);
     } catch (cleanupError) {
       reportFailure(cleanupError, "patients.close");
     }

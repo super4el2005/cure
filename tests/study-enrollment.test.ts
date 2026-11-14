@@ -462,7 +462,12 @@ it("persists encrypted screening, competing inclusion chains and deletion across
   let snapshots = new Map<string, unknown>();
   const listeners = new Set<() => void>();
   const refresh = async () => {
-    for (const fn of [api.patients.list, api.clinicalRecords.list, api.analyses.list])
+    for (const fn of [
+      api.patients.list,
+      api.clinicalRecords.list,
+      api.clinicalRecords.versions,
+      api.analyses.list,
+    ])
       snapshots.set(
         getFunctionName(fn),
         await doctor.query(fn, { actorId: "doctor", organizationId }),

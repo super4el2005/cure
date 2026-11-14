@@ -215,13 +215,13 @@ export function safePath(value: unknown): string {
     )
       return path;
     const detail = path.match(
-      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits))?$/,
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits|history))?$/,
     );
     if (
       detail &&
       (!detail[3] ||
         (detail[2] === "patients" &&
-          ["consents", "forms", "visits", "enrollment"].includes(detail[3])) ||
+          ["consents", "forms", "visits", "enrollment", "history"].includes(detail[3])) ||
         (detail[2] === "projects" &&
           [
             "protocol",

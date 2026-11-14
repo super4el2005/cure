@@ -146,6 +146,8 @@ export function validateClinicalTransition(previous: ClinicalPayload, next: Clin
 }
 export const clinicalRecordSchema = z
   .object({
+    historyId: z.uuid().exactOptional(),
+    updatedBy: z.string().exactOptional(),
     clientId: z.uuid(),
     patientClientId: z.uuid(),
     revision: z.number().int().positive(),
@@ -191,6 +193,7 @@ export type ClinicalCommand = {
   clientId: string;
   patientClientId: string;
   expectedRevision: number;
+  expectedHistoryId?: string | null;
   action: "create" | "update" | "delete";
   payload?: ClinicalPayload;
 };

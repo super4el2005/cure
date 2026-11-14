@@ -188,6 +188,14 @@ function Patient() {
                   )}
                 >{t`Согласия пациента`}</Anchor>
                 {opened.role === "doctor" && (
+                  <Anchor
+                    renderRoot={(props) => (
+                      <Link {...props} to="/m/patients/$id/history" params={{ id }} />
+                    )}
+                  >{t`История клинических записей`}</Anchor>
+                )}
+
+                {opened.role === "doctor" && (
                   <Group>
                     <Button
                       disabled={!workspace.canWrite()}

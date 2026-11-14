@@ -493,8 +493,23 @@ export default defineSchema({
     action: v.union(v.literal("create"), v.literal("update"), v.literal("delete")),
     at: v.number(),
   }).index("by_owner", ["organizationId", "actorId"]),
+  clinicalVersions: defineTable({
+    organizationId: v.id("organizations"),
+    clientId: v.string(),
+    recordClientId: v.string(),
+    patientClientId: v.string(),
+    revision: v.number(),
+    payload: clinicalPayload,
+    recordedAt: v.number(),
+    recordedBy: v.string(),
+  })
+    .index("by_client", ["organizationId", "clientId"])
+    .index("by_organization", ["organizationId"])
+    .index("by_record", ["organizationId", "recordClientId"])
+    .index("by_patient", ["organizationId", "patientClientId"]),
   clinicalRecords: defineTable({
     organizationId: v.id("organizations"),
+    historyId: v.optional(v.string()),
     clientId: v.string(),
     patientClientId: v.string(),
     payload: v.union(clinicalPayload, v.null()),

@@ -19,6 +19,7 @@ const initial = {
   clientId: "",
   patientClientId: "",
   expectedRevision: 0,
+  expectedHistoryId: null as string | null,
   failureId: "",
   enrollmentClientId: "",
   protocolClientId: "",
@@ -191,6 +192,7 @@ export function useStudyIssues(projectId: string) {
       clientId: original ? current!.clientId : "",
       patientClientId: record?.patientClientId ?? "",
       expectedRevision: original ? current!.revision : 0,
+      expectedHistoryId: original ? (current!.historyId ?? null) : null,
       failureId,
       original,
       enrollmentClientId: value?.enrollmentClientId ?? "",
@@ -258,6 +260,7 @@ export function useStudyIssues(projectId: string) {
         clientId: input.clientId || crypto.randomUUID(),
         patientClientId: input.patientClientId,
         expectedRevision: input.expectedRevision,
+        expectedHistoryId: input.expectedHistoryId,
         action: input.clientId ? "update" : "create",
         payload: studyIssuePayloadSchema.parse(payload(input, userId!)),
       });
@@ -268,7 +271,8 @@ export function useStudyIssues(projectId: string) {
       if (
         form.getValues().scope === input.scope &&
         form.getValues().clientId === input.clientId &&
-        form.getValues().expectedRevision === input.expectedRevision
+        form.getValues().expectedRevision === input.expectedRevision &&
+        form.getValues().expectedHistoryId === input.expectedHistoryId
       ) {
         form.setInitialValues(initial);
         form.setValues(initial);
@@ -290,6 +294,7 @@ export function useStudyIssues(projectId: string) {
         clientId: row.clientId,
         patientClientId: row.patientClientId,
         expectedRevision: row.revision,
+        expectedHistoryId: row.historyId ?? null,
         action: "delete",
       });
     },

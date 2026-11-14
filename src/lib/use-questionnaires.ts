@@ -22,6 +22,7 @@ const initial = {
   patientClientId: "",
   clientId: "",
   expectedRevision: 0,
+  expectedHistoryId: null as string | null,
   failureId: "",
   template: null as Template | null,
   occurredOn: null as string | null,
@@ -142,6 +143,13 @@ export function useQuestionnaires(patientId: string) {
             : 0
           : record.revision
         : 0,
+      expectedHistoryId: record
+        ? failureId
+          ? current && !current.deleted
+            ? (workspace.readClinical(current).historyId ?? null)
+            : null
+          : (record.historyId ?? null)
+        : null,
       failureId,
       template: value
         ? {
@@ -237,6 +245,7 @@ export function useQuestionnaires(patientId: string) {
         clientId: input.clientId || crypto.randomUUID(),
         patientClientId: input.patientClientId,
         expectedRevision: input.expectedRevision,
+        expectedHistoryId: input.expectedHistoryId,
         action: input.clientId ? "update" : "create",
         payload: parsed,
       });
@@ -249,7 +258,8 @@ export function useQuestionnaires(patientId: string) {
         current.scope === input.scope &&
         current.patientClientId === input.patientClientId &&
         current.clientId === input.clientId &&
-        current.expectedRevision === input.expectedRevision
+        current.expectedRevision === input.expectedRevision &&
+        current.expectedHistoryId === input.expectedHistoryId
       ) {
         form.reset();
         editor.close();
@@ -269,6 +279,7 @@ export function useQuestionnaires(patientId: string) {
         clientId: record.clientId,
         patientClientId: record.patientClientId,
         expectedRevision: record.revision,
+        expectedHistoryId: record.historyId ?? null,
         action: "delete",
       });
     },
