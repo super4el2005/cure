@@ -8,7 +8,7 @@ import {
   Container,
   Group,
   MultiSelect,
-  NativeSelect,
+  Select,
   NumberInput,
   Paper,
   PasswordInput,
@@ -53,8 +53,8 @@ function Consents() {
   } = usePatientWorkspace();
   const patient = rows.find((row) => row.clientId === id);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor
           renderRoot={(props) => <Link {...props} to="/d/patients/$id" params={{ id }} />}
         >{t`Карта пациента`}</Anchor>
@@ -63,15 +63,16 @@ function Consents() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -138,8 +139,8 @@ function Consents() {
                   {opened.role === "doctor" ? patient.fullName : t`Исследовательская запись`}
                 </Title>
                 {opened.role === "researcher" && (
-                  <Paper withBorder p="md">
-                    <Stack>
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
                       <Badge>{t`Разрешено только чтение`}</Badge>
                       <Text>
                         {t`Доступны категории:`}{" "}
@@ -205,18 +206,19 @@ function Consents() {
                     {consenting &&
                       consentForm.values.clientId === id &&
                       opened.role === "doctor" && (
-                        <Paper withBorder p="md">
+                        <Paper withBorder p="sm">
                           <form
                             onSubmit={consentForm.onSubmit((values) =>
                               consent.mutateAsync(values).catch(() => undefined),
                             )}
                           >
-                            <Stack>
+                            <Stack gap="sm">
                               <Title
                                 order={2}
                               >{t`Согласие на исследовательское использование данных`}</Title>
                               <Text>{t`Врач фиксирует уже полученное согласие или его отзыв. Запись в системе не заменяет подпись пациента.`}</Text>
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Действие`}
                                 data={[
                                   {
@@ -280,7 +282,7 @@ function Consents() {
                               />
                               {Boolean(consentForm.values.archivedExpiresAt) && (
                                 <Alert>
-                                  <Stack>
+                                  <Stack gap="sm">
                                     <Text>{t`Срок восстановленного согласия сохранён без продления.`}</Text>
                                     <Text>
                                       {new Intl.DateTimeFormat(i18n.locale, {
@@ -330,15 +332,16 @@ function Consents() {
                       )}
                     {share.isSuccess && <Alert>{t`Права доступа обновлены на сервере.`}</Alert>}
                     {sharing && shareForm.values.clientId === id && opened.role === "doctor" && (
-                      <Paper withBorder p="md">
+                      <Paper withBorder p="sm">
                         <form
                           onSubmit={shareForm.onSubmit((values) =>
                             share.mutateAsync(values).catch(() => undefined),
                           )}
                         >
-                          <Stack>
+                          <Stack gap="sm">
                             <Title order={2}>{t`Доступ исследователя к записи`}</Title>
-                            <NativeSelect
+                            <Select
+                              allowDeselect={false}
                               label={t`Исследователь`}
                               data={[
                                 { value: "", label: t`Выберите исследователя` },
@@ -383,8 +386,8 @@ function Consents() {
                       <Text>{t`Согласия ещё не зарегистрированы.`}</Text>
                     )}
                     {[...patient.consentHistory].reverse().map((event) => (
-                      <Paper withBorder p="md" key={event.id}>
-                        <Stack>
+                      <Paper withBorder p="sm" key={event.id}>
+                        <Stack gap="sm">
                           <Group>
                             <Badge>{event.kind === "granted" ? t`Согласие` : t`Отзыв`}</Badge>
                             <Text>
@@ -430,7 +433,7 @@ function Consents() {
                       .filter((failure) => failure.consentId && failure.envelope.clientId === id)
                       .map((failure) => (
                         <Alert color="yellow" key={failure.id}>
-                          <Stack>
+                          <Stack gap="sm">
                             <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                             <Text>{failure.code}</Text>
                             <Button

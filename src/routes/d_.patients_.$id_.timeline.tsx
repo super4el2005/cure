@@ -8,7 +8,7 @@ import {
   Container,
   Group,
   MultiSelect,
-  NativeSelect,
+  Select,
   Pagination,
   Paper,
   PasswordInput,
@@ -163,25 +163,26 @@ function PatientTimeline() {
   const pages = Math.max(1, Math.ceil(displayed.length / 25));
   const page = Math.min(effective.page, pages);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor
           renderRoot={(props) => <Link {...props} to="/d/patients/$id" params={{ id }} />}
         >{t`Карта пациента`}</Anchor>
         <Title>{t`Хронология пациента`}</Title>
-        <Text>{t`Клинические записи, терапия, визиты и исследовательские события в одной ленте по текущим разрешённым данным организации.`}</Text>
+        <Text>{t`Клинические и исследовательские события пациента.`}</Text>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -255,8 +256,8 @@ function PatientTimeline() {
                 <Text>
                   {t`В очереди:`} {status.data?.pending ?? 0}
                 </Text>
-                <Paper withBorder p="md">
-                  <Stack>
+                <Paper withBorder p="sm">
+                  <Stack gap="sm">
                     <DateInput
                       label={t`С даты включительно`}
                       valueFormat="YYYY-MM-DD"
@@ -277,15 +278,16 @@ function PatientTimeline() {
                       value={effective.kinds}
                       onChange={(value) => update({ kinds: value as typeof effective.kinds })}
                     />
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Вид даты`}
                       data={[
                         { value: "all", label: t`Все даты` },
                         ...Object.entries(phases).map(([value, label]) => ({ value, label })),
                       ]}
                       value={effective.phase}
-                      onChange={(event) =>
-                        update({ phase: event.currentTarget.value as typeof effective.phase })
+                      onChange={(value) =>
+                        update({ phase: (value ?? "") as typeof effective.phase })
                       }
                     />
                     <TextInput
@@ -314,7 +316,7 @@ function PatientTimeline() {
                       key={event.key}
                       title={`${i18n.date(new Date(`${event.date}T12:00:00Z`), { dateStyle: "medium", timeZone: "UTC" })} — ${eventLabels[event.type]}`}
                     >
-                      <Stack>
+                      <Stack gap="sm">
                         <Group>
                           <Badge>{kinds[event.source.payload!.kind]}</Badge>
                           <Badge>{phases[event.phase]}</Badge>
@@ -369,7 +371,7 @@ function PatientTimeline() {
                           <Accordion.Item value={event.key}>
                             <Accordion.Control>{t`Текущее содержимое источника`}</Accordion.Control>
                             <Accordion.Panel>
-                              <Stack>
+                              <Stack gap="sm">
                                 <Text>{t`Это текущая редакция записи, а не снимок её состояния на дату события. Исторические значения открываются в истории редакций.`}</Text>
                                 <Table>
                                   <Table.Tbody>

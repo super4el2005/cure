@@ -6,7 +6,7 @@ import {
   Button,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -43,8 +43,8 @@ function Invitations() {
   );
   const roles = { coordinator: t`Координатор`, member: t`Участник`, viewer: t`Наблюдатель` };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
         <Title>{t`Мои приглашения`}</Title>
         <Text>{t`Решение сохраняется для выбранной организации. Принятие приглашения не предоставляет прав на изменение данных пациентов.`}</Text>
@@ -52,15 +52,16 @@ function Invitations() {
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -117,8 +118,8 @@ function Invitations() {
             {invitations.map(
               (invite) =>
                 invite.entity === "invitation" && (
-                  <Paper withBorder p="md" key={invite.key}>
-                    <Stack>
+                  <Paper withBorder p="sm" key={invite.key}>
+                    <Stack gap="sm">
                       <Title order={2}>{invite.projectTitle || t`Исследование`}</Title>
                       <Badge>{roles[invite.role]}</Badge>
                       <Text>

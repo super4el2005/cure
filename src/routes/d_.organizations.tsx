@@ -42,8 +42,8 @@ function Directory() {
       .includes(query),
   );
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d">{t`На главную`}</Anchor>
         <Title>{t`Организации`}</Title>
         <Text>{t`Поликлиники, больницы, университеты и лаборатории, открытые для сотрудничества.`}</Text>
@@ -68,8 +68,8 @@ function Directory() {
         )}
         <SimpleGrid cols={2}>
           {rows?.map((row) => (
-            <Paper key={row.id} withBorder p="md">
-              <Stack>
+            <Paper key={row.id} withBorder p="sm">
+              <Stack gap="sm">
                 <Title order={2}>
                   <Anchor
                     renderRoot={(props) => (

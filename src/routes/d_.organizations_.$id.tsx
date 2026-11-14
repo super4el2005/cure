@@ -25,8 +25,8 @@ function Organization() {
     laboratory: t`Лаборатория`,
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d/organizations">{t`Все организации`}</Anchor>
         <Title>{t`Страница организации`}</Title>
         {loading && <Loader aria-label={t`Загрузка`} />}
@@ -43,8 +43,8 @@ function Organization() {
           <Alert>{t`Локальное хранилище недоступно. Каталог работает только при подключении к интернету.`}</Alert>
         )}
         {organization && (
-          <Paper withBorder p="md">
-            <Stack>
+          <Paper withBorder p="sm">
+            <Stack gap="sm">
               <Title order={2}>{organization.name}</Title>
               <Badge>{kinds[organization.kind]}</Badge>
               <Text>
@@ -55,7 +55,7 @@ function Organization() {
           </Paper>
         )}
         <Anchor component={Link} to="/d/research">{t`Открытые исследования`}</Anchor>
-        <Text>{t`Опубликованная информация организации. Состав сотрудников, закрытые проекты и данные пациентов не раскрываются.`}</Text>
+        <Text>{t`Публичные сведения организации.`}</Text>
       </Stack>
     </Container>
   );

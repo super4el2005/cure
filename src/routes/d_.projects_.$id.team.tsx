@@ -7,10 +7,9 @@ import {
   Button,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
-  Select,
   Stack,
   Text,
   Title,
@@ -126,8 +125,8 @@ function Team() {
     },
   });
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Group>
           <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
           <Anchor component={Link} to="/d/invitations">{t`Мои приглашения`}</Anchor>
@@ -137,15 +136,16 @@ function Team() {
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -212,11 +212,12 @@ function Team() {
               <>
                 <Title order={2}>{project.title}</Title>
                 {canManage && (
-                  <Paper withBorder p="md">
+                  <Paper withBorder p="sm">
                     <form onSubmit={form.onSubmit((input) => invitation.mutate(input))}>
-                      <Stack>
+                      <Stack gap="sm">
                         <Title order={3}>{t`Пригласить специалиста`}</Title>
                         <Select
+                          allowDeselect={false}
                           label={t`Специалист`}
                           searchable
                           data={(people ?? []).map((person) => ({
@@ -226,7 +227,8 @@ function Team() {
                           {...form.getInputProps("targetProfileId")}
                         />
                         <Text>{t`Доступны опубликованные проверенные профили из загруженного каталога.`}</Text>
-                        <NativeSelect
+                        <Select
+                          allowDeselect={false}
                           label={t`Роль в исследовании`}
                           data={availableRoles.map((value) => ({ value, label: roleNames[value] }))}
                           {...form.getInputProps("role")}
@@ -248,8 +250,8 @@ function Team() {
                 {members.map(
                   (member) =>
                     member.entity === "member" && (
-                      <Paper withBorder p="md" key={member.key}>
-                        <Stack>
+                      <Paper withBorder p="sm" key={member.key}>
+                        <Stack gap="sm">
                           <Title order={3}>{member.displayName || t`Специалист`}</Title>
                           <Text>{member.organization}</Text>
                           <Group>
@@ -264,7 +266,8 @@ function Team() {
                             member.active &&
                             (project.selfRole === "owner" || member.role !== "coordinator") && (
                               <Group>
-                                <NativeSelect
+                                <Select
+                                  allowDeselect={false}
                                   label={t`Роль в исследовании`}
                                   value={member.role}
                                   data={availableRoles.map((value) => ({
@@ -272,12 +275,12 @@ function Team() {
                                     label: roleNames[value],
                                   }))}
                                   disabled={!workspace.canWrite() || save.isPending}
-                                  onChange={(event) =>
+                                  onChange={(value) =>
                                     save.mutate({
                                       operation: "setMember",
                                       expectedRevision: member.revision,
                                       key: member.key,
-                                      role: event.currentTarget.value as InvitedRole,
+                                      role: (value ?? "") as InvitedRole,
                                       active: true,
                                     })
                                   }
@@ -318,8 +321,8 @@ function Team() {
                     {invitations.map(
                       (invite) =>
                         invite.entity === "invitation" && (
-                          <Paper withBorder p="md" key={invite.key}>
-                            <Stack>
+                          <Paper withBorder p="sm" key={invite.key}>
+                            <Stack gap="sm">
                               <Text>{invite.inviteeName || t`Специалист`}</Text>
                               <Badge>{roleNames[invite.role]}</Badge>
                               <Text>
@@ -368,7 +371,7 @@ function Team() {
                 )}
                 {rejectedDrafts.map(({ failure, draft }) => (
                   <Alert color="yellow" key={failure.id}>
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                       <Text>{failure.code}</Text>
                       <Title order={3}>{t`Сохранённое решение`}</Title>

@@ -10,8 +10,8 @@ function AuthError() {
   const { t } = useLingui();
 
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Title order={1}>{t`Не удалось войти`}</Title>
         <Text>{t`Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз.`}</Text>
         <Button component={Link} to="/">{t`На главную`}</Button>

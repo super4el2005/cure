@@ -7,7 +7,7 @@ import {
   Button,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -87,26 +87,27 @@ function ClinicalHistory() {
   const selected = display.filter(matches);
   const selectedCurrent = currentDisplay.filter(matches);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor
           renderRoot={(props) => <Link {...props} to="/d/patients/$id" params={{ id }} />}
         >{t`Карта пациента`}</Anchor>
         <Title>{t`История карты и клинических записей`}</Title>
-        <Text>{t`Сохранённые редакции анамнеза, терапии, обследований, визитов и исследовательских записей. Это история содержимого, а не только список действий.`}</Text>
+        <Text>{t`Сохранённые версии клинических и исследовательских записей.`}</Text>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -187,7 +188,7 @@ function ClinicalHistory() {
                         })}
                       </Accordion.Control>
                       <Accordion.Panel>
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>
                             {t`Автор записи`}:{" "}
                             {names.get(record.recordedBy) ??
@@ -212,8 +213,8 @@ function ClinicalHistory() {
                   ))}
                 </Accordion>
                 {!cardHistory.some((record) => record.revision === patient.revision) && (
-                  <Paper withBorder p="md">
-                    <Stack>
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
                       <Title order={3}>{t`Текущая карта без загруженной архивной редакции`}</Title>
                       <Text>{t`Показана текущая запись. Архивная редакция появится после подготовки истории или следующего изменения.`}</Text>
                       {patientHistoryContent(patient, i18n, names).map(([label, value], index) => (
@@ -230,7 +231,8 @@ function ClinicalHistory() {
                   label={t`Поиск по содержимому истории`}
                   {...filters.getInputProps("query")}
                 />
-                <NativeSelect
+                <Select
+                  allowDeselect={false}
                   label={t`Клиническая запись`}
                   data={[{ value: "", label: t`Все записи` }, ...choices]}
                   {...filters.getInputProps("record")}
@@ -247,7 +249,7 @@ function ClinicalHistory() {
                         })}
                       </Accordion.Control>
                       <Accordion.Panel>
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>
                             {t`Автор записи`}:{" "}
                             {names.get(record.recordedBy) ??
@@ -275,8 +277,8 @@ function ClinicalHistory() {
                     {selectedCurrent.map((record) => {
                       const content = record.content;
                       return (
-                        <Paper withBorder p="md" key={record.clientId}>
-                          <Stack>
+                        <Paper withBorder p="sm" key={record.clientId}>
+                          <Stack gap="sm">
                             <Title order={3}>{content.title}</Title>
                             <Text>
                               {t`Редакция`}: {record.revision}

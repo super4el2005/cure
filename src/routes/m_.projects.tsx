@@ -7,7 +7,7 @@ import {
   Checkbox,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -130,8 +130,8 @@ function Projects() {
     },
   });
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/m">{t`На главную`}</Anchor>
         <Title>{t`Мои исследования`}</Title>
         <Text>{t`Закрытые проекты, этапы работы и публикация открытого описания исследования.`}</Text>
@@ -139,15 +139,16 @@ function Projects() {
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -221,9 +222,9 @@ function Projects() {
               }}
             >{t`Создать исследование`}</Button>
             {editing && (
-              <Paper withBorder p="md">
+              <Paper withBorder p="sm">
                 <form onSubmit={form.onSubmit((input) => save.mutate(input))}>
-                  <Stack>
+                  <Stack gap="sm">
                     <TextInput
                       label={t`Название исследования`}
                       required
@@ -240,12 +241,14 @@ function Projects() {
                       maxLength={300}
                       {...form.getInputProps("topic")}
                     />
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Тип исследования`}
                       data={Object.entries(kinds).map(([value, label]) => ({ value, label }))}
                       {...form.getInputProps("kind")}
                     />
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Этап исследования`}
                       data={allowed.map((value) => ({ value, label: stages[value] }))}
                       {...form.getInputProps("status")}
@@ -289,8 +292,8 @@ function Projects() {
             {!downloaded.isReady && <Text>{t`Загрузка локальных данных…`}</Text>}
             {downloaded.isReady && rows.length === 0 && <Text>{t`Исследований пока нет.`}</Text>}
             {rows.map((row) => (
-              <Paper key={row.clientId} withBorder p="md">
-                <Stack>
+              <Paper key={row.clientId} withBorder p="sm">
+                <Stack gap="sm">
                   <Title order={2}>{row.title}</Title>
                   <Group>
                     <Badge>{kinds[row.kind]}</Badge>
@@ -380,7 +383,7 @@ function Projects() {
             ))}
             {status.data?.failures.map((failure) => (
               <Alert color="yellow" key={failure.id}>
-                <Stack>
+                <Stack gap="sm">
                   <Text>{t`Сервер отклонил изменение. Черновик сохранён; откройте его и сравните с текущей версией.`}</Text>
                   <Text>{failure.code}</Text>
                   <Button

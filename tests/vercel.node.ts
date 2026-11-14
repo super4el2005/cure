@@ -343,7 +343,7 @@ test("workspace overview renders without live subscriptions or private records o
     );
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /Your studies, upcoming tasks and invitations/);
+    assert.match(html, /Overview/);
     assert.doesNotMatch(html, /Test Patient|Private clinical note|Private research discussion/);
   }
 });
@@ -357,7 +357,7 @@ test("analytics routes render protected entries without calculations or private 
     );
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /Descriptive analysis of available records/);
+    assert.match(html, /Analyze available organization data/);
     assert.doesNotMatch(html, /Test Patient|Private clinical note|Included in the cohort/);
   }
 });
@@ -521,6 +521,50 @@ test("patient timeline has independent protected device routes without medical c
       html,
       /Private history|Private reason|Confidential clinical content|Test Patient/,
     );
-    assert.doesNotMatch(html, /Source last saved at:|<textarea/);
+    assert.doesNotMatch(html, /Source last saved at:/);
+    assert.doesNotMatch(html.replace(/<aside\b[\s\S]*?<\/aside>/g, ""), /<textarea/);
+  }
+});
+
+test("anonymous landing works with the auth backend unavailable and has no application navigation", async (t) => {
+  t.mock.method(globalThis, "fetch", () => {
+    throw new Error("No upstream calls allowed");
+  });
+  t.after(() => t.mock.restoreAll());
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure.example/${device}`, {
+        headers: { "accept-language": "en", cookie: "cure.locale=en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /height:100dvh/);
+    assert.match(html, /Download app/);
+    assert.match(html, /Open in browser/);
+    assert.ok(html.includes(`href="/${device}/workspace"`));
+    assert.match(html, /App demo · Fictional data/);
+    assert.match(html, /Not Cure partners/);
+    assert.doesNotMatch(html, /mantine-AppShell-navbar|mantine-AppShell-aside|<select\b/);
+  }
+});
+
+test("application routes share the root shell with left navigation and a separate AI aside", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure.example/${device}/workspace`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /mantine-AppShell-navbar/);
+    assert.match(html, /mantine-AppShell-aside/);
+    assert.match(html, /mantine-NavLink-root/);
+    assert.ok(html.indexOf("mantine-AppShell-navbar") < html.indexOf("mantine-AppShell-aside"));
+    assert.match(html, /AI chat/);
+    assert.match(html, /Sign in to use chat/);
+    assert.doesNotMatch(html, /<select\b|Hello, world!|device counter/);
+    assert.match(html, /mantine-Select-input/);
   }
 });

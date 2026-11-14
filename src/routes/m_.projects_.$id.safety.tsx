@@ -8,10 +8,9 @@ import {
   Group,
   Modal,
   MultiSelect,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
-  Select,
   Stack,
   Text,
   Textarea,
@@ -135,15 +134,15 @@ function StudySafety() {
     else action();
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
             title={t`Покинуть страницу с несохранёнными изменениями?`}
             onClose={blocker.reset}
           >
-            <Stack>
+            <Stack gap="sm">
               <Text>{t`Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход.`}</Text>
               <Group>
                 <Button onClick={blocker.reset}>{t`Остаться`}</Button>
@@ -166,14 +165,15 @@ function StudySafety() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -264,9 +264,9 @@ function StudySafety() {
                 {editing &&
                   form.values.scope === workspace.scope &&
                   form.values.projectId === id && (
-                    <Paper withBorder p="md">
+                    <Paper withBorder p="sm">
                       <form onSubmit={form.onSubmit((input) => saveCase.mutate(input))}>
-                        <Stack>
+                        <Stack gap="sm">
                           <Title order={2}>{t`Карточка события`}</Title>
                           {(form.errors.details || form.errors._form) && (
                             <Alert color="red">{form.errors.details ?? form.errors._form}</Alert>
@@ -555,8 +555,8 @@ function StudySafety() {
                   const value = row.payload;
                   if (value?.kind !== "studyIssue") return null;
                   return (
-                    <Paper key={row.clientId} withBorder p="md">
-                      <Stack>
+                    <Paper key={row.clientId} withBorder p="sm">
+                      <Stack gap="sm">
                         <Anchor
                           renderRoot={(props) => (
                             <Link
@@ -677,7 +677,7 @@ function StudySafety() {
                 })}
                 {failures.data?.map((failure) => (
                   <Alert key={failure.id} color="yellow">
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                       <Text>{failure.code}</Text>
                       {failure.action !== "delete" ? (

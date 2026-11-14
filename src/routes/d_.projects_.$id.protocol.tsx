@@ -8,7 +8,7 @@ import {
   Checkbox,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -154,23 +154,24 @@ function Protocol() {
     },
   });
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
         <Title>{t`Протокол исследования`}</Title>
         {!userId && (
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -251,9 +252,9 @@ function Protocol() {
                   }}
                 >{t`Добавить версию протокола`}</Button>
                 {editing && (
-                  <Paper withBorder p="md">
+                  <Paper withBorder p="sm">
                     <form onSubmit={form.onSubmit((input) => save.mutate(input))}>
-                      <Stack>
+                      <Stack gap="sm">
                         <Textarea
                           label={t`Гипотеза исследования`}
                           required
@@ -335,7 +336,7 @@ function Protocol() {
                         {t`Версия:`} {version.version}
                       </Accordion.Control>
                       <Accordion.Panel>
-                        <Stack>
+                        <Stack gap="sm">
                           <Title order={3}>{t`Гипотеза исследования`}</Title>
                           <Text>{version.hypothesis}</Text>
                           <Title order={3}>{t`Критерии включения`}</Title>
@@ -367,7 +368,7 @@ function Protocol() {
                 </Accordion>
                 {rejected.data?.map((failure) => (
                   <Alert color="yellow" key={failure.id}>
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение. Черновик сохранён; откройте его и сравните с текущей версией.`}</Text>
                       <Text>{failure.code}</Text>
                       <Button

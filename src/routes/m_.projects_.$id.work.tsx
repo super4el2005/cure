@@ -7,7 +7,7 @@ import {
   Checkbox,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -236,8 +236,8 @@ function ProjectWork() {
         .filter((item) => item.draft.projectClientId === id)
     : [];
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Group>
           <Anchor component={Link} to="/m/projects">{t`Мои исследования`}</Anchor>
           <Anchor
@@ -249,15 +249,16 @@ function ProjectWork() {
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -330,7 +331,7 @@ function ProjectWork() {
                     <Tabs.Tab value="discussion">{t`Обсуждение`}</Tabs.Tab>
                   </Tabs.List>
                   <Tabs.Panel value="tasks" pt="md">
-                    <Stack>
+                    <Stack gap="sm">
                       <TextInput label={t`Поиск задач`} {...filters.getInputProps("query")} />
                       <Checkbox
                         label={t`Показывать архивные задачи`}
@@ -345,9 +346,9 @@ function ProjectWork() {
                         }}
                       >{t`Создать задачу`}</Button>
                       {editingTask && (
-                        <Paper withBorder p="md">
+                        <Paper withBorder p="sm">
                           <form onSubmit={taskForm.onSubmit((input) => saveTask.mutate(input))}>
-                            <Stack>
+                            <Stack gap="sm">
                               <TextInput
                                 label={t`Название задачи`}
                                 required
@@ -359,7 +360,8 @@ function ProjectWork() {
                                 maxLength={5000}
                                 {...taskForm.getInputProps("description")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Исполнитель`}
                                 disabled={!manager}
                                 data={[
@@ -379,7 +381,8 @@ function ProjectWork() {
                                 ]}
                                 {...taskForm.getInputProps("assigneeId")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Статус задачи`}
                                 data={Object.entries(stages).map(([value, label]) => ({
                                   value,
@@ -387,7 +390,8 @@ function ProjectWork() {
                                 }))}
                                 {...taskForm.getInputProps("status")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Приоритет`}
                                 data={Object.entries(priorities).map(([value, label]) => ({
                                   value,
@@ -423,8 +427,8 @@ function ProjectWork() {
                       {tasks.map(
                         (task) =>
                           task.entity === "task" && (
-                            <Paper withBorder p="md" key={task.key}>
-                              <Stack>
+                            <Paper withBorder p="sm" key={task.key}>
+                              <Stack gap="sm">
                                 <Title order={3}>{task.title}</Title>
                                 <Text>{task.description}</Text>
                                 <Text>
@@ -504,12 +508,12 @@ function ProjectWork() {
                     </Stack>
                   </Tabs.Panel>
                   <Tabs.Panel value="discussion" pt="md">
-                    <Stack>
+                    <Stack gap="sm">
                       {messages.map(
                         (message) =>
                           message.entity === "message" && (
-                            <Paper withBorder p="md" key={message.key}>
-                              <Stack>
+                            <Paper withBorder p="sm" key={message.key}>
+                              <Stack gap="sm">
                                 <Group>
                                   <Text fw={500}>
                                     {names.get(message.createdBy) ?? t`Бывший участник`}
@@ -575,7 +579,7 @@ function ProjectWork() {
                       )}
                       {canWrite && (
                         <form onSubmit={messageForm.onSubmit((input) => saveMessage.mutate(input))}>
-                          <Stack>
+                          <Stack gap="sm">
                             <Textarea
                               label={
                                 messageForm.values.clientId
@@ -610,7 +614,7 @@ function ProjectWork() {
                 )}
                 {failures.map(({ failure, draft }) => (
                   <Alert color="yellow" key={failure.id}>
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                       <Text>{failure.code}</Text>
                       <Title order={3}>{t`Сохранённое решение`}</Title>

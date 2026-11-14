@@ -43,8 +43,8 @@ function PublicResearch() {
     archived: t`В архиве`,
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d/research">{t`Все исследования`}</Anchor>
         {!ready && <Loader aria-label={t`Загрузка`} />}
         {remote.isError && (
@@ -74,16 +74,16 @@ function PublicResearch() {
             </Group>
             <Text>{study.summary}</Text>
             <Text>{study.topic}</Text>
-            <Paper withBorder p="md">
-              <Stack>
+            <Paper withBorder p="sm">
+              <Stack gap="sm">
                 <Title order={2}>{t`Условия участия`}</Title>
                 <Text>
                   {study.publicEligibility || t`Условия участия уточняются у координатора.`}
                 </Text>
               </Stack>
             </Paper>
-            <Paper withBorder p="md">
-              <Stack>
+            <Paper withBorder p="sm">
+              <Stack gap="sm">
                 <Title order={2}>{t`Связь с координатором`}</Title>
                 <Text>
                   {study.publicContact ||

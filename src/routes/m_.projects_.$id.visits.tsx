@@ -7,11 +7,10 @@ import {
   Container,
   Group,
   Modal,
-  NativeSelect,
+  Select,
   NumberInput,
   Paper,
   PasswordInput,
-  Select,
   Stack,
   Text,
   Textarea,
@@ -101,15 +100,15 @@ function StudyVisits() {
     else action();
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
             title={t`Покинуть страницу с несохранёнными изменениями?`}
             onClose={blocker.reset}
           >
-            <Stack>
+            <Stack gap="sm">
               <Text>{t`Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход.`}</Text>
               <Group>
                 <Button onClick={blocker.reset}>{t`Остаться`}</Button>
@@ -130,14 +129,15 @@ function StudyVisits() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -229,9 +229,9 @@ function StudyVisits() {
                 {editing &&
                   form.values.scope === workspace.scope &&
                   form.values.projectId === id && (
-                    <Paper withBorder p="md">
+                    <Paper withBorder p="sm">
                       <form onSubmit={form.onSubmit((input) => save.mutate(input))}>
-                        <Stack>
+                        <Stack gap="sm">
                           {form.values.failureId && (
                             <Alert color="yellow">{t`Открыт отклонённый черновик. Сравните его с текущими данными перед сохранением.`}</Alert>
                           )}
@@ -276,6 +276,7 @@ function StudyVisits() {
                             {...form.getInputProps("timeZone")}
                           />
                           <Select
+                            allowDeselect={false}
                             label={t`Повторяющийся час при переводе часов`}
                             disabled={locked}
                             data={[
@@ -316,6 +317,7 @@ function StudyVisits() {
                             {...form.getInputProps("deviationReason")}
                           />
                           <Select
+                            allowDeselect={false}
                             label={t`Тип визита`}
                             data={Object.entries(types).map(([value, label]) => ({ value, label }))}
                             {...form.getInputProps("visitType")}
@@ -393,6 +395,7 @@ function StudyVisits() {
                     </Paper>
                   )}
                 <Select
+                  allowDeselect={false}
                   label={t`Фильтр по статусу`}
                   data={[
                     { value: "all", label: t`Все статусы` },
@@ -408,8 +411,8 @@ function StudyVisits() {
                   if (value?.kind !== "studyVisit") return null;
                   const scheduled = visitTime(value.scheduledFor);
                   return (
-                    <Paper key={record.clientId} withBorder p="md">
-                      <Stack>
+                    <Paper key={record.clientId} withBorder p="sm">
+                      <Stack gap="sm">
                         <Anchor
                           renderRoot={(props) => (
                             <Link
@@ -488,7 +491,7 @@ function StudyVisits() {
                 })}
                 {failures.data?.map((failure) => (
                   <Alert key={failure.id} color="yellow">
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                       <Text>{failure.code}</Text>
                       {failure.action !== "delete" ? (

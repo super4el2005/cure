@@ -92,15 +92,15 @@ function Library() {
     else action();
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
             onClose={blocker.reset}
             title={t`Покинуть страницу с несохранёнными изменениями?`}
           >
-            <Stack>
+            <Stack gap="sm">
               <Text>{t`Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход.`}</Text>
               <Group>
                 <Button onClick={blocker.reset}>{t`Остаться`}</Button>
@@ -115,9 +115,9 @@ function Library() {
           <Alert>{t`Войдите через Google и заполните профессиональный профиль, чтобы открыть личную библиотеку.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form onSubmit={unlockForm.onSubmit(() => unlock.mutate())}>
-              <Stack>
+              <Stack gap="sm">
                 <Text>{t`Для первого открытия нужен интернет и профиль врача или исследователя. После подготовки библиотека доступна без сети в пределах срока локального доступа.`}</Text>
                 <PasswordInput
                   label={t`Парольная фраза личной библиотеки`}
@@ -192,9 +192,9 @@ function Library() {
               <Alert color="green">{t`Источник сохранён в очереди устройства. Серверная синхронизация подтверждается отдельно.`}</Alert>
             )}
             {editing && form.values.scope === workspace.scope && (
-              <Paper withBorder p="md">
+              <Paper withBorder p="sm">
                 <form onSubmit={form.onSubmit((input) => save.mutate(input))}>
-                  <Stack>
+                  <Stack gap="sm">
                     <Title order={2}>{t`Карточка источника`}</Title>
                     {form.errors._form && <Alert color="red">{form.errors._form}</Alert>}
                     {form.values.failureId && (
@@ -347,8 +347,8 @@ function Library() {
                 .filter((version) => version.itemClientId === row.clientId)
                 .sort((a, b) => b.revision - a.revision);
               return (
-                <Paper withBorder p="md" key={row.clientId}>
-                  <Stack>
+                <Paper withBorder p="sm" key={row.clientId}>
+                  <Stack gap="sm">
                     {entry.url ? (
                       <Anchor href={entry.url} target="_blank" rel="noopener noreferrer">
                         {entry.title}
@@ -416,7 +416,7 @@ function Library() {
                       <Accordion.Item value="history">
                         <Accordion.Control>{t`История обновлений`}</Accordion.Control>
                         <Accordion.Panel>
-                          <Stack>
+                          <Stack gap="sm">
                             {revisions.map((version) => (
                               <Paper key={version.clientId} withBorder p="sm">
                                 <Stack gap="xs">
@@ -479,7 +479,7 @@ function Library() {
             <Pagination total={pageCount} value={page} onChange={pagination.setPage} />
             {status.data?.failures.map((failure) => (
               <Alert key={failure.id} color="yellow">
-                <Stack>
+                <Stack gap="sm">
                   <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                   <Text>{failure.code}</Text>
                   {failure.action !== "delete" ? (
@@ -504,7 +504,7 @@ function Library() {
             search.mutate({ data: { source: "pubmed", query: input.query.trim(), offset: 0 } });
           })}
         >
-          <Stack>
+          <Stack gap="sm">
             <TextInput
               label={t`Клиническая задача, диагноз или гипотеза`}
               minLength={2}
@@ -579,8 +579,8 @@ function Library() {
           <Text>{t`На выбранной странице нет публикаций.`}</Text>
         )}
         {publications.map((record) => (
-          <Paper key={record.id} withBorder p="md">
-            <Stack>
+          <Paper key={record.id} withBorder p="sm">
+            <Stack gap="sm">
               <Anchor
                 href={`https://pubmed.ncbi.nlm.nih.gov/${encodeURIComponent(record.sourceId)}/`}
                 target="_blank"

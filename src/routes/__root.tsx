@@ -4,12 +4,17 @@ import { I18nProvider } from "@lingui/react";
 import { useLingui } from "@lingui/react/macro";
 import {
   Anchor,
-  NativeSelect,
+  AppShell,
+  Burger,
+  NavLink,
+  ScrollArea,
+  Textarea,
+  Divider,
+  Select,
   useMantineColorScheme,
   Alert,
   Button,
   ColorSchemeScript,
-  Container,
   Group,
   mantineHtmlProps,
   MantineProvider,
@@ -17,7 +22,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { useNetwork, useSetState, useWindowEvent } from "@mantine/hooks";
+import { useDisclosure, useNetwork, useSetState, useWindowEvent } from "@mantine/hooks";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
@@ -42,9 +47,11 @@ import { signOutClinicalSession } from "@/src/lib/clinical-identity";
 import { saveLanguage } from "@/src/lib/language";
 import type { Locale } from "@/src/lib/locale";
 import { defaultLocale, lastLocaleKey } from "@/src/lib/locale";
+import { PwaInstallContext } from "@/src/lib/pwa-install";
 import { getRequestDevice } from "@/src/lib/request-device";
 import { getRequestLocale } from "@/src/lib/request-locale";
 import { useRetainedWorkspaces } from "@/src/lib/use-retained-workspaces";
+import { useShellChat } from "@/src/lib/use-shell-chat";
 import { observePromise } from "@/src/observability/events";
 
 import mantineCoreStyles from "@mantine/core/styles.css?url";
@@ -53,7 +60,13 @@ interface InstallPrompt extends Event {
   prompt(): Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-const getAuth = createServerFn({ method: "GET" }).handler(async () => getToken());
+const getAuth = createServerFn({ method: "GET" }).handler(async () => {
+  const { getRequestHeaders } = await import("@tanstack/react-start/server");
+  const { getSessionCookie } = await import("better-auth/cookies");
+  // Anonymous pages must not depend on availability of the auth backend.
+  if (!getSessionCookie(getRequestHeaders())) return undefined;
+  return getToken();
+});
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -143,6 +156,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   useRetainedWorkspaces();
   const { t, i18n } = useLingui();
   const { online } = useNetwork();
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const landing = ["/", "/d", "/m"].includes(pathname);
   const [pwa, setPwa] = useSetState<{
     install: InstallPrompt | null;
     update: Serwist | null;
@@ -208,42 +223,34 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <MantineProvider defaultColorScheme="auto">
           <ModalsProvider>
-            <ApplicationNavigation />
-            <Container py="md">
-              <Paper component="aside" aria-label={t`Приложение`}>
-                <Stack>
-                  {!online && (
-                    <Text role="status">{t`Нет интернета. Доступны сохранённые на устройстве данные.`}</Text>
-                  )}
-                  {pwa.ready && (
-                    <Text role="status">{t`Приложение готово к запуску без интернета.`}</Text>
-                  )}
-                  {(pwa.failed || install.isError) && (
-                    <Alert role="alert">{t`Не удалось подготовить приложение для работы без интернета.`}</Alert>
-                  )}
-                  <Group>
-                    {pwa.install && (
-                      <Button
-                        loading={install.isPending}
-                        onClick={() => install.mutate()}
-                      >{t`Установить приложение`}</Button>
-                    )}
-                    {pwa.update && (
-                      <Button
-                        onClick={() => {
-                          const worker = pwa.update;
-                          if (!worker) return;
-                          setPwa({ update: null });
-                          worker.addEventListener("controlling", () => window.location.reload());
-                          worker.messageSkipWaiting();
-                        }}
-                      >{t`Обновить приложение`}</Button>
-                    )}
-                  </Group>
-                </Stack>
-              </Paper>
-            </Container>
-            {children}
+            <PwaInstallContext.Provider
+              value={{
+                available: Boolean(pwa.install),
+                pending: install.isPending,
+                install: () => install.mutate(),
+              }}
+            >
+              <ApplicationNavigation>
+                {!landing && !online && <Alert>{t`Нет сети. Доступны сохранённые данные.`}</Alert>}
+                {!landing && (pwa.failed || install.isError) && (
+                  <Alert color="red">{t`Не удалось подготовить офлайн-запуск.`}</Alert>
+                )}
+                {!landing && pwa.update && (
+                  <Button
+                    size="xs"
+                    variant="light"
+                    onClick={() => {
+                      const worker = pwa.update;
+                      if (!worker) return;
+                      setPwa({ update: null });
+                      worker.addEventListener("controlling", () => window.location.reload());
+                      worker.messageSkipWaiting();
+                    }}
+                  >{t`Обновить приложение`}</Button>
+                )}
+                {children}
+              </ApplicationNavigation>
+            </PwaInstallContext.Provider>
           </ModalsProvider>
           <NavigationProgress />
           <Notifications />
@@ -254,11 +261,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ApplicationNavigation() {
+function ApplicationNavigation({ children }: { children: React.ReactNode }) {
   const { t, i18n } = useLingui();
   const router = useRouter();
   const pathname = useLocation({ select: (location) => location.pathname });
   const base = pathname.startsWith("/m") ? "/m" : "/d";
+  const [menuOpen, menu] = useDisclosure(!pathname.startsWith("/m"));
+  const [chatOpen, chat] = useDisclosure(!pathname.startsWith("/m"));
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const queryClient = useQueryClient();
   const session = authClient.useSession();
@@ -270,7 +279,7 @@ function ApplicationNavigation() {
       if (action === "sign-in") {
         const result = await authClient.signIn.social({
           provider: "google",
-          callbackURL: window.location.href,
+          callbackURL: new URL(`${base}/workspace`, window.location.origin).href,
           errorCallbackURL: new URL("/auth/error", window.location.origin).href,
         });
         if (result.error) throw new Error("SIGN_IN_FAILED");
@@ -298,69 +307,210 @@ function ApplicationNavigation() {
     retry: false,
     mutationFn: async (scheme: "auto" | "light" | "dark") => setColorScheme(scheme),
   });
+  const { isAuthenticated } = Route.useRouteContext();
+  const app =
+    !["/", "/d", "/m"].includes(pathname) || Boolean(session.data?.user) || isAuthenticated;
+  const mobile = base === "/m";
+  const links = [
+    ["workspace", t`Обзор`],
+    ["patients", t`Пациенты`],
+    ["projects", t`Мои исследования`],
+    ["invitations", t`Приглашения`],
+    ["analytics", t`Аналитика`],
+    ["library", t`Библиотека`],
+    ["specialists", t`Специалисты`],
+    ["organizations", t`Организации`],
+    ["research", t`Каталог исследований`],
+    ["organization/members", t`Сотрудники и доступ`],
+    ["tools", t`Справочники и AI`],
+    ["profile", t`Профиль`],
+  ];
+  const controls = (
+    <Group gap="xs" wrap="nowrap">
+      <Select
+        size="xs"
+        w={100}
+        aria-label={t`Язык интерфейса`}
+        allowDeselect={false}
+        value={i18n.locale}
+        disabled={language.isPending}
+        onChange={(locale) => {
+          if (locale === "ru" || locale === "en") language.mutate(locale);
+        }}
+        data={[
+          { value: "ru", label: "Русский" },
+          { value: "en", label: "English" },
+        ]}
+      />
+      <Select
+        size="xs"
+        w={130}
+        aria-label={t`Тема`}
+        allowDeselect={false}
+        value={colorScheme}
+        onChange={(scheme) => {
+          if (scheme === "auto" || scheme === "light" || scheme === "dark")
+            appearance.mutate(scheme);
+        }}
+        data={[
+          { value: "auto", label: t`Авто` },
+          { value: "light", label: t`Светлая` },
+          { value: "dark", label: t`Тёмная` },
+        ]}
+      />
+    </Group>
+  );
+  if (!app) return <>{children}</>;
   return (
-    <Container py="md">
-      <Stack>
-        <Group component="nav" aria-label={t`Основная навигация`}>
-          <Anchor component={Link} to={base}>
-            Cure
-          </Anchor>
-          <Anchor component={Link} to={`${base}/workspace`}>{t`Обзор работы`}</Anchor>
-          <Anchor component={Link} to={`${base}/specialists`}>{t`Специалисты`}</Anchor>
-          <Anchor component={Link} to={`${base}/organizations`}>{t`Организации`}</Anchor>
-          <Anchor component={Link} to={`${base}/research`}>{t`Исследования`}</Anchor>
-          <Anchor component={Link} to={`${base}/projects`}>{t`Мои исследования`}</Anchor>
-          <Anchor component={Link} to={`${base}/invitations`}>{t`Мои приглашения`}</Anchor>
-          <Anchor component={Link} to={`${base}/patients`}>{t`Пациенты`}</Anchor>
-          <Anchor component={Link} to={`${base}/library`}>{t`Моя научная библиотека`}</Anchor>
-          <Anchor component={Link} to={`${base}/analytics`}>{t`Аналитика`}</Anchor>
-          <Anchor component={Link} to={`${base}/profile`}>{t`Мой профиль`}</Anchor>
-          <Anchor
-            component={Link}
-            to={`${base}/organization/members`}
-          >{t`Сотрудники и доступ`}</Anchor>
-          <Anchor component={Link} to={`${base}/tools`}>{t`Справочники и AI`}</Anchor>
+    <AppShell
+      padding="sm"
+      header={{ height: 52 }}
+      navbar={{
+        width: 210,
+        breakpoint: mobile ? 10000 : 0,
+        collapsed: { mobile: !menuOpen, desktop: !menuOpen },
+      }}
+      aside={{
+        width: mobile ? 290 : 320,
+        breakpoint: mobile ? 10000 : 0,
+        collapsed: { mobile: !chatOpen, desktop: !chatOpen },
+      }}
+    >
+      <AppShell.Header px="sm">
+        <Group h="100%" justify="space-between" wrap="nowrap">
+          <Group gap="xs">
+            <Burger
+              size="sm"
+              opened={menuOpen}
+              onClick={() => {
+                menu.toggle();
+                if (mobile) chat.close();
+              }}
+              aria-label={t`Меню`}
+            />
+            <Anchor component={Link} to={base} fw={700}>
+              Cure
+            </Anchor>
+          </Group>
+          {!mobile && controls}
+          <Group gap="xs">
+            <Button
+              size="xs"
+              variant="default"
+              onClick={() => {
+                chat.toggle();
+                if (mobile) menu.close();
+              }}
+            >{t`AI-чат`}</Button>
+            <Button
+              size="xs"
+              loading={authentication.isPending}
+              onClick={() => authentication.mutate(session.data?.user ? "sign-out" : "sign-in")}
+            >
+              {session.data?.user ? t`Выйти` : t`Войти через Google`}
+            </Button>
+          </Group>
         </Group>
-        <Group>
-          <Button
-            loading={authentication.isPending}
-            onClick={() => authentication.mutate(session.data?.user ? "sign-out" : "sign-in")}
-          >
-            {session.data?.user ? t`Выйти` : t`Войти через Google`}
-          </Button>
-          <NativeSelect
-            label={t`Язык интерфейса`}
-            value={i18n.locale}
-            disabled={language.isPending}
-            onChange={(event) => {
-              const locale = event.currentTarget.value;
-              if (locale === "ru" || locale === "en") language.mutate(locale);
-            }}
-            data={[
-              { value: "ru", label: "Русский" },
-              { value: "en", label: "English" },
-            ]}
-          />
-          <NativeSelect
-            label={t`Тема`}
-            value={colorScheme}
-            onChange={(event) => {
-              const scheme = event.currentTarget.value;
-              if (scheme === "auto" || scheme === "light" || scheme === "dark")
-                appearance.mutate(scheme);
-            }}
-            data={[
-              { value: "auto", label: t`Как на устройстве` },
-              { value: "light", label: t`Светлая` },
-              { value: "dark", label: t`Тёмная` },
-            ]}
-          />
-        </Group>
+      </AppShell.Header>
+      <AppShell.Navbar p="xs">
+        <AppShell.Section grow component={ScrollArea}>
+          <nav aria-label={t`Основная навигация`}>
+            {links.map(([path, label]) => (
+              <NavLink
+                key={path}
+                component={Link}
+                to={`${base}/${path}`}
+                label={label}
+                active={pathname === `${base}/${path}` || pathname.startsWith(`${base}/${path}/`)}
+                onClick={() => {
+                  if (mobile) menu.close();
+                }}
+              />
+            ))}
+          </nav>
+        </AppShell.Section>
+        {mobile && <AppShell.Section pt="xs">{controls}</AppShell.Section>}
+      </AppShell.Navbar>
+      <AppShell.Aside p="sm">
+        <ShellChat key={session.data?.user.id ?? "anonymous"} owner={session.data?.user.id ?? ""} />
+      </AppShell.Aside>
+      <AppShell.Main>
         {authentication.isError && (
-          <Alert color="red">{t`Не удалось выполнить вход или выход. Для проверки серверной сессии нужен интернет.`}</Alert>
+          <Alert color="red">{t`Вход или выход не выполнен. Проверьте соединение.`}</Alert>
         )}
         {language.isError && <Alert color="red">{t`Не удалось сменить язык.`}</Alert>}
-      </Stack>
-    </Container>
+        {children}
+      </AppShell.Main>
+    </AppShell>
+  );
+}
+
+function ShellChat({ owner }: { owner: string }) {
+  const { t } = useLingui();
+  const { online } = useNetwork();
+  const chat = useShellChat(owner);
+  return (
+    <Stack h="100%" gap="sm">
+      <Group justify="space-between">
+        <Text fw={600}>{t`AI-чат`}</Text>
+        <Button
+          size="compact-xs"
+          variant="subtle"
+          disabled={chat.send.isPending}
+          onClick={chat.clear}
+        >{t`Очистить`}</Button>
+      </Group>
+      <Text size="xs" c="dimmed">
+        GigaChat · {t`Не отправляйте персональные данные пациентов.`}
+      </Text>
+      <Divider />
+      <ScrollArea flex={1} mah="100%">
+        <Stack gap="xs">
+          {chat.messages.length === 0 && (
+            <Text
+              size="sm"
+              c="dimmed"
+            >{t`Вопросы о работе и исследованиях. Чат пока не изменяет данные системы.`}</Text>
+          )}
+          {chat.messages.map((message, index) => (
+            <Paper key={index} withBorder p="xs">
+              <Text size="xs" fw={600}>
+                {message.role === "user" ? t`Вы` : "GigaChat"}
+              </Text>
+              <Text size="sm" style={{ whiteSpace: "pre-wrap" }}>
+                {message.content}
+              </Text>
+            </Paper>
+          ))}
+        </Stack>
+      </ScrollArea>
+      {!online && <Text size="xs">{t`AI доступен при подключении к интернету.`}</Text>}
+      {!owner && <Text size="xs">{t`Войдите, чтобы использовать чат.`}</Text>}
+      {chat.send.isError && (
+        <Alert color="red">{t`Ответ не получен. Текст сохранён в поле — можно повторить.`}</Alert>
+      )}
+      <form onSubmit={chat.form.onSubmit(({ message }) => chat.send.mutate(message))}>
+        <Stack gap="xs">
+          <Textarea
+            aria-label={t`Сообщение AI`}
+            placeholder={t`Ваш вопрос`}
+            minRows={2}
+            maxRows={5}
+            autosize
+            maxLength={8000}
+            disabled={chat.send.isPending}
+            {...chat.form.getInputProps("message")}
+          />
+          <Button
+            size="xs"
+            type="submit"
+            loading={chat.send.isPending}
+            disabled={
+              !online || !owner || !chat.form.values.message.trim() || chat.messages.length >= 30
+            }
+          >{t`Отправить`}</Button>
+        </Stack>
+      </form>
+    </Stack>
   );
 }

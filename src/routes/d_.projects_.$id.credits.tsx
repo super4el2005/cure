@@ -10,7 +10,7 @@ import {
   Group,
   Modal,
   MultiSelect,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -104,8 +104,8 @@ function ResearchCredits() {
   };
   const target = entries.find((row) => row.clientId === form.values.agreementClientId);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
@@ -140,15 +140,16 @@ function ResearchCredits() {
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -233,9 +234,9 @@ function ResearchCredits() {
                   canWrite &&
                   form.values.scope === workspace.scope &&
                   form.values.projectId === id && (
-                    <Paper withBorder p="md">
+                    <Paper withBorder p="sm">
                       <form onSubmit={form.onSubmit((values) => saveCredit.mutate(values))}>
-                        <Stack>
+                        <Stack gap="sm">
                           {Object.keys(form.errors).length > 0 && (
                             <Alert color="red">{t`Проверьте обязательные поля, авторов и подтверждения.`}</Alert>
                           )}
@@ -260,7 +261,8 @@ function ResearchCredits() {
                                 maxLength={5000}
                                 {...form.getInputProps("contribution")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Есть относящиеся к работе интересы`}
                                 data={[
                                   { value: "", label: t`Выберите ответ` },
@@ -298,7 +300,8 @@ function ResearchCredits() {
                               <Text>{t`Порядок ниже является предлагаемым порядком авторов. Принятие требуется отдельно от каждого указанного автора.`}</Text>
                               {form.values.authors.map((author, index) => (
                                 <Group key={index}>
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={`${t`Автор`} ${index + 1}`}
                                     value={author.userId}
                                     data={[
@@ -319,11 +322,8 @@ function ResearchCredits() {
                                         ? [{ value: author.userId, label: author.userId }]
                                         : []),
                                     ]}
-                                    onChange={(event) =>
-                                      form.setFieldValue(
-                                        `authors.${index}.userId`,
-                                        event.currentTarget.value,
-                                      )
+                                    onChange={(value) =>
+                                      form.setFieldValue(`authors.${index}.userId`, value ?? "")
                                     }
                                   />
                                   <Button
@@ -357,7 +357,8 @@ function ResearchCredits() {
                                 disabled={form.values.authors.length >= 200}
                                 onClick={() => form.insertListItem("authors", { userId: "" })}
                               >{t`Добавить автора`}</Button>
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Автор для переписки`}
                                 data={[
                                   { value: "", label: t`Выберите участника` },
@@ -385,7 +386,7 @@ function ResearchCredits() {
                               <Title order={3}>{t`Моё решение по авторству`}</Title>
                               {target?.values.kind === "agreement" && (
                                 <Paper withBorder p="sm">
-                                  <Stack>
+                                  <Stack gap="sm">
                                     <Text fw={600}>{target.values.outputTitle}</Text>
                                     <Text>
                                       {t`Версия:`} {target.values.version}
@@ -400,7 +401,8 @@ function ResearchCredits() {
                                 </Paper>
                               )}
                               <Text>{t`Решение связано с этой версией соглашения и вашей текущей декларацией. Если декларации ещё нет, сначала сохраните её.`}</Text>
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Решение`}
                                 data={[
                                   { value: "", label: t`Выберите ответ` },
@@ -453,8 +455,8 @@ function ResearchCredits() {
                   const row = currentDeclaration(entries, actor);
                   if (row?.values.kind !== "declaration") return null;
                   return (
-                    <Paper withBorder p="md" key={actor}>
-                      <Stack>
+                    <Paper withBorder p="sm" key={actor}>
+                      <Stack gap="sm">
                         <Title order={3}>{names.get(actor) ?? actor}</Title>
                         <Text>{row.values.roles.map((role) => roles[role]).join(", ")}</Text>
                         <Text>{row.values.contribution}</Text>
@@ -486,8 +488,8 @@ function ResearchCredits() {
                 {agreements.map(
                   (row) =>
                     row.values.kind === "agreement" && (
-                      <Paper withBorder p="md" key={row.clientId}>
-                        <Stack>
+                      <Paper withBorder p="sm" key={row.clientId}>
+                        <Stack gap="sm">
                           <Title order={3}>{row.values.outputTitle}</Title>
                           <Text>
                             {t`Версия:`} {row.values.version}
@@ -517,7 +519,7 @@ function ResearchCredits() {
                               decision.values.declarationClientId === declaration?.clientId;
                             return (
                               <Paper withBorder p="sm" key={author}>
-                                <Stack>
+                                <Stack gap="sm">
                                   <Text>
                                     {index + 1}. {names.get(author) ?? author}
                                   </Text>
@@ -568,10 +570,10 @@ function ResearchCredits() {
                   <Accordion.Item value="history">
                     <Accordion.Control>{t`История заявлений и решений`}</Accordion.Control>
                     <Accordion.Panel>
-                      <Stack>
+                      <Stack gap="sm">
                         {entries.map((row) => (
                           <Paper withBorder p="sm" key={row.clientId}>
-                            <Stack>
+                            <Stack gap="sm">
                               <Text>
                                 {names.get(row.createdBy) ?? row.createdBy} —{" "}
                                 {i18n.date(new Date(row.createdAt), {
@@ -648,7 +650,7 @@ function ResearchCredits() {
                 )}
                 {failures.data?.map((failure) => (
                   <Alert color="yellow" key={failure.id}>
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                       <Text>{failure.code}</Text>
                       <Button
