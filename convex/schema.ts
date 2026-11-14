@@ -78,6 +78,22 @@ export const taskFields = {
   archived: v.boolean(),
 };
 const studyFieldCommon = {
+  visibleWhen: v.optional(
+    v.object({
+      mode: v.union(v.literal("all"), v.literal("any")),
+      rules: v.array(
+        v.object({
+          fieldId: v.string(),
+          operator: v.union(
+            ...(["equals", "notEquals", "includes", "gt", "gte", "lt", "lte"] as const).map(
+              (value) => v.literal(value),
+            ),
+          ),
+          value: v.union(v.string(), v.number(), v.boolean()),
+        }),
+      ),
+    }),
+  ),
   id: v.string(),
   label: v.string(),
   help: v.string(),
@@ -85,6 +101,26 @@ const studyFieldCommon = {
 };
 const studyChoices = v.array(v.object({ value: v.string(), label: v.string() }));
 export const formDefinition = v.object({
+  scores: v.optional(
+    v.array(
+      v.object({
+        id: v.string(),
+        label: v.string(),
+        description: v.string(),
+        unit: v.string(),
+        method: v.union(v.literal("sum"), v.literal("mean")),
+        terms: v.array(
+          v.object({
+            fieldId: v.string(),
+            weight: v.number(),
+            mapping: v.optional(
+              v.array(v.object({ value: v.union(v.string(), v.boolean()), score: v.number() })),
+            ),
+          }),
+        ),
+      }),
+    ),
+  ),
   title: v.string(),
   description: v.string(),
   fields: v.array(

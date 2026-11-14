@@ -24,6 +24,11 @@ import { modals } from "@mantine/modals";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import "dayjs/locale/ru";
 
+import {
+  calculateStudyScores,
+  normalizeFormAnswers,
+  visibleStudyFields,
+} from "@/src/lib/study-form-model";
 import { useQuestionnaires } from "@/src/lib/use-questionnaires";
 
 export const Route = createFileRoute("/m_/patients_/$id_/forms")({ component: Questionnaires });
@@ -65,6 +70,15 @@ function Questionnaires() {
     editResponse,
     canEditResponse,
   } = useQuestionnaires(id);
+  const activeAnswers = form.values.template
+    ? normalizeFormAnswers(form.values.template.definition, form.values.answers)
+    : {};
+  const activeFields = form.values.template
+    ? visibleStudyFields(form.values.template.definition, activeAnswers)
+    : new Set<string>();
+  const currentScores = form.values.template
+    ? calculateStudyScores(form.values.template.definition, activeAnswers)
+    : [];
   const patient = rows.find((row) => row.clientId === id);
   const templateOptions = availableTemplates.map((version) => ({
     value: version.clientId,
@@ -279,100 +293,124 @@ function Questionnaires() {
                                     {Object.keys(form.errors).length > 0 && (
                                       <Alert color="red">{t`Проверьте ответы и обязательные поля. Значения должны соответствовать типам и границам шаблона.`}</Alert>
                                     )}
-                                    {form.values.template.definition.fields.map((field) => (
-                                      <Paper withBorder p="md" key={field.id}>
+                                    {form.values.template.definition.fields
+                                      .filter((field) => activeFields.has(field.id))
+                                      .map((field) => (
+                                        <Paper withBorder p="md" key={field.id}>
+                                          <Stack>
+                                            {field.type === "text" && (
+                                              <Textarea
+                                                label={field.label}
+                                                description={field.help}
+                                                required={
+                                                  form.values.status === "final" && field.required
+                                                }
+                                                maxLength={field.maxLength}
+                                                {...form.getInputProps(`answers.${field.id}`)}
+                                              />
+                                            )}
+                                            {field.type === "number" && (
+                                              <NumberInput
+                                                clampBehavior="none"
+                                                label={field.label}
+                                                description={`${field.help} ${field.unit}`}
+                                                required={
+                                                  form.values.status === "final" && field.required
+                                                }
+                                                min={field.minimum ?? undefined}
+                                                max={field.maximum ?? undefined}
+                                                {...form.getInputProps(`answers.${field.id}`)}
+                                              />
+                                            )}
+                                            {field.type === "date" && (
+                                              <DateInput
+                                                label={field.label}
+                                                description={field.help}
+                                                locale={i18n.locale}
+                                                required={
+                                                  form.values.status === "final" && field.required
+                                                }
+                                                {...(field.minDate
+                                                  ? { minDate: field.minDate }
+                                                  : {})}
+                                                {...(field.maxDate
+                                                  ? { maxDate: field.maxDate }
+                                                  : {})}
+                                                {...form.getInputProps(`answers.${field.id}`)}
+                                                value={
+                                                  typeof form.values.answers[field.id] ===
+                                                    "string" && form.values.answers[field.id]
+                                                    ? (form.values.answers[field.id] as string)
+                                                    : null
+                                                }
+                                                onChange={(value) =>
+                                                  form.setFieldValue(
+                                                    `answers.${field.id}`,
+                                                    value ?? "",
+                                                  )
+                                                }
+                                              />
+                                            )}
+                                            {field.type === "boolean" && (
+                                              <NativeSelect
+                                                label={field.label}
+                                                description={field.help}
+                                                required={
+                                                  form.values.status === "final" && field.required
+                                                }
+                                                data={[
+                                                  { value: "", label: t`Ответ не указан` },
+                                                  { value: "true", label: t`Да` },
+                                                  { value: "false", label: t`Нет` },
+                                                ]}
+                                                {...form.getInputProps(`answers.${field.id}`)}
+                                              />
+                                            )}
+                                            {field.type === "choice" && (
+                                              <NativeSelect
+                                                label={field.label}
+                                                description={field.help}
+                                                required={
+                                                  form.values.status === "final" && field.required
+                                                }
+                                                data={[
+                                                  { value: "", label: t`Ответ не указан` },
+                                                  ...field.choices,
+                                                ]}
+                                                {...form.getInputProps(`answers.${field.id}`)}
+                                              />
+                                            )}
+                                            {field.type === "multiChoice" && (
+                                              <MultiSelect
+                                                label={field.label}
+                                                description={field.help}
+                                                required={
+                                                  form.values.status === "final" && field.required
+                                                }
+                                                data={field.choices}
+                                                searchable
+                                                clearable
+                                                {...form.getInputProps(`answers.${field.id}`)}
+                                              />
+                                            )}
+                                          </Stack>
+                                        </Paper>
+                                      ))}
+                                    <Alert>{t`Вопросы меняются по условиям шаблона. Скрытые ответы не сохраняются; перед сохранением проверьте активную ветку.`}</Alert>
+                                    {currentScores.map((result) => (
+                                      <Paper withBorder p="sm" key={result.score.id}>
                                         <Stack>
-                                          {field.type === "text" && (
-                                            <Textarea
-                                              label={field.label}
-                                              description={field.help}
-                                              required={
-                                                form.values.status === "final" && field.required
-                                              }
-                                              maxLength={field.maxLength}
-                                              {...form.getInputProps(`answers.${field.id}`)}
-                                            />
-                                          )}
-                                          {field.type === "number" && (
-                                            <NumberInput
-                                              clampBehavior="none"
-                                              label={field.label}
-                                              description={`${field.help} ${field.unit}`}
-                                              required={
-                                                form.values.status === "final" && field.required
-                                              }
-                                              min={field.minimum ?? undefined}
-                                              max={field.maximum ?? undefined}
-                                              {...form.getInputProps(`answers.${field.id}`)}
-                                            />
-                                          )}
-                                          {field.type === "date" && (
-                                            <DateInput
-                                              label={field.label}
-                                              description={field.help}
-                                              locale={i18n.locale}
-                                              required={
-                                                form.values.status === "final" && field.required
-                                              }
-                                              {...(field.minDate ? { minDate: field.minDate } : {})}
-                                              {...(field.maxDate ? { maxDate: field.maxDate } : {})}
-                                              {...form.getInputProps(`answers.${field.id}`)}
-                                              value={
-                                                typeof form.values.answers[field.id] === "string" &&
-                                                form.values.answers[field.id]
-                                                  ? (form.values.answers[field.id] as string)
-                                                  : null
-                                              }
-                                              onChange={(value) =>
-                                                form.setFieldValue(
-                                                  `answers.${field.id}`,
-                                                  value ?? "",
-                                                )
-                                              }
-                                            />
-                                          )}
-                                          {field.type === "boolean" && (
-                                            <NativeSelect
-                                              label={field.label}
-                                              description={field.help}
-                                              required={
-                                                form.values.status === "final" && field.required
-                                              }
-                                              data={[
-                                                { value: "", label: t`Ответ не указан` },
-                                                { value: "true", label: t`Да` },
-                                                { value: "false", label: t`Нет` },
-                                              ]}
-                                              {...form.getInputProps(`answers.${field.id}`)}
-                                            />
-                                          )}
-                                          {field.type === "choice" && (
-                                            <NativeSelect
-                                              label={field.label}
-                                              description={field.help}
-                                              required={
-                                                form.values.status === "final" && field.required
-                                              }
-                                              data={[
-                                                { value: "", label: t`Ответ не указан` },
-                                                ...field.choices,
-                                              ]}
-                                              {...form.getInputProps(`answers.${field.id}`)}
-                                            />
-                                          )}
-                                          {field.type === "multiChoice" && (
-                                            <MultiSelect
-                                              label={field.label}
-                                              description={field.help}
-                                              required={
-                                                form.values.status === "final" && field.required
-                                              }
-                                              data={field.choices}
-                                              searchable
-                                              clearable
-                                              {...form.getInputProps(`answers.${field.id}`)}
-                                            />
-                                          )}
+                                          <Text fw={600}>{result.score.label}</Text>
+                                          <Text>{result.score.description}</Text>
+                                          <Text>
+                                            {result.status === "calculated"
+                                              ? `${i18n.number(result.value, { maximumFractionDigits: 6 })} ${result.score.unit}`
+                                              : result.status === "notApplicable"
+                                                ? t`Шкала не применима к активной ветке`
+                                                : result.status === "incomplete"
+                                                  ? t`Недостаточно ответов для расчёта`
+                                                  : t`Некорректные исходные значения`}
+                                          </Text>
                                         </Stack>
                                       </Paper>
                                     ))}
@@ -456,46 +494,76 @@ function Questionnaires() {
                                   dateStyle: "medium",
                                 })}
                               </Text>
-                              {record.payload.definition.fields.map((field) => {
-                                const answer =
-                                  record.payload?.kind === "questionnaire"
-                                    ? record.payload.answers[field.id]
-                                    : undefined;
-                                return (
-                                  <Stack key={field.id}>
-                                    <Text fw={600}>{field.label}</Text>
+                              {record.payload.definition.fields
+                                .filter(
+                                  (field) =>
+                                    record.payload?.kind === "questionnaire" &&
+                                    visibleStudyFields(
+                                      record.payload.definition,
+                                      record.payload.answers,
+                                    ).has(field.id),
+                                )
+                                .map((field) => {
+                                  const answer =
+                                    record.payload?.kind === "questionnaire"
+                                      ? record.payload.answers[field.id]
+                                      : undefined;
+                                  return (
+                                    <Stack key={field.id}>
+                                      <Text fw={600}>{field.label}</Text>
+                                      <Text>
+                                        {answer === undefined
+                                          ? t`Ответ не указан`
+                                          : typeof answer === "boolean"
+                                            ? answer
+                                              ? t`Да`
+                                              : t`Нет`
+                                            : field.type === "choice"
+                                              ? (field.choices.find(
+                                                  (choice) => choice.value === answer,
+                                                )?.label ?? String(answer))
+                                              : field.type === "multiChoice" &&
+                                                  Array.isArray(answer)
+                                                ? answer
+                                                    .map(
+                                                      (value) =>
+                                                        field.choices.find(
+                                                          (choice) => choice.value === value,
+                                                        )?.label ?? value,
+                                                    )
+                                                    .join(", ")
+                                                : typeof answer === "number"
+                                                  ? `${i18n.number(answer)} ${field.type === "number" ? field.unit : ""}`
+                                                  : field.type === "date" &&
+                                                      typeof answer === "string"
+                                                    ? i18n.date(new Date(`${answer}T12:00:00`), {
+                                                        dateStyle: "medium",
+                                                      })
+                                                    : String(answer)}
+                                      </Text>
+                                    </Stack>
+                                  );
+                                })}
+                              {calculateStudyScores(
+                                record.payload.definition,
+                                record.payload.answers,
+                              ).map((result) => (
+                                <Paper withBorder p="sm" key={result.score.id}>
+                                  <Stack>
+                                    <Text fw={600}>{result.score.label}</Text>
+                                    <Text>{result.score.description}</Text>
                                     <Text>
-                                      {answer === undefined
-                                        ? t`Ответ не указан`
-                                        : typeof answer === "boolean"
-                                          ? answer
-                                            ? t`Да`
-                                            : t`Нет`
-                                          : field.type === "choice"
-                                            ? (field.choices.find(
-                                                (choice) => choice.value === answer,
-                                              )?.label ?? String(answer))
-                                            : field.type === "multiChoice" && Array.isArray(answer)
-                                              ? answer
-                                                  .map(
-                                                    (value) =>
-                                                      field.choices.find(
-                                                        (choice) => choice.value === value,
-                                                      )?.label ?? value,
-                                                  )
-                                                  .join(", ")
-                                              : typeof answer === "number"
-                                                ? `${i18n.number(answer)} ${field.type === "number" ? field.unit : ""}`
-                                                : field.type === "date" &&
-                                                    typeof answer === "string"
-                                                  ? i18n.date(new Date(`${answer}T12:00:00`), {
-                                                      dateStyle: "medium",
-                                                    })
-                                                  : String(answer)}
+                                      {result.status === "calculated"
+                                        ? `${i18n.number(result.value, { maximumFractionDigits: 6 })} ${result.score.unit}`
+                                        : result.status === "notApplicable"
+                                          ? t`Шкала не применима к активной ветке`
+                                          : result.status === "incomplete"
+                                            ? t`Недостаточно ответов для расчёта`
+                                            : t`Некорректные исходные значения`}
                                     </Text>
                                   </Stack>
-                                );
-                              })}
+                                </Paper>
+                              ))}
                               <Text>{record.payload.notes}</Text>
                               {record.payload.amendmentReason && (
                                 <Text>
