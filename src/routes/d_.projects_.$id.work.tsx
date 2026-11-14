@@ -215,7 +215,7 @@ function ProjectWork() {
           failureId: failure.id,
         });
         taskEditor.open();
-      } else if (!draft.deleted) {
+      } else if (draft.entity === "message" && !draft.deleted) {
         const editable =
           current?.entity === "message" && !current.deleted && current.createdBy === userId;
         messageForm.setValues({
@@ -229,7 +229,10 @@ function ProjectWork() {
   });
   const failures = workspace
     ? (workFailures.data ?? [])
-        .map((failure) => ({ failure, draft: workspace.readWork(failure.envelope) }))
+        .flatMap((failure) => {
+          const draft = workspace.readWork(failure.envelope);
+          return draft.entity === "credit" ? [] : [{ failure, draft }];
+        })
         .filter((item) => item.draft.projectClientId === id)
     : [];
   return (

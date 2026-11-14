@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { creditEventSchema } from "@/src/lib/research-credit-model";
+
 export const taskValuesSchema = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(5000),
@@ -22,6 +24,7 @@ const common = {
   delivery: z.enum(["local", "confirmed"]),
 };
 export const workRecordSchema = z.discriminatedUnion("entity", [
+  z.object({ ...common, entity: z.literal("credit"), values: creditEventSchema }),
   taskValuesSchema.extend({ ...common, entity: z.literal("task") }),
   z.object({
     ...common,
@@ -32,6 +35,13 @@ export const workRecordSchema = z.discriminatedUnion("entity", [
 ]);
 export type WorkRecord = z.infer<typeof workRecordSchema>;
 export const workCommandSchema = z.discriminatedUnion("entity", [
+  z.object({
+    entity: z.literal("credit"),
+    clientId: z.uuid(),
+    projectClientId: z.uuid(),
+    expectedRevision: z.literal(0),
+    values: creditEventSchema,
+  }),
   z.object({
     expectedRevision: z.number().int().nonnegative(),
     entity: z.literal("task"),
