@@ -416,6 +416,24 @@ test("study visit routes render protected clinic entries independently", async (
   }
 });
 
+test("study safety routes render protected clinic entries independently", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(
+        `https://cure-sooty.vercel.app/${device}/projects/8df7de54-a59e-41fd-8a44-480b44a12f0c/safety`,
+        { headers: { "accept-language": "en" } },
+      ),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Study safety and deviations/);
+    assert.doesNotMatch(
+      html,
+      /Private projects, study stages|Confidential research outcome|Test Patient/,
+    );
+  }
+});
+
 test("personal library routes render independent safe entries without private data or live calls", async () => {
   for (const device of ["d", "m"]) {
     const response = await app.fetch(

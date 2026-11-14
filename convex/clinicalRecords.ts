@@ -5,11 +5,17 @@ import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
 import { enrollmentAccess, checkRecruitment } from "@/convex/lib/enrollment";
 import { operationReceipt, projectAccess, requireClientId } from "@/convex/lib/research";
+import { checkStudyIssue } from "@/convex/lib/studyIssue";
 import { studyVisitAccess, checkStudyVisit } from "@/convex/lib/studyVisit";
 import { clinicalPayload } from "@/convex/schema";
-import { clinicalPayloadSchema, validateClinicalTransition } from "@/src/lib/clinical-record-model";
+import {
+  clinicalPayloadSchema,
+  validateClinicalTransition,
+  hasClinicalWriteId,
+} from "@/src/lib/clinical-record-model";
 import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
+import { validateStudyIssueWrite } from "@/src/lib/study-issue-model";
 import { studyVisitNeedsAuthorization } from "@/src/lib/study-visit-model";
 
 export const list = query({
@@ -82,13 +88,7 @@ export const apply = mutation({
       .unique();
     if (existing && existing.patientClientId !== args.patientClientId)
       throw new ConvexError("ACCESS_DENIED");
-    const versionedWrite =
-      payload?.kind === "questionnaire" ||
-      existing?.payload?.kind === "questionnaire" ||
-      payload?.kind === "enrollment" ||
-      existing?.payload?.kind === "enrollment" ||
-      payload?.kind === "studyVisit" ||
-      existing?.payload?.kind === "studyVisit";
+    const versionedWrite = hasClinicalWriteId(payload) || hasClinicalWriteId(existing?.payload);
     if (args.expectedWriteId !== undefined && args.expectedWriteId !== null)
       requireClientId(args.expectedWriteId);
     if (
@@ -172,23 +172,35 @@ export const apply = mutation({
     if (
       versionedWrite &&
       args.action !== "create" &&
-      ((existing?.payload?.kind !== "questionnaire" &&
-        existing?.payload?.kind !== "enrollment" &&
-        existing?.payload?.kind !== "studyVisit") ||
-        existing.payload.writeId !== args.expectedWriteId)
+      (!hasClinicalWriteId(existing?.payload) || existing.payload.writeId !== args.expectedWriteId)
     )
       throw new ConvexError("REVISION_CONFLICT");
     if (
       args.action === "update" &&
-      (existing?.payload?.kind === "questionnaire" ||
-        existing?.payload?.kind === "enrollment" ||
-        existing?.payload?.kind === "studyVisit") &&
-      (payload?.kind === "questionnaire" ||
-        payload?.kind === "enrollment" ||
-        payload?.kind === "studyVisit") &&
+      hasClinicalWriteId(existing?.payload) &&
+      hasClinicalWriteId(payload) &&
       existing.payload.writeId === payload.writeId
     )
       throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (payload?.kind === "studyIssue") {
+      try {
+        validateStudyIssueWrite(
+          existing?.payload?.kind === "studyIssue" ? existing.payload : null,
+          payload,
+          userId,
+          Date.now(),
+        );
+      } catch (error) {
+        throw new ConvexError(error instanceof Error ? error.message : "INVALID_CLINICAL_RECORD");
+      }
+      await checkStudyIssue(
+        ctx,
+        args.organizationId,
+        args.patientClientId,
+        existing?.payload?.kind === "studyIssue" ? existing.payload : null,
+        payload,
+      );
+    }
     if (payload?.kind === "studyVisit") {
       if (args.action === "create" && payload.status !== "planned")
         throw new ConvexError("INVALID_VISIT_TRANSITION");
@@ -319,5 +331,28 @@ export const erasePatientBatch = internalMutation({
     }
     if (rows.length === 50)
       await ctx.scheduler.runAfter(0, internal.clinicalRecords.erasePatientBatch, args);
+  },
+});
+
+export const reviewers = query({
+  args: { actorId: v.string(), organizationId: v.id("organizations") },
+  handler: async (ctx, args) => {
+    const { userId } = await organizationAccess(ctx, args.organizationId, true);
+    if (userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
+    const rows = await ctx.db
+      .query("memberships")
+      .withIndex("by_organization_user", (q) => q.eq("organizationId", args.organizationId))
+      .collect();
+    return Promise.all(
+      rows
+        .filter((row) => row.active && row.verified && row.role === "doctor")
+        .map(async (row) => {
+          const profile = await ctx.db
+            .query("profiles")
+            .withIndex("by_user", (q) => q.eq("userId", row.userId))
+            .unique();
+          return { userId: row.userId, displayName: profile?.displayName ?? row.userId };
+        }),
+    );
   },
 });

@@ -369,6 +369,15 @@ function Enrollment() {
                                   />
                                 )}
                               >{t`Визиты исследования`}</Anchor>
+                              <Anchor
+                                renderRoot={(props) => (
+                                  <Link
+                                    {...props}
+                                    to="/d/projects/$id/safety"
+                                    params={{ id: payload.projectClientId }}
+                                  />
+                                )}
+                              >{t`Безопасность и отклонения`}</Anchor>
                               <Text>
                                 {t`Версия протокола:`} {payload.protocolVersion} ·{" "}
                                 {payload.protocolClientId}

@@ -32,6 +32,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import {
   clinicalEnvelope,
+  hasClinicalWriteId,
   openClinicalRecord,
   clinicalPayloadSchema,
   validateClinicalTransition,
@@ -47,6 +48,7 @@ import type { Vault } from "@/src/lib/patient-vault";
 import { analysisValuesSchema, readAnalysis, sealAnalysis } from "@/src/lib/saved-analysis-model";
 import type { AnalysisCommand } from "@/src/lib/saved-analysis-model";
 import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
+import { validateStudyIssueWrite } from "@/src/lib/study-issue-model";
 import {
   studyVisitNeedsAuthorization,
   validateStudyVisitParticipation,
@@ -264,18 +266,11 @@ export async function openPatientWorkspace(config: {
           clinicalScope,
         );
         const original =
-          change.type !== "insert" &&
-          (row.deleted ||
-            ["questionnaire", "enrollment", "studyVisit"].includes(row.payload?.kind ?? ""))
+          change.type !== "insert" && (row.deleted || hasClinicalWriteId(row.payload))
             ? openClinicalRecord(change.original as ClinicalEnvelope, config.vault, clinicalScope)
             : undefined;
         const versionedWrite =
-          row.payload?.kind === "questionnaire" ||
-          original?.payload?.kind === "questionnaire" ||
-          row.payload?.kind === "enrollment" ||
-          original?.payload?.kind === "enrollment" ||
-          row.payload?.kind === "studyVisit" ||
-          original?.payload?.kind === "studyVisit";
+          hasClinicalWriteId(row.payload) || hasClinicalWriteId(original?.payload);
         return {
           actorId: config.userId,
           organizationId: config.organizationId,
@@ -283,12 +278,9 @@ export async function openPatientWorkspace(config: {
           patientClientId: row.patientClientId,
           ...(versionedWrite
             ? {
-                expectedWriteId:
-                  original?.payload?.kind === "questionnaire" ||
-                  original?.payload?.kind === "enrollment" ||
-                  original?.payload?.kind === "studyVisit"
-                    ? original.payload.writeId
-                    : null,
+                expectedWriteId: hasClinicalWriteId(original?.payload)
+                  ? original.payload.writeId
+                  : null,
               }
             : {}),
           action:
@@ -352,6 +344,15 @@ export async function openPatientWorkspace(config: {
               "ACCOUNT_CHANGED",
               "PATIENT_NOT_FOUND",
               "INVALID_CLINICAL_RECORD",
+              "INVALID_ISSUE_TRANSITION",
+              "ISSUE_BINDING_IMMUTABLE",
+              "ISSUE_REVIEWER_REQUIRED",
+              "ISSUE_REVIEWER_UNAVAILABLE",
+              "ISSUE_REVIEW_REQUIRED",
+              "ISSUE_SERIOUSNESS_REQUIRED",
+              "ISSUE_CORRECTIVE_ACTION_REQUIRED",
+              "INVALID_ISSUE_REVIEW",
+
               "INVALID_ANALYSIS",
               "CLINICAL_KIND_IMMUTABLE",
               "FORM_VERSION_IMMUTABLE",
@@ -543,12 +544,9 @@ export async function openPatientWorkspace(config: {
           throw new Error("ACCESS_DENIED");
         const parsedPayload =
           command.action === "delete" ? null : clinicalPayloadSchema.parse(command.payload);
-        const payload =
-          parsedPayload?.kind === "questionnaire" ||
-          parsedPayload?.kind === "enrollment" ||
-          parsedPayload?.kind === "studyVisit"
-            ? { ...parsedPayload, writeId: crypto.randomUUID() }
-            : parsedPayload;
+        const payload = hasClinicalWriteId(parsedPayload)
+          ? { ...parsedPayload, writeId: crypto.randomUUID() }
+          : parsedPayload;
         if (prior?.payload && payload) validateClinicalTransition(prior.payload, payload);
         if (payload?.kind === "enrollment") {
           validateEnrollmentChange(
@@ -594,6 +592,33 @@ export async function openPatientWorkspace(config: {
             )
               throw new Error("PARTICIPATION_INACTIVE");
             validateStudyVisitParticipation(payload, enrollment.payload, Date.now());
+          }
+        }
+        if (payload?.kind === "studyIssue") {
+          validateStudyIssueWrite(
+            prior?.payload?.kind === "studyIssue" ? prior.payload : null,
+            payload,
+            config.userId,
+            Date.now(),
+          );
+          if (command.action === "create") {
+            const reference = clinicalRecords.get(payload.enrollmentClientId);
+            const enrollment =
+              reference && !reference.deleted
+                ? openClinicalRecord(reference, config.vault, clinicalScope)
+                : undefined;
+            if (
+              !enrollment ||
+              enrollment.patientClientId !== command.patientClientId ||
+              enrollment.payload?.kind !== "enrollment"
+            )
+              throw new Error("PARTICIPATION_INACTIVE");
+            if (
+              enrollment.payload.projectClientId !== payload.projectClientId ||
+              enrollment.payload.protocolClientId !== payload.protocolClientId ||
+              enrollment.payload.protocolVersion !== payload.protocolVersion
+            )
+              throw new Error("ISSUE_BINDING_IMMUTABLE");
           }
         }
         const now = Date.now();
@@ -717,6 +742,23 @@ export async function openPatientWorkspace(config: {
       async cachedResearchers() {
         if (closed || Date.now() >= config.expiresAt) throw new Error("OFFLINE_ACCESS_EXPIRED");
         const value = await metadata.get("researchers");
+        return z
+          .array(z.object({ userId: z.string(), displayName: z.string() }))
+          .parse(value ? JSON.parse(value) : []);
+      },
+      async cacheReviewers(rows: { userId: string; displayName: string }[]) {
+        if (closed || config.role !== "doctor") throw new Error("ACCESS_DENIED");
+        await metadata.set(
+          "reviewers",
+          JSON.stringify(
+            z.array(z.object({ userId: z.string(), displayName: z.string() })).parse(rows),
+          ),
+        );
+      },
+      async cachedReviewers() {
+        if (closed || Date.now() >= config.expiresAt || config.role !== "doctor")
+          throw new Error("ACCESS_DENIED");
+        const value = await metadata.get("reviewers");
         return z
           .array(z.object({ userId: z.string(), displayName: z.string() }))
           .parse(value ? JSON.parse(value) : []);

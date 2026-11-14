@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { Vault } from "@/src/lib/patient-vault";
 import { enrollmentPayloadSchema } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema, questionnairePayloadSchema } from "@/src/lib/study-form-model";
+import { studyIssuePayloadSchema } from "@/src/lib/study-issue-model";
 import { studyVisitPayloadSchema, visitFields } from "@/src/lib/study-visit-model";
 import { visitTime, visitTimeSchema } from "@/src/lib/visit-time";
 
@@ -12,6 +13,7 @@ export const clinicalPayloadSchema = z
     questionnairePayloadSchema,
     enrollmentPayloadSchema,
     studyVisitPayloadSchema,
+    studyIssuePayloadSchema,
     z.object({ ...visitFields, kind: z.literal("visit") }),
     z.object({ ...common, kind: z.literal("history"), text: z.string().trim().min(1).max(10000) }),
     z.object({
@@ -192,3 +194,9 @@ export type ClinicalCommand = {
   action: "create" | "update" | "delete";
   payload?: ClinicalPayload;
 };
+
+export function hasClinicalWriteId(
+  value: ClinicalPayload | null | undefined,
+): value is Extract<ClinicalPayload, { writeId: string }> {
+  return Boolean(value && "writeId" in value);
+}
