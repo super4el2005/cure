@@ -1,6 +1,7 @@
 import { useLiveQuery } from "@tanstack/react-db";
 import { useQuery } from "@tanstack/react-query";
 import { useConvex } from "convex/react";
+import { useMemo } from "react";
 
 import { api } from "@/convex/_generated/api";
 import { usePatientWorkspace } from "@/src/lib/use-patient-workspace";
@@ -46,19 +47,23 @@ export function useClinicalHistory(patientId: string, includeVersions = true) {
           })
           .sort((a, b) => b.recordedAt - a.recordedAt || b.revision - a.revision)
       : [];
-  const records = allowed
-    ? (current.data ?? [])
-        .filter((row) => row.clientId !== workspace.clinicalSnapshotId && !row.deleted)
-        .flatMap((row) => {
-          try {
-            const record = workspace.readClinical(row);
-            return record.patientClientId === patientId ? [record] : [];
-          } catch (error) {
-            if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
-            throw error;
-          }
-        })
-    : [];
+  const records = useMemo(
+    () =>
+      allowed
+        ? (current.data ?? [])
+            .filter((row) => row.clientId !== workspace.clinicalSnapshotId && !row.deleted)
+            .flatMap((row) => {
+              try {
+                const record = workspace.readClinical(row);
+                return record.patientClientId === patientId ? [record] : [];
+              } catch (error) {
+                if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
+                throw error;
+              }
+            })
+        : [],
+    [allowed, current.data, patients.data, workspace, patientId],
+  );
   const unarchived = records.filter(
     (record) =>
       !history.some(

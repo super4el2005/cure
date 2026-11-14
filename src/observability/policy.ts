@@ -37,6 +37,11 @@ export const actions: Record<string, string> = {
   "patients-consent": "patients.consent",
   "patients-restore": "patients.restore",
   "analysis-compare": "analysis.compare",
+  "quality-prepare": "patients.quality.prepare",
+  "quality-dismiss": "patients.quality.dismiss",
+  "quality-check": "patients.quality.check",
+  "quality-review": "patients.quality.review",
+  "quality-restore": "patients.quality.restore",
   "analysis-save": "analysis.save",
   "analysis-delete": "analysis.delete",
   "analysis-restore": "analysis.restore",
@@ -136,6 +141,12 @@ export const errorCodes = new Set([
   "MEMBERSHIP_REQUEST_CLOSED",
   "MEMBERSHIP_REQUEST_PENDING",
   "ORGANIZATION_UNAVAILABLE",
+  "QUALITY_NOT_PREPARED",
+  "QUALITY_SOURCE_CHANGED",
+  "QUALITY_DATA_LIMIT",
+  "INVALID_QUALITY_SOURCE",
+  "INVALID_QUALITY_REVIEW",
+  "QUALITY_REVIEW_IMMUTABLE",
   "INVALID_TIMELINE_DATA",
   "INVALID_ANALYSIS",
   "ANALYSIS_CALCULATION_FAILED",
@@ -233,13 +244,13 @@ export function safePath(value: unknown): string {
     )
       return path;
     const detail = path.match(
-      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits|history|timeline))?$/,
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits|history|timeline|quality))?$/,
     );
     if (
       detail &&
       (!detail[3] ||
         (detail[2] === "patients" &&
-          ["consents", "forms", "visits", "enrollment", "history", "timeline"].includes(
+          ["consents", "forms", "visits", "enrollment", "history", "timeline", "quality"].includes(
             detail[3],
           )) ||
         (detail[2] === "projects" &&

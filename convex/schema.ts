@@ -242,6 +242,37 @@ export const analysisValues = v.object({
 });
 export const clinicalPayload = v.union(
   v.object({
+    kind: v.literal("qualityReview"),
+    writeId: v.string(),
+    occurredOn: v.string(),
+    notes: v.string(),
+    algorithmVersion: v.literal("patient-quality-v1"),
+    evaluationDate: v.string(),
+    sourceSignature: v.string(),
+    findingKey: v.string(),
+    code: v.union(
+      v.literal("fullNameMissing"),
+      v.literal("birthDateMissing"),
+      v.literal("sexMissing"),
+      v.literal("diagnosesUndocumented"),
+      v.literal("historyUndocumented"),
+      v.literal("allergiesUndocumented"),
+      v.literal("medicationsUndocumented"),
+      v.literal("observationsUndocumented"),
+      v.literal("dateBeforeBirth"),
+      v.literal("medicationEndUnconfirmed"),
+      v.literal("medicationEndMissing"),
+      v.literal("visitNeedsStatusUpdate"),
+      v.literal("studyWindowPassed"),
+      v.literal("safetyReviewPastDue"),
+      v.literal("questionnaireNeedsCompletion"),
+      v.literal("possibleDuplicate"),
+    ),
+    decision: v.union(v.literal("needsClarification"), v.literal("reviewedAsRecorded")),
+    reviewedBy: v.string(),
+  }),
+
+  v.object({
     ...clinicalCommon,
     kind: v.literal("studyIssue"),
     writeId: v.string(),
@@ -548,7 +579,13 @@ export default defineSchema({
   })
     .index("by_organization", ["organizationId"])
     .index("by_client", ["organizationId", "clientId"])
-    .index("by_patient_active", ["organizationId", "patientClientId", "deleted"]),
+    .index("by_patient_active", ["organizationId", "patientClientId", "deleted"])
+    .index("by_patient_kind_active", [
+      "organizationId",
+      "patientClientId",
+      "payload.kind",
+      "deleted",
+    ]),
   clinicalAudit: defineTable({
     organizationId: v.id("organizations"),
     patientClientId: v.string(),

@@ -47,6 +47,7 @@ import {
 import { consentEventSchema, validateConsentTransition } from "@/src/lib/consent-model";
 import type { ConsentEvent } from "@/src/lib/consent-model";
 import { authenticatedDetector, durabilityReceipts } from "@/src/lib/offline-admission";
+import { validateQualityReview } from "@/src/lib/patient-data-quality";
 import { openPatient, patientEnvelope, patientValueSchema } from "@/src/lib/patient-model";
 import type { PatientEnvelope, PatientValues } from "@/src/lib/patient-model";
 import { encryptedStorage } from "@/src/lib/patient-vault";
@@ -98,6 +99,7 @@ export async function openPatientWorkspace(config: {
   organizationId: Id<"organizations">;
   role: "doctor" | "researcher";
   expiresAt: number;
+  qualityReviewVersion?: string;
   vault: Vault;
   persistence?: PersistedCollectionPersistence;
   storage?: StorageAdapter;
@@ -404,6 +406,11 @@ export async function openPatientWorkspace(config: {
           )
             throw new NonRetriableError("INVALID_CLINICAL_RECORD");
         }
+        if (
+          row.payload?.kind === "qualityReview" &&
+          config.qualityReviewVersion !== "patient-quality-v1"
+        )
+          throw new NonRetriableError("QUALITY_NOT_PREPARED");
         const versionedWrite =
           hasClinicalWriteId(row.payload) || hasClinicalWriteId(original?.payload);
         return {
@@ -492,6 +499,12 @@ export async function openPatientWorkspace(config: {
               "INVALID_ISSUE_REVIEW",
 
               "INVALID_ANALYSIS",
+              "QUALITY_NOT_PREPARED",
+              "QUALITY_SOURCE_CHANGED",
+              "QUALITY_DATA_LIMIT",
+              "INVALID_QUALITY_SOURCE",
+              "INVALID_QUALITY_REVIEW",
+              "QUALITY_REVIEW_IMMUTABLE",
               "CLINICAL_KIND_IMMUTABLE",
               "FORM_VERSION_IMMUTABLE",
               "FINAL_ANSWER_IMMUTABLE",
@@ -740,6 +753,27 @@ export async function openPatientWorkspace(config: {
           ? { ...parsedPayload, writeId: crypto.randomUUID() }
           : parsedPayload;
         if (prior?.payload && payload) validateClinicalTransition(prior.payload, payload);
+        if (
+          payload?.kind === "qualityReview" &&
+          config.qualityReviewVersion !== "patient-quality-v1"
+        )
+          throw new Error("QUALITY_NOT_PREPARED");
+        if (
+          payload?.kind === "qualityReview" &&
+          (!clinicalRecords.has(snapshotId) || !collection.has(patientSnapshotId))
+        )
+          throw new Error("WORKSPACE_NOT_READY");
+        if (payload?.kind === "qualityReview")
+          validateQualityReview(
+            payload,
+            openPatient(parent, config.vault, scope),
+            Array.from(clinicalRecords.values())
+              .filter((row) => row.clientId !== snapshotId && !row.deleted)
+              .map((row) => openClinicalRecord(row, config.vault, clinicalScope)),
+            config.userId,
+            new Date().toISOString().slice(0, 10),
+          );
+
         if (payload?.kind === "enrollment") {
           validateEnrollmentChange(
             prior?.payload?.kind === "enrollment" ? prior.payload : null,
@@ -916,6 +950,7 @@ export async function openPatientWorkspace(config: {
     return {
       collection,
       patientSnapshotId,
+      qualityReviewVersion: config.qualityReviewVersion,
       patientVersions,
       patientVersionSnapshotId,
       clinicalRecords,

@@ -14,6 +14,7 @@ export const timelineKinds = [
   "enrollment",
   "studyVisit",
   "studyIssue",
+  "qualityReview",
 ] as const;
 export const timelineFiltersSchema = z
   .object({
@@ -154,7 +155,9 @@ export function patientTimeline(
             ? value.name
             : value.kind === "questionnaire"
               ? value.definition.title
-              : value.text.slice(0, 200),
+              : value.kind === "qualityReview"
+                ? value.notes.slice(0, 200)
+                : value.text.slice(0, 200),
       );
   }
   return events.sort((a, b) => b.date.localeCompare(a.date) || a.key.localeCompare(b.key));

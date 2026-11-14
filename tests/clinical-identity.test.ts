@@ -51,13 +51,42 @@ describe("bounded offline access", () => {
         storage,
       ),
     ).rejects.toThrow("INVALID_VAULT_DATA");
+    await expect(
+      prepareClinicalVault(
+        { ...input, lease: { ...lease, qualityReviewVersion: "patient-quality-v1" } },
+        storage,
+      ),
+    ).rejects.toThrow("INVALID_VAULT_DATA");
+    const upgraded = await prepareClinicalVault(
+      {
+        ...input,
+        onlineVerified: true,
+        lease: { ...lease, qualityReviewVersion: "patient-quality-v1" },
+      },
+      storage,
+    );
+    persistClinicalHeader(upgraded.header, storage);
+    upgraded.vault.lock();
+    const offlineWithFeature = await prepareClinicalVault(
+      { ...input, lease: { ...lease, qualityReviewVersion: "patient-quality-v1" } },
+      storage,
+    );
+    expect(offlineWithFeature.header.qualityReviewVersion).toBe("patient-quality-v1");
+    offlineWithFeature.vault.lock();
     const entry = [...data.entries()][0]!;
     const headers = JSON.parse(entry[1]);
     headers[0].expiresAt += 10000;
     storage.setItem(entry[0], JSON.stringify(headers));
     await expect(
       prepareClinicalVault(
-        { ...input, lease: { ...lease, expiresAt: headers[0].expiresAt } },
+        {
+          ...input,
+          lease: {
+            ...lease,
+            expiresAt: headers[0].expiresAt,
+            qualityReviewVersion: "patient-quality-v1",
+          },
+        },
         storage,
       ),
     ).rejects.toThrow("INVALID_VAULT_DATA");

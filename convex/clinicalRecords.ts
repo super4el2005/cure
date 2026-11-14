@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 
 import { internal } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
 import { enrollmentAccess, checkRecruitment } from "@/convex/lib/enrollment";
@@ -10,10 +11,13 @@ import { studyVisitAccess, checkStudyVisit } from "@/convex/lib/studyVisit";
 import { clinicalPayload } from "@/convex/schema";
 import {
   clinicalPayloadSchema,
+  clinicalRecordSchema,
   validateClinicalTransition,
   hasClinicalWriteId,
 } from "@/src/lib/clinical-record-model";
 import { legacyClinicalVersionId } from "@/src/lib/clinical-version-model";
+import { qualitySourceKinds } from "@/src/lib/data-quality-model";
+import { validateQualityReview, qualityRecordLimit } from "@/src/lib/patient-data-quality";
 import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
 import { validateStudyIssueWrite } from "@/src/lib/study-issue-model";
@@ -217,6 +221,49 @@ export const apply = mutation({
           .unique()))
     )
       throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (args.action === "update" && existing?.payload?.kind === "qualityReview")
+      throw new ConvexError("QUALITY_REVIEW_IMMUTABLE");
+    if (payload?.kind === "qualityReview") {
+      const records: Doc<"clinicalRecords">[] = [];
+      for (const kind of qualitySourceKinds) {
+        records.push(
+          ...(await ctx.db
+            .query("clinicalRecords")
+            .withIndex("by_patient_kind_active", (q) =>
+              q
+                .eq("organizationId", args.organizationId)
+                .eq("patientClientId", args.patientClientId)
+                .eq("payload.kind", kind)
+                .eq("deleted", false),
+            )
+            .take(qualityRecordLimit + 1 - records.length)),
+        );
+        if (records.length > qualityRecordLimit) break;
+      }
+      try {
+        validateQualityReview(
+          payload,
+          patient,
+          records.map((row) => clinicalRecordSchema.parse(row)),
+          userId,
+          new Date().toISOString().slice(0, 10),
+        );
+      } catch (error) {
+        throw new ConvexError(
+          error instanceof Error &&
+            [
+              "QUALITY_SOURCE_CHANGED",
+              "QUALITY_DATA_LIMIT",
+              "INVALID_QUALITY_SOURCE",
+              "ACCOUNT_CHANGED",
+              "INVALID_CLINICAL_DATE",
+              "INVALID_QUALITY_REVIEW",
+            ].includes(error.message)
+            ? error.message
+            : "INVALID_QUALITY_REVIEW",
+        );
+      }
+    }
     if (payload?.kind === "studyIssue") {
       try {
         validateStudyIssueWrite(

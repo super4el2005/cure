@@ -2,6 +2,7 @@ import type { I18n, MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
 
 import type { ClinicalPayload } from "@/src/lib/clinical-record-model";
+import { dataQualityContent } from "@/src/lib/data-quality-content";
 import { calculateStudyScores, visibleStudyFields } from "@/src/lib/study-form-model";
 
 // Presentation data only: route files retain their own JSX and Mantine controls.
@@ -12,6 +13,7 @@ export function clinicalHistoryContent(
 ) {
   const _ = i18n._.bind(i18n);
   const kinds = {
+    qualityReview: msg`Проверка качества данных`,
     history: msg`Анамнез`,
     allergy: msg`Аллергия`,
     medication: msg`Лекарственная терапия`,
@@ -91,6 +93,18 @@ export function clinicalHistoryContent(
     [_(msg`Примечания`), payload.notes],
   ];
   const add = (label: MessageDescriptor, value: string) => rows.push([_(label), value || "—"]);
+  if (payload.kind === "qualityReview") {
+    add(msg`Контрольная дата (UTC)`, date(payload.evaluationDate));
+    add(msg`Версия правил`, payload.algorithmVersion);
+    add(msg`Проверка`, dataQualityContent(i18n)[payload.code].title);
+    add(
+      msg`Решение врача`,
+      payload.decision === "needsClarification"
+        ? _(msg`Требует уточнения`)
+        : _(msg`Проверено как записано`),
+    );
+    add(msg`Проверивший врач`, names.get(payload.reviewedBy) ?? payload.reviewedBy);
+  }
   if (payload.kind === "history") add(msg`Анамнез`, payload.text);
   if (payload.kind === "allergy") {
     add(msg`Вещество`, payload.substance);

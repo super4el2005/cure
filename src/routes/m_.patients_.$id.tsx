@@ -60,6 +60,7 @@ function Patient() {
     editClinical,
   } = useClinicalRecords(id);
   const clinicalKinds = {
+    qualityReview: t`Проверка качества данных`,
     studyIssue: t`Безопасность исследования`,
     studyVisit: t`Визит исследования`,
     enrollment: t`Участие в исследовании`,
@@ -190,6 +191,11 @@ function Patient() {
                 >{t`Согласия пациента`}</Anchor>
                 {opened.role === "doctor" && (
                   <Group>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/m/patients/$id/quality" params={{ id }} />
+                      )}
+                    >{t`Качество данных карты`}</Anchor>
                     <Anchor
                       renderRoot={(props) => (
                         <Link {...props} to="/m/patients/$id/timeline" params={{ id }} />
@@ -341,8 +347,10 @@ function Patient() {
                                 label={t`Раздел карты`}
                                 disabled={Boolean(clinicalForm.values.clientId)}
                                 data={Object.entries(clinicalKinds)
-                                  .filter(
-                                    ([value]) => value !== "visit" && value !== "questionnaire",
+                                  .filter(([value]) =>
+                                    ["history", "allergy", "medication", "observation"].includes(
+                                      value,
+                                    ),
                                   )
                                   .map(([value, label]) => ({
                                     value,

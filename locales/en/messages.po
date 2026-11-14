@@ -76,21 +76,21 @@ msgstr "Recorded by:"
 
 #: src/routes/d_.patients_.$id_.history.tsx:195
 #: src/routes/d_.patients_.$id_.history.tsx:256
-#: src/routes/d_.patients_.$id_.timeline.tsx:368
+#: src/routes/d_.patients_.$id_.timeline.tsx:369
 #: src/routes/m_.patients_.$id_.history.tsx:195
 #: src/routes/m_.patients_.$id_.history.tsx:256
-#: src/routes/m_.patients_.$id_.timeline.tsx:368
+#: src/routes/m_.patients_.$id_.timeline.tsx:369
 msgid "Автор не указан"
 msgstr "Author not specified"
 
-#: src/lib/clinical-history-content.ts:183
-#: src/lib/clinical-history-content.ts:207
+#: src/lib/clinical-history-content.ts:197
+#: src/lib/clinical-history-content.ts:221
 #: src/lib/patient-history-content.ts:47
 msgid "Автор решения"
 msgstr "Decision author"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:346
-#: src/routes/m_.patients_.$id_.timeline.tsx:346
+#: src/routes/d_.patients_.$id_.timeline.tsx:347
+#: src/routes/m_.patients_.$id_.timeline.tsx:347
 msgid "Автор события:"
 msgstr "Event author:"
 
@@ -143,16 +143,16 @@ msgstr "API URL"
 msgid "Активен"
 msgstr "Active"
 
-#: src/routes/d_.patients_.$id.tsx:396
-#: src/routes/d_.patients_.$id.tsx:557
-#: src/routes/m_.patients_.$id.tsx:396
-#: src/routes/m_.patients_.$id.tsx:557
+#: src/routes/d_.patients_.$id.tsx:404
+#: src/routes/d_.patients_.$id.tsx:565
+#: src/routes/m_.patients_.$id.tsx:404
+#: src/routes/m_.patients_.$id.tsx:565
 msgid "Активна"
 msgstr "Active"
 
-#: src/lib/clinical-history-content.ts:33
-#: src/routes/d_.patients_.$id_.timeline.tsx:127
-#: src/routes/m_.patients_.$id_.timeline.tsx:127
+#: src/lib/clinical-history-content.ts:35
+#: src/routes/d_.patients_.$id_.timeline.tsx:128
+#: src/routes/m_.patients_.$id_.timeline.tsx:128
 msgid "Активно"
 msgstr "Active"
 
@@ -171,17 +171,21 @@ msgstr "Active organization access"
 msgid "Активных назначенных задач нет."
 msgstr "No active tasks are assigned to you."
 
-#: src/routes/d_.patients_.$id.tsx:370
-#: src/routes/m_.patients_.$id.tsx:370
+#: src/routes/d_.patients_.$id.tsx:378
+#: src/routes/m_.patients_.$id.tsx:378
 msgid "Аллерген или вещество"
 msgstr "Allergen or substance"
 
-#: src/routes/d_.patients_.$id.tsx:69
-#: src/routes/m_.patients_.$id.tsx:69
+#: src/routes/d_.patients_.$id.tsx:70
+#: src/routes/m_.patients_.$id.tsx:70
 msgid "Аллергии"
 msgstr "Allergies"
 
-#: src/lib/clinical-history-content.ts:16
+#: src/lib/data-quality-content.ts:27
+msgid "Аллергии не документированы отдельной записью"
+msgstr "Allergies have no separate documentation entry"
+
+#: src/lib/clinical-history-content.ts:18
 #: src/routes/d_.patients_.$id_.timeline.tsx:89
 #: src/routes/m_.patients_.$id_.timeline.tsx:89
 msgid "Аллергия"
@@ -200,19 +204,23 @@ msgstr "Analyze available organization data. Patient records stay unchanged."
 msgid "Аналитика"
 msgstr "Analytics"
 
-#: src/lib/clinical-history-content.ts:15
-#: src/lib/clinical-history-content.ts:94
+#: src/lib/clinical-history-content.ts:17
+#: src/lib/clinical-history-content.ts:108
 #: src/routes/d_.patients_.$id_.timeline.tsx:88
-#: src/routes/d_.patients_.$id.tsx:68
+#: src/routes/d_.patients_.$id.tsx:69
 #: src/routes/m_.patients_.$id_.timeline.tsx:88
-#: src/routes/m_.patients_.$id.tsx:68
+#: src/routes/m_.patients_.$id.tsx:69
 msgid "Анамнез"
 msgstr "Medical history"
 
-#: src/routes/d_.patients_.$id.tsx:361
-#: src/routes/m_.patients_.$id.tsx:361
+#: src/routes/d_.patients_.$id.tsx:369
+#: src/routes/m_.patients_.$id.tsx:369
 msgid "Анамнез и клиническое событие"
 msgstr "Medical history and clinical event"
+
+#: src/lib/data-quality-content.ts:24
+msgid "Анамнез мог быть описан в другом источнике; проверьте доступную документацию."
+msgstr "History may be described in another source; review the available documentation."
 
 #: src/routes/d_.projects_.$id.work.tsx:499
 #: src/routes/m_.projects_.$id.work.tsx:499
@@ -223,6 +231,10 @@ msgstr "Archive task"
 #: src/routes/m_.projects_.$id.forms.tsx:681
 msgid "Баллы"
 msgstr "Points"
+
+#: src/lib/data-quality-content.ts:12
+msgid "Без корректной даты рождения сравнение дат записей с ней не выполняется."
+msgstr "Record dates cannot be compared with a missing or invalid date of birth."
 
 #: src/routes/d_.patients_.$id_.consents.tsx:316
 #: src/routes/d_.patients.tsx:368
@@ -271,11 +283,11 @@ msgstr "Safety and deviations"
 msgid "Безопасность и отклонения исследования"
 msgstr "Study safety and deviations"
 
-#: src/lib/clinical-history-content.ts:23
-#: src/routes/d_.patients_.$id_.timeline.tsx:96
-#: src/routes/d_.patients_.$id.tsx:63
-#: src/routes/m_.patients_.$id_.timeline.tsx:96
-#: src/routes/m_.patients_.$id.tsx:63
+#: src/lib/clinical-history-content.ts:25
+#: src/routes/d_.patients_.$id_.timeline.tsx:97
+#: src/routes/d_.patients_.$id.tsx:64
+#: src/routes/m_.patients_.$id_.timeline.tsx:97
+#: src/routes/m_.patients_.$id.tsx:64
 msgid "Безопасность исследования"
 msgstr "Study safety"
 
@@ -325,6 +337,11 @@ msgstr "Greater than"
 msgid "Больше или равно"
 msgstr "Greater than or equal to"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:407
+#: src/routes/m_.patients_.$id_.quality.tsx:407
+msgid "Будет создано новое решение по актуальному сигналу, а не подтверждена старая версия данных. Если сигнала больше нет, перенос не выполняется."
+msgstr "This creates a new decision about a current finding, not an attestation of the old data version. Text is not transferred if the finding no longer exists."
+
 #: src/routes/d_.projects_.$id.work.tsx:436
 #: src/routes/d_.projects_.$id.work.tsx:519
 #: src/routes/m_.projects_.$id.work.tsx:436
@@ -348,10 +365,14 @@ msgstr "In Chrome or Edge, choose “Install app” in the browser menu. On iPho
 msgid "В архиве"
 msgstr "Archived"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:311
-#: src/routes/m_.patients_.$id_.timeline.tsx:311
+#: src/routes/d_.patients_.$id_.timeline.tsx:312
+#: src/routes/m_.patients_.$id_.timeline.tsx:312
 msgid "В доступных локальных записях нет событий по этим фильтрам."
 msgstr "No events match these filters in the available local records."
+
+#: src/lib/data-quality-content.ts:60
+msgid "В записи ещё нет завершённого рассмотрения. Проверьте состояние и ответственного врача."
+msgstr "The record does not yet contain a completed review. Check its status and responsible doctor."
 
 #: src/routes/d_.tools.tsx:486
 #: src/routes/m_.tools.tsx:483
@@ -368,8 +389,9 @@ msgstr "Do not include patient data in the public description. Publication and r
 #: src/routes/d_.patients_.$id_.consents.tsx:119
 #: src/routes/d_.patients_.$id_.enrollment.tsx:172
 #: src/routes/d_.patients_.$id_.forms.tsx:176
-#: src/routes/d_.patients_.$id_.timeline.tsx:257
-#: src/routes/d_.patients_.$id.tsx:130
+#: src/routes/d_.patients_.$id_.quality.tsx:204
+#: src/routes/d_.patients_.$id_.timeline.tsx:258
+#: src/routes/d_.patients_.$id.tsx:131
 #: src/routes/d_.projects_.$id.credits.tsx:190
 #: src/routes/d_.projects_.$id.enrollment.tsx:122
 #: src/routes/d_.projects_.$id.forms.tsx:156
@@ -385,8 +407,9 @@ msgstr "Do not include patient data in the public description. Publication and r
 #: src/routes/m_.patients_.$id_.consents.tsx:119
 #: src/routes/m_.patients_.$id_.enrollment.tsx:172
 #: src/routes/m_.patients_.$id_.forms.tsx:176
-#: src/routes/m_.patients_.$id_.timeline.tsx:257
-#: src/routes/m_.patients_.$id.tsx:130
+#: src/routes/m_.patients_.$id_.quality.tsx:204
+#: src/routes/m_.patients_.$id_.timeline.tsx:258
+#: src/routes/m_.patients_.$id.tsx:131
 #: src/routes/m_.projects_.$id.credits.tsx:190
 #: src/routes/m_.projects_.$id.enrollment.tsx:122
 #: src/routes/m_.projects_.$id.forms.tsx:156
@@ -434,9 +457,11 @@ msgstr "Your draft rationale will be replaced. Submitted applications will remai
 #: src/routes/d_.organization.members.tsx:349
 #: src/routes/d_.organization.members.tsx:366
 #: src/routes/d_.organization.members.tsx:462
+#: src/routes/d_.patients_.$id_.quality.tsx:296
 #: src/routes/m_.organization.members.tsx:349
 #: src/routes/m_.organization.members.tsx:366
 #: src/routes/m_.organization.members.tsx:462
+#: src/routes/m_.patients_.$id_.quality.tsx:296
 msgid "Введённое основание решения будет заменено."
 msgstr "Your draft decision rationale will be replaced."
 
@@ -482,7 +507,7 @@ msgstr "Move up"
 msgid "Вернуть из архива"
 msgstr "Restore from archive"
 
-#: src/lib/clinical-history-content.ts:61
+#: src/lib/clinical-history-content.ts:63
 #: src/routes/d_.projects_.$id.safety.tsx:89
 #: src/routes/m_.projects_.$id.safety.tsx:89
 msgid "Вероятная связь"
@@ -522,9 +547,13 @@ msgstr "Record revision:"
 msgid "Версия получена с сервера"
 msgstr "Version received from the server"
 
-#: src/lib/clinical-history-content.ts:133
-#: src/lib/clinical-history-content.ts:180
-#: src/lib/clinical-history-content.ts:209
+#: src/lib/clinical-history-content.ts:98
+msgid "Версия правил"
+msgstr "Rule version"
+
+#: src/lib/clinical-history-content.ts:147
+#: src/lib/clinical-history-content.ts:194
+#: src/lib/clinical-history-content.ts:223
 msgid "Версия протокола"
 msgstr "Protocol version"
 
@@ -537,12 +566,12 @@ msgstr "Protocol version"
 msgid "Версия протокола:"
 msgstr "Protocol version:"
 
-#: src/lib/clinical-history-content.ts:189
+#: src/lib/clinical-history-content.ts:203
 #: src/lib/patient-history-content.ts:35
 msgid "Версия согласия"
 msgstr "Consent version"
 
-#: src/lib/clinical-history-content.ts:142
+#: src/lib/clinical-history-content.ts:156
 #: src/routes/d_.patients_.$id_.forms.tsx:274
 #: src/routes/d_.patients_.$id_.forms.tsx:492
 #: src/routes/m_.patients_.$id_.forms.tsx:274
@@ -556,8 +585,8 @@ msgstr "Template version:"
 #: src/routes/d_.organization.members.tsx:451
 #: src/routes/d_.patients_.$id_.consents.tsx:394
 #: src/routes/d_.patients_.$id_.visits.tsx:342
-#: src/routes/d_.patients_.$id.tsx:154
-#: src/routes/d_.patients_.$id.tsx:534
+#: src/routes/d_.patients_.$id.tsx:155
+#: src/routes/d_.patients_.$id.tsx:542
 #: src/routes/d_.projects_.$id.credits.tsx:102
 #: src/routes/d_.projects_.$id.credits.tsx:286
 #: src/routes/d_.projects_.$id.credits.tsx:392
@@ -572,8 +601,8 @@ msgstr "Template version:"
 #: src/routes/m_.organization.members.tsx:451
 #: src/routes/m_.patients_.$id_.consents.tsx:394
 #: src/routes/m_.patients_.$id_.visits.tsx:342
-#: src/routes/m_.patients_.$id.tsx:154
-#: src/routes/m_.patients_.$id.tsx:534
+#: src/routes/m_.patients_.$id.tsx:155
+#: src/routes/m_.patients_.$id.tsx:542
 #: src/routes/m_.projects_.$id.credits.tsx:102
 #: src/routes/m_.projects_.$id.credits.tsx:286
 #: src/routes/m_.projects_.$id.credits.tsx:392
@@ -585,16 +614,16 @@ msgstr "Template version:"
 msgid "Версия:"
 msgstr "Version:"
 
-#: src/lib/clinical-history-content.ts:96
+#: src/lib/clinical-history-content.ts:110
 msgid "Вещество"
 msgstr "Substance"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:283
-#: src/routes/m_.patients_.$id_.timeline.tsx:283
+#: src/routes/d_.patients_.$id_.timeline.tsx:284
+#: src/routes/m_.patients_.$id_.timeline.tsx:284
 msgid "Вид даты"
 msgstr "Date meaning"
 
-#: src/lib/clinical-history-content.ts:211
+#: src/lib/clinical-history-content.ts:225
 #: src/routes/d_.projects_.$id.safety.tsx:301
 #: src/routes/d_.projects_.$id.safety.tsx:524
 #: src/routes/m_.projects_.$id.safety.tsx:301
@@ -602,9 +631,9 @@ msgstr "Date meaning"
 msgid "Вид события"
 msgstr "Event type"
 
-#: src/routes/d_.patients_.$id.tsx:67
+#: src/routes/d_.patients_.$id.tsx:68
 #: src/routes/d.tsx:211
-#: src/routes/m_.patients_.$id.tsx:67
+#: src/routes/m_.patients_.$id.tsx:68
 #: src/routes/m.tsx:211
 msgid "Визит"
 msgstr "Visit"
@@ -614,11 +643,11 @@ msgstr "Visit"
 msgid "Визит выполнен"
 msgstr "Visit completed"
 
-#: src/lib/clinical-history-content.ts:22
+#: src/lib/clinical-history-content.ts:24
 #: src/routes/d_.patients_.$id_.timeline.tsx:95
-#: src/routes/d_.patients_.$id.tsx:64
+#: src/routes/d_.patients_.$id.tsx:65
 #: src/routes/m_.patients_.$id_.timeline.tsx:95
-#: src/routes/m_.patients_.$id.tsx:64
+#: src/routes/m_.patients_.$id.tsx:65
 msgid "Визит исследования"
 msgstr "Study visit"
 
@@ -666,10 +695,10 @@ msgstr "Study visits"
 #~ msgstr "Visits from the unlocked clinical workspace; times are shown in the appointment time zone."
 
 #: src/routes/d_.patients_.$id_.visits.tsx:95
-#: src/routes/d_.patients_.$id.tsx:308
+#: src/routes/d_.patients_.$id.tsx:314
 #: src/routes/d_.workspace.tsx:240
 #: src/routes/m_.patients_.$id_.visits.tsx:95
-#: src/routes/m_.patients_.$id.tsx:308
+#: src/routes/m_.patients_.$id.tsx:314
 #: src/routes/m_.workspace.tsx:240
 msgid "Визиты пациента"
 msgstr "Patient visits"
@@ -693,12 +722,12 @@ msgstr "Contributions and authorship"
 msgid "Вклад, интересы и авторство"
 msgstr "Contributions, interests and authorship"
 
-#: src/lib/clinical-history-content.ts:45
+#: src/lib/clinical-history-content.ts:47
 #: src/routes/d_.patients_.$id_.enrollment.tsx:68
-#: src/routes/d_.patients_.$id_.timeline.tsx:121
+#: src/routes/d_.patients_.$id_.timeline.tsx:122
 #: src/routes/d_.projects_.$id.enrollment.tsx:56
 #: src/routes/m_.patients_.$id_.enrollment.tsx:68
-#: src/routes/m_.patients_.$id_.timeline.tsx:121
+#: src/routes/m_.patients_.$id_.timeline.tsx:122
 #: src/routes/m_.projects_.$id.enrollment.tsx:56
 msgid "Включён"
 msgstr "Enrolled"
@@ -732,7 +761,7 @@ msgstr "Move down"
 msgid "ВОЗ отклонила доступ. Проверьте ключи WHO ICD API в настройках сервера и повторите деплой."
 msgstr "WHO rejected access. Check the WHO ICD API credentials in the server settings and redeploy."
 
-#: src/lib/clinical-history-content.ts:60
+#: src/lib/clinical-history-content.ts:62
 #: src/routes/d_.projects_.$id.safety.tsx:88
 #: src/routes/m_.projects_.$id.safety.tsx:88
 msgid "Возможная связь"
@@ -758,9 +787,10 @@ msgstr "Sign in and complete your professional profile to collaborate."
 #: src/routes/d_.patients_.$id_.enrollment.tsx:114
 #: src/routes/d_.patients_.$id_.forms.tsx:118
 #: src/routes/d_.patients_.$id_.history.tsx:98
-#: src/routes/d_.patients_.$id_.timeline.tsx:174
+#: src/routes/d_.patients_.$id_.quality.tsx:120
+#: src/routes/d_.patients_.$id_.timeline.tsx:175
 #: src/routes/d_.patients_.$id_.visits.tsx:97
-#: src/routes/d_.patients_.$id.tsx:80
+#: src/routes/d_.patients_.$id.tsx:81
 #: src/routes/d_.patients.tsx:104
 #: src/routes/d_.projects_.$id.enrollment.tsx:70
 #: src/routes/d_.projects_.$id.safety.tsx:165
@@ -770,9 +800,10 @@ msgstr "Sign in and complete your professional profile to collaborate."
 #: src/routes/m_.patients_.$id_.enrollment.tsx:114
 #: src/routes/m_.patients_.$id_.forms.tsx:118
 #: src/routes/m_.patients_.$id_.history.tsx:98
-#: src/routes/m_.patients_.$id_.timeline.tsx:174
+#: src/routes/m_.patients_.$id_.quality.tsx:120
+#: src/routes/m_.patients_.$id_.timeline.tsx:175
 #: src/routes/m_.patients_.$id_.visits.tsx:97
-#: src/routes/m_.patients_.$id.tsx:80
+#: src/routes/m_.patients_.$id.tsx:81
 #: src/routes/m_.patients.tsx:104
 #: src/routes/m_.projects_.$id.enrollment.tsx:70
 #: src/routes/m_.projects_.$id.safety.tsx:165
@@ -854,14 +885,14 @@ msgstr "Restore data in the form"
 
 #: src/routes/d_.analytics.tsx:135
 #: src/routes/d_.organization.members.tsx:68
-#: src/routes/d_.patients_.$id.tsx:152
+#: src/routes/d_.patients_.$id.tsx:153
 #: src/routes/d_.profile.tsx:152
 #: src/routes/d_.profile.tsx:189
 #: src/routes/d_.specialists_.$id.tsx:55
 #: src/routes/d_.specialists.tsx:85
 #: src/routes/m_.analytics.tsx:135
 #: src/routes/m_.organization.members.tsx:68
-#: src/routes/m_.patients_.$id.tsx:152
+#: src/routes/m_.patients_.$id.tsx:153
 #: src/routes/m_.profile.tsx:152
 #: src/routes/m_.profile.tsx:189
 #: src/routes/m_.specialists_.$id.tsx:55
@@ -906,8 +937,8 @@ msgstr "Times use the appointment time zone."
 msgid "Время завершённого или отменённого визита не переносится. Для нового приёма создайте отдельный визит."
 msgstr "The schedule of a finished or cancelled visit cannot be changed. Create a separate visit for a new appointment."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:341
-#: src/routes/m_.patients_.$id_.timeline.tsx:341
+#: src/routes/d_.patients_.$id_.timeline.tsx:342
+#: src/routes/m_.patients_.$id_.timeline.tsx:342
 msgid "Время и часовой пояс расписания:"
 msgstr "Scheduled time and time zone:"
 
@@ -920,12 +951,12 @@ msgstr "Calculated at:"
 msgid "Время фиксации"
 msgstr "Recorded at"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:351
-#: src/routes/m_.patients_.$id_.timeline.tsx:351
+#: src/routes/d_.patients_.$id_.timeline.tsx:352
+#: src/routes/m_.patients_.$id_.timeline.tsx:352
 msgid "Время фиксации внутри события:"
 msgstr "Timestamp recorded within the event:"
 
-#: src/lib/clinical-history-content.ts:56
+#: src/lib/clinical-history-content.ts:58
 #: src/routes/d_.projects_.$id.safety.tsx:82
 #: src/routes/m_.projects_.$id.safety.tsx:82
 msgid "Врождённая аномалия"
@@ -948,8 +979,8 @@ msgstr "All selected codes"
 msgid "Все выбранные метки"
 msgstr "All selected tags"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:285
-#: src/routes/m_.patients_.$id_.timeline.tsx:285
+#: src/routes/d_.patients_.$id_.timeline.tsx:286
+#: src/routes/m_.patients_.$id_.timeline.tsx:286
 msgid "Все даты"
 msgstr "All dates"
 
@@ -968,8 +999,8 @@ msgstr "All studies"
 msgid "Все организации"
 msgstr "All organizations"
 
-#: src/routes/d_.patients_.$id.tsx:77
-#: src/routes/m_.patients_.$id.tsx:77
+#: src/routes/d_.patients_.$id.tsx:78
+#: src/routes/m_.patients_.$id.tsx:78
 msgid "Все пациенты"
 msgstr "All patients"
 
@@ -1069,9 +1100,10 @@ msgstr "Select a researcher"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:127
 #: src/routes/d_.patients_.$id_.forms.tsx:131
 #: src/routes/d_.patients_.$id_.history.tsx:112
-#: src/routes/d_.patients_.$id_.timeline.tsx:187
+#: src/routes/d_.patients_.$id_.quality.tsx:133
+#: src/routes/d_.patients_.$id_.timeline.tsx:188
 #: src/routes/d_.patients_.$id_.visits.tsx:110
-#: src/routes/d_.patients_.$id.tsx:94
+#: src/routes/d_.patients_.$id.tsx:95
 #: src/routes/d_.patients.tsx:120
 #: src/routes/d_.projects_.$id.credits.tsx:154
 #: src/routes/d_.projects_.$id.enrollment.tsx:83
@@ -1091,9 +1123,10 @@ msgstr "Select a researcher"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:127
 #: src/routes/m_.patients_.$id_.forms.tsx:131
 #: src/routes/m_.patients_.$id_.history.tsx:112
-#: src/routes/m_.patients_.$id_.timeline.tsx:187
+#: src/routes/m_.patients_.$id_.quality.tsx:133
+#: src/routes/m_.patients_.$id_.timeline.tsx:188
 #: src/routes/m_.patients_.$id_.visits.tsx:110
-#: src/routes/m_.patients_.$id.tsx:94
+#: src/routes/m_.patients_.$id.tsx:95
 #: src/routes/m_.patients.tsx:120
 #: src/routes/m_.projects_.$id.credits.tsx:154
 #: src/routes/m_.projects_.$id.enrollment.tsx:83
@@ -1153,9 +1186,9 @@ msgstr "Selected organization"
 msgid "Выбрано"
 msgstr "Selected"
 
-#: src/lib/clinical-history-content.ts:47
-#: src/routes/d_.patients_.$id_.timeline.tsx:123
-#: src/routes/m_.patients_.$id_.timeline.tsx:123
+#: src/lib/clinical-history-content.ts:49
+#: src/routes/d_.patients_.$id_.timeline.tsx:124
+#: src/routes/m_.patients_.$id_.timeline.tsx:124
 msgid "Выбыл"
 msgstr "Withdrawn"
 
@@ -1171,13 +1204,13 @@ msgstr "Withdrawal"
 msgid "Выдача и отзыв прав требуют связи с сервером. Права не выдаются локально и не считаются изменёнными до ответа Convex. Медицинские карты на этой странице не отображаются."
 msgstr "Granting and revoking permissions requires a server connection. Permissions are not granted locally or considered changed until Convex confirms them. This page does not display medical charts."
 
-#: src/lib/clinical-history-content.ts:67
+#: src/lib/clinical-history-content.ts:69
 #: src/routes/d_.projects_.$id.safety.tsx:101
 #: src/routes/m_.projects_.$id.safety.tsx:101
 msgid "Выздоровление"
 msgstr "Recovered"
 
-#: src/lib/clinical-history-content.ts:68
+#: src/lib/clinical-history-content.ts:70
 #: src/routes/d_.projects_.$id.safety.tsx:102
 #: src/routes/m_.projects_.$id.safety.tsx:102
 msgid "Выздоровление с последствиями"
@@ -1207,9 +1240,14 @@ msgstr "Leave without saving"
 msgid "Выполнено"
 msgstr "Done"
 
-#: src/lib/clinical-history-content.ts:38
-#: src/routes/d_.patients_.$id_.timeline.tsx:132
-#: src/routes/m_.patients_.$id_.timeline.tsx:132
+#: src/routes/d_.patients_.$id_.quality.tsx:210
+#: src/routes/m_.patients_.$id_.quality.tsx:210
+msgid "Выполнить проверку данных"
+msgstr "Run data quality check"
+
+#: src/lib/clinical-history-content.ts:40
+#: src/routes/d_.patients_.$id_.timeline.tsx:133
+#: src/routes/m_.patients_.$id_.timeline.tsx:133
 msgid "Выполняется"
 msgstr "In progress"
 
@@ -1245,17 +1283,17 @@ msgstr "Prespecified hypothesis"
 msgid "Год публикации"
 msgstr "Publication year"
 
-#: src/lib/clinical-history-content.ts:124
-#: src/routes/d_.patients_.$id_.timeline.tsx:145
+#: src/lib/clinical-history-content.ts:138
+#: src/routes/d_.patients_.$id_.timeline.tsx:146
 #: src/routes/d_.patients_.$id_.visits.tsx:72
 #: src/routes/d_.projects_.$id.visits.tsx:76
-#: src/routes/m_.patients_.$id_.timeline.tsx:145
+#: src/routes/m_.patients_.$id_.timeline.tsx:146
 #: src/routes/m_.patients_.$id_.visits.tsx:72
 #: src/routes/m_.projects_.$id.visits.tsx:76
 msgid "Госпитализация"
 msgstr "Hospitalization"
 
-#: src/lib/clinical-history-content.ts:54
+#: src/lib/clinical-history-content.ts:56
 #: src/routes/d_.projects_.$id.safety.tsx:80
 #: src/routes/m_.projects_.$id.safety.tsx:80
 msgid "Госпитализация или её продление"
@@ -1276,7 +1314,7 @@ msgstr "Group"
 msgid "Группы пересекаются. Критерий для независимых групп не применяется."
 msgstr "The groups overlap. A test for independent groups does not apply."
 
-#: src/lib/clinical-history-content.ts:77
+#: src/lib/clinical-history-content.ts:79
 #: src/routes/d_.organization.members.tsx:569
 #: src/routes/d_.organization.members.tsx:570
 #: src/routes/d_.patients_.$id_.forms.tsx:365
@@ -1301,6 +1339,11 @@ msgstr "Yes"
 msgid "Да или нет"
 msgstr "Yes or no"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:221
+#: src/routes/m_.patients_.$id_.quality.tsx:221
+msgid "Данные или контрольная дата изменились. Предыдущий отчёт скрыт до повторной проверки."
+msgstr "Data or the control date changed. The previous report is hidden until you run the check again."
+
 #: src/routes/d_.analytics.tsx:509
 #: src/routes/m_.analytics.tsx:509
 msgid "Данные или параметры изменились. Выполните расчёт повторно; предыдущий результат скрыт."
@@ -1316,18 +1359,22 @@ msgstr "Date"
 msgid "Дата возникновения (UTC)"
 msgstr "Occurrence date (UTC)"
 
-#: src/lib/clinical-history-content.ts:106
+#: src/lib/clinical-history-content.ts:120
 msgid "Дата завершения"
 msgstr "End date"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:101
-#: src/routes/m_.patients_.$id_.timeline.tsx:101
+#: src/routes/d_.patients_.$id_.timeline.tsx:102
+#: src/routes/m_.patients_.$id_.timeline.tsx:102
 msgid "Дата завершения терапии по записи"
 msgstr "Therapy end date as recorded"
 
-#: src/lib/clinical-history-content.ts:87
+#: src/lib/clinical-history-content.ts:89
 msgid "Дата записи (UTC)"
 msgstr "Record date (UTC)"
+
+#: src/lib/data-quality-content.ts:39
+msgid "Дата записи раньше указанной даты рождения"
+msgstr "Record date precedes the recorded date of birth"
 
 #: src/routes/d_.patients_.$id_.forms.tsx:277
 #: src/routes/m_.patients_.$id_.forms.tsx:277
@@ -1339,44 +1386,44 @@ msgstr "Response date"
 msgid "Дата и время визита"
 msgstr "Appointment date and time"
 
-#: src/lib/clinical-history-content.ts:220
+#: src/lib/clinical-history-content.ts:234
 #: src/routes/d_.projects_.$id.safety.tsx:401
 #: src/routes/m_.projects_.$id.safety.tsx:401
 msgid "Дата исхода (UTC)"
 msgstr "Outcome date (UTC)"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:111
-#: src/routes/m_.patients_.$id_.timeline.tsx:111
+#: src/routes/d_.patients_.$id_.timeline.tsx:112
+#: src/routes/m_.patients_.$id_.timeline.tsx:112
 msgid "Дата исхода нежелательного явления"
 msgstr "Adverse event outcome date"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:99
-#: src/routes/m_.patients_.$id_.timeline.tsx:99
+#: src/routes/d_.patients_.$id_.timeline.tsx:100
+#: src/routes/m_.patients_.$id_.timeline.tsx:100
 msgid "Дата клинической записи"
 msgstr "Clinical record date"
 
-#: src/lib/clinical-history-content.ts:198
+#: src/lib/clinical-history-content.ts:212
 #: src/routes/d_.projects_.$id.safety.tsx:330
 #: src/routes/m_.projects_.$id.safety.tsx:330
 msgid "Дата обнаружения (UTC)"
 msgstr "Detection date (UTC)"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:102
-#: src/routes/m_.patients_.$id_.timeline.tsx:102
+#: src/routes/d_.patients_.$id_.timeline.tsx:103
+#: src/routes/m_.patients_.$id_.timeline.tsx:103
 msgid "Дата окончания без подтверждения завершения терапии"
 msgstr "End date without confirmation that therapy ended"
 
-#: src/routes/d_.patients_.$id.tsx:428
-#: src/routes/m_.patients_.$id.tsx:428
+#: src/routes/d_.patients_.$id.tsx:436
+#: src/routes/m_.patients_.$id.tsx:436
 msgid "Дата окончания приёма"
 msgstr "Medication end date"
 
-#: src/routes/d_.patients_.$id.tsx:580
-#: src/routes/m_.patients_.$id.tsx:580
+#: src/routes/d_.patients_.$id.tsx:588
+#: src/routes/m_.patients_.$id.tsx:588
 msgid "Дата окончания приёма:"
 msgstr "Medication end date:"
 
-#: src/lib/clinical-history-content.ts:190
+#: src/lib/clinical-history-content.ts:204
 msgid "Дата подписания"
 msgstr "Signing date"
 
@@ -1390,22 +1437,30 @@ msgstr "Consent signing date"
 msgid "Дата последующего наблюдения"
 msgstr "Follow-up date"
 
-#: src/lib/clinical-history-content.ts:206
+#: src/lib/data-quality-content.ts:51
+msgid "Дата расписания прошла, статус остался плановым"
+msgstr "The scheduled date passed but the status remains planned"
+
+#: src/lib/clinical-history-content.ts:220
 #: src/routes/d_.projects_.$id.safety.tsx:468
 #: src/routes/m_.projects_.$id.safety.tsx:468
 msgid "Дата рассмотрения (UTC)"
 msgstr "Review date (UTC)"
 
 #: src/lib/patient-history-content.ts:20
-#: src/routes/d_.patients_.$id.tsx:261
+#: src/routes/d_.patients_.$id.tsx:267
 #: src/routes/d_.patients.tsx:230
-#: src/routes/m_.patients_.$id.tsx:261
+#: src/routes/m_.patients_.$id.tsx:267
 #: src/routes/m_.patients.tsx:230
 msgid "Дата рождения"
 msgstr "Date of birth"
 
-#: src/routes/d_.patients_.$id.tsx:158
-#: src/routes/m_.patients_.$id.tsx:158
+#: src/lib/data-quality-content.ts:11
+msgid "Дата рождения отсутствует или некорректна"
+msgstr "Date of birth is missing or invalid"
+
+#: src/routes/d_.patients_.$id.tsx:159
+#: src/routes/m_.patients_.$id.tsx:159
 msgid "Дата рождения:"
 msgstr "Date of birth:"
 
@@ -1419,8 +1474,8 @@ msgstr "Born on or before"
 msgid "Дата рождения: от"
 msgstr "Born on or after"
 
-#: src/routes/d_.patients_.$id.tsx:354
-#: src/routes/m_.patients_.$id.tsx:354
+#: src/routes/d_.patients_.$id.tsx:362
+#: src/routes/m_.patients_.$id.tsx:362
 msgid "Дата события"
 msgstr "Event date"
 
@@ -1509,13 +1564,13 @@ msgstr "Diagnosis"
 #: src/routes/d_.patients_.$id_.consents.tsx:148
 #: src/routes/d_.patients_.$id_.consents.tsx:268
 #: src/routes/d_.patients_.$id_.consents.tsx:412
-#: src/routes/d_.patients_.$id.tsx:167
+#: src/routes/d_.patients_.$id.tsx:168
 #: src/routes/d_.patients.tsx:320
 #: src/routes/d_.patients.tsx:591
 #: src/routes/m_.patients_.$id_.consents.tsx:148
 #: src/routes/m_.patients_.$id_.consents.tsx:268
 #: src/routes/m_.patients_.$id_.consents.tsx:412
-#: src/routes/m_.patients_.$id.tsx:167
+#: src/routes/m_.patients_.$id.tsx:168
 #: src/routes/m_.patients.tsx:320
 #: src/routes/m_.patients.tsx:591
 msgid "Диагнозы"
@@ -1540,6 +1595,10 @@ msgstr "Exclusion diagnoses"
 #: src/routes/m_.analytics.tsx:386
 msgid "Диагнозы исключения второй группы"
 msgstr "Second group exclusion diagnoses"
+
+#: src/lib/data-quality-content.ts:19
+msgid "Диагнозы не записаны"
+msgstr "No diagnoses are recorded"
 
 #: src/routes/d_.analytics.tsx:652
 #: src/routes/m_.analytics.tsx:652
@@ -1588,10 +1647,20 @@ msgstr "The first unlock requires an internet connection and a physician or rese
 msgid "Для первой загрузки каталога нужен интернет."
 msgstr "Internet access is required to download the directory for the first time."
 
+#: src/routes/d_.patients_.$id_.quality.tsx:198
+#: src/routes/m_.patients_.$id_.quality.tsx:198
+msgid "Для проверки нужен полностью подготовленный набор карты и клинических записей с действующим сроком доступа. Частичный набор не считается полной картой."
+msgstr "The check requires fully prepared patient and clinical records with a valid access lease. A partial dataset is not treated as a complete chart."
+
 #: src/routes/d_.projects_.$id.safety.tsx:259
 #: src/routes/m_.projects_.$id.safety.tsx:259
 msgid "Для регистрации нужна сохранённая запись участия пациента в этом исследовании. Действующее включение не требуется для фиксации события после выбытия."
 msgstr "Registration requires a saved participation record for this patient and study. Active enrollment is not required to record an event after withdrawal."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:71
+#: src/routes/m_.patients_.$id_.quality.tsx:71
+msgid "Для сверки врачом"
+msgstr "For physician verification"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:202
 #: src/routes/m_.patients_.$id_.enrollment.tsx:202
@@ -1653,8 +1722,8 @@ msgstr "Add question"
 msgid "Добавить источник вручную"
 msgstr "Add reference manually"
 
-#: src/routes/d_.patients_.$id.tsx:323
-#: src/routes/m_.patients_.$id.tsx:323
+#: src/routes/d_.patients_.$id.tsx:329
+#: src/routes/m_.patients_.$id.tsx:329
 msgid "Добавить клиническую запись"
 msgstr "Add clinical record"
 
@@ -1678,6 +1747,10 @@ msgstr "Add condition"
 msgid "Добавить шкалу"
 msgstr "Add score"
 
+#: src/lib/use-patient-data-quality.ts:85
+msgid "Добавьте обоснование решения"
+msgstr "Add a decision rationale"
+
 #: src/routes/d_.analytics.tsx:444
 #: src/routes/m_.analytics.tsx:444
 msgid "Доверительный уровень"
@@ -1688,11 +1761,11 @@ msgstr "Confidence level"
 msgid "Договорённости об авторстве"
 msgstr "Authorship agreements"
 
-#: src/lib/clinical-history-content.ts:104
+#: src/lib/clinical-history-content.ts:118
 msgid "Дозировка"
 msgstr "Dosage"
 
-#: src/lib/clinical-history-content.ts:188
+#: src/lib/clinical-history-content.ts:202
 #: src/lib/patient-history-content.ts:44
 msgid "Документ согласия"
 msgstr "Consent document"
@@ -1842,15 +1915,15 @@ msgstr "Available studies"
 msgid "Доступных записей пока нет."
 msgstr "No accessible records yet."
 
-#: src/lib/clinical-history-content.ts:57
+#: src/lib/clinical-history-content.ts:59
 #: src/routes/d_.projects_.$id.safety.tsx:83
 #: src/routes/m_.projects_.$id.safety.tsx:83
 msgid "Другое медицински значимое событие"
 msgstr "Other medically important event"
 
-#: src/routes/d_.patients_.$id.tsx:482
+#: src/routes/d_.patients_.$id.tsx:490
 #: src/routes/d_.projects_.$id.forms.tsx:502
-#: src/routes/m_.patients_.$id.tsx:482
+#: src/routes/m_.patients_.$id.tsx:490
 #: src/routes/m_.projects_.$id.forms.tsx:502
 msgid "Единица измерения"
 msgstr "Unit"
@@ -1873,14 +1946,14 @@ msgstr "Do you have interests related to this work"
 #: src/lib/patient-history-content.ts:24
 #: src/routes/d_.analytics.tsx:71
 #: src/routes/d_.analytics.tsx:436
-#: src/routes/d_.patients_.$id.tsx:165
-#: src/routes/d_.patients_.$id.tsx:270
+#: src/routes/d_.patients_.$id.tsx:166
+#: src/routes/d_.patients_.$id.tsx:276
 #: src/routes/d_.patients.tsx:239
 #: src/routes/d_.patients.tsx:484
 #: src/routes/m_.analytics.tsx:71
 #: src/routes/m_.analytics.tsx:436
-#: src/routes/m_.patients_.$id.tsx:165
-#: src/routes/m_.patients_.$id.tsx:270
+#: src/routes/m_.patients_.$id.tsx:166
+#: src/routes/m_.patients_.$id.tsx:276
 #: src/routes/m_.patients.tsx:239
 #: src/routes/m_.patients.tsx:484
 msgid "Женский"
@@ -1930,9 +2003,10 @@ msgstr "Lock library"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:170
 #: src/routes/d_.patients_.$id_.forms.tsx:174
 #: src/routes/d_.patients_.$id_.history.tsx:157
-#: src/routes/d_.patients_.$id_.timeline.tsx:232
+#: src/routes/d_.patients_.$id_.quality.tsx:179
+#: src/routes/d_.patients_.$id_.timeline.tsx:233
 #: src/routes/d_.patients_.$id_.visits.tsx:154
-#: src/routes/d_.patients_.$id.tsx:141
+#: src/routes/d_.patients_.$id.tsx:142
 #: src/routes/d_.patients.tsx:181
 #: src/routes/d_.projects_.$id.credits.tsx:202
 #: src/routes/d_.projects_.$id.enrollment.tsx:120
@@ -1949,9 +2023,10 @@ msgstr "Lock library"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:170
 #: src/routes/m_.patients_.$id_.forms.tsx:174
 #: src/routes/m_.patients_.$id_.history.tsx:157
-#: src/routes/m_.patients_.$id_.timeline.tsx:232
+#: src/routes/m_.patients_.$id_.quality.tsx:179
+#: src/routes/m_.patients_.$id_.timeline.tsx:233
 #: src/routes/m_.patients_.$id_.visits.tsx:154
-#: src/routes/m_.patients_.$id.tsx:141
+#: src/routes/m_.patients_.$id.tsx:142
 #: src/routes/m_.patients.tsx:181
 #: src/routes/m_.projects_.$id.credits.tsx:202
 #: src/routes/m_.projects_.$id.enrollment.tsx:120
@@ -1965,26 +2040,26 @@ msgstr "Lock library"
 msgid "Заблокировать пространство"
 msgstr "Lock workspace"
 
-#: src/routes/d_.patients_.$id.tsx:438
-#: src/routes/d_.patients_.$id.tsx:573
-#: src/routes/m_.patients_.$id.tsx:438
-#: src/routes/m_.patients_.$id.tsx:573
+#: src/routes/d_.patients_.$id.tsx:446
+#: src/routes/d_.patients_.$id.tsx:581
+#: src/routes/m_.patients_.$id.tsx:446
+#: src/routes/m_.patients_.$id.tsx:581
 msgid "Завершена"
 msgstr "Completed"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:116
-#: src/routes/m_.patients_.$id_.timeline.tsx:116
+#: src/routes/d_.patients_.$id_.timeline.tsx:117
+#: src/routes/m_.patients_.$id_.timeline.tsx:117
 msgid "Завершение не подтверждено"
 msgstr "End not confirmed"
 
-#: src/lib/clinical-history-content.ts:35
-#: src/routes/d_.patients_.$id_.timeline.tsx:124
-#: src/routes/d_.patients_.$id_.timeline.tsx:129
+#: src/lib/clinical-history-content.ts:37
+#: src/routes/d_.patients_.$id_.timeline.tsx:125
+#: src/routes/d_.patients_.$id_.timeline.tsx:130
 #: src/routes/d_.projects.tsx:80
 #: src/routes/d_.research_.$id.tsx:42
 #: src/routes/d_.research.tsx:73
-#: src/routes/m_.patients_.$id_.timeline.tsx:124
-#: src/routes/m_.patients_.$id_.timeline.tsx:129
+#: src/routes/m_.patients_.$id_.timeline.tsx:125
+#: src/routes/m_.patients_.$id_.timeline.tsx:130
 #: src/routes/m_.projects.tsx:80
 #: src/routes/m_.research_.$id.tsx:42
 #: src/routes/m_.research.tsx:73
@@ -2066,9 +2141,9 @@ msgstr "Loading"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:191
 #: src/routes/d_.patients_.$id_.forms.tsx:194
 #: src/routes/d_.patients_.$id_.history.tsx:162
-#: src/routes/d_.patients_.$id_.timeline.tsx:237
+#: src/routes/d_.patients_.$id_.timeline.tsx:238
 #: src/routes/d_.patients_.$id_.visits.tsx:172
-#: src/routes/d_.patients_.$id.tsx:143
+#: src/routes/d_.patients_.$id.tsx:144
 #: src/routes/d_.projects_.$id.credits.tsx:205
 #: src/routes/d_.projects_.$id.enrollment.tsx:142
 #: src/routes/d_.projects_.$id.forms.tsx:170
@@ -2086,9 +2161,9 @@ msgstr "Loading"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:191
 #: src/routes/m_.patients_.$id_.forms.tsx:194
 #: src/routes/m_.patients_.$id_.history.tsx:162
-#: src/routes/m_.patients_.$id_.timeline.tsx:237
+#: src/routes/m_.patients_.$id_.timeline.tsx:238
 #: src/routes/m_.patients_.$id_.visits.tsx:172
-#: src/routes/m_.patients_.$id.tsx:143
+#: src/routes/m_.patients_.$id.tsx:144
 #: src/routes/m_.projects_.$id.credits.tsx:205
 #: src/routes/m_.projects_.$id.enrollment.tsx:142
 #: src/routes/m_.projects_.$id.forms.tsx:170
@@ -2115,7 +2190,7 @@ msgstr "No tasks yet."
 msgid "Задачи"
 msgstr "Tasks"
 
-#: src/lib/clinical-history-content.ts:205
+#: src/lib/clinical-history-content.ts:219
 #: src/routes/d_.projects_.$id.safety.tsx:475
 #: src/routes/m_.projects_.$id.safety.tsx:475
 msgid "Заключение и решение"
@@ -2128,10 +2203,10 @@ msgstr "Findings and decision"
 msgid "Закрыта для новых ответов"
 msgstr "Closed to new responses"
 
-#: src/lib/clinical-history-content.ts:51
-#: src/routes/d_.patients_.$id_.timeline.tsx:140
+#: src/lib/clinical-history-content.ts:53
+#: src/routes/d_.patients_.$id_.timeline.tsx:141
 #: src/routes/d_.projects_.$id.safety.tsx:70
-#: src/routes/m_.patients_.$id_.timeline.tsx:140
+#: src/routes/m_.patients_.$id_.timeline.tsx:141
 #: src/routes/m_.projects_.$id.safety.tsx:70
 msgid "Закрыто"
 msgstr "Closed"
@@ -2163,9 +2238,11 @@ msgstr "Close unsaved template?"
 #: src/routes/d_.organization.members.tsx:347
 #: src/routes/d_.organization.members.tsx:364
 #: src/routes/d_.organization.members.tsx:460
+#: src/routes/d_.patients_.$id_.quality.tsx:294
 #: src/routes/m_.organization.members.tsx:347
 #: src/routes/m_.organization.members.tsx:364
 #: src/routes/m_.organization.members.tsx:460
+#: src/routes/m_.patients_.$id_.quality.tsx:294
 msgid "Заменить несохранённое решение?"
 msgstr "Replace the unsaved decision?"
 
@@ -2234,6 +2311,11 @@ msgstr "Conceptualization"
 msgid "Записей"
 msgstr "Records"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:227
+#: src/routes/m_.patients_.$id_.quality.tsx:227
+msgid "Записей в проверке:"
+msgstr "Records checked:"
+
 #: src/routes/d_.projects_.$id.enrollment.tsx:146
 #: src/routes/m_.projects_.$id.enrollment.tsx:146
 msgid "Записей участия:"
@@ -2249,8 +2331,8 @@ msgstr "Records are visible to the project team. New declarations and agreement 
 msgid "Записи участия доступны только врачам клиники. Согласие на пол и диагнозы не открывает эти записи исследователю."
 msgstr "Participation records are available only to clinic physicians. Consent for sex and diagnoses does not grant researchers access to these records."
 
-#: src/routes/d_.patients_.$id.tsx:230
-#: src/routes/m_.patients_.$id.tsx:230
+#: src/routes/d_.patients_.$id.tsx:236
+#: src/routes/m_.patients_.$id.tsx:236
 msgid "Запись будет удалена после синхронизации. Неотправленные изменения сохраняются на устройстве."
 msgstr "The record will be deleted after synchronization. Unsent changes remain saved on your device."
 
@@ -2260,9 +2342,9 @@ msgid "Запись изменена другим участником. Пров
 msgstr "Another participant changed this record. Review current data before saving again."
 
 #: src/routes/d_.patients_.$id_.consents.tsx:134
-#: src/routes/d_.patients_.$id.tsx:145
+#: src/routes/d_.patients_.$id.tsx:146
 #: src/routes/m_.patients_.$id_.consents.tsx:134
-#: src/routes/m_.patients_.$id.tsx:145
+#: src/routes/m_.patients_.$id.tsx:146
 msgid "Запись недоступна, удалена или ещё не сохранена на устройстве."
 msgstr "The record is unavailable, deleted or not yet saved on your device."
 
@@ -2271,13 +2353,13 @@ msgstr "The record is unavailable, deleted or not yet saved on your device."
 msgid "Запись сохранена в очереди устройства. Подтверждение сервера отображается отдельно."
 msgstr "The record is saved in the device queue. Server confirmation is shown separately."
 
-#: src/lib/clinical-history-content.ts:37
-#: src/routes/d_.patients_.$id_.timeline.tsx:131
+#: src/lib/clinical-history-content.ts:39
+#: src/routes/d_.patients_.$id_.timeline.tsx:132
 #: src/routes/d_.patients_.$id_.visits.tsx:63
 #: src/routes/d_.projects_.$id.visits.tsx:67
 #: src/routes/d_.workspace.tsx:226
 #: src/routes/d.tsx:212
-#: src/routes/m_.patients_.$id_.timeline.tsx:131
+#: src/routes/m_.patients_.$id_.timeline.tsx:132
 #: src/routes/m_.patients_.$id_.visits.tsx:63
 #: src/routes/m_.projects_.$id.visits.tsx:67
 #: src/routes/m_.workspace.tsx:226
@@ -2285,7 +2367,7 @@ msgstr "The record is saved in the device queue. Server confirmation is shown se
 msgid "Запланирован"
 msgstr "Planned"
 
-#: src/lib/clinical-history-content.ts:120
+#: src/lib/clinical-history-content.ts:134
 msgid "Запланированное время"
 msgstr "Scheduled time"
 
@@ -2299,13 +2381,13 @@ msgstr "Complete questionnaire"
 msgid "Запрашиваемая роль"
 msgstr "Requested role"
 
-#: src/routes/d_.patients_.$id.tsx:417
-#: src/routes/m_.patients_.$id.tsx:417
+#: src/routes/d_.patients_.$id.tsx:425
+#: src/routes/m_.patients_.$id.tsx:425
 msgid "Зарегистрированная дозировка"
 msgstr "Recorded dosage"
 
-#: src/routes/d_.patients_.$id.tsx:376
-#: src/routes/m_.patients_.$id.tsx:376
+#: src/routes/d_.patients_.$id.tsx:384
+#: src/routes/m_.patients_.$id.tsx:384
 msgid "Зарегистрированная реакция"
 msgstr "Recorded reaction"
 
@@ -2342,6 +2424,11 @@ msgstr "Register event"
 #: src/routes/m_.patients_.$id_.consents.tsx:188
 msgid "Зарегистрировать согласие или отзыв"
 msgstr "Record consent or withdrawal"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:303
+#: src/routes/m_.patients_.$id_.quality.tsx:303
+msgid "Зафиксировать проверку врачом"
+msgstr "Record physician review"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:431
 #: src/routes/m_.patients_.$id_.enrollment.tsx:431
@@ -2411,13 +2498,13 @@ msgstr "Characteristic value"
 msgid "Значение условия"
 msgstr "Condition value"
 
-#: src/lib/clinical-history-content.ts:222
+#: src/lib/clinical-history-content.ts:236
 #: src/routes/d_.projects_.$id.safety.tsx:410
 #: src/routes/m_.projects_.$id.safety.tsx:410
 msgid "Значимость отклонения"
 msgstr "Deviation impact"
 
-#: src/lib/clinical-history-content.ts:71
+#: src/lib/clinical-history-content.ts:73
 #: src/routes/d_.projects_.$id.safety.tsx:105
 #: src/routes/m_.projects_.$id.safety.tsx:105
 msgid "Значительное"
@@ -2469,12 +2556,14 @@ msgstr "Editor changes will be lost. Saved records will remain available."
 #: src/routes/d_.library.tsx:104
 #: src/routes/d_.patients_.$id_.enrollment.tsx:101
 #: src/routes/d_.patients_.$id_.forms.tsx:104
+#: src/routes/d_.patients_.$id_.quality.tsx:103
 #: src/routes/d_.projects_.$id.forms.tsx:88
 #: src/routes/d_.projects_.$id.safety.tsx:146
 #: src/routes/d_.projects_.$id.visits.tsx:112
 #: src/routes/m_.library.tsx:104
 #: src/routes/m_.patients_.$id_.enrollment.tsx:101
 #: src/routes/m_.patients_.$id_.forms.tsx:104
+#: src/routes/m_.patients_.$id_.quality.tsx:103
 #: src/routes/m_.projects_.$id.forms.tsx:88
 #: src/routes/m_.projects_.$id.safety.tsx:146
 #: src/routes/m_.projects_.$id.visits.tsx:112
@@ -2495,8 +2584,8 @@ msgstr "Changes can be made in the tab managing the synchronization queue."
 #: src/routes/d_.invitations.tsx:193
 #: src/routes/d_.patients_.$id_.forms.tsx:468
 #: src/routes/d_.patients_.$id_.visits.tsx:316
-#: src/routes/d_.patients_.$id.tsx:516
-#: src/routes/d_.patients_.$id.tsx:650
+#: src/routes/d_.patients_.$id.tsx:524
+#: src/routes/d_.patients_.$id.tsx:658
 #: src/routes/d_.projects_.$id.forms.tsx:763
 #: src/routes/d_.projects_.$id.protocol.tsx:327
 #: src/routes/d_.projects_.$id.team.tsx:370
@@ -2506,8 +2595,8 @@ msgstr "Changes can be made in the tab managing the synchronization queue."
 #: src/routes/m_.invitations.tsx:193
 #: src/routes/m_.patients_.$id_.forms.tsx:468
 #: src/routes/m_.patients_.$id_.visits.tsx:316
-#: src/routes/m_.patients_.$id.tsx:516
-#: src/routes/m_.patients_.$id.tsx:650
+#: src/routes/m_.patients_.$id.tsx:524
+#: src/routes/m_.patients_.$id.tsx:658
 #: src/routes/m_.projects_.$id.forms.tsx:763
 #: src/routes/m_.projects_.$id.protocol.tsx:327
 #: src/routes/m_.projects_.$id.team.tsx:370
@@ -2533,8 +2622,8 @@ msgstr "Edit"
 msgid "Изменить визит"
 msgstr "Edit visit"
 
-#: src/routes/d_.patients_.$id.tsx:610
-#: src/routes/m_.patients_.$id.tsx:610
+#: src/routes/d_.patients_.$id.tsx:618
+#: src/routes/m_.patients_.$id.tsx:618
 msgid "Изменить запись"
 msgstr "Edit record"
 
@@ -2590,6 +2679,10 @@ msgstr "Patient name or identifier"
 #: src/routes/m_.patients.tsx:224
 msgid "Имя пациента"
 msgstr "Patient name"
+
+#: src/lib/data-quality-content.ts:7
+msgid "Имя пациента не заполнено"
+msgstr "Patient name is missing"
 
 #: src/routes/d_.analytics.tsx:519
 #: src/routes/m_.analytics.tsx:519
@@ -2743,9 +2836,9 @@ msgid "Исследователь: только чтение"
 msgstr "Researcher: read only"
 
 #: src/routes/d_.patients_.$id_.consents.tsx:139
-#: src/routes/d_.patients_.$id.tsx:150
+#: src/routes/d_.patients_.$id.tsx:151
 #: src/routes/m_.patients_.$id_.consents.tsx:139
-#: src/routes/m_.patients_.$id.tsx:150
+#: src/routes/m_.patients_.$id.tsx:151
 msgid "Исследовательская запись"
 msgstr "Research record"
 
@@ -2770,9 +2863,9 @@ msgid "История карты ещё не подготовлена на ус�
 msgstr "Card history has not been prepared on this device yet. New local revisions are saved with the queue; information not previously downloaded requires a connection."
 
 #: src/routes/d_.patients_.$id_.history.tsx:95
-#: src/routes/d_.patients_.$id.tsx:202
+#: src/routes/d_.patients_.$id.tsx:208
 #: src/routes/m_.patients_.$id_.history.tsx:95
-#: src/routes/m_.patients_.$id.tsx:202
+#: src/routes/m_.patients_.$id.tsx:208
 msgid "История карты и клинических записей"
 msgstr "Patient card and clinical record history"
 
@@ -2793,8 +2886,10 @@ msgstr "Clinical content history is available only to clinic physicians. Consent
 msgid "История обновлений"
 msgstr "Update history"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:247
-#: src/routes/m_.patients_.$id_.timeline.tsx:247
+#: src/routes/d_.patients_.$id_.quality.tsx:192
+#: src/routes/d_.patients_.$id_.timeline.tsx:248
+#: src/routes/m_.patients_.$id_.quality.tsx:192
+#: src/routes/m_.patients_.$id_.timeline.tsx:248
 msgid "История редакций карты и записей"
 msgstr "Card and record revision history"
 
@@ -2837,7 +2932,7 @@ msgstr "The source is currently unavailable. Saved records remain available."
 msgid "Источник сохранён в очереди устройства. Серверная синхронизация подтверждается отдельно."
 msgstr "The reference is saved in the device queue. Server synchronization is confirmed separately."
 
-#: src/lib/clinical-history-content.ts:219
+#: src/lib/clinical-history-content.ts:233
 #: src/routes/d_.projects_.$id.safety.tsx:392
 #: src/routes/m_.projects_.$id.safety.tsx:392
 msgid "Исход явления"
@@ -2847,6 +2942,11 @@ msgstr "Event outcome"
 #: src/routes/m_.projects_.$id.safety.tsx:278
 msgid "Исходная запись отсутствует. Для создания нового события выберите статус «Открыто»; прежнее рассмотрение не переносится."
 msgstr "The original record is missing. To create a new event, select Open; the previous review is not transferred."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:216
+#: src/routes/m_.patients_.$id_.quality.tsx:216
+msgid "Исходные данные изменились. Повторите проверку и пересмотрите решение; введённый текст сохранён."
+msgstr "Source data changed. Run the check again and reconsider the decision; your text is preserved."
 
 #: src/routes/d_.projects_.$id.forms.tsx:335
 #: src/routes/d_.projects_.$id.forms.tsx:618
@@ -2879,7 +2979,7 @@ msgstr "Each save creates a separate template version. Editing a form does not c
 #~ msgid "Как на устройстве"
 #~ msgstr "System default"
 
-#: src/lib/clinical-history-content.ts:86
+#: src/lib/clinical-history-content.ts:88
 msgid "Календарная дата расписания"
 msgstr "Scheduled calendar date"
 
@@ -2888,17 +2988,19 @@ msgstr "Scheduled calendar date"
 #: src/routes/d_.patients_.$id_.forms.tsx:115
 #: src/routes/d_.patients_.$id_.history.tsx:94
 #: src/routes/d_.patients_.$id_.history.tsx:184
-#: src/routes/d_.patients_.$id_.timeline.tsx:170
+#: src/routes/d_.patients_.$id_.quality.tsx:116
+#: src/routes/d_.patients_.$id_.timeline.tsx:171
 #: src/routes/d_.patients_.$id_.visits.tsx:94
-#: src/routes/d_.patients_.$id.tsx:78
+#: src/routes/d_.patients_.$id.tsx:79
 #: src/routes/m_.patients_.$id_.consents.tsx:60
 #: src/routes/m_.patients_.$id_.enrollment.tsx:111
 #: src/routes/m_.patients_.$id_.forms.tsx:115
 #: src/routes/m_.patients_.$id_.history.tsx:94
 #: src/routes/m_.patients_.$id_.history.tsx:184
-#: src/routes/m_.patients_.$id_.timeline.tsx:170
+#: src/routes/m_.patients_.$id_.quality.tsx:116
+#: src/routes/m_.patients_.$id_.timeline.tsx:171
 #: src/routes/m_.patients_.$id_.visits.tsx:94
-#: src/routes/m_.patients_.$id.tsx:78
+#: src/routes/m_.patients_.$id.tsx:79
 msgid "Карта пациента"
 msgstr "Patient record"
 
@@ -2926,10 +3028,17 @@ msgstr "The record, notes and previous versions become unavailable after deletio
 msgid "Каталог исследований"
 msgstr "Study directory"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:276
-#: src/routes/m_.patients_.$id_.timeline.tsx:276
+#: src/routes/d_.patients_.$id_.timeline.tsx:277
+#: src/routes/m_.patients_.$id_.timeline.tsx:277
 msgid "Категории хронологии"
 msgstr "Timeline categories"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:117
+#: src/routes/d_.patients_.$id.tsx:198
+#: src/routes/m_.patients_.$id_.quality.tsx:117
+#: src/routes/m_.patients_.$id.tsx:198
+msgid "Качество данных карты"
+msgstr "Patient data quality"
 
 #: src/routes/d_.organization.members.tsx:337
 #: src/routes/d_.profile.tsx:111
@@ -2950,13 +3059,13 @@ msgstr "Clinical question, diagnosis or hypothesis"
 msgid "Клиническая запись"
 msgstr "Clinical record"
 
-#: src/routes/d_.patients_.$id.tsx:319
-#: src/routes/m_.patients_.$id.tsx:319
+#: src/routes/d_.patients_.$id.tsx:325
+#: src/routes/m_.patients_.$id.tsx:325
 msgid "Клиническая история"
 msgstr "Clinical history"
 
-#: src/routes/d_.patients_.$id.tsx:325
-#: src/routes/m_.patients_.$id.tsx:325
+#: src/routes/d_.patients_.$id.tsx:331
+#: src/routes/m_.patients_.$id.tsx:331
 msgid "Клиническая история ещё не загружена. Для первой загрузки нужен интернет."
 msgstr "Clinical history has not been downloaded yet. Internet access is required for the first download."
 
@@ -2975,11 +3084,11 @@ msgstr "Clinical practice × Research"
 msgid "Клинические визиты исследования доступны только врачу своей клиники. Проектная роль не открывает медицинские результаты."
 msgstr "Clinical study visits are available only to physicians of the treating clinic. A project role does not grant access to medical outcomes."
 
-#: src/routes/d_.patients_.$id.tsx:175
-#: src/routes/d_.patients_.$id.tsx:280
+#: src/routes/d_.patients_.$id.tsx:176
+#: src/routes/d_.patients_.$id.tsx:286
 #: src/routes/d_.patients.tsx:249
-#: src/routes/m_.patients_.$id.tsx:175
-#: src/routes/m_.patients_.$id.tsx:280
+#: src/routes/m_.patients_.$id.tsx:176
+#: src/routes/m_.patients_.$id.tsx:286
 #: src/routes/m_.patients.tsx:249
 msgid "Клинические заметки"
 msgstr "Clinical notes"
@@ -2989,19 +3098,19 @@ msgstr "Clinical notes"
 #~ msgid "Клинические записи, терапия, визиты и исследовательские события в одной ленте по текущим разрешённым данным организации."
 #~ msgstr "Clinical records, therapy, visits and research events in one timeline, based on the organization's current authorized data."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:172
-#: src/routes/m_.patients_.$id_.timeline.tsx:172
+#: src/routes/d_.patients_.$id_.timeline.tsx:173
+#: src/routes/m_.patients_.$id_.timeline.tsx:173
 msgid "Клинические и исследовательские события пациента."
 msgstr "Patient clinical and research events."
 
-#: src/lib/clinical-history-content.ts:19
+#: src/lib/clinical-history-content.ts:21
 #: src/routes/d_.patients_.$id_.timeline.tsx:92
 #: src/routes/m_.patients_.$id_.timeline.tsx:92
 msgid "Клинический визит"
 msgstr "Clinical visit"
 
-#: src/routes/d_.patients_.$id.tsx:519
-#: src/routes/m_.patients_.$id.tsx:519
+#: src/routes/d_.patients_.$id.tsx:527
+#: src/routes/m_.patients_.$id.tsx:527
 msgid "Клинических записей пока нет."
 msgstr "No clinical records yet."
 
@@ -3030,8 +3139,8 @@ msgstr "The key stays in tab memory only. Enter it again after reloading."
 msgid "Когорта"
 msgstr "Cohort"
 
-#: src/lib/clinical-history-content.ts:103
-#: src/lib/clinical-history-content.ts:111
+#: src/lib/clinical-history-content.ts:117
+#: src/lib/clinical-history-content.ts:125
 msgid "Код"
 msgstr "Code"
 
@@ -3050,8 +3159,8 @@ msgstr "Diagnosis code"
 msgid "Код диагноза записан в карте"
 msgstr "Diagnosis code recorded in the chart"
 
-#: src/routes/d_.patients_.$id.tsx:454
-#: src/routes/m_.patients_.$id.tsx:454
+#: src/routes/d_.patients_.$id.tsx:462
+#: src/routes/m_.patients_.$id.tsx:462
 msgid "Код исследования"
 msgstr "Observation code"
 
@@ -3060,8 +3169,8 @@ msgstr "Observation code"
 msgid "Код МКБ-10, например J45"
 msgstr "ICD-10 code, for example J45"
 
-#: src/routes/d_.patients_.$id.tsx:412
-#: src/routes/m_.patients_.$id.tsx:412
+#: src/routes/d_.patients_.$id.tsx:420
+#: src/routes/m_.patients_.$id.tsx:420
 msgid "Код препарата"
 msgstr "Medication code"
 
@@ -3070,9 +3179,9 @@ msgstr "Medication code"
 msgid "Коды диагнозов сравниваются целиком без учёта регистра. Недоступные по согласию поля не считаются пустыми."
 msgstr "Diagnosis codes are matched exactly, ignoring case. Fields withheld by consent are not treated as empty."
 
-#: src/routes/d_.patients_.$id.tsx:276
+#: src/routes/d_.patients_.$id.tsx:282
 #: src/routes/d_.patients.tsx:245
-#: src/routes/m_.patients_.$id.tsx:276
+#: src/routes/m_.patients_.$id.tsx:282
 #: src/routes/m_.patients.tsx:245
 msgid "Коды МКБ через запятую"
 msgstr "ICD codes, separated by commas"
@@ -3109,15 +3218,27 @@ msgstr "Decision comment"
 msgid "Конечные точки"
 msgstr "Endpoints"
 
-#: src/lib/clinical-history-content.ts:26
-#: src/routes/d_.patients_.$id_.timeline.tsx:143
+#: src/lib/clinical-history-content.ts:28
+#: src/routes/d_.patients_.$id_.timeline.tsx:144
 #: src/routes/d_.patients_.$id_.visits.tsx:70
 #: src/routes/d_.projects_.$id.visits.tsx:74
-#: src/routes/m_.patients_.$id_.timeline.tsx:143
+#: src/routes/m_.patients_.$id_.timeline.tsx:144
 #: src/routes/m_.patients_.$id_.visits.tsx:70
 #: src/routes/m_.projects_.$id.visits.tsx:74
 msgid "Консультация"
 msgstr "Consultation"
+
+#: src/lib/clinical-history-content.ts:97
+#: src/routes/d_.patients_.$id_.quality.tsx:226
+#: src/routes/d_.patients_.$id_.quality.tsx:436
+#: src/routes/m_.patients_.$id_.quality.tsx:226
+#: src/routes/m_.patients_.$id_.quality.tsx:436
+msgid "Контрольная дата (UTC)"
+msgstr "Control date (UTC)"
+
+#: src/lib/data-quality-content.ts:59
+msgid "Контрольный срок рассмотрения события прошёл"
+msgstr "The review deadline has passed"
 
 #: src/routes/d_.invitations.tsx:44
 #: src/routes/d_.projects_.$id.team.tsx:74
@@ -3128,7 +3249,7 @@ msgstr "Consultation"
 msgid "Координатор"
 msgstr "Coordinator"
 
-#: src/lib/clinical-history-content.ts:224
+#: src/lib/clinical-history-content.ts:238
 #: src/routes/d_.projects_.$id.safety.tsx:425
 #: src/routes/d_.projects_.$id.safety.tsx:611
 #: src/routes/m_.projects_.$id.safety.tsx:425
@@ -3136,7 +3257,7 @@ msgstr "Coordinator"
 msgid "Коренная причина"
 msgstr "Root cause"
 
-#: src/lib/clinical-history-content.ts:225
+#: src/lib/clinical-history-content.ts:239
 #: src/routes/d_.projects_.$id.safety.tsx:430
 #: src/routes/d_.projects_.$id.safety.tsx:614
 #: src/routes/m_.projects_.$id.safety.tsx:430
@@ -3149,7 +3270,7 @@ msgstr "Corrective actions or rationale for taking none"
 msgid "Коэффициент"
 msgstr "Coefficient"
 
-#: src/lib/clinical-history-content.ts:196
+#: src/lib/clinical-history-content.ts:210
 #: src/routes/d_.projects_.$id.safety.tsx:311
 #: src/routes/m_.projects_.$id.safety.tsx:311
 msgid "Краткое название события"
@@ -3167,7 +3288,7 @@ msgstr "Inclusion criteria"
 msgid "Критерии включения выполнены"
 msgstr "Inclusion criteria are met"
 
-#: src/lib/clinical-history-content.ts:185
+#: src/lib/clinical-history-content.ts:199
 msgid "Критерии включения подтверждены"
 msgstr "Inclusion criteria confirmed"
 
@@ -3188,7 +3309,7 @@ msgstr "Cohort criteria"
 msgid "Критерии исключения"
 msgstr "Exclusion criteria"
 
-#: src/lib/clinical-history-content.ts:186
+#: src/lib/clinical-history-content.ts:200
 #: src/routes/d_.patients_.$id_.enrollment.tsx:286
 #: src/routes/m_.patients_.$id_.enrollment.tsx:286
 msgid "Критерии исключения отсутствуют"
@@ -3206,7 +3327,7 @@ msgstr "Exclusion criteria:"
 msgid "Критерии не выполнены"
 msgstr "Ineligible"
 
-#: src/lib/clinical-history-content.ts:214
+#: src/lib/clinical-history-content.ts:228
 #: src/routes/d_.projects_.$id.safety.tsx:348
 #: src/routes/d_.projects_.$id.safety.tsx:591
 #: src/routes/m_.projects_.$id.safety.tsx:348
@@ -3219,7 +3340,7 @@ msgstr "Seriousness criteria"
 msgid "Критерий χ² с поправкой Йейтса, df = 1; p-value:"
 msgstr "Yates-corrected χ² test, df = 1; p-value:"
 
-#: src/lib/clinical-history-content.ts:72
+#: src/lib/clinical-history-content.ts:74
 #: src/routes/d_.projects_.$id.safety.tsx:105
 #: src/routes/m_.projects_.$id.safety.tsx:105
 msgid "Критическое"
@@ -3237,25 +3358,25 @@ msgstr "Changed by"
 msgid "Лаборатория"
 msgstr "Laboratory"
 
-#: src/lib/clinical-history-content.ts:30
-#: src/routes/d_.patients_.$id.tsx:386
-#: src/routes/d_.patients_.$id.tsx:549
+#: src/lib/clinical-history-content.ts:32
+#: src/routes/d_.patients_.$id.tsx:394
+#: src/routes/d_.patients_.$id.tsx:557
 #: src/routes/d_.projects_.$id.safety.tsx:76
-#: src/routes/m_.patients_.$id.tsx:386
-#: src/routes/m_.patients_.$id.tsx:549
+#: src/routes/m_.patients_.$id.tsx:394
+#: src/routes/m_.patients_.$id.tsx:557
 #: src/routes/m_.projects_.$id.safety.tsx:76
 msgid "Лёгкая"
 msgstr "Mild"
 
-#: src/lib/clinical-history-content.ts:17
+#: src/lib/clinical-history-content.ts:19
 #: src/routes/d_.patients_.$id_.timeline.tsx:90
-#: src/routes/d_.patients_.$id.tsx:70
+#: src/routes/d_.patients_.$id.tsx:71
 #: src/routes/m_.patients_.$id_.timeline.tsx:90
-#: src/routes/m_.patients_.$id.tsx:70
+#: src/routes/m_.patients_.$id.tsx:71
 msgid "Лекарственная терапия"
 msgstr "Medication therapy"
 
-#: src/lib/clinical-history-content.ts:69
+#: src/lib/clinical-history-content.ts:71
 #: src/routes/d_.projects_.$id.safety.tsx:103
 #: src/routes/m_.projects_.$id.safety.tsx:103
 msgid "Летальный исход"
@@ -3277,12 +3398,14 @@ msgid "Личные источники, подборки и заметки не 
 msgstr "Personal references, collections and notes are independent of the selected organization and do not grant access to patient data."
 
 #: src/routes/d_.patients_.$id_.history.tsx:145
-#: src/routes/d_.patients_.$id_.timeline.tsx:220
+#: src/routes/d_.patients_.$id_.quality.tsx:166
+#: src/routes/d_.patients_.$id_.timeline.tsx:221
 #: src/routes/d_.projects_.$id.credits.tsx:187
 #: src/routes/d_.projects.tsx:193
 #: src/routes/d_.workspace.tsx:268
 #: src/routes/m_.patients_.$id_.history.tsx:145
-#: src/routes/m_.patients_.$id_.timeline.tsx:220
+#: src/routes/m_.patients_.$id_.quality.tsx:166
+#: src/routes/m_.patients_.$id_.timeline.tsx:221
 #: src/routes/m_.projects_.$id.credits.tsx:187
 #: src/routes/m_.projects.tsx:193
 #: src/routes/m_.workspace.tsx:268
@@ -3378,7 +3501,7 @@ msgstr "Menu"
 msgid "Местные дата и время визита"
 msgstr "Local visit date and time"
 
-#: src/lib/clinical-history-content.ts:128
+#: src/lib/clinical-history-content.ts:142
 msgid "Место"
 msgstr "Location"
 
@@ -3536,14 +3659,14 @@ msgstr "My scientific library"
 #: src/lib/patient-history-content.ts:26
 #: src/routes/d_.analytics.tsx:71
 #: src/routes/d_.analytics.tsx:437
-#: src/routes/d_.patients_.$id.tsx:165
-#: src/routes/d_.patients_.$id.tsx:271
+#: src/routes/d_.patients_.$id.tsx:166
+#: src/routes/d_.patients_.$id.tsx:277
 #: src/routes/d_.patients.tsx:240
 #: src/routes/d_.patients.tsx:485
 #: src/routes/m_.analytics.tsx:71
 #: src/routes/m_.analytics.tsx:437
-#: src/routes/m_.patients_.$id.tsx:165
-#: src/routes/m_.patients_.$id.tsx:271
+#: src/routes/m_.patients_.$id.tsx:166
+#: src/routes/m_.patients_.$id.tsx:277
 #: src/routes/m_.patients.tsx:240
 #: src/routes/m_.patients.tsx:485
 msgid "Мужской"
@@ -3575,10 +3698,10 @@ msgstr "Back to home"
 msgid "На графике показаны до 20 наиболее частых кодов. Полный список приведён в таблице."
 msgstr "The chart shows up to 20 most frequent codes. The table contains the complete list."
 
-#: src/lib/clinical-history-content.ts:49
-#: src/routes/d_.patients_.$id_.timeline.tsx:138
+#: src/lib/clinical-history-content.ts:51
+#: src/routes/d_.patients_.$id_.timeline.tsx:139
 #: src/routes/d_.projects_.$id.safety.tsx:68
-#: src/routes/m_.patients_.$id_.timeline.tsx:138
+#: src/routes/m_.patients_.$id_.timeline.tsx:139
 #: src/routes/m_.projects_.$id.safety.tsx:68
 msgid "На рассмотрении"
 msgstr "Under review"
@@ -3597,10 +3720,15 @@ msgstr "Viewer"
 msgid "Наблюдение пациентов с астмой"
 msgstr "Asthma observational study"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:254
-#: src/routes/m_.patients_.$id_.timeline.tsx:254
+#: src/routes/d_.patients_.$id_.timeline.tsx:255
+#: src/routes/m_.patients_.$id_.timeline.tsx:255
 msgid "Набор ещё не подготовлен полностью. Показаны доступные локальные события; отсутствие события не означает, что его нет на сервере."
 msgstr "The dataset is not fully prepared yet. Available local events are shown; a missing event may still exist on the server."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:214
+#: src/routes/m_.patients_.$id_.quality.tsx:214
+msgid "Набор превышает лимит локальной проверки — 2000 клинических записей. Решение по неполному набору не сохраняется."
+msgstr "The dataset exceeds the local check limit of 2000 clinical records. Decisions about an incomplete dataset are not saved."
 
 #: src/routes/d_.research_.$id.tsx:68
 #: src/routes/d_.research.tsx:115
@@ -3742,8 +3870,8 @@ msgstr "Research interests"
 msgid "Научные интересы через запятую"
 msgstr "Research interests, separated by commas"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:107
-#: src/routes/m_.patients_.$id_.timeline.tsx:107
+#: src/routes/d_.patients_.$id_.timeline.tsx:108
+#: src/routes/m_.patients_.$id_.timeline.tsx:108
 msgid "Начало события безопасности"
 msgstr "Safety event onset"
 
@@ -3776,7 +3904,7 @@ msgstr "At least 12 characters"
 msgid "Не отправляйте персональные данные пациентов."
 msgstr "Do not send identifiable patient data."
 
-#: src/lib/clinical-history-content.ts:58
+#: src/lib/clinical-history-content.ts:60
 #: src/routes/d_.projects_.$id.safety.tsx:86
 #: src/routes/d_.projects_.$id.safety.tsx:93
 #: src/routes/m_.projects_.$id.safety.tsx:86
@@ -3789,20 +3917,20 @@ msgstr "Not assessed"
 msgid "Не равно"
 msgstr "Does not equal"
 
-#: src/routes/d_.patients_.$id.tsx:164
-#: src/routes/d_.patients_.$id.tsx:170
+#: src/routes/d_.patients_.$id.tsx:165
+#: src/routes/d_.patients_.$id.tsx:171
 #: src/routes/d_.patients.tsx:488
 #: src/routes/d_.patients.tsx:610
-#: src/routes/m_.patients_.$id.tsx:164
-#: src/routes/m_.patients_.$id.tsx:170
+#: src/routes/m_.patients_.$id.tsx:165
+#: src/routes/m_.patients_.$id.tsx:171
 #: src/routes/m_.patients.tsx:488
 #: src/routes/m_.patients.tsx:610
 msgid "Не разрешено согласием"
 msgstr "Not permitted by consent"
 
-#: src/lib/clinical-history-content.ts:44
-#: src/routes/d_.patients_.$id_.timeline.tsx:120
-#: src/routes/m_.patients_.$id_.timeline.tsx:120
+#: src/lib/clinical-history-content.ts:46
+#: src/routes/d_.patients_.$id_.timeline.tsx:121
+#: src/routes/m_.patients_.$id_.timeline.tsx:121
 msgid "Не соответствует критериям"
 msgstr "Ineligible"
 
@@ -3852,7 +3980,9 @@ msgid "Не удалось загрузить каталог. Проверьте
 msgstr "Could not load the directory. Check your connection and try again."
 
 #: src/routes/d_.analytics.tsx:130
+#: src/routes/d_.patients_.$id_.quality.tsx:160
 #: src/routes/m_.analytics.tsx:130
+#: src/routes/m_.patients_.$id_.quality.tsx:160
 msgid "Не удалось открыть или подтвердить пространство. Проверьте парольную фразу, сеть и разрешения."
 msgstr "Unable to open or verify the workspace. Check your passphrase, connection and permissions."
 
@@ -3908,6 +4038,11 @@ msgstr "Unable to check the connection. Check the key, model, and API settings."
 #~ msgid "Не удалось проверить сессию. Попробуйте обновить страницу."
 #~ msgstr "Unable to check your session. Please try refreshing the page."
 
+#: src/routes/d_.patients_.$id_.quality.tsx:377
+#: src/routes/m_.patients_.$id_.quality.tsx:377
+msgid "Не удалось прочитать архив отклонённых решений."
+msgstr "Could not read archived rejected decisions."
+
 #: src/routes/d_.projects_.$id.credits.tsx:644
 #: src/routes/d_.workspace.tsx:394
 #: src/routes/m_.projects_.$id.credits.tsx:644
@@ -3946,13 +4081,13 @@ msgstr "Could not save the record. Check permissions, current version, team memb
 
 #: src/routes/d_.patients_.$id_.consents.tsx:107
 #: src/routes/d_.patients_.$id_.visits.tsx:145
-#: src/routes/d_.patients_.$id.tsx:124
-#: src/routes/d_.patients_.$id.tsx:330
+#: src/routes/d_.patients_.$id.tsx:125
+#: src/routes/d_.patients_.$id.tsx:336
 #: src/routes/d_.projects_.$id.work.tsx:299
 #: src/routes/m_.patients_.$id_.consents.tsx:107
 #: src/routes/m_.patients_.$id_.visits.tsx:145
-#: src/routes/m_.patients_.$id.tsx:124
-#: src/routes/m_.patients_.$id.tsx:330
+#: src/routes/m_.patients_.$id.tsx:125
+#: src/routes/m_.patients_.$id.tsx:336
 #: src/routes/m_.projects_.$id.work.tsx:299
 msgid "Не удалось сохранить изменение. Проверьте права и текущую версию записи. Ваш ввод остаётся в форме."
 msgstr "Unable to save the change. Check your permissions and the current record version. Your input remains in the form."
@@ -3983,28 +4118,32 @@ msgid "Не удалось сохранить форму. Проверьте д�
 msgstr "Unable to save the form. Check access and the current version; your input remains in the editor."
 
 #: src/routes/d_.analytics.tsx:71
-#: src/routes/d_.patients_.$id.tsx:165
-#: src/routes/d_.patients_.$id.tsx:269
+#: src/routes/d_.patients_.$id.tsx:166
+#: src/routes/d_.patients_.$id.tsx:275
 #: src/routes/d_.patients.tsx:238
 #: src/routes/d_.patients.tsx:486
 #: src/routes/m_.analytics.tsx:71
-#: src/routes/m_.patients_.$id.tsx:165
-#: src/routes/m_.patients_.$id.tsx:269
+#: src/routes/m_.patients_.$id.tsx:166
+#: src/routes/m_.patients_.$id.tsx:275
 #: src/routes/m_.patients.tsx:238
 #: src/routes/m_.patients.tsx:486
 msgid "Не указан"
 msgstr "Unspecified"
 
-#: src/routes/d_.patients_.$id.tsx:385
-#: src/routes/m_.patients_.$id.tsx:385
+#: src/routes/d_.patients_.$id.tsx:393
+#: src/routes/m_.patients_.$id.tsx:393
 msgid "Не указана"
 msgstr "Not specified"
 
-#: src/routes/d_.patients_.$id.tsx:171
-#: src/routes/d_.patients_.$id.tsx:176
+#: src/lib/data-quality-content.ts:47
+msgid "Не указана дата окончания завершённой терапии"
+msgstr "Completed therapy has no recorded end date"
+
+#: src/routes/d_.patients_.$id.tsx:172
+#: src/routes/d_.patients_.$id.tsx:177
 #: src/routes/d_.specialists_.$id.tsx:69
-#: src/routes/m_.patients_.$id.tsx:171
-#: src/routes/m_.patients_.$id.tsx:176
+#: src/routes/m_.patients_.$id.tsx:172
+#: src/routes/m_.patients_.$id.tsx:177
 #: src/routes/m_.specialists_.$id.tsx:69
 msgid "Не указаны"
 msgstr "Not specified"
@@ -4014,16 +4153,16 @@ msgstr "Not specified"
 msgid "Не указывайте в обсуждениях имена, контакты и другие идентифицирующие данные пациентов. Используйте разрешённые исследовательские обозначения."
 msgstr "Do not include patient names, contact details or other identifiable information in discussions. Use authorized research identifiers."
 
-#: src/routes/d_.patients_.$id.tsx:397
-#: src/routes/d_.patients_.$id.tsx:558
-#: src/routes/m_.patients_.$id.tsx:397
-#: src/routes/m_.patients_.$id.tsx:558
+#: src/routes/d_.patients_.$id.tsx:405
+#: src/routes/d_.patients_.$id.tsx:566
+#: src/routes/m_.patients_.$id.tsx:405
+#: src/routes/m_.patients_.$id.tsx:566
 msgid "Неактивна"
 msgstr "Inactive"
 
-#: src/lib/clinical-history-content.ts:34
-#: src/routes/d_.patients_.$id_.timeline.tsx:128
-#: src/routes/m_.patients_.$id_.timeline.tsx:128
+#: src/lib/clinical-history-content.ts:36
+#: src/routes/d_.patients_.$id_.timeline.tsx:129
+#: src/routes/m_.patients_.$id_.timeline.tsx:129
 msgid "Неактивно"
 msgstr "Inactive"
 
@@ -4032,7 +4171,12 @@ msgstr "Inactive"
 msgid "Недавняя работа"
 msgstr "Recent work"
 
-#: src/lib/clinical-history-content.ts:173
+#: src/routes/d_.patients_.$id_.quality.tsx:70
+#: src/routes/m_.patients_.$id_.quality.tsx:70
+msgid "Недокументированные сведения"
+msgstr "Undocumented information"
+
+#: src/lib/clinical-history-content.ts:187
 #: src/routes/d_.patients_.$id_.forms.tsx:414
 #: src/routes/d_.patients_.$id_.forms.tsx:564
 #: src/routes/m_.patients_.$id_.forms.tsx:414
@@ -4045,7 +4189,7 @@ msgstr "Not enough answers to calculate"
 msgid "Недоступно / не указано"
 msgstr "Unavailable / unknown"
 
-#: src/lib/clinical-history-content.ts:73
+#: src/lib/clinical-history-content.ts:75
 #: src/routes/d_.projects_.$id.safety.tsx:73
 #: src/routes/d_.workspace.tsx:185
 #: src/routes/m_.projects_.$id.safety.tsx:73
@@ -4053,7 +4197,7 @@ msgstr "Unavailable / unknown"
 msgid "Нежелательное явление"
 msgstr "Adverse event"
 
-#: src/lib/clinical-history-content.ts:70
+#: src/lib/clinical-history-content.ts:72
 #: src/routes/d_.projects_.$id.safety.tsx:105
 #: src/routes/m_.projects_.$id.safety.tsx:105
 msgid "Незначительное"
@@ -4064,7 +4208,7 @@ msgstr "Minor"
 msgid "Неизвестен"
 msgstr "Unknown"
 
-#: src/lib/clinical-history-content.ts:29
+#: src/lib/clinical-history-content.ts:31
 #: src/lib/patient-history-content.ts:27
 msgid "Неизвестно"
 msgstr "Unknown"
@@ -4089,7 +4233,7 @@ msgstr "The AI provider timed out. Try again later."
 msgid "Нейросеть ответила. Подключение работает."
 msgstr "The AI provider responded. The connection works."
 
-#: src/lib/clinical-history-content.ts:176
+#: src/lib/clinical-history-content.ts:190
 #: src/routes/d_.patients_.$id_.forms.tsx:415
 #: src/routes/d_.patients_.$id_.forms.tsx:565
 #: src/routes/m_.patients_.$id_.forms.tsx:415
@@ -4102,7 +4246,7 @@ msgstr "Invalid source values"
 msgid "Нельзя удалить последнего администратора организации."
 msgstr "The last organization administrator cannot be removed."
 
-#: src/lib/clinical-history-content.ts:64
+#: src/lib/clinical-history-content.ts:66
 #: src/routes/d_.projects_.$id.safety.tsx:95
 #: src/routes/m_.projects_.$id.safety.tsx:95
 msgid "Неожиданное"
@@ -4138,7 +4282,7 @@ msgstr "Unsaved criteria and title will be replaced. The saved version will rema
 msgid "Несохранённый ввод будет закрыт."
 msgstr "Unsaved input will be closed."
 
-#: src/lib/clinical-history-content.ts:77
+#: src/lib/clinical-history-content.ts:79
 #: src/routes/d_.organization.members.tsx:569
 #: src/routes/d_.organization.members.tsx:570
 #: src/routes/d_.patients_.$id_.forms.tsx:366
@@ -4178,6 +4322,14 @@ msgstr "No recruitment is available with a confirmed protocol and current ethics
 msgid "Нет доступных опубликованных форм. Владелец или координатор может добавить шаблон в исследовании."
 msgstr "No published forms are available. An owner or coordinator can add a study template."
 
+#: src/lib/data-quality-content.ts:31
+msgid "Нет записей о терапии"
+msgstr "No therapy records"
+
+#: src/lib/data-quality-content.ts:35
+msgid "Нет записей результатов обследований"
+msgstr "No examination result records"
+
 #: src/routes/d_.projects_.$id.enrollment.tsx:191
 #: src/routes/m_.projects_.$id.enrollment.tsx:191
 msgid "Нет записей участия по выбранным условиям."
@@ -4202,6 +4354,10 @@ msgstr "No applications are awaiting a decision."
 #~ msgid "Нет интернета. Доступны сохранённые на устройстве данные."
 #~ msgstr "You are offline. Data saved on this device is available."
 
+#: src/lib/data-quality-content.ts:23
+msgid "Нет отдельной записи анамнеза"
+msgstr "No separate medical history entry"
+
 #: src/routes/d_.patients.tsx:691
 #: src/routes/m_.patients.tsx:691
 msgid "Нет пациентов, соответствующих текущим критериям."
@@ -4209,7 +4365,7 @@ msgstr "No patients match the current criteria."
 
 #: src/routes/d_.invitations.tsx:89
 #: src/routes/d_.patients_.$id_.consents.tsx:100
-#: src/routes/d_.patients_.$id.tsx:117
+#: src/routes/d_.patients_.$id.tsx:118
 #: src/routes/d_.patients.tsx:144
 #: src/routes/d_.projects_.$id.protocol.tsx:199
 #: src/routes/d_.projects_.$id.team.tsx:173
@@ -4218,7 +4374,7 @@ msgstr "No patients match the current criteria."
 #: src/routes/d_.workspace.tsx:146
 #: src/routes/m_.invitations.tsx:89
 #: src/routes/m_.patients_.$id_.consents.tsx:100
-#: src/routes/m_.patients_.$id.tsx:117
+#: src/routes/m_.patients_.$id.tsx:118
 #: src/routes/m_.patients.tsx:144
 #: src/routes/m_.projects_.$id.protocol.tsx:199
 #: src/routes/m_.projects_.$id.team.tsx:173
@@ -4237,9 +4393,9 @@ msgstr "You are offline: search is limited to saved records."
 msgid "Нет сети. Доступны сохранённые данные."
 msgstr "Offline. Saved data is available."
 
-#: src/lib/clinical-history-content.ts:40
-#: src/routes/d_.patients_.$id_.timeline.tsx:134
-#: src/routes/m_.patients_.$id_.timeline.tsx:134
+#: src/lib/clinical-history-content.ts:42
+#: src/routes/d_.patients_.$id_.timeline.tsx:135
+#: src/routes/m_.patients_.$id_.timeline.tsx:135
 msgid "Неявка"
 msgstr "No-show"
 
@@ -4304,8 +4460,8 @@ msgstr "Work overview"
 msgid "Область поиска учреждений"
 msgstr "Facility search area"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:108
-#: src/routes/m_.patients_.$id_.timeline.tsx:108
+#: src/routes/d_.patients_.$id_.timeline.tsx:109
+#: src/routes/m_.patients_.$id_.timeline.tsx:109
 msgid "Обнаружение события безопасности"
 msgstr "Safety event detection"
 
@@ -4324,26 +4480,31 @@ msgid "Обновить сведения о доступе"
 msgstr "Refresh access information"
 
 #: src/routes/d_.analytics.tsx:201
-#: src/routes/d_.patients_.$id.tsx:180
-#: src/routes/d_.patients_.$id.tsx:599
+#: src/routes/d_.patients_.$id.tsx:181
+#: src/routes/d_.patients_.$id.tsx:607
 #: src/routes/m_.analytics.tsx:201
-#: src/routes/m_.patients_.$id.tsx:180
-#: src/routes/m_.patients_.$id.tsx:599
+#: src/routes/m_.patients_.$id.tsx:181
+#: src/routes/m_.patients_.$id.tsx:607
 msgid "Обновлено:"
 msgstr "Updated:"
 
-#: src/lib/clinical-history-content.ts:136
+#: src/lib/clinical-history-content.ts:150
 #: src/routes/d_.projects_.$id.visits.tsx:315
 #: src/routes/m_.projects_.$id.visits.tsx:315
 msgid "Обоснование отклонения от окна визита"
 msgstr "Reason for a visit window deviation"
 
-#: src/lib/clinical-history-content.ts:184
+#: src/routes/d_.patients_.$id_.quality.tsx:346
+#: src/routes/m_.patients_.$id_.quality.tsx:346
+msgid "Обоснование решения врача"
+msgstr "Physician decision rationale"
+
+#: src/lib/clinical-history-content.ts:198
 msgid "Обоснование соответствия критериям"
 msgstr "Eligibility evidence"
 
-#: src/routes/d_.patients_.$id.tsx:71
-#: src/routes/m_.patients_.$id.tsx:71
+#: src/routes/d_.patients_.$id.tsx:72
+#: src/routes/m_.patients_.$id.tsx:72
 msgid "Обследования и показатели"
 msgstr "Examinations and observations"
 
@@ -4420,13 +4581,13 @@ msgstr "Waiting for server confirmation. After a connection loss the operation m
 msgid "Ожидаемая частота хотя бы в одной ячейке меньше 5. Приближение χ² не применяется."
 msgstr "At least one expected cell frequency is below 5. The χ² approximation is not applied."
 
-#: src/lib/clinical-history-content.ts:63
+#: src/lib/clinical-history-content.ts:65
 #: src/routes/d_.projects_.$id.safety.tsx:94
 #: src/routes/m_.projects_.$id.safety.tsx:94
 msgid "Ожидаемое"
 msgstr "Expected"
 
-#: src/lib/clinical-history-content.ts:216
+#: src/lib/clinical-history-content.ts:230
 #: src/routes/d_.projects_.$id.safety.tsx:372
 #: src/routes/m_.projects_.$id.safety.tsx:372
 msgid "Ожидаемость"
@@ -4479,23 +4640,32 @@ msgstr "Awaiting your response"
 msgid "Ожидают решения"
 msgstr "Awaiting a decision"
 
-#: src/lib/clinical-history-content.ts:134
+#: src/lib/clinical-history-content.ts:148
 msgid "Окно визита (UTC)"
 msgstr "Visit window (UTC)"
 
-#: src/lib/clinical-history-content.ts:42
+#: src/lib/data-quality-content.ts:55
+msgid "Окно планового исследовательского визита закончилось"
+msgstr "The planned study visit window has ended"
+
+#: src/lib/clinical-history-content.ts:44
 #: src/routes/d_.patients_.$id_.forms.tsx:289
 #: src/routes/d_.patients_.$id_.forms.tsx:486
-#: src/routes/d_.patients_.$id_.timeline.tsx:136
+#: src/routes/d_.patients_.$id_.timeline.tsx:137
 #: src/routes/m_.patients_.$id_.forms.tsx:289
 #: src/routes/m_.patients_.$id_.forms.tsx:486
-#: src/routes/m_.patients_.$id_.timeline.tsx:136
+#: src/routes/m_.patients_.$id_.timeline.tsx:137
 msgid "Окончательный ответ"
 msgstr "Final response"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:217
+#: src/routes/m_.patients_.$id_.quality.tsx:217
+msgid "Операция не выполнена. Проверьте данные, срок доступа и обоснование решения; форма сохранена."
+msgstr "The operation failed. Check the data, access lease and decision rationale; the form is preserved."
+
 #: src/routes/d_.invitations.tsx:96
 #: src/routes/d_.patients_.$id_.history.tsx:139
-#: src/routes/d_.patients_.$id_.timeline.tsx:214
+#: src/routes/d_.patients_.$id_.timeline.tsx:215
 #: src/routes/d_.patients.tsx:161
 #: src/routes/d_.projects_.$id.credits.tsx:181
 #: src/routes/d_.projects_.$id.protocol.tsx:206
@@ -4504,7 +4674,7 @@ msgstr "Final response"
 #: src/routes/d_.workspace.tsx:153
 #: src/routes/m_.invitations.tsx:96
 #: src/routes/m_.patients_.$id_.history.tsx:139
-#: src/routes/m_.patients_.$id_.timeline.tsx:214
+#: src/routes/m_.patients_.$id_.timeline.tsx:215
 #: src/routes/m_.patients.tsx:161
 #: src/routes/m_.projects_.$id.credits.tsx:181
 #: src/routes/m_.projects_.$id.protocol.tsx:206
@@ -4539,7 +4709,7 @@ msgstr "Task description"
 msgid "Описание моего вклада"
 msgstr "Description of my contribution"
 
-#: src/lib/clinical-history-content.ts:197
+#: src/lib/clinical-history-content.ts:211
 #: src/routes/d_.projects_.$id.safety.tsx:317
 #: src/routes/m_.projects_.$id.safety.tsx:317
 msgid "Описание события"
@@ -4565,18 +4735,18 @@ msgstr "Descriptive ratio of proportions:"
 #~ msgid "Описательный анализ доступных записей выбранной организации. Изменение критериев не изменяет карты пациентов."
 #~ msgstr "Descriptive analysis of available records in the selected organization. Changing criteria does not change patient records."
 
-#: src/lib/clinical-history-content.ts:20
+#: src/lib/clinical-history-content.ts:22
 #: src/routes/d_.patients_.$id_.timeline.tsx:93
-#: src/routes/d_.patients_.$id.tsx:66
+#: src/routes/d_.patients_.$id.tsx:67
 #: src/routes/m_.patients_.$id_.timeline.tsx:93
-#: src/routes/m_.patients_.$id.tsx:66
+#: src/routes/m_.patients_.$id.tsx:67
 msgid "Опросник"
 msgstr "Questionnaire"
 
 #: src/routes/d_.patients_.$id_.forms.tsx:116
-#: src/routes/d_.patients_.$id.tsx:318
+#: src/routes/d_.patients_.$id.tsx:324
 #: src/routes/m_.patients_.$id_.forms.tsx:116
-#: src/routes/m_.patients_.$id.tsx:318
+#: src/routes/m_.patients_.$id.tsx:324
 msgid "Опросники пациента"
 msgstr "Patient questionnaires"
 
@@ -4617,9 +4787,10 @@ msgstr "No organizations found. Refine the name."
 #: src/routes/d_.patients_.$id_.enrollment.tsx:126
 #: src/routes/d_.patients_.$id_.forms.tsx:130
 #: src/routes/d_.patients_.$id_.history.tsx:111
-#: src/routes/d_.patients_.$id_.timeline.tsx:186
+#: src/routes/d_.patients_.$id_.quality.tsx:132
+#: src/routes/d_.patients_.$id_.timeline.tsx:187
 #: src/routes/d_.patients_.$id_.visits.tsx:109
-#: src/routes/d_.patients_.$id.tsx:93
+#: src/routes/d_.patients_.$id.tsx:94
 #: src/routes/d_.patients.tsx:119
 #: src/routes/d_.projects_.$id.credits.tsx:153
 #: src/routes/d_.projects_.$id.enrollment.tsx:82
@@ -4637,9 +4808,10 @@ msgstr "No organizations found. Refine the name."
 #: src/routes/m_.patients_.$id_.enrollment.tsx:126
 #: src/routes/m_.patients_.$id_.forms.tsx:130
 #: src/routes/m_.patients_.$id_.history.tsx:111
-#: src/routes/m_.patients_.$id_.timeline.tsx:186
+#: src/routes/m_.patients_.$id_.quality.tsx:132
+#: src/routes/m_.patients_.$id_.timeline.tsx:187
 #: src/routes/m_.patients_.$id_.visits.tsx:109
-#: src/routes/m_.patients_.$id.tsx:93
+#: src/routes/m_.patients_.$id.tsx:94
 #: src/routes/m_.patients.tsx:119
 #: src/routes/m_.projects_.$id.credits.tsx:153
 #: src/routes/m_.projects_.$id.enrollment.tsx:82
@@ -4701,6 +4873,7 @@ msgstr "Leave empty if no seriousness criteria apply."
 #: src/routes/d_.library.tsx:106
 #: src/routes/d_.patients_.$id_.enrollment.tsx:103
 #: src/routes/d_.patients_.$id_.forms.tsx:106
+#: src/routes/d_.patients_.$id_.quality.tsx:105
 #: src/routes/d_.projects_.$id.credits.tsx:94
 #: src/routes/d_.projects_.$id.credits.tsx:117
 #: src/routes/d_.projects_.$id.forms.tsx:90
@@ -4709,6 +4882,7 @@ msgstr "Leave empty if no seriousness criteria apply."
 #: src/routes/m_.library.tsx:106
 #: src/routes/m_.patients_.$id_.enrollment.tsx:103
 #: src/routes/m_.patients_.$id_.forms.tsx:106
+#: src/routes/m_.patients_.$id_.quality.tsx:105
 #: src/routes/m_.projects_.$id.credits.tsx:94
 #: src/routes/m_.projects_.$id.credits.tsx:117
 #: src/routes/m_.projects_.$id.forms.tsx:90
@@ -4726,7 +4900,7 @@ msgstr "Between 1 and 365 days"
 msgid "Ответ не получен. Текст сохранён в поле — можно повторить."
 msgstr "No response received. Your text is still in the field; you can retry."
 
-#: src/lib/clinical-history-content.ts:155
+#: src/lib/clinical-history-content.ts:169
 #: src/routes/d_.patients_.$id_.forms.tsx:364
 #: src/routes/d_.patients_.$id_.forms.tsx:380
 #: src/routes/d_.patients_.$id_.forms.tsx:519
@@ -4736,7 +4910,7 @@ msgstr "No response received. Your text is still in the field; you can retry."
 msgid "Ответ не указан"
 msgstr "No response"
 
-#: src/lib/clinical-history-content.ts:201
+#: src/lib/clinical-history-content.ts:215
 #: src/routes/d_.projects_.$id.safety.tsx:442
 #: src/routes/d_.projects_.$id.safety.tsx:627
 #: src/routes/m_.projects_.$id.safety.tsx:442
@@ -4754,6 +4928,10 @@ msgstr "Responses will be cleared after synchronization. Deletion metadata will 
 msgid "Ответы ещё не загружены. Для первой загрузки нужен интернет."
 msgstr "Responses have not been loaded yet. The initial download requires an internet connection."
 
+#: src/lib/data-quality-content.ts:63
+msgid "Ответы опросника требуют проверки"
+msgstr "Questionnaire answers need verification"
+
 #: src/routes/d_.patients_.$id_.consents.tsx:392
 #: src/routes/d_.patients.tsx:385
 #: src/routes/m_.patients_.$id_.consents.tsx:392
@@ -4765,12 +4943,12 @@ msgstr "Withdrawal"
 msgid "Отзыв зафиксирован"
 msgstr "Withdrawal recorded"
 
-#: src/lib/clinical-history-content.ts:46
+#: src/lib/clinical-history-content.ts:48
 #: src/routes/d_.patients_.$id_.enrollment.tsx:69
-#: src/routes/d_.patients_.$id_.timeline.tsx:122
+#: src/routes/d_.patients_.$id_.timeline.tsx:123
 #: src/routes/d_.projects_.$id.enrollment.tsx:57
 #: src/routes/m_.patients_.$id_.enrollment.tsx:69
-#: src/routes/m_.patients_.$id_.timeline.tsx:122
+#: src/routes/m_.patients_.$id_.timeline.tsx:123
 #: src/routes/m_.projects_.$id.enrollment.tsx:57
 msgid "Отказ"
 msgstr "Refusal"
@@ -4785,7 +4963,7 @@ msgstr "Application refusal"
 msgid "Отклонена"
 msgstr "Rejected"
 
-#: src/lib/clinical-history-content.ts:74
+#: src/lib/clinical-history-content.ts:76
 #: src/routes/d_.projects_.$id.safety.tsx:74
 #: src/routes/d_.workspace.tsx:186
 #: src/routes/m_.projects_.$id.safety.tsx:74
@@ -4863,10 +5041,10 @@ msgstr "A rejected draft is open. Compare it with current data before saving."
 msgid "Открыт отклонённый черновик. Сравните решение с текущей историей перед сохранением. Повторное применение требует явного подтверждения."
 msgstr "A rejected draft is open. Compare the decision with the current history before saving. Reapplying it requires an explicit decision."
 
-#: src/lib/clinical-history-content.ts:48
-#: src/routes/d_.patients_.$id_.timeline.tsx:137
+#: src/lib/clinical-history-content.ts:50
+#: src/routes/d_.patients_.$id_.timeline.tsx:138
 #: src/routes/d_.projects_.$id.safety.tsx:67
-#: src/routes/m_.patients_.$id_.timeline.tsx:137
+#: src/routes/m_.patients_.$id_.timeline.tsx:138
 #: src/routes/m_.projects_.$id.safety.tsx:67
 msgid "Открыто"
 msgstr "Open"
@@ -4956,9 +5134,10 @@ msgstr "Open profile"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:148
 #: src/routes/d_.patients_.$id_.forms.tsx:152
 #: src/routes/d_.patients_.$id_.history.tsx:133
-#: src/routes/d_.patients_.$id_.timeline.tsx:208
+#: src/routes/d_.patients_.$id_.quality.tsx:154
+#: src/routes/d_.patients_.$id_.timeline.tsx:209
 #: src/routes/d_.patients_.$id_.visits.tsx:131
-#: src/routes/d_.patients_.$id.tsx:115
+#: src/routes/d_.patients_.$id.tsx:116
 #: src/routes/d_.patients.tsx:142
 #: src/routes/d_.projects_.$id.credits.tsx:175
 #: src/routes/d_.projects_.$id.enrollment.tsx:104
@@ -4976,9 +5155,10 @@ msgstr "Open profile"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:148
 #: src/routes/m_.patients_.$id_.forms.tsx:152
 #: src/routes/m_.patients_.$id_.history.tsx:133
-#: src/routes/m_.patients_.$id_.timeline.tsx:208
+#: src/routes/m_.patients_.$id_.quality.tsx:154
+#: src/routes/m_.patients_.$id_.timeline.tsx:209
 #: src/routes/m_.patients_.$id_.visits.tsx:131
-#: src/routes/m_.patients_.$id.tsx:115
+#: src/routes/m_.patients_.$id.tsx:116
 #: src/routes/m_.patients.tsx:142
 #: src/routes/m_.projects_.$id.credits.tsx:175
 #: src/routes/m_.projects_.$id.enrollment.tsx:104
@@ -4999,7 +5179,7 @@ msgstr "Open workspace"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:466
 #: src/routes/d_.patients_.$id_.forms.tsx:643
 #: src/routes/d_.patients_.$id_.visits.tsx:418
-#: src/routes/d_.patients_.$id.tsx:640
+#: src/routes/d_.patients_.$id.tsx:648
 #: src/routes/d_.projects_.$id.credits.tsx:660
 #: src/routes/d_.projects_.$id.forms.tsx:946
 #: src/routes/d_.projects_.$id.protocol.tsx:377
@@ -5014,7 +5194,7 @@ msgstr "Open workspace"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:466
 #: src/routes/m_.patients_.$id_.forms.tsx:643
 #: src/routes/m_.patients_.$id_.visits.tsx:418
-#: src/routes/m_.patients_.$id.tsx:640
+#: src/routes/m_.patients_.$id.tsx:648
 #: src/routes/m_.projects_.$id.credits.tsx:660
 #: src/routes/m_.projects_.$id.forms.tsx:946
 #: src/routes/m_.projects_.$id.protocol.tsx:377
@@ -5025,6 +5205,11 @@ msgstr "Open workspace"
 #: src/routes/m_.projects.tsx:392
 msgid "Открыть сохранённый черновик"
 msgstr "Open saved draft"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:405
+#: src/routes/m_.patients_.$id_.quality.tsx:405
+msgid "Открыть текст для новой проверки?"
+msgstr "Open the text for a new check?"
 
 #: src/routes/d_.library.tsx:467
 #: src/routes/m_.library.tsx:467
@@ -5061,12 +5246,17 @@ msgstr "Open this version for a new revision"
 #: src/routes/d_.patients_.$id_.forms.tsx:592
 #: src/routes/d_.patients_.$id_.forms.tsx:612
 #: src/routes/d_.patients_.$id_.forms.tsx:638
+#: src/routes/d_.patients_.$id_.quality.tsx:298
+#: src/routes/d_.patients_.$id_.quality.tsx:325
+#: src/routes/d_.patients_.$id_.quality.tsx:366
+#: src/routes/d_.patients_.$id_.quality.tsx:395
+#: src/routes/d_.patients_.$id_.quality.tsx:409
 #: src/routes/d_.patients_.$id_.visits.tsx:308
 #: src/routes/d_.patients_.$id_.visits.tsx:399
-#: src/routes/d_.patients_.$id.tsx:232
-#: src/routes/d_.patients_.$id.tsx:296
-#: src/routes/d_.patients_.$id.tsx:508
-#: src/routes/d_.patients_.$id.tsx:621
+#: src/routes/d_.patients_.$id.tsx:238
+#: src/routes/d_.patients_.$id.tsx:302
+#: src/routes/d_.patients_.$id.tsx:516
+#: src/routes/d_.patients_.$id.tsx:629
 #: src/routes/d_.patients.tsx:258
 #: src/routes/d_.patients.tsx:376
 #: src/routes/d_.patients.tsx:444
@@ -5119,12 +5309,17 @@ msgstr "Open this version for a new revision"
 #: src/routes/m_.patients_.$id_.forms.tsx:592
 #: src/routes/m_.patients_.$id_.forms.tsx:612
 #: src/routes/m_.patients_.$id_.forms.tsx:638
+#: src/routes/m_.patients_.$id_.quality.tsx:298
+#: src/routes/m_.patients_.$id_.quality.tsx:325
+#: src/routes/m_.patients_.$id_.quality.tsx:366
+#: src/routes/m_.patients_.$id_.quality.tsx:395
+#: src/routes/m_.patients_.$id_.quality.tsx:409
 #: src/routes/m_.patients_.$id_.visits.tsx:308
 #: src/routes/m_.patients_.$id_.visits.tsx:399
-#: src/routes/m_.patients_.$id.tsx:232
-#: src/routes/m_.patients_.$id.tsx:296
-#: src/routes/m_.patients_.$id.tsx:508
-#: src/routes/m_.patients_.$id.tsx:621
+#: src/routes/m_.patients_.$id.tsx:238
+#: src/routes/m_.patients_.$id.tsx:302
+#: src/routes/m_.patients_.$id.tsx:516
+#: src/routes/m_.patients_.$id.tsx:629
 #: src/routes/m_.patients.tsx:258
 #: src/routes/m_.patients.tsx:376
 #: src/routes/m_.patients.tsx:444
@@ -5150,10 +5345,10 @@ msgstr "Open this version for a new revision"
 msgid "Отмена"
 msgstr "Cancel"
 
-#: src/lib/clinical-history-content.ts:39
-#: src/routes/d_.patients_.$id_.timeline.tsx:133
+#: src/lib/clinical-history-content.ts:41
+#: src/routes/d_.patients_.$id_.timeline.tsx:134
 #: src/routes/d_.projects_.$id.work.tsx:94
-#: src/routes/m_.patients_.$id_.timeline.tsx:133
+#: src/routes/m_.patients_.$id_.timeline.tsx:134
 #: src/routes/m_.projects_.$id.work.tsx:94
 msgid "Отменено"
 msgstr "Cancelled"
@@ -5162,6 +5357,11 @@ msgstr "Cancelled"
 #: src/routes/m_.analytics.tsx:474
 msgid "Отметка о заранее определённой гипотезе является заявлением автора, а не регистрацией протокола. Кластеризация, смешивающие факторы и множественные сравнения автоматически не проверяются."
 msgstr "A prespecified hypothesis is an author declaration, not protocol registration. Clustering, confounding and multiple comparisons are not checked automatically."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:427
+#: src/routes/m_.patients_.$id_.quality.tsx:427
+msgid "Относится к текущей проверке"
+msgstr "Applies to the current check"
 
 #: src/routes/d_.organization.members.tsx:76
 #: src/routes/m_.organization.members.tsx:76
@@ -5201,6 +5401,14 @@ msgstr "Revoke invitation"
 msgid "Отправить"
 msgstr "Send"
 
+#: src/lib/data-quality-content.ts:28
+msgid "Отсутствие записи не означает отсутствие аллергий."
+msgstr "A missing entry does not mean there are no allergies."
+
+#: src/lib/data-quality-content.ts:32
+msgid "Отсутствие записи не означает, что пациент не принимает лекарства."
+msgstr "A missing entry does not mean the patient takes no medicines."
+
 #: src/routes/d_.projects_.$id.safety.tsx:593
 #: src/routes/m_.projects_.$id.safety.tsx:593
 msgid "Отсутствуют"
@@ -5238,9 +5446,10 @@ msgstr "Personal library passphrase"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:131
 #: src/routes/d_.patients_.$id_.forms.tsx:135
 #: src/routes/d_.patients_.$id_.history.tsx:116
-#: src/routes/d_.patients_.$id_.timeline.tsx:191
+#: src/routes/d_.patients_.$id_.quality.tsx:137
+#: src/routes/d_.patients_.$id_.timeline.tsx:192
 #: src/routes/d_.patients_.$id_.visits.tsx:114
-#: src/routes/d_.patients_.$id.tsx:98
+#: src/routes/d_.patients_.$id.tsx:99
 #: src/routes/d_.patients.tsx:124
 #: src/routes/d_.projects_.$id.credits.tsx:158
 #: src/routes/d_.projects_.$id.enrollment.tsx:87
@@ -5258,9 +5467,10 @@ msgstr "Personal library passphrase"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:131
 #: src/routes/m_.patients_.$id_.forms.tsx:135
 #: src/routes/m_.patients_.$id_.history.tsx:116
-#: src/routes/m_.patients_.$id_.timeline.tsx:191
+#: src/routes/m_.patients_.$id_.quality.tsx:137
+#: src/routes/m_.patients_.$id_.timeline.tsx:192
 #: src/routes/m_.patients_.$id_.visits.tsx:114
-#: src/routes/m_.patients_.$id.tsx:98
+#: src/routes/m_.patients_.$id.tsx:99
 #: src/routes/m_.patients.tsx:124
 #: src/routes/m_.projects_.$id.credits.tsx:158
 #: src/routes/m_.projects_.$id.enrollment.tsx:87
@@ -5309,8 +5519,10 @@ msgstr "No-show"
 msgid "Пациент недоступен или удалён."
 msgstr "Patient unavailable or deleted."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:239
-#: src/routes/m_.patients_.$id_.timeline.tsx:239
+#: src/routes/d_.patients_.$id_.quality.tsx:184
+#: src/routes/d_.patients_.$id_.timeline.tsx:240
+#: src/routes/m_.patients_.$id_.quality.tsx:184
+#: src/routes/m_.patients_.$id_.timeline.tsx:240
 msgid "Пациент недоступен, удалён или ещё не подготовлен на устройстве."
 msgstr "The patient is unavailable, deleted or not yet prepared on this device."
 
@@ -5354,6 +5566,11 @@ msgstr "Reload"
 msgid "Перейти к пациентам"
 msgstr "Go to patients"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:413
+#: src/routes/m_.patients_.$id_.quality.tsx:413
+msgid "Перенести текст в новое решение"
+msgstr "Transfer text into a new decision"
+
 #: src/routes/d_.projects_.$id.protocol.tsx:281
 #: src/routes/d_.projects_.$id.protocol.tsx:348
 #: src/routes/m_.projects_.$id.protocol.tsx:281
@@ -5368,13 +5585,13 @@ msgstr "Analysis plan"
 msgid "Плановое время прошло; уточните результат визита"
 msgstr "The scheduled time has passed; confirm the visit outcome"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:269
-#: src/routes/m_.patients_.$id_.timeline.tsx:269
+#: src/routes/d_.patients_.$id_.timeline.tsx:270
+#: src/routes/m_.patients_.$id_.timeline.tsx:270
 msgid "По дату включительно"
 msgstr "Through date, inclusive"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:114
-#: src/routes/m_.patients_.$id_.timeline.tsx:114
+#: src/routes/d_.patients_.$id_.timeline.tsx:115
+#: src/routes/m_.patients_.$id_.timeline.tsx:115
 msgid "По записи"
 msgstr "As recorded"
 
@@ -5398,6 +5615,11 @@ msgstr "Most recently updated"
 msgid "По умолчанию используется ГигаЧат. Свой ключ не требуется."
 msgstr "GigaChat is used by default. Your own key is not required."
 
+#: src/routes/d_.patients_.$id_.quality.tsx:238
+#: src/routes/m_.patients_.$id_.quality.tsx:238
+msgid "По этим правилам сигналов не найдено. Это не подтверждает отсутствие ошибок, заболеваний или недостающих обследований."
+msgstr "These rules found no signals. This does not confirm absence of errors, disease or missing examinations."
+
 #: src/routes/d_.library.tsx:528
 #: src/routes/m_.library.tsx:528
 msgid "По этому запросу есть ещё результаты PubMed."
@@ -5415,9 +5637,10 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/d_.patients_.$id_.enrollment.tsx:139
 #: src/routes/d_.patients_.$id_.forms.tsx:143
 #: src/routes/d_.patients_.$id_.history.tsx:124
-#: src/routes/d_.patients_.$id_.timeline.tsx:199
+#: src/routes/d_.patients_.$id_.quality.tsx:145
+#: src/routes/d_.patients_.$id_.timeline.tsx:200
 #: src/routes/d_.patients_.$id_.visits.tsx:122
-#: src/routes/d_.patients_.$id.tsx:106
+#: src/routes/d_.patients_.$id.tsx:107
 #: src/routes/d_.patients.tsx:133
 #: src/routes/d_.projects_.$id.credits.tsx:166
 #: src/routes/d_.projects_.$id.enrollment.tsx:95
@@ -5436,9 +5659,10 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/m_.patients_.$id_.enrollment.tsx:139
 #: src/routes/m_.patients_.$id_.forms.tsx:143
 #: src/routes/m_.patients_.$id_.history.tsx:124
-#: src/routes/m_.patients_.$id_.timeline.tsx:199
+#: src/routes/m_.patients_.$id_.quality.tsx:145
+#: src/routes/m_.patients_.$id_.timeline.tsx:200
 #: src/routes/m_.patients_.$id_.visits.tsx:122
-#: src/routes/m_.patients_.$id.tsx:106
+#: src/routes/m_.patients_.$id.tsx:107
 #: src/routes/m_.patients.tsx:133
 #: src/routes/m_.projects_.$id.credits.tsx:166
 #: src/routes/m_.projects_.$id.enrollment.tsx:95
@@ -5472,9 +5696,10 @@ msgstr "Retry"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:183
 #: src/routes/d_.patients_.$id_.forms.tsx:187
 #: src/routes/d_.patients_.$id_.history.tsx:152
-#: src/routes/d_.patients_.$id_.timeline.tsx:227
+#: src/routes/d_.patients_.$id_.quality.tsx:173
+#: src/routes/d_.patients_.$id_.timeline.tsx:228
 #: src/routes/d_.patients_.$id_.visits.tsx:165
-#: src/routes/d_.patients_.$id.tsx:137
+#: src/routes/d_.patients_.$id.tsx:138
 #: src/routes/d_.patients.tsx:196
 #: src/routes/d_.projects_.$id.credits.tsx:197
 #: src/routes/d_.projects_.$id.enrollment.tsx:133
@@ -5493,9 +5718,10 @@ msgstr "Retry"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:183
 #: src/routes/m_.patients_.$id_.forms.tsx:187
 #: src/routes/m_.patients_.$id_.history.tsx:152
-#: src/routes/m_.patients_.$id_.timeline.tsx:227
+#: src/routes/m_.patients_.$id_.quality.tsx:173
+#: src/routes/m_.patients_.$id_.timeline.tsx:228
 #: src/routes/m_.patients_.$id_.visits.tsx:165
-#: src/routes/m_.patients_.$id.tsx:137
+#: src/routes/m_.patients_.$id.tsx:138
 #: src/routes/m_.patients.tsx:196
 #: src/routes/m_.projects_.$id.credits.tsx:197
 #: src/routes/m_.projects_.$id.enrollment.tsx:133
@@ -5510,11 +5736,11 @@ msgstr "Retry"
 msgid "Повторно проверить сессию и доступ"
 msgstr "Verify session and access again"
 
-#: src/lib/clinical-history-content.ts:28
-#: src/routes/d_.patients_.$id_.timeline.tsx:146
+#: src/lib/clinical-history-content.ts:30
+#: src/routes/d_.patients_.$id_.timeline.tsx:147
 #: src/routes/d_.patients_.$id_.visits.tsx:73
 #: src/routes/d_.projects_.$id.visits.tsx:77
-#: src/routes/m_.patients_.$id_.timeline.tsx:146
+#: src/routes/m_.patients_.$id_.timeline.tsx:147
 #: src/routes/m_.patients_.$id_.visits.tsx:73
 #: src/routes/m_.projects_.$id.visits.tsx:77
 msgid "Повторный приём"
@@ -5566,7 +5792,7 @@ msgstr "Data curation"
 msgid "Подготовка рукописи"
 msgstr "Writing – original draft"
 
-#: src/lib/clinical-history-content.ts:217
+#: src/lib/clinical-history-content.ts:231
 #: src/routes/d_.projects_.$id.safety.tsx:381
 #: src/routes/m_.projects_.$id.safety.tsx:381
 msgid "Подозреваемый препарат или воздействие"
@@ -5666,8 +5892,8 @@ msgstr "Search"
 msgid "Поиск в личной библиотеке"
 msgstr "Search personal library"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:294
-#: src/routes/m_.patients_.$id_.timeline.tsx:294
+#: src/routes/d_.patients_.$id_.timeline.tsx:295
+#: src/routes/m_.patients_.$id_.timeline.tsx:295
 msgid "Поиск в текущем содержимом источников"
 msgstr "Search current source contents"
 
@@ -5763,13 +5989,13 @@ msgstr "Showing a limited subset."
 msgid "Показана текущая запись. Архивная редакция появится после подготовки истории или следующего изменения."
 msgstr "This is the current record. Its archived revision will appear after history preparation or the next change."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:399
-#: src/routes/m_.patients_.$id_.timeline.tsx:399
+#: src/routes/d_.patients_.$id_.timeline.tsx:400
+#: src/routes/m_.patients_.$id_.timeline.tsx:400
 msgid "Показано до 25 событий на странице. Одна запись может содержать несколько дат. Удалённые записи не включаются; лента не заменяет историю редакций и не подтверждает полноту медицинской истории вне системы."
 msgstr "Up to 25 events are shown per page. One record can contain multiple dates. Deleted records are excluded; the timeline does not replace revision history or establish completeness of medical history outside this system."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:250
-#: src/routes/m_.patients_.$id_.timeline.tsx:250
+#: src/routes/d_.patients_.$id_.timeline.tsx:251
+#: src/routes/m_.patients_.$id_.timeline.tsx:251
 msgid "Показаны локальные данные. Новые изменения и отзывы доступа других участников могут быть ещё не получены. Неотправленные изменения учитываются в ленте."
 msgstr "Local data is shown. Other participants' changes and access revocations may not have arrived yet. Pending local changes are included in the timeline."
 
@@ -5793,14 +6019,14 @@ msgstr "Only records from the selected clinic in the prepared local dataset are 
 #~ msgid "Показаны только сведения, опубликованные специалистом. Данные пациентов и закрытые членства недоступны."
 #~ msgstr "Only information published by the specialist is shown. Patient data and private affiliations are not available."
 
-#: src/lib/clinical-history-content.ts:110
+#: src/lib/clinical-history-content.ts:124
 #: src/routes/d_.analytics.tsx:626
 #: src/routes/m_.analytics.tsx:626
 msgid "Показатель"
 msgstr "Measure"
 
-#: src/routes/d_.patients_.$id.tsx:448
-#: src/routes/m_.patients_.$id.tsx:448
+#: src/routes/d_.patients_.$id.tsx:456
+#: src/routes/m_.patients_.$id.tsx:456
 msgid "Показатель или обследование"
 msgstr "Observation or examination"
 
@@ -5817,6 +6043,7 @@ msgstr "Show conditionally"
 #: src/routes/d_.library.tsx:101
 #: src/routes/d_.patients_.$id_.enrollment.tsx:98
 #: src/routes/d_.patients_.$id_.forms.tsx:101
+#: src/routes/d_.patients_.$id_.quality.tsx:100
 #: src/routes/d_.projects_.$id.credits.tsx:113
 #: src/routes/d_.projects_.$id.forms.tsx:85
 #: src/routes/d_.projects_.$id.safety.tsx:142
@@ -5824,6 +6051,7 @@ msgstr "Show conditionally"
 #: src/routes/m_.library.tsx:101
 #: src/routes/m_.patients_.$id_.enrollment.tsx:98
 #: src/routes/m_.patients_.$id_.forms.tsx:101
+#: src/routes/m_.patients_.$id_.quality.tsx:100
 #: src/routes/m_.projects_.$id.credits.tsx:113
 #: src/routes/m_.projects_.$id.forms.tsx:85
 #: src/routes/m_.projects_.$id.safety.tsx:142
@@ -5838,8 +6066,8 @@ msgstr "Leave with unsaved changes?"
 #: src/routes/d_.patients_.$id_.consents.tsx:148
 #: src/routes/d_.patients_.$id_.consents.tsx:267
 #: src/routes/d_.patients_.$id_.consents.tsx:412
-#: src/routes/d_.patients_.$id.tsx:161
-#: src/routes/d_.patients_.$id.tsx:267
+#: src/routes/d_.patients_.$id.tsx:162
+#: src/routes/d_.patients_.$id.tsx:273
 #: src/routes/d_.patients.tsx:236
 #: src/routes/d_.patients.tsx:319
 #: src/routes/d_.patients.tsx:481
@@ -5848,8 +6076,8 @@ msgstr "Leave with unsaved changes?"
 #: src/routes/m_.patients_.$id_.consents.tsx:148
 #: src/routes/m_.patients_.$id_.consents.tsx:267
 #: src/routes/m_.patients_.$id_.consents.tsx:412
-#: src/routes/m_.patients_.$id.tsx:161
-#: src/routes/m_.patients_.$id.tsx:267
+#: src/routes/m_.patients_.$id.tsx:162
+#: src/routes/m_.patients_.$id.tsx:273
 #: src/routes/m_.patients.tsx:236
 #: src/routes/m_.patients.tsx:319
 #: src/routes/m_.patients.tsx:481
@@ -5861,6 +6089,10 @@ msgstr "Sex"
 msgid "Пол второй группы"
 msgstr "Second group sex"
 
+#: src/lib/data-quality-content.ts:15
+msgid "Пол не указан"
+msgstr "Sex is not specified"
+
 #: src/routes/d_.analytics.tsx:636
 #: src/routes/m_.analytics.tsx:636
 msgid "Пол не указан в разрешённых данных"
@@ -5870,6 +6102,11 @@ msgstr "Sex unspecified in authorized records"
 #: src/routes/m_.analytics.tsx:640
 msgid "Пол недоступен по согласию"
 msgstr "Sex withheld by consent"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:253
+#: src/routes/m_.patients_.$id_.quality.tsx:253
+msgid "Полей для сверки:"
+msgstr "Fields to verify:"
 
 #: src/routes/d_.organizations_.$id.tsx:22
 #: src/routes/d_.organizations.tsx:85
@@ -5883,8 +6120,8 @@ msgstr "Outpatient clinic"
 msgid "Поликлиники, больницы, университеты и лаборатории, открытые для сотрудничества."
 msgstr "Clinics, hospitals, universities and laboratories open to collaboration."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:235
-#: src/routes/m_.patients_.$id_.timeline.tsx:235
+#: src/routes/d_.patients_.$id_.timeline.tsx:236
+#: src/routes/m_.patients_.$id_.timeline.tsx:236
 msgid "Полная клиническая хронология доступна только врачу своей организации. Исследователь не получает дополнительные категории данных через эту страницу."
 msgstr "The complete clinical timeline is available only to a doctor in the patient's organization. This page does not grant researchers additional data categories."
 
@@ -5934,8 +6171,10 @@ msgstr "The order below is the proposed author order. Each listed author must ac
 msgid "После подтверждения сервером участник потеряет доступ к исследованию. Для возвращения понадобится новое приглашение."
 msgstr "After server confirmation, this member will lose access to the study. A new invitation will be required to rejoin."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:360
-#: src/routes/m_.patients_.$id_.timeline.tsx:360
+#: src/routes/d_.patients_.$id_.quality.tsx:437
+#: src/routes/d_.patients_.$id_.timeline.tsx:361
+#: src/routes/m_.patients_.$id_.quality.tsx:437
+#: src/routes/m_.patients_.$id_.timeline.tsx:361
 msgid "Последнее сохранение источника:"
 msgstr "Source last saved at:"
 
@@ -5973,13 +6212,13 @@ msgstr "Propose a new version"
 msgid "Предложить соглашение об авторстве"
 msgstr "Propose an authorship agreement"
 
-#: src/lib/clinical-history-content.ts:218
+#: src/lib/clinical-history-content.ts:232
 #: src/routes/d_.projects_.$id.safety.tsx:386
 #: src/routes/m_.projects_.$id.safety.tsx:386
 msgid "Предпринятые действия"
 msgstr "Actions taken"
 
-#: src/lib/clinical-history-content.ts:226
+#: src/lib/clinical-history-content.ts:240
 #: src/routes/d_.projects_.$id.safety.tsx:435
 #: src/routes/d_.projects_.$id.safety.tsx:618
 #: src/routes/m_.projects_.$id.safety.tsx:435
@@ -6014,22 +6253,22 @@ msgstr "Remove member"
 msgid "Прекратить участие?"
 msgstr "Remove this member?"
 
-#: src/routes/d_.patients_.$id.tsx:439
-#: src/routes/d_.patients_.$id.tsx:574
-#: src/routes/m_.patients_.$id.tsx:439
-#: src/routes/m_.patients_.$id.tsx:574
+#: src/routes/d_.patients_.$id.tsx:447
+#: src/routes/d_.patients_.$id.tsx:582
+#: src/routes/m_.patients_.$id.tsx:447
+#: src/routes/m_.patients_.$id.tsx:582
 msgid "Прекращена"
 msgstr "Stopped"
 
-#: src/lib/clinical-history-content.ts:36
-#: src/routes/d_.patients_.$id_.timeline.tsx:130
-#: src/routes/m_.patients_.$id_.timeline.tsx:130
+#: src/lib/clinical-history-content.ts:38
+#: src/routes/d_.patients_.$id_.timeline.tsx:131
+#: src/routes/m_.patients_.$id_.timeline.tsx:131
 msgid "Прекращено"
 msgstr "Stopped"
 
-#: src/lib/clinical-history-content.ts:102
-#: src/routes/d_.patients_.$id.tsx:406
-#: src/routes/m_.patients_.$id.tsx:406
+#: src/lib/clinical-history-content.ts:116
+#: src/routes/d_.patients_.$id.tsx:414
+#: src/routes/m_.patients_.$id.tsx:414
 msgid "Препарат"
 msgstr "Medication"
 
@@ -6092,6 +6331,10 @@ msgstr "Positive / denominator"
 #~ msgid "Приложение готово к запуску без интернета."
 #~ msgstr "The app is ready to open offline."
 
+#: src/lib/data-quality-content.ts:64
+msgid "Применяются правила текущего шаблона, включая обязательные поля активной ветки. Ноль и ответ «Нет» не считаются пропусками."
+msgstr "The current template rules apply, including required fields in the active branch. Zero and No are not considered missing answers."
+
 #: src/routes/d.tsx:133
 #: src/routes/m.tsx:133
 msgid "Примеры медицинских организаций · не партнёры Cure"
@@ -6099,14 +6342,14 @@ msgstr "Example medical institutions · Not Cure partners"
 
 #: src/routes/d_.patients_.$id_.forms.tsx:421
 #: src/routes/d_.patients_.$id_.visits.tsx:289
-#: src/routes/d_.patients_.$id.tsx:489
+#: src/routes/d_.patients_.$id.tsx:497
 #: src/routes/m_.patients_.$id_.forms.tsx:421
 #: src/routes/m_.patients_.$id_.visits.tsx:289
-#: src/routes/m_.patients_.$id.tsx:489
+#: src/routes/m_.patients_.$id.tsx:497
 msgid "Примечание к записи"
 msgstr "Record note"
 
-#: src/lib/clinical-history-content.ts:91
+#: src/lib/clinical-history-content.ts:93
 #: src/routes/d_.projects_.$id.safety.tsx:483
 #: src/routes/d_.projects_.$id.visits.tsx:364
 #: src/routes/m_.projects_.$id.safety.tsx:483
@@ -6169,9 +6412,9 @@ msgstr "Reason for changing the agreement"
 msgid "Причина исключения источника"
 msgstr "Reference exclusion reason"
 
-#: src/lib/clinical-history-content.ts:137
-#: src/lib/clinical-history-content.ts:144
-#: src/lib/clinical-history-content.ts:208
+#: src/lib/clinical-history-content.ts:151
+#: src/lib/clinical-history-content.ts:158
+#: src/lib/clinical-history-content.ts:222
 #: src/routes/d_.projects_.$id.safety.tsx:492
 #: src/routes/d_.projects_.$id.safety.tsx:642
 #: src/routes/d_.projects_.$id.visits.tsx:370
@@ -6198,7 +6441,7 @@ msgstr "Amendment reason:"
 msgid "Причина обращения"
 msgstr "Reason for visit"
 
-#: src/lib/clinical-history-content.ts:131
+#: src/lib/clinical-history-content.ts:145
 #: src/routes/d_.patients_.$id_.visits.tsx:276
 #: src/routes/d_.projects_.$id.visits.tsx:358
 #: src/routes/m_.patients_.$id_.visits.tsx:276
@@ -6211,7 +6454,7 @@ msgstr "Cancellation reason"
 msgid "Причина отмены:"
 msgstr "Cancellation reason:"
 
-#: src/lib/clinical-history-content.ts:215
+#: src/lib/clinical-history-content.ts:229
 #: src/routes/d_.projects_.$id.safety.tsx:363
 #: src/routes/m_.projects_.$id.safety.tsx:363
 msgid "Причинная связь с исследуемым воздействием"
@@ -6237,6 +6480,18 @@ msgstr "Investigation"
 msgid "Проверен"
 msgstr "Verified"
 
+#: src/lib/clinical-history-content.ts:104
+#: src/routes/d_.patients_.$id_.quality.tsx:76
+#: src/routes/m_.patients_.$id_.quality.tsx:76
+msgid "Проверено как записано"
+msgstr "Reviewed as recorded"
+
+#: src/lib/clinical-history-content.ts:106
+#: src/routes/d_.patients_.$id_.quality.tsx:432
+#: src/routes/m_.patients_.$id_.quality.tsx:432
+msgid "Проверивший врач"
+msgstr "Reviewing physician"
+
 #: src/routes/d_.organization.members.tsx:528
 #: src/routes/m_.organization.members.tsx:528
 msgid "Проверить и подтвердить изменение"
@@ -6252,6 +6507,28 @@ msgstr "Review and confirm the decision"
 msgid "Проверить подключение"
 msgstr "Check connection"
 
+#: src/lib/clinical-history-content.ts:99
+msgid "Проверка"
+msgstr "Check"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:118
+#: src/routes/m_.patients_.$id_.quality.tsx:118
+msgid "Проверка документации, без клинических рекомендаций."
+msgstr "Documentation checks, without clinical recommendations."
+
+#: src/lib/clinical-history-content.ts:16
+#: src/routes/d_.patients_.$id_.timeline.tsx:96
+#: src/routes/d_.patients_.$id.tsx:63
+#: src/routes/m_.patients_.$id_.timeline.tsx:96
+#: src/routes/m_.patients_.$id.tsx:63
+msgid "Проверка качества данных"
+msgstr "Data quality review"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:182
+#: src/routes/m_.patients_.$id_.quality.tsx:182
+msgid "Проверка полной клинической карты доступна только врачу своей организации."
+msgstr "Only a doctor in the patient's organization can check the full clinical chart."
+
 #: src/routes/d_.projects_.$id.credits.tsx:78
 #: src/routes/m_.projects_.$id.credits.tsx:78
 msgid "Проверка результатов"
@@ -6262,7 +6539,11 @@ msgstr "Validation"
 msgid "Проверьте вопросы, варианты ответа и границы значений. В форме должно быть от 1 до 50 вопросов."
 msgstr "Check the questions, options and value bounds. A form must contain between 1 and 50 questions."
 
-#: src/lib/use-clinical-records.ts:166
+#: src/lib/data-quality-content.ts:56
+msgid "Проверьте выполнение и документирование. Отклонение от протокола автоматически не регистрируется."
+msgstr "Verify performance and documentation. A protocol deviation is not registered automatically."
+
+#: src/lib/use-clinical-records.ts:167
 msgid "Проверьте дату и часовой пояс. Указанное местное время может не существовать при переводе часов."
 msgstr "Check the date and time zone. The entered local time may not exist during a clock change."
 
@@ -6292,7 +6573,7 @@ msgstr "Check the date range: its start must not be after its end."
 msgid "Проверьте запрос и параметры поиска."
 msgstr "Check your query and search parameters."
 
-#: src/lib/use-clinical-records.ts:184
+#: src/lib/use-clinical-records.ts:185
 #: src/lib/use-library.ts:118
 #: src/lib/use-organization-members.ts:121
 #: src/lib/use-patient-workspace.ts:146
@@ -6309,6 +6590,14 @@ msgstr "Check your query and search parameters."
 msgid "Проверьте значение поля"
 msgstr "Check this field"
 
+#: src/lib/data-quality-content.ts:8
+msgid "Проверьте идентификационные сведения по допустимому источнику."
+msgstr "Verify identifying information against an appropriate source."
+
+#: src/lib/data-quality-content.ts:40
+msgid "Проверьте контекст, принадлежность записи и дату рождения. Дородовые сведения могут иметь допустимое объяснение."
+msgstr "Check the context, record attribution and date of birth. Prenatal information may have a valid explanation."
+
 #: src/routes/d_.projects_.$id.credits.tsx:241
 #: src/routes/m_.projects_.$id.credits.tsx:241
 msgid "Проверьте обязательные поля, авторов и подтверждения."
@@ -6319,14 +6608,18 @@ msgstr "Check required fields, authors and attestations."
 msgid "Проверьте ответы и обязательные поля. Значения должны соответствовать типам и границам шаблона."
 msgstr "Check the answers and required fields. Values must match the template types and bounds."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:299
-#: src/routes/m_.patients_.$id_.timeline.tsx:299
+#: src/routes/d_.patients_.$id_.timeline.tsx:300
+#: src/routes/m_.patients_.$id_.timeline.tsx:300
 msgid "Проверьте период: начальная дата не должна быть позже конечной."
 msgstr "Check the date range: the start date must not be after the end date."
 
 #: src/lib/use-study-visits.ts:165
 msgid "Проверьте расписание, окно визита, результат и обоснование отклонения. Для выполненного визита нужна фактическая дата."
 msgstr "Check the schedule, visit window, outcome and deviation reason. A completed visit requires an actual date."
+
+#: src/lib/data-quality-content.ts:48
+msgid "Проверьте, можно ли уточнить дату по документации."
+msgstr "Check whether documentation supports a more precise date."
 
 #: src/routes/d_.tools.tsx:336
 #: src/routes/m_.tools.tsx:336
@@ -6339,6 +6632,11 @@ msgstr "Checking connection…"
 #: src/routes/m_.profile.tsx:91
 msgid "Проверяем сессию…"
 msgstr "Checking your session…"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:195
+#: src/routes/m_.patients_.$id_.quality.tsx:195
+msgid "Проверяются подготовленные локальные данные, включая неотправленные изменения. Новые сведения и отзывы доступа других участников могут быть ещё не получены."
+msgstr "Prepared local data is checked, including pending changes. Other participants' new information and access revocations may not have arrived yet."
 
 #: src/routes/d_.projects.tsx:79
 #: src/routes/d_.research_.$id.tsx:41
@@ -6354,12 +6652,12 @@ msgstr "Active"
 msgid "Программное обеспечение"
 msgstr "Software"
 
-#: src/lib/clinical-history-content.ts:65
-#: src/routes/d_.patients_.$id.tsx:437
-#: src/routes/d_.patients_.$id.tsx:572
+#: src/lib/clinical-history-content.ts:67
+#: src/routes/d_.patients_.$id.tsx:445
+#: src/routes/d_.patients_.$id.tsx:580
 #: src/routes/d_.projects_.$id.safety.tsx:99
-#: src/routes/m_.patients_.$id.tsx:437
-#: src/routes/m_.patients_.$id.tsx:572
+#: src/routes/m_.patients_.$id.tsx:445
+#: src/routes/m_.patients_.$id.tsx:580
 #: src/routes/m_.projects_.$id.safety.tsx:99
 msgid "Продолжается"
 msgstr "Ongoing"
@@ -6374,7 +6672,7 @@ msgstr "Duration in minutes"
 msgid "Продолжительность в минутах:"
 msgstr "Duration in minutes:"
 
-#: src/lib/clinical-history-content.ts:121
+#: src/lib/clinical-history-content.ts:135
 #: src/routes/d_.projects_.$id.visits.tsx:290
 #: src/routes/m_.projects_.$id.visits.tsx:290
 msgid "Продолжительность, минуты"
@@ -6394,6 +6692,8 @@ msgstr "Duration in minutes"
 #: src/routes/d_.patients_.$id_.forms.tsx:263
 #: src/routes/d_.patients_.$id_.forms.tsx:592
 #: src/routes/d_.patients_.$id_.forms.tsx:638
+#: src/routes/d_.patients_.$id_.quality.tsx:298
+#: src/routes/d_.patients_.$id_.quality.tsx:409
 #: src/routes/d_.projects_.$id.credits.tsx:94
 #: src/routes/d_.projects_.$id.credits.tsx:116
 #: src/routes/d_.projects_.$id.forms.tsx:187
@@ -6415,6 +6715,8 @@ msgstr "Duration in minutes"
 #: src/routes/m_.patients_.$id_.forms.tsx:263
 #: src/routes/m_.patients_.$id_.forms.tsx:592
 #: src/routes/m_.patients_.$id_.forms.tsx:638
+#: src/routes/m_.patients_.$id_.quality.tsx:298
+#: src/routes/m_.patients_.$id_.quality.tsx:409
 #: src/routes/m_.projects_.$id.credits.tsx:94
 #: src/routes/m_.projects_.$id.credits.tsx:116
 #: src/routes/m_.projects_.$id.forms.tsx:187
@@ -6488,11 +6790,11 @@ msgstr "The profile was not found or is not published."
 msgid "Профиль специалиста"
 msgstr "Specialist profile"
 
-#: src/lib/clinical-history-content.ts:27
-#: src/routes/d_.patients_.$id_.timeline.tsx:144
+#: src/lib/clinical-history-content.ts:29
+#: src/routes/d_.patients_.$id_.timeline.tsx:145
 #: src/routes/d_.patients_.$id_.visits.tsx:71
 #: src/routes/d_.projects_.$id.visits.tsx:75
-#: src/routes/m_.patients_.$id_.timeline.tsx:144
+#: src/routes/m_.patients_.$id_.timeline.tsx:145
 #: src/routes/m_.patients_.$id_.visits.tsx:71
 #: src/routes/m_.projects_.$id.visits.tsx:75
 msgid "Процедура"
@@ -6528,7 +6830,11 @@ msgstr "Public professional profile."
 msgid "Пустой знаменатель или отсутствие вариации признака. Статистический тест недоступен."
 msgstr "Empty denominator or no variation in the characteristic. The statistical test is unavailable."
 
-#: src/lib/clinical-history-content.ts:105
+#: src/lib/data-quality-content.ts:20
+msgid "Пустой список не доказывает отсутствие заболеваний."
+msgstr "An empty list does not prove absence of disease."
+
+#: src/lib/clinical-history-content.ts:119
 msgid "Путь введения"
 msgstr "Route of administration"
 
@@ -6570,14 +6876,14 @@ msgstr "Radius in meters (up to 10,000)"
 msgid "Разведочный анализ"
 msgstr "Exploratory analysis"
 
-#: src/lib/clinical-history-content.ts:223
+#: src/lib/clinical-history-content.ts:237
 #: src/routes/d_.projects_.$id.safety.tsx:419
 #: src/routes/m_.projects_.$id.safety.tsx:419
 msgid "Раздел или требование протокола"
 msgstr "Protocol section or requirement"
 
-#: src/routes/d_.patients_.$id.tsx:341
-#: src/routes/m_.patients_.$id.tsx:341
+#: src/routes/d_.patients_.$id.tsx:347
+#: src/routes/m_.patients_.$id.tsx:347
 msgid "Раздел карты"
 msgstr "Record section"
 
@@ -6625,13 +6931,13 @@ msgstr "Previously downloaded metadata"
 msgid "Раскрытие интересов или явное заявление об их отсутствии"
 msgstr "Disclosure of interests or an explicit statement of none"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:115
-#: src/routes/m_.patients_.$id_.timeline.tsx:115
+#: src/routes/d_.patients_.$id_.timeline.tsx:116
+#: src/routes/m_.patients_.$id_.timeline.tsx:116
 msgid "Расписание"
 msgstr "Schedule"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:103
-#: src/routes/m_.patients_.$id_.timeline.tsx:103
+#: src/routes/d_.patients_.$id_.timeline.tsx:104
+#: src/routes/m_.patients_.$id_.timeline.tsx:104
 msgid "Расписание визита"
 msgstr "Visit schedule"
 
@@ -6640,15 +6946,15 @@ msgstr "Visit schedule"
 msgid "Распределение по полу"
 msgstr "Sex distribution"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:110
-#: src/routes/m_.patients_.$id_.timeline.tsx:110
+#: src/routes/d_.patients_.$id_.timeline.tsx:111
+#: src/routes/m_.patients_.$id_.timeline.tsx:111
 msgid "Рассмотрение события безопасности"
 msgstr "Safety event review"
 
-#: src/lib/clinical-history-content.ts:50
-#: src/routes/d_.patients_.$id_.timeline.tsx:139
+#: src/lib/clinical-history-content.ts:52
+#: src/routes/d_.patients_.$id_.timeline.tsx:140
 #: src/routes/d_.projects_.$id.safety.tsx:69
-#: src/routes/m_.patients_.$id_.timeline.tsx:139
+#: src/routes/m_.patients_.$id_.timeline.tsx:140
 #: src/routes/m_.projects_.$id.safety.tsx:69
 msgid "Рассмотрено"
 msgstr "Reviewed"
@@ -6683,7 +6989,7 @@ msgstr "Calculation"
 msgid "Расчёт выполнен по локальным данным. Без синхронизации изменения других участников и новые отзывы доступа могут быть ещё не получены."
 msgstr "Calculated from local records. Without synchronization, changes by other participants and new access revocations may not have arrived yet."
 
-#: src/lib/clinical-history-content.ts:97
+#: src/lib/clinical-history-content.ts:111
 msgid "Реакция"
 msgstr "Reaction"
 
@@ -6719,8 +7025,8 @@ msgstr "Edit task"
 msgid "Редактировать исследование"
 msgstr "Edit study"
 
-#: src/routes/d_.patients_.$id.tsx:221
-#: src/routes/m_.patients_.$id.tsx:221
+#: src/routes/d_.patients_.$id.tsx:227
+#: src/routes/m_.patients_.$id.tsx:227
 msgid "Редактировать карту"
 msgstr "Edit record"
 
@@ -6757,9 +7063,11 @@ msgstr "No revisions match these filters."
 #: src/routes/d_.patients_.$id_.history.tsx:184
 #: src/routes/d_.patients_.$id_.history.tsx:245
 #: src/routes/d_.patients_.$id_.history.tsx:284
+#: src/routes/d_.patients_.$id_.quality.tsx:264
 #: src/routes/m_.patients_.$id_.history.tsx:184
 #: src/routes/m_.patients_.$id_.history.tsx:245
 #: src/routes/m_.patients_.$id_.history.tsx:284
+#: src/routes/m_.patients_.$id_.quality.tsx:264
 msgid "Редакция"
 msgstr "Revision"
 
@@ -6768,8 +7076,8 @@ msgstr "Revision"
 msgid "Редакция в очереди устройства"
 msgstr "Revision queued on device"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:359
-#: src/routes/m_.patients_.$id_.timeline.tsx:359
+#: src/routes/d_.patients_.$id_.timeline.tsx:360
+#: src/routes/m_.patients_.$id_.timeline.tsx:360
 msgid "Редакция источника:"
 msgstr "Source revision:"
 
@@ -6783,11 +7091,11 @@ msgstr "Revision synchronized"
 msgid "Редкие заболевания — Orphadata"
 msgstr "Rare diseases — Orphadata"
 
-#: src/lib/clinical-history-content.ts:113
+#: src/lib/clinical-history-content.ts:127
 msgid "Результат"
 msgstr "Result"
 
-#: src/lib/clinical-history-content.ts:129
+#: src/lib/clinical-history-content.ts:143
 #: src/routes/d_.projects_.$id.visits.tsx:352
 #: src/routes/m_.projects_.$id.visits.tsx:352
 msgid "Результат визита"
@@ -6798,7 +7106,7 @@ msgstr "Visit outcome"
 msgid "Результат демо: пациент включён в исследование, когорта подготовлена для анализа."
 msgstr "Demo outcome: patient enrolled, cohort ready for analysis."
 
-#: src/lib/clinical-history-content.ts:18
+#: src/lib/clinical-history-content.ts:20
 #: src/routes/d_.patients_.$id_.timeline.tsx:91
 #: src/routes/m_.patients_.$id_.timeline.tsx:91
 msgid "Результат обследования"
@@ -6819,8 +7127,8 @@ msgstr "Visit outcome and next steps"
 msgid "Результаты запроса PubMed"
 msgstr "PubMed query results"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:105
-#: src/routes/m_.patients_.$id_.timeline.tsx:105
+#: src/routes/d_.patients_.$id_.timeline.tsx:106
+#: src/routes/m_.patients_.$id_.timeline.tsx:106
 msgid "Рекомендованное повторное наблюдение"
 msgstr "Recommended follow-up"
 
@@ -6860,8 +7168,19 @@ msgstr "Writing – review and editing"
 msgid "Решение"
 msgstr "Decision"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:106
-#: src/routes/m_.patients_.$id_.timeline.tsx:106
+#: src/lib/clinical-history-content.ts:101
+#: src/routes/d_.patients_.$id_.quality.tsx:337
+#: src/routes/m_.patients_.$id_.quality.tsx:337
+msgid "Решение врача"
+msgstr "Physician decision"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:322
+#: src/routes/m_.patients_.$id_.quality.tsx:322
+msgid "Решение не исправляет карту и не подтверждает отсутствие клинических рисков. При изменении данных потребуется новая проверка."
+msgstr "The decision does not correct the chart or confirm absence of clinical risks. A data change requires a new check."
+
+#: src/routes/d_.patients_.$id_.timeline.tsx:107
+#: src/routes/m_.patients_.$id_.timeline.tsx:107
 msgid "Решение об участии"
 msgstr "Participation decision"
 
@@ -6880,6 +7199,11 @@ msgstr "Authorship decision"
 msgid "Решение связано с этой версией соглашения и вашей текущей декларацией. Если декларации ещё нет, сначала сохраните её."
 msgstr "The decision is linked to this agreement version and your current declaration. Save a declaration first if you have none."
 
+#: src/routes/d_.patients_.$id_.quality.tsx:374
+#: src/routes/m_.patients_.$id_.quality.tsx:374
+msgid "Решение сохранено локально. Серверная доставка проверяется по очереди; изменение исходных данных может привести к отклонению."
+msgstr "The decision is saved locally. Server delivery is tracked in the queue; changed source data may cause rejection."
+
 #: src/routes/d_.workspace.tsx:412
 #: src/routes/m_.workspace.tsx:412
 msgid "Решение сохранено на устройстве. Откройте соответствующий раздел, чтобы сравнить его с текущими данными."
@@ -6889,6 +7213,16 @@ msgstr "The decision is saved on your device. Open its section to compare it wit
 #: src/routes/m_.invitations.tsx:50
 msgid "Решение сохраняется для выбранной организации. Принятие приглашения не предоставляет прав на изменение данных пациентов."
 msgstr "The decision is saved for the selected organization. Accepting an invitation does not grant permission to change patient data."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:193
+#: src/routes/m_.patients_.$id_.quality.tsx:193
+msgid "Решения врача не исправляют карту и не скрывают сигналы."
+msgstr "Physician reviews do not correct the record or hide findings."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:417
+#: src/routes/m_.patients_.$id_.quality.tsx:417
+msgid "Решения врача по качеству данных"
+msgstr "Physician decisions on data quality"
 
 #: src/routes/d_.projects_.$id.credits.tsx:250
 #: src/routes/m_.projects_.$id.credits.tsx:250
@@ -6931,8 +7265,8 @@ msgstr "Member role"
 msgid "Ручной ввод"
 msgstr "Manual entry"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:262
-#: src/routes/m_.patients_.$id_.timeline.tsx:262
+#: src/routes/d_.patients_.$id_.timeline.tsx:263
+#: src/routes/m_.patients_.$id_.timeline.tsx:263
 msgid "С даты включительно"
 msgstr "From date, inclusive"
 
@@ -6962,8 +7296,8 @@ msgstr "Selecting a profession does not grant access to patient records. Access 
 msgid "Сбросить критерии"
 msgstr "Reset criteria"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:304
-#: src/routes/m_.patients_.$id_.timeline.tsx:304
+#: src/routes/d_.patients_.$id_.timeline.tsx:305
+#: src/routes/m_.patients_.$id_.timeline.tsx:305
 msgid "Сбросить фильтры"
 msgstr "Reset filters"
 
@@ -6972,9 +7306,23 @@ msgstr "Reset filters"
 msgid "Сверить обновление метаданных"
 msgstr "Review metadata update"
 
+#: src/lib/data-quality-content.ts:44
+msgid "Сверьте дату и статус. Система не отменяет лечение и не подтверждает его завершение."
+msgstr "Verify the date and status. The system does not stop treatment or confirm that it ended."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:428
+#: src/routes/m_.patients_.$id_.quality.tsx:428
+msgid "Сверьте с новой проверкой: версия данных или контрольная дата могут отличаться"
+msgstr "Compare with a new check: the data version or control date may differ"
+
 #: src/routes/__root.tsx:357
 msgid "Светлая"
 msgstr "Light"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:249
+#: src/routes/m_.patients_.$id_.quality.tsx:249
+msgid "Связанных записей:"
+msgstr "Related records:"
 
 #: src/routes/d.tsx:39
 #: src/routes/m.tsx:39
@@ -6986,7 +7334,7 @@ msgstr "Light"
 #~ msgid "Связь научных вопросов с клинической практикой."
 #~ msgstr "Connect research questions with clinical practice."
 
-#: src/lib/clinical-history-content.ts:59
+#: src/lib/clinical-history-content.ts:61
 #: src/routes/d_.projects_.$id.safety.tsx:87
 #: src/routes/m_.projects_.$id.safety.tsx:87
 msgid "Связь отсутствует"
@@ -6997,7 +7345,7 @@ msgstr "Unrelated"
 msgid "Связь с координатором"
 msgstr "Contact the coordinator"
 
-#: src/lib/clinical-history-content.ts:62
+#: src/lib/clinical-history-content.ts:64
 #: src/routes/d_.projects_.$id.safety.tsx:90
 #: src/routes/m_.projects_.$id.safety.tsx:90
 msgid "Связь установлена врачом"
@@ -7028,7 +7376,7 @@ msgstr "The server rejected the change. Your local version was saved for review.
 #: src/routes/d_.patients_.$id_.enrollment.tsx:459
 #: src/routes/d_.patients_.$id_.forms.tsx:625
 #: src/routes/d_.patients_.$id_.visits.tsx:412
-#: src/routes/d_.patients_.$id.tsx:634
+#: src/routes/d_.patients_.$id.tsx:642
 #: src/routes/d_.projects_.$id.credits.tsx:654
 #: src/routes/d_.projects_.$id.safety.tsx:681
 #: src/routes/d_.projects_.$id.team.tsx:375
@@ -7039,7 +7387,7 @@ msgstr "The server rejected the change. Your local version was saved for review.
 #: src/routes/m_.patients_.$id_.enrollment.tsx:459
 #: src/routes/m_.patients_.$id_.forms.tsx:625
 #: src/routes/m_.patients_.$id_.visits.tsx:412
-#: src/routes/m_.patients_.$id.tsx:634
+#: src/routes/m_.patients_.$id.tsx:642
 #: src/routes/m_.projects_.$id.credits.tsx:654
 #: src/routes/m_.projects_.$id.safety.tsx:681
 #: src/routes/m_.projects_.$id.team.tsx:375
@@ -7054,6 +7402,11 @@ msgstr "The server rejected the change. The saved decision is not applied automa
 #: src/routes/m_.projects.tsx:387
 msgid "Сервер отклонил изменение. Черновик сохранён; откройте его и сравните с текущей версией."
 msgstr "The server rejected the change. Your draft is saved; open it and compare it with the current version."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:382
+#: src/routes/m_.patients_.$id_.quality.tsx:382
+msgid "Сервер отклонил решение; зашифрованный черновик сохранён отдельно. Повтор не выполняется автоматически."
+msgstr "The server rejected the decision; an encrypted draft is preserved separately. It is not retried automatically."
 
 #: src/routes/d_.organization.members.tsx:129
 #: src/routes/m_.organization.members.tsx:129
@@ -7076,12 +7429,14 @@ msgid "Сеченовский университет"
 msgstr "Sechenov University"
 
 #: src/routes/d_.patients_.$id_.history.tsx:145
-#: src/routes/d_.patients_.$id_.timeline.tsx:220
+#: src/routes/d_.patients_.$id_.quality.tsx:166
+#: src/routes/d_.patients_.$id_.timeline.tsx:221
 #: src/routes/d_.projects_.$id.credits.tsx:187
 #: src/routes/d_.projects.tsx:193
 #: src/routes/d_.workspace.tsx:268
 #: src/routes/m_.patients_.$id_.history.tsx:145
-#: src/routes/m_.patients_.$id_.timeline.tsx:220
+#: src/routes/m_.patients_.$id_.quality.tsx:166
+#: src/routes/m_.patients_.$id_.timeline.tsx:221
 #: src/routes/m_.projects_.$id.credits.tsx:187
 #: src/routes/m_.projects.tsx:193
 #: src/routes/m_.workspace.tsx:268
@@ -7119,12 +7474,12 @@ msgstr "Download PBF from source"
 msgid "Скачать приложение"
 msgstr "Download app"
 
-#: src/lib/clinical-history-content.ts:43
+#: src/lib/clinical-history-content.ts:45
 #: src/routes/d_.patients_.$id_.enrollment.tsx:66
-#: src/routes/d_.patients_.$id_.timeline.tsx:119
+#: src/routes/d_.patients_.$id_.timeline.tsx:120
 #: src/routes/d_.projects_.$id.enrollment.tsx:54
 #: src/routes/m_.patients_.$id_.enrollment.tsx:66
-#: src/routes/m_.patients_.$id_.timeline.tsx:119
+#: src/routes/m_.patients_.$id_.timeline.tsx:120
 #: src/routes/m_.projects_.$id.enrollment.tsx:54
 msgid "Скрининг"
 msgstr "Screening"
@@ -7134,7 +7489,7 @@ msgstr "Screening"
 msgid "Слагаемое шкалы"
 msgstr "Score term"
 
-#: src/lib/clinical-history-content.ts:130
+#: src/lib/clinical-history-content.ts:144
 msgid "Следующее наблюдение"
 msgstr "Next follow-up"
 
@@ -7153,7 +7508,7 @@ msgstr "Switch organization or lock"
 msgid "Сменить тему"
 msgstr "Toggle theme"
 
-#: src/lib/clinical-history-content.ts:52
+#: src/lib/clinical-history-content.ts:54
 #: src/routes/d_.projects_.$id.safety.tsx:78
 #: src/routes/m_.projects_.$id.safety.tsx:78
 msgid "Смерть"
@@ -7179,8 +7534,8 @@ msgstr "The event is saved in the device queue. The server will recheck permissi
 msgid "Событий по выбранным условиям нет."
 msgstr "No events match these filters."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:308
-#: src/routes/m_.patients_.$id_.timeline.tsx:308
+#: src/routes/d_.patients_.$id_.timeline.tsx:309
+#: src/routes/m_.patients_.$id_.timeline.tsx:309
 msgid "Событий по фильтрам:"
 msgstr "Events matching filters:"
 
@@ -7194,10 +7549,14 @@ msgstr "No access management events yet."
 #~ msgid "События открытой клиники, по которым вы назначены ответственным. Сначала показаны ближайшие сроки, включая просроченные."
 #~ msgstr "Events in the unlocked clinic assigned to you for review. Earlier deadlines, including overdue reviews, appear first."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:248
-#: src/routes/m_.patients_.$id_.timeline.tsx:248
+#: src/routes/d_.patients_.$id_.timeline.tsx:249
+#: src/routes/m_.patients_.$id_.timeline.tsx:249
 msgid "События отсортированы по календарной дате источника. Внутри дня порядок условный; часовой пояс расписания указан отдельно. Дата записи и расписание не доказывают фактическое проведение события."
 msgstr "Events are sorted by the source's calendar date. Order within a day is arbitrary; the schedule's time zone is shown separately. Record dates and schedules do not prove that an event actually occurred."
+
+#: src/lib/data-quality-content.ts:67
+msgid "Совпадают структурированные сведения нескольких записей"
+msgstr "Multiple records have matching structured information"
 
 #: src/routes/d_.analytics.tsx:313
 #: src/routes/d_.analytics.tsx:376
@@ -7225,7 +7584,7 @@ msgstr "No matching candidates were found in the downloaded records."
 msgid "Согласие"
 msgstr "Consent"
 
-#: src/lib/clinical-history-content.ts:191
+#: src/lib/clinical-history-content.ts:205
 msgid "Согласие действует до"
 msgstr "Consent valid through"
 
@@ -7290,9 +7649,9 @@ msgid "Согласия ещё не зарегистрированы."
 msgstr "No consents have been recorded yet."
 
 #: src/routes/d_.patients_.$id_.consents.tsx:61
-#: src/routes/d_.patients_.$id.tsx:190
+#: src/routes/d_.patients_.$id.tsx:191
 #: src/routes/m_.patients_.$id_.consents.tsx:61
-#: src/routes/m_.patients_.$id.tsx:190
+#: src/routes/m_.patients_.$id.tsx:191
 msgid "Согласия пациента"
 msgstr "Patient consents"
 
@@ -7307,9 +7666,9 @@ msgid "Соглашений пока нет."
 msgstr "No agreements yet."
 
 #: src/routes/d_.patients_.$id_.visits.tsx:397
-#: src/routes/d_.patients_.$id.tsx:619
+#: src/routes/d_.patients_.$id.tsx:627
 #: src/routes/m_.patients_.$id_.visits.tsx:397
-#: src/routes/m_.patients_.$id.tsx:619
+#: src/routes/m_.patients_.$id.tsx:627
 msgid "Содержимое будет очищено после синхронизации. В истории останется запись о действии."
 msgstr "The content will be cleared after synchronization. The action will remain in the audit history."
 
@@ -7361,6 +7720,11 @@ msgstr "Data categories"
 msgid "Состояние изменилось. Обновите список и откройте актуальную запись; введённые значения сохранены."
 msgstr "The state has changed. Refresh the list and open the current record; your input has been preserved."
 
+#: src/routes/d_.patients_.$id_.quality.tsx:72
+#: src/routes/m_.patients_.$id_.quality.tsx:72
+msgid "Состояние или срок требует уточнения"
+msgstr "Status or deadline needs clarification"
+
 #: src/routes/d_.organization.members.tsx:550
 #: src/routes/m_.organization.members.tsx:550
 msgid "Сотрудник"
@@ -7384,6 +7748,11 @@ msgstr "Organization members"
 #: src/routes/m_.patients.tsx:183
 msgid "Сохранение на устройстве и отправка на сервер — разные статусы. Неотправленные изменения остаются в шифруемой очереди."
 msgstr "Local saving and uploading have separate statuses. Unsent changes stay in the encrypted queue."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:201
+#: src/routes/m_.patients_.$id_.quality.tsx:201
+msgid "Сохранение решений недоступно в текущей версии сервера. После обновления системы переоткройте пространство онлайн. Проверка подготовленных данных доступна."
+msgstr "Saving decisions is unavailable in this server version. After the system is updated, reopen the workspace online. Prepared data can still be checked."
 
 #: src/routes/d_.patients_.$id_.forms.tsx:92
 #: src/routes/m_.patients_.$id_.forms.tsx:92
@@ -7449,7 +7818,7 @@ msgstr "Saved on device"
 #: src/routes/d_.invitations.tsx:62
 #: src/routes/d_.patients_.$id_.consents.tsx:73
 #: src/routes/d_.patients_.$id_.history.tsx:108
-#: src/routes/d_.patients_.$id.tsx:90
+#: src/routes/d_.patients_.$id.tsx:91
 #: src/routes/d_.patients.tsx:116
 #: src/routes/d_.projects_.$id.credits.tsx:150
 #: src/routes/d_.projects_.$id.protocol.tsx:172
@@ -7460,7 +7829,7 @@ msgstr "Saved on device"
 #: src/routes/m_.invitations.tsx:62
 #: src/routes/m_.patients_.$id_.consents.tsx:73
 #: src/routes/m_.patients_.$id_.history.tsx:108
-#: src/routes/m_.patients_.$id.tsx:90
+#: src/routes/m_.patients_.$id.tsx:91
 #: src/routes/m_.patients.tsx:116
 #: src/routes/m_.projects_.$id.credits.tsx:150
 #: src/routes/m_.projects_.$id.protocol.tsx:172
@@ -7470,6 +7839,11 @@ msgstr "Saved on device"
 #: src/routes/m_.workspace.tsx:119
 msgid "Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить."
 msgstr "Keep your passphrase safe: local data and queued changes cannot be recovered without it."
+
+#: src/routes/d_.patients_.$id_.quality.tsx:325
+#: src/routes/m_.patients_.$id_.quality.tsx:325
+msgid "Сохранить"
+msgstr "Save"
 
 #: src/routes/d_.analytics.tsx:498
 #: src/routes/m_.analytics.tsx:498
@@ -7490,8 +7864,8 @@ msgstr "Save locally"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:326
 #: src/routes/d_.patients_.$id_.forms.tsx:445
 #: src/routes/d_.patients_.$id_.visits.tsx:301
-#: src/routes/d_.patients_.$id.tsx:289
-#: src/routes/d_.patients_.$id.tsx:501
+#: src/routes/d_.patients_.$id.tsx:295
+#: src/routes/d_.patients_.$id.tsx:509
 #: src/routes/d_.patients.tsx:257
 #: src/routes/d_.patients.tsx:375
 #: src/routes/d_.projects_.$id.credits.tsx:436
@@ -7502,8 +7876,8 @@ msgstr "Save locally"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:326
 #: src/routes/m_.patients_.$id_.forms.tsx:445
 #: src/routes/m_.patients_.$id_.visits.tsx:301
-#: src/routes/m_.patients_.$id.tsx:289
-#: src/routes/m_.patients_.$id.tsx:501
+#: src/routes/m_.patients_.$id.tsx:295
+#: src/routes/m_.patients_.$id.tsx:509
 #: src/routes/m_.patients.tsx:257
 #: src/routes/m_.patients.tsx:375
 #: src/routes/m_.projects_.$id.credits.tsx:436
@@ -7533,6 +7907,16 @@ msgstr "Save invitation"
 #: src/routes/m_.profile.tsx:173
 msgid "Сохранить профиль"
 msgstr "Save profile"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:316
+#: src/routes/m_.patients_.$id_.quality.tsx:316
+msgid "Сохранить решение для показанной версии данных?"
+msgstr "Save the decision for the displayed data version?"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:361
+#: src/routes/m_.patients_.$id_.quality.tsx:361
+msgid "Сохранить решение на устройстве"
+msgstr "Save decision on this device"
 
 #: src/routes/d_.projects_.$id.work.tsx:598
 #: src/routes/m_.projects_.$id.work.tsx:598
@@ -7577,8 +7961,8 @@ msgstr "Specialists"
 msgid "Список диагнозов пуст в разрешённых данных"
 msgstr "Empty diagnosis list in authorized records"
 
-#: src/routes/d_.patients_.$id.tsx:423
-#: src/routes/m_.patients_.$id.tsx:423
+#: src/routes/d_.patients_.$id.tsx:431
+#: src/routes/m_.patients_.$id.tsx:431
 msgid "Способ применения"
 msgstr "Route of administration"
 
@@ -7688,7 +8072,7 @@ msgstr "Overdue"
 msgid "Срок рассмотрения"
 msgstr "Review deadline"
 
-#: src/lib/clinical-history-content.ts:204
+#: src/lib/clinical-history-content.ts:218
 #: src/routes/d_.projects_.$id.safety.tsx:450
 #: src/routes/d_.projects_.$id.safety.tsx:624
 #: src/routes/d_.workspace.tsx:181
@@ -7705,8 +8089,8 @@ msgstr "Review deadline (UTC)"
 msgid "Срок рассмотрения прошёл"
 msgstr "Review overdue"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:109
-#: src/routes/m_.patients_.$id_.timeline.tsx:109
+#: src/routes/d_.patients_.$id_.timeline.tsx:110
+#: src/routes/m_.patients_.$id_.timeline.tsx:110
 msgid "Срок рассмотрения события безопасности"
 msgstr "Safety event review due date"
 
@@ -7743,15 +8127,15 @@ msgstr "Reference or number of the document confirming consent or withdrawal"
 msgid "Ссылка на источник (HTTPS, необязательно)"
 msgstr "Source link (HTTPS, optional)"
 
-#: src/lib/clinical-history-content.ts:99
-#: src/lib/clinical-history-content.ts:107
-#: src/lib/clinical-history-content.ts:126
-#: src/lib/clinical-history-content.ts:143
+#: src/lib/clinical-history-content.ts:113
+#: src/lib/clinical-history-content.ts:121
+#: src/lib/clinical-history-content.ts:140
+#: src/lib/clinical-history-content.ts:157
 msgid "Статус"
 msgstr "Status"
 
-#: src/routes/d_.patients_.$id.tsx:394
-#: src/routes/m_.patients_.$id.tsx:394
+#: src/routes/d_.patients_.$id.tsx:402
+#: src/routes/m_.patients_.$id.tsx:402
 msgid "Статус аллергии"
 msgstr "Allergy status"
 
@@ -7772,7 +8156,7 @@ msgstr "Task status"
 msgid "Статус ответа"
 msgstr "Response status"
 
-#: src/lib/clinical-history-content.ts:199
+#: src/lib/clinical-history-content.ts:213
 #: src/routes/d_.projects_.$id.safety.tsx:457
 #: src/routes/d_.projects_.$id.safety.tsx:533
 #: src/routes/m_.projects_.$id.safety.tsx:457
@@ -7780,8 +8164,8 @@ msgstr "Response status"
 msgid "Статус рассмотрения"
 msgstr "Review status"
 
-#: src/routes/d_.patients_.$id.tsx:435
-#: src/routes/m_.patients_.$id.tsx:435
+#: src/routes/d_.patients_.$id.tsx:443
+#: src/routes/m_.patients_.$id.tsx:443
 msgid "Статус терапии"
 msgstr "Therapy status"
 
@@ -7797,7 +8181,7 @@ msgstr "Reading and selection status"
 msgid "Статусы участия"
 msgstr "Participation states"
 
-#: src/lib/clinical-history-content.ts:55
+#: src/lib/clinical-history-content.ts:57
 #: src/routes/d_.projects_.$id.safety.tsx:81
 #: src/routes/m_.projects_.$id.safety.tsx:81
 msgid "Стойкая или значительная нетрудоспособность"
@@ -7854,18 +8238,23 @@ msgstr "Option label"
 msgid "Текст вопроса"
 msgstr "Question text"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:393
+#: src/routes/m_.patients_.$id_.quality.tsx:393
+msgid "Текст отклонённого решения будет удалён только с этого устройства. Карта и серверные решения не изменятся."
+msgstr "The rejected decision text will be removed only from this device. The chart and server decisions will not change."
+
 #: src/routes/d_.projects_.$id.work.tsx:555
 #: src/routes/m_.projects_.$id.work.tsx:555
 msgid "Текст сообщения будет удалён после синхронизации. Запись о действии сохранится в истории."
 msgstr "The message text will be removed after synchronization. The action will remain in the audit history."
 
-#: src/routes/d_.patients_.$id.tsx:463
-#: src/routes/m_.patients_.$id.tsx:463
+#: src/routes/d_.patients_.$id.tsx:471
+#: src/routes/m_.patients_.$id.tsx:471
 msgid "Текстовый"
 msgstr "Text"
 
-#: src/routes/d_.patients_.$id.tsx:475
-#: src/routes/m_.patients_.$id.tsx:475
+#: src/routes/d_.patients_.$id.tsx:483
+#: src/routes/m_.patients_.$id.tsx:483
 msgid "Текстовый результат"
 msgstr "Text result"
 
@@ -7874,8 +8263,8 @@ msgstr "Text result"
 msgid "Текущая карта без загруженной архивной редакции"
 msgstr "Current card without a downloaded archived revision"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:372
-#: src/routes/m_.patients_.$id_.timeline.tsx:372
+#: src/routes/d_.patients_.$id_.timeline.tsx:373
+#: src/routes/m_.patients_.$id_.timeline.tsx:373
 msgid "Текущее содержимое источника"
 msgstr "Current source contents"
 
@@ -7889,8 +8278,8 @@ msgstr "Current records without a downloaded archived revision"
 msgid "Текущие решения по пациентам выбранной клиники"
 msgstr "Current patient decisions for the selected clinic"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:329
-#: src/routes/m_.patients_.$id_.timeline.tsx:329
+#: src/routes/d_.patients_.$id_.timeline.tsx:330
+#: src/routes/m_.patients_.$id_.timeline.tsx:330
 msgid "Текущий статус источника:"
 msgstr "Current source status:"
 
@@ -7902,7 +8291,11 @@ msgstr "Theme"
 msgid "Тёмная"
 msgstr "Dark"
 
-#: src/lib/clinical-history-content.ts:123
+#: src/lib/data-quality-content.ts:43
+msgid "Терапия активна после указанной даты окончания"
+msgstr "Therapy remains active after the recorded end date"
+
+#: src/lib/clinical-history-content.ts:137
 #: src/routes/d_.patients_.$id_.visits.tsx:236
 #: src/routes/d_.projects_.$id.visits.tsx:321
 #: src/routes/m_.patients_.$id_.visits.tsx:236
@@ -7920,8 +8313,8 @@ msgstr "Question type"
 msgid "Тип исследования"
 msgstr "Study type"
 
-#: src/routes/d_.patients_.$id.tsx:460
-#: src/routes/m_.patients_.$id.tsx:460
+#: src/routes/d_.patients_.$id.tsx:468
+#: src/routes/m_.patients_.$id.tsx:468
 msgid "Тип результата"
 msgstr "Result type"
 
@@ -7935,8 +8328,8 @@ msgstr "Only enrolled patients with expired consent"
 msgid "Только просроченные"
 msgstr "Overdue only"
 
-#: src/routes/d_.patients_.$id.tsx:152
-#: src/routes/m_.patients_.$id.tsx:152
+#: src/routes/d_.patients_.$id.tsx:153
+#: src/routes/m_.patients_.$id.tsx:153
 msgid "Только чтение"
 msgstr "Read-only"
 
@@ -7955,6 +8348,12 @@ msgstr "Require an unambiguous time"
 msgid "Требовать уточнение"
 msgstr "Require clarification"
 
+#: src/lib/clinical-history-content.ts:103
+#: src/routes/d_.patients_.$id_.quality.tsx:75
+#: src/routes/m_.patients_.$id_.quality.tsx:75
+msgid "Требует уточнения"
+msgstr "Needs clarification"
+
 #: src/routes/d_.projects_.$id.credits.tsx:530
 #: src/routes/m_.projects_.$id.credits.tsx:530
 msgid "Требуется новое решение"
@@ -7967,31 +8366,31 @@ msgstr "New decision required"
 msgid "Требуется подтверждение квалификации"
 msgstr "Credential verification required"
 
-#: src/lib/clinical-history-content.ts:32
-#: src/routes/d_.patients_.$id.tsx:388
-#: src/routes/d_.patients_.$id.tsx:551
+#: src/lib/clinical-history-content.ts:34
+#: src/routes/d_.patients_.$id.tsx:396
+#: src/routes/d_.patients_.$id.tsx:559
 #: src/routes/d_.projects_.$id.safety.tsx:76
-#: src/routes/m_.patients_.$id.tsx:388
-#: src/routes/m_.patients_.$id.tsx:551
+#: src/routes/m_.patients_.$id.tsx:396
+#: src/routes/m_.patients_.$id.tsx:559
 #: src/routes/m_.projects_.$id.safety.tsx:76
 msgid "Тяжёлая"
 msgstr "Severe"
 
-#: src/lib/clinical-history-content.ts:98
+#: src/lib/clinical-history-content.ts:112
 msgid "Тяжесть"
 msgstr "Severity"
 
-#: src/routes/d_.patients_.$id.tsx:548
-#: src/routes/m_.patients_.$id.tsx:548
+#: src/routes/d_.patients_.$id.tsx:556
+#: src/routes/m_.patients_.$id.tsx:556
 msgid "Тяжесть не указана"
 msgstr "Severity not specified"
 
-#: src/routes/d_.patients_.$id.tsx:383
-#: src/routes/m_.patients_.$id.tsx:383
+#: src/routes/d_.patients_.$id.tsx:391
+#: src/routes/m_.patients_.$id.tsx:391
 msgid "Тяжесть реакции"
 msgstr "Reaction severity"
 
-#: src/lib/clinical-history-content.ts:213
+#: src/lib/clinical-history-content.ts:227
 #: src/routes/d_.projects_.$id.safety.tsx:339
 #: src/routes/d_.projects_.$id.safety.tsx:588
 #: src/routes/m_.projects_.$id.safety.tsx:339
@@ -8014,7 +8413,7 @@ msgstr "This study has no forms yet."
 msgid "У пациента пока нет ответов на опросники."
 msgstr "The patient has no questionnaire responses yet."
 
-#: src/lib/clinical-history-content.ts:53
+#: src/lib/clinical-history-content.ts:55
 #: src/routes/d_.projects_.$id.safety.tsx:79
 #: src/routes/m_.projects_.$id.safety.tsx:79
 msgid "Угроза жизни в момент события"
@@ -8034,14 +8433,14 @@ msgstr "Deletion was rejected. Open the current analysis before attempting delet
 #: src/routes/d_.patients_.$id_.enrollment.tsx:468
 #: src/routes/d_.patients_.$id_.forms.tsx:645
 #: src/routes/d_.patients_.$id_.visits.tsx:420
-#: src/routes/d_.patients_.$id.tsx:642
+#: src/routes/d_.patients_.$id.tsx:650
 #: src/routes/d_.projects_.$id.safety.tsx:690
 #: src/routes/d_.projects_.$id.visits.tsx:504
 #: src/routes/m_.library.tsx:492
 #: src/routes/m_.patients_.$id_.enrollment.tsx:468
 #: src/routes/m_.patients_.$id_.forms.tsx:645
 #: src/routes/m_.patients_.$id_.visits.tsx:420
-#: src/routes/m_.patients_.$id.tsx:642
+#: src/routes/m_.patients_.$id.tsx:650
 #: src/routes/m_.projects_.$id.safety.tsx:690
 #: src/routes/m_.projects_.$id.visits.tsx:504
 msgid "Удаление отклонено. Сравните текущую запись перед повторным удалением."
@@ -8065,10 +8464,11 @@ msgstr "Deleted records and records of deleted patients are not shown here. Hist
 #: src/routes/d_.patients_.$id_.enrollment.tsx:449
 #: src/routes/d_.patients_.$id_.forms.tsx:612
 #: src/routes/d_.patients_.$id_.forms.tsx:616
+#: src/routes/d_.patients_.$id_.quality.tsx:395
 #: src/routes/d_.patients_.$id_.visits.tsx:399
 #: src/routes/d_.patients_.$id_.visits.tsx:403
-#: src/routes/d_.patients_.$id.tsx:232
-#: src/routes/d_.patients_.$id.tsx:621
+#: src/routes/d_.patients_.$id.tsx:238
+#: src/routes/d_.patients_.$id.tsx:629
 #: src/routes/d_.patients.tsx:670
 #: src/routes/d_.patients.tsx:680
 #: src/routes/d_.projects_.$id.credits.tsx:352
@@ -8085,10 +8485,11 @@ msgstr "Deleted records and records of deleted patients are not shown here. Hist
 #: src/routes/m_.patients_.$id_.enrollment.tsx:449
 #: src/routes/m_.patients_.$id_.forms.tsx:612
 #: src/routes/m_.patients_.$id_.forms.tsx:616
+#: src/routes/m_.patients_.$id_.quality.tsx:395
 #: src/routes/m_.patients_.$id_.visits.tsx:399
 #: src/routes/m_.patients_.$id_.visits.tsx:403
-#: src/routes/m_.patients_.$id.tsx:232
-#: src/routes/m_.patients_.$id.tsx:621
+#: src/routes/m_.patients_.$id.tsx:238
+#: src/routes/m_.patients_.$id.tsx:629
 #: src/routes/m_.patients.tsx:670
 #: src/routes/m_.patients.tsx:680
 #: src/routes/m_.projects_.$id.credits.tsx:352
@@ -8122,15 +8523,15 @@ msgstr "Remove question"
 msgid "Удалить данные пациента?"
 msgstr "Delete patient data?"
 
-#: src/routes/d_.patients_.$id.tsx:242
-#: src/routes/d_.patients_.$id.tsx:625
-#: src/routes/m_.patients_.$id.tsx:242
-#: src/routes/m_.patients_.$id.tsx:625
+#: src/routes/d_.patients_.$id.tsx:248
+#: src/routes/d_.patients_.$id.tsx:633
+#: src/routes/m_.patients_.$id.tsx:248
+#: src/routes/m_.patients_.$id.tsx:633
 msgid "Удалить запись"
 msgstr "Delete record"
 
-#: src/routes/d_.patients_.$id.tsx:228
-#: src/routes/m_.patients_.$id.tsx:228
+#: src/routes/d_.patients_.$id.tsx:234
+#: src/routes/m_.patients_.$id.tsx:234
 msgid "Удалить запись пациента?"
 msgstr "Delete this patient record?"
 
@@ -8144,8 +8545,8 @@ msgstr "Delete participation record?"
 msgid "Удалить источник и историю?"
 msgstr "Delete reference and history?"
 
-#: src/routes/d_.patients_.$id.tsx:617
-#: src/routes/m_.patients_.$id.tsx:617
+#: src/routes/d_.patients_.$id.tsx:625
+#: src/routes/m_.patients_.$id.tsx:625
 msgid "Удалить клиническую запись?"
 msgstr "Delete this clinical record?"
 
@@ -8184,6 +8585,16 @@ msgstr "Delete this message?"
 msgid "Удалить сохранённый анализ?"
 msgstr "Delete saved analysis?"
 
+#: src/routes/d_.patients_.$id_.quality.tsx:399
+#: src/routes/m_.patients_.$id_.quality.tsx:399
+msgid "Удалить сохранённый черновик"
+msgstr "Delete saved draft"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:391
+#: src/routes/m_.patients_.$id_.quality.tsx:391
+msgid "Удалить сохранённый черновик решения?"
+msgstr "Delete the saved decision draft?"
+
 #: src/routes/d_.projects_.$id.forms.tsx:450
 #: src/routes/m_.projects_.$id.forms.tsx:450
 msgid "Удалить условие"
@@ -8193,6 +8604,11 @@ msgstr "Remove condition"
 #: src/routes/m_.projects_.$id.forms.tsx:715
 msgid "Удалить шкалу"
 msgstr "Remove score"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:109
+#: src/routes/m_.patients_.$id_.quality.tsx:109
+msgid "Уйти без сохранения"
+msgstr "Leave without saving"
 
 #: src/routes/d_.projects_.$id.protocol.tsx:95
 #: src/routes/m_.projects_.$id.protocol.tsx:95
@@ -8216,8 +8632,8 @@ msgstr "Provide a reason for amending the final response"
 msgid "Укажите цель использования данных"
 msgstr "Specify the purpose of data use"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:100
-#: src/routes/m_.patients_.$id_.timeline.tsx:100
+#: src/routes/d_.patients_.$id_.timeline.tsx:101
+#: src/routes/m_.patients_.$id_.timeline.tsx:101
 msgid "Указанная дата начала терапии"
 msgstr "Recorded therapy start date"
 
@@ -8226,18 +8642,18 @@ msgstr "Recorded therapy start date"
 msgid "Указанный пол"
 msgstr "Recorded sex"
 
-#: src/lib/clinical-history-content.ts:66
+#: src/lib/clinical-history-content.ts:68
 #: src/routes/d_.projects_.$id.safety.tsx:100
 #: src/routes/m_.projects_.$id.safety.tsx:100
 msgid "Улучшение"
 msgstr "Recovering"
 
-#: src/lib/clinical-history-content.ts:31
-#: src/routes/d_.patients_.$id.tsx:387
-#: src/routes/d_.patients_.$id.tsx:550
+#: src/lib/clinical-history-content.ts:33
+#: src/routes/d_.patients_.$id.tsx:395
+#: src/routes/d_.patients_.$id.tsx:558
 #: src/routes/d_.projects_.$id.safety.tsx:76
-#: src/routes/m_.patients_.$id.tsx:387
-#: src/routes/m_.patients_.$id.tsx:550
+#: src/routes/m_.patients_.$id.tsx:395
+#: src/routes/m_.patients_.$id.tsx:558
 #: src/routes/m_.projects_.$id.safety.tsx:76
 msgid "Умеренная"
 msgstr "Moderate"
@@ -8290,6 +8706,10 @@ msgstr "Contact the coordinator for eligibility details."
 msgid "Установка Cure"
 msgstr "Install Cure"
 
+#: src/lib/data-quality-content.ts:52
+msgid "Уточните фактическое состояние записи. Это не доказательство неявки или пропущенного обследования."
+msgstr "Clarify the record's actual status. This does not prove nonattendance or a missed examination."
+
 #: src/routes/d_.projects_.$id.credits.tsx:85
 #: src/routes/m_.projects_.$id.credits.tsx:85
 msgid "Участвовал в подготовке или содержательной научной переработке рукописи"
@@ -8300,16 +8720,16 @@ msgstr "I participated in drafting or substantive scientific revision of the man
 msgid "Участие автора прекращено"
 msgstr "Author participation has ended"
 
-#: src/lib/clinical-history-content.ts:21
+#: src/lib/clinical-history-content.ts:23
 #: src/routes/d_.patients_.$id_.timeline.tsx:94
-#: src/routes/d_.patients_.$id.tsx:65
+#: src/routes/d_.patients_.$id.tsx:66
 #: src/routes/m_.patients_.$id_.timeline.tsx:94
-#: src/routes/m_.patients_.$id.tsx:65
+#: src/routes/m_.patients_.$id.tsx:66
 msgid "Участие в исследовании"
 msgstr "Study participation"
 
-#: src/routes/d_.patients_.$id.tsx:313
-#: src/routes/m_.patients_.$id.tsx:313
+#: src/routes/d_.patients_.$id.tsx:319
+#: src/routes/m_.patients_.$id.tsx:319
 msgid "Участие в исследованиях"
 msgstr "Study participation"
 
@@ -8368,12 +8788,12 @@ msgstr "Study participant"
 msgid "Участники команды"
 msgstr "Team members"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:104
-#: src/routes/m_.patients_.$id_.timeline.tsx:104
+#: src/routes/d_.patients_.$id_.timeline.tsx:105
+#: src/routes/m_.patients_.$id_.timeline.tsx:105
 msgid "Фактическая дата исследовательского визита"
 msgstr "Actual study visit date"
 
-#: src/lib/clinical-history-content.ts:135
+#: src/lib/clinical-history-content.ts:149
 #: src/routes/d_.projects_.$id.visits.tsx:346
 #: src/routes/d_.projects_.$id.visits.tsx:447
 #: src/routes/m_.projects_.$id.visits.tsx:346
@@ -8391,10 +8811,15 @@ msgstr "Filter by status"
 msgid "Фильтр по статусу визита"
 msgstr "Filter by visit status"
 
-#: src/routes/d_.patients_.$id.tsx:254
-#: src/routes/m_.patients_.$id.tsx:254
+#: src/routes/d_.patients_.$id.tsx:260
+#: src/routes/m_.patients_.$id.tsx:260
 msgid "ФИО"
 msgstr "Full name"
+
+#: src/routes/d_.patients_.$id_.quality.tsx:333
+#: src/routes/m_.patients_.$id_.quality.tsx:333
+msgid "Форма относится к прежней проверке. Скопируйте нужный текст или откройте решение для актуального сигнала; сохранение старого решения заблокировано."
+msgstr "The form belongs to a previous check. Copy any text you need or open a decision for a current finding; saving the old decision is blocked."
 
 #: src/routes/d_.projects_.$id.credits.tsx:70
 #: src/routes/m_.projects_.$id.credits.tsx:70
@@ -8426,14 +8851,14 @@ msgstr "At least one code"
 msgid "Хотя бы одно условие"
 msgstr "Any condition"
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:171
-#: src/routes/d_.patients_.$id.tsx:197
-#: src/routes/m_.patients_.$id_.timeline.tsx:171
-#: src/routes/m_.patients_.$id.tsx:197
+#: src/routes/d_.patients_.$id_.timeline.tsx:172
+#: src/routes/d_.patients_.$id.tsx:203
+#: src/routes/m_.patients_.$id_.timeline.tsx:172
+#: src/routes/m_.patients_.$id.tsx:203
 msgid "Хронология пациента"
 msgstr "Patient timeline"
 
-#: src/lib/clinical-history-content.ts:127
+#: src/lib/clinical-history-content.ts:141
 #: src/routes/d_.projects_.$id.visits.tsx:335
 #: src/routes/m_.projects_.$id.visits.tsx:335
 msgid "Цель визита"
@@ -8464,16 +8889,16 @@ msgstr "Appointment time zone"
 msgid "Частота диагнозов"
 msgstr "Diagnosis frequency"
 
-#: src/lib/clinical-history-content.ts:41
+#: src/lib/clinical-history-content.ts:43
 #: src/routes/d_.patients_.$id_.forms.tsx:288
 #: src/routes/d_.patients_.$id_.forms.tsx:485
-#: src/routes/d_.patients_.$id_.timeline.tsx:135
+#: src/routes/d_.patients_.$id_.timeline.tsx:136
 #: src/routes/d_.projects.tsx:76
 #: src/routes/d_.research_.$id.tsx:38
 #: src/routes/d_.research.tsx:69
 #: src/routes/m_.patients_.$id_.forms.tsx:288
 #: src/routes/m_.patients_.$id_.forms.tsx:485
-#: src/routes/m_.patients_.$id_.timeline.tsx:135
+#: src/routes/m_.patients_.$id_.timeline.tsx:136
 #: src/routes/m_.projects.tsx:76
 #: src/routes/m_.research_.$id.tsx:38
 #: src/routes/m_.research.tsx:69
@@ -8481,9 +8906,9 @@ msgid "Черновик"
 msgstr "Draft"
 
 #: src/routes/d_.patients_.$id_.visits.tsx:294
-#: src/routes/d_.patients_.$id.tsx:494
+#: src/routes/d_.patients_.$id.tsx:502
 #: src/routes/m_.patients_.$id_.visits.tsx:294
-#: src/routes/m_.patients_.$id.tsx:494
+#: src/routes/m_.patients_.$id.tsx:502
 msgid "Черновик будет сохранён как новая клиническая запись. Удалённая версия не восстанавливается автоматически."
 msgstr "The draft will be saved as a new clinical record. The deleted version is not restored automatically."
 
@@ -8502,13 +8927,13 @@ msgstr "The draft will be saved as a new analysis; the deleted record is not res
 msgid "Число"
 msgstr "Number"
 
-#: src/routes/d_.patients_.$id.tsx:462
-#: src/routes/m_.patients_.$id.tsx:462
+#: src/routes/d_.patients_.$id.tsx:470
+#: src/routes/m_.patients_.$id.tsx:470
 msgid "Числовой"
 msgstr "Numeric"
 
-#: src/routes/d_.patients_.$id.tsx:469
-#: src/routes/m_.patients_.$id.tsx:469
+#: src/routes/d_.patients_.$id.tsx:477
+#: src/routes/m_.patients_.$id.tsx:477
 msgid "Числовой результат"
 msgstr "Numeric result"
 
@@ -8527,7 +8952,7 @@ msgstr "Membership changed after the application. Review the application again; 
 #~ msgid "Чтение разрешённых данных пациентов без изменения карт."
 #~ msgstr "Read permitted patient data without modifying records."
 
-#: src/lib/clinical-history-content.ts:141
+#: src/lib/clinical-history-content.ts:155
 msgid "Шаблон"
 msgstr "Template"
 
@@ -8553,7 +8978,7 @@ msgstr "Step"
 msgid "Широта"
 msgstr "Latitude"
 
-#: src/lib/clinical-history-content.ts:175
+#: src/lib/clinical-history-content.ts:189
 #: src/routes/d_.patients_.$id_.forms.tsx:412
 #: src/routes/d_.patients_.$id_.forms.tsx:562
 #: src/routes/m_.patients_.$id_.forms.tsx:412
@@ -8571,6 +8996,14 @@ msgstr "Scores are defined by the form author. They follow the specified calcula
 msgid "Этап исследования"
 msgstr "Study stage"
 
+#: src/lib/data-quality-content.ts:68
+msgid "Это кандидаты для проверки. Разные эпизоды возможны; записи не объединяются и не удаляются автоматически."
+msgstr "These are candidates for review. Distinct episodes are possible; records are not merged or deleted automatically."
+
+#: src/lib/data-quality-content.ts:36
+msgid "Это не означает, что обследования не выполнялись или обязательно нужны новые."
+msgstr "This does not mean examinations were not performed or that new ones are necessarily needed."
+
 #: src/routes/d_.analytics.tsx:723
 #: src/routes/m_.analytics.tsx:723
 msgid "Это описательная выборка доступных локальных записей, а не оценка распространённости заболевания в популяции. Отсутствие диагноза в карте не означает отсутствие заболевания. Возраст, терапия, показатели и даты наблюдения в этот анализ не включены."
@@ -8581,8 +9014,12 @@ msgstr "This is a descriptive cohort of available local records, not an estimate
 msgid "Это расписание выбранной клиники, включая ожидающие синхронизации изменения. Приглашения и напоминания пациентам автоматически не отправляются."
 msgstr "This is the selected clinic schedule, including changes awaiting synchronization. Patient invitations and reminders are not sent automatically."
 
-#: src/routes/d_.patients_.$id_.timeline.tsx:375
-#: src/routes/m_.patients_.$id_.timeline.tsx:375
+#: src/lib/data-quality-content.ts:16
+msgid "Это состояние документации, а не доказательство ошибки. Не изменяйте сведения без основания."
+msgstr "This describes documentation, not a proven error. Do not change information without a basis."
+
+#: src/routes/d_.patients_.$id_.timeline.tsx:376
+#: src/routes/m_.patients_.$id_.timeline.tsx:376
 msgid "Это текущая редакция записи, а не снимок её состояния на дату события. Исторические значения открываются в истории редакций."
 msgstr "This is the record's current revision, not a snapshot of its state on the event date. Historical values are available in revision history."
 
@@ -8591,7 +9028,7 @@ msgstr "This is the record's current revision, not a snapshot of its state on th
 msgid "Этот запрос уже обработан с другими значениями. Обновите состояние перед новой попыткой."
 msgstr "This request was already processed with different values. Refresh the state before making a new attempt."
 
-#: src/lib/use-clinical-records.ts:165
+#: src/lib/use-clinical-records.ts:166
 #: src/lib/use-study-visits.ts:164
 msgid "Этот час повторяется дважды. Выберите первое или второе вхождение."
 msgstr "This hour occurs twice. Select its first or second occurrence."
