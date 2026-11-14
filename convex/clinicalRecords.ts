@@ -13,6 +13,7 @@ import {
   validateClinicalTransition,
   hasClinicalWriteId,
 } from "@/src/lib/clinical-record-model";
+import { legacyClinicalVersionId } from "@/src/lib/clinical-version-model";
 import { validateEnrollmentChange } from "@/src/lib/study-enrollment-model";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
 import { validateStudyIssueWrite } from "@/src/lib/study-issue-model";
@@ -58,6 +59,8 @@ export const apply = mutation({
     patientClientId: v.string(),
     expectedRevision: v.number(),
     expectedWriteId: v.optional(v.union(v.string(), v.null())),
+    historyId: v.optional(v.string()),
+    expectedHistoryId: v.optional(v.union(v.string(), v.null())),
     action: v.union(v.literal("create"), v.literal("update"), v.literal("delete")),
     payload: v.optional(clinicalPayload),
     idempotencyKey: v.string(),
@@ -97,6 +100,14 @@ export const apply = mutation({
         (args.action === "create" ? args.expectedWriteId !== null : args.expectedWriteId === null))
     )
       throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (args.historyId !== undefined) {
+      requireClientId(args.historyId);
+      if (args.expectedHistoryId === undefined) throw new ConvexError("INVALID_CLINICAL_RECORD");
+    }
+    if (args.expectedHistoryId !== undefined && args.historyId === undefined)
+      throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (args.expectedHistoryId !== undefined && args.expectedHistoryId !== null)
+      requireClientId(args.expectedHistoryId);
     const enrollmentProject =
       payload?.kind === "enrollment"
         ? await enrollmentAccess(ctx, args.organizationId, payload, args.action === "create")
@@ -141,7 +152,15 @@ export const apply = mutation({
         throw new ConvexError("INVALID_STUDY_FORM");
     }
     const receipt = await operationReceipt(ctx, userId, args.idempotencyKey, {
-      domain: args.expectedWriteId === undefined ? "clinical.record.v1" : "clinical.record.v2",
+      domain:
+        args.historyId !== undefined
+          ? "clinical.record.v3"
+          : args.expectedWriteId === undefined
+            ? "clinical.record.v1"
+            : "clinical.record.v2",
+      ...(args.historyId !== undefined
+        ? { historyId: args.historyId, expectedHistoryId: args.expectedHistoryId }
+        : {}),
       ...(args.expectedWriteId === undefined ? {} : { expectedWriteId: args.expectedWriteId }),
       organizationId: args.organizationId,
       patientClientId: args.patientClientId,
@@ -180,6 +199,22 @@ export const apply = mutation({
       hasClinicalWriteId(existing?.payload) &&
       hasClinicalWriteId(payload) &&
       existing.payload.writeId === payload.writeId
+    )
+      throw new ConvexError("INVALID_CLINICAL_RECORD");
+    if (
+      args.expectedHistoryId !== undefined &&
+      (existing?.historyId ?? null) !== args.expectedHistoryId
+    )
+      throw new ConvexError("REVISION_CONFLICT");
+    if (
+      args.historyId !== undefined &&
+      (args.historyId === existing?.historyId ||
+        (await ctx.db
+          .query("clinicalVersions")
+          .withIndex("by_client", (q) =>
+            q.eq("organizationId", args.organizationId).eq("clientId", args.historyId!),
+          )
+          .unique()))
     )
       throw new ConvexError("INVALID_CLINICAL_RECORD");
     if (payload?.kind === "studyIssue") {
@@ -257,9 +292,51 @@ export const apply = mutation({
     }
     const revision = args.expectedRevision + 1;
     const now = Date.now();
+    const historyId = args.historyId ?? crypto.randomUUID();
+    // Preserve the last pre-feature revision on its first update. Older content
+    // that was already overwritten cannot be reconstructed retroactively.
+    if (existing?.payload && !existing.historyId && args.action !== "delete") {
+      const baselineId = legacyClinicalVersionId(existing.clientId, existing.revision);
+      if (
+        !(await ctx.db
+          .query("clinicalVersions")
+          .withIndex("by_client", (q) =>
+            q.eq("organizationId", args.organizationId).eq("clientId", baselineId),
+          )
+          .unique())
+      )
+        await ctx.db.insert("clinicalVersions", {
+          organizationId: args.organizationId,
+          clientId: baselineId,
+          recordClientId: args.clientId,
+          patientClientId: args.patientClientId,
+          revision: existing.revision,
+          payload: existing.payload,
+          recordedAt: existing.updatedAt,
+          recordedBy: existing.updatedBy,
+        });
+    }
+    if (payload)
+      await ctx.db.insert("clinicalVersions", {
+        organizationId: args.organizationId,
+        clientId: historyId,
+        recordClientId: args.clientId,
+        patientClientId: args.patientClientId,
+        revision,
+        payload,
+        recordedAt: now,
+        recordedBy: userId,
+      });
+    if (args.action === "delete")
+      await ctx.scheduler.runAfter(0, internal.clinicalRecords.eraseVersions, {
+        organizationId: args.organizationId,
+        patientClientId: args.patientClientId,
+        recordClientId: args.clientId,
+      });
     if (existing)
       await ctx.db.patch(existing._id, {
         payload,
+        historyId,
         revision,
         deleted: args.action === "delete",
         updatedAt: now,
@@ -270,6 +347,7 @@ export const apply = mutation({
         organizationId: args.organizationId,
         patientClientId: args.patientClientId,
         clientId: args.clientId,
+        historyId,
         payload,
         revision,
         deleted: false,
@@ -302,6 +380,10 @@ export const erasePatientBatch = internalMutation({
       )
       .unique();
     if (!patient?.deleted) return;
+    await ctx.scheduler.runAfter(0, internal.clinicalRecords.eraseVersions, {
+      organizationId: args.organizationId,
+      patientClientId: args.patientClientId,
+    });
     const rows = await ctx.db
       .query("clinicalRecords")
       .withIndex("by_patient_active", (q) =>
@@ -354,5 +436,87 @@ export const reviewers = query({
           return { userId: row.userId, displayName: profile?.displayName ?? row.userId };
         }),
     );
+  },
+});
+
+export const versions = query({
+  args: { actorId: v.string(), organizationId: v.id("organizations") },
+  handler: async (ctx, args) => {
+    const { userId, membership } = await organizationAccess(ctx, args.organizationId);
+    if (userId !== args.actorId) throw new ConvexError("ACCOUNT_CHANGED");
+    if (membership.role !== "doctor") return [];
+    const rows = await ctx.db
+      .query("clinicalVersions")
+      .withIndex("by_organization", (q) => q.eq("organizationId", args.organizationId))
+      .collect();
+    const patients = new Map<string, boolean>();
+    const records = new Map<string, boolean>();
+    for (const row of rows) {
+      if (!patients.has(row.patientClientId)) {
+        const patient = await ctx.db
+          .query("patients")
+          .withIndex("by_client", (q) =>
+            q.eq("organizationId", args.organizationId).eq("clientId", row.patientClientId),
+          )
+          .unique();
+        patients.set(row.patientClientId, Boolean(patient && !patient.deleted));
+      }
+      if (!records.has(row.recordClientId)) {
+        const record = await ctx.db
+          .query("clinicalRecords")
+          .withIndex("by_client", (q) =>
+            q.eq("organizationId", args.organizationId).eq("clientId", row.recordClientId),
+          )
+          .unique();
+        records.set(
+          row.recordClientId,
+          Boolean(record && !record.deleted && record.patientClientId === row.patientClientId),
+        );
+      }
+    }
+    return rows
+      .filter((row) => patients.get(row.patientClientId) && records.get(row.recordClientId))
+      .map(({ _id, _creationTime, organizationId, ...row }) => ({ ...row, confirmed: true }));
+  },
+});
+export const eraseVersions = internalMutation({
+  args: {
+    organizationId: v.id("organizations"),
+    patientClientId: v.string(),
+    recordClientId: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<void> => {
+    const patient = await ctx.db
+      .query("patients")
+      .withIndex("by_client", (q) =>
+        q.eq("organizationId", args.organizationId).eq("clientId", args.patientClientId),
+      )
+      .unique();
+    if (!patient?.deleted) {
+      if (!args.recordClientId) return;
+      const record = await ctx.db
+        .query("clinicalRecords")
+        .withIndex("by_client", (q) =>
+          q.eq("organizationId", args.organizationId).eq("clientId", args.recordClientId!),
+        )
+        .unique();
+      if (!record?.deleted || record.patientClientId !== args.patientClientId) return;
+    }
+    const rows = args.recordClientId
+      ? await ctx.db
+          .query("clinicalVersions")
+          .withIndex("by_record", (q) =>
+            q.eq("organizationId", args.organizationId).eq("recordClientId", args.recordClientId!),
+          )
+          .take(50)
+      : await ctx.db
+          .query("clinicalVersions")
+          .withIndex("by_patient", (q) =>
+            q.eq("organizationId", args.organizationId).eq("patientClientId", args.patientClientId),
+          )
+          .take(50);
+    for (const row of rows) await ctx.db.delete(row._id);
+    if (rows.length === 50)
+      await ctx.scheduler.runAfter(0, internal.clinicalRecords.eraseVersions, args);
   },
 });

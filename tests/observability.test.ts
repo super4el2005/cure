@@ -135,6 +135,7 @@ it("observes library and research actions without exposing record identifiers or
   expect(safePath("/m/projects/private-study/credits")).toBe("/m/projects/:id/credits");
   expect(safePath("/d/projects/private-study/safety")).toBe("/d/projects/:id/safety");
   expect(safePath("/m/projects/private-study/visits")).toBe("/m/projects/:id/visits");
+  expect(safePath("/m/patients/private-patient/history")).toBe("/m/patients/:id/history");
   expect(safePath("/d/patients/private-patient/enrollment")).toBe("/d/patients/:id/enrollment");
   expect(
     safeAttributes({

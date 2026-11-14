@@ -16,9 +16,11 @@ import { usePatientWorkspace } from "@/src/lib/use-patient-workspace";
 import { resolveVisitTime, visitTime } from "@/src/lib/visit-time";
 
 const initialValues = {
+  scope: "",
   clientId: "",
   patientClientId: "",
   expectedRevision: 0,
+  expectedHistoryId: null as string | null,
   failureId: "",
   kind: "history" as Exclude<
     ClinicalPayload["kind"],
@@ -216,6 +218,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     failureId = "",
     expectedRevision = record.revision,
     clientId = record.clientId,
+    expectedHistoryId = record.historyId ?? null,
   ) => {
     if (
       !record.payload ||
@@ -228,9 +231,11 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     const value = record.payload;
     clinicalForm.reset();
     clinicalForm.setValues({
+      scope: workspace?.scope ?? "",
       clientId,
       patientClientId: record.patientClientId,
       expectedRevision,
+      expectedHistoryId,
       failureId,
       kind: value.kind,
       occurredOn: value.occurredOn,
@@ -291,11 +296,12 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     retry: false,
     gcTime: 0,
     mutationFn: async (input: typeof clinicalForm.values) => {
-      if (!workspace) throw new Error("WORKSPACE_LOCKED");
+      if (!workspace || input.scope !== workspace.scope) throw new Error("WORKSPACE_LOCKED");
       const result = await workspace.saveClinical({
         clientId: input.clientId || crypto.randomUUID(),
         patientClientId: input.patientClientId,
         expectedRevision: input.expectedRevision,
+        expectedHistoryId: input.expectedHistoryId,
         action: input.clientId ? "update" : "create",
         payload: clinicalPayloadSchema.parse(payload(input)),
       });
@@ -307,7 +313,9 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
       if (
         current.patientClientId === input.patientClientId &&
         current.clientId === input.clientId &&
-        current.expectedRevision === input.expectedRevision
+        current.scope === input.scope &&
+        current.expectedRevision === input.expectedRevision &&
+        current.expectedHistoryId === input.expectedHistoryId
       ) {
         clinicalForm.reset();
         clinicalEditor.close();
@@ -327,6 +335,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
         clientId: record.clientId,
         patientClientId: record.patientClientId,
         expectedRevision: record.revision,
+        expectedHistoryId: record.historyId ?? null,
         action: "delete",
       });
     },
@@ -350,6 +359,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
         failure.id,
         current && !current.deleted ? current.revision : 0,
         current && !current.deleted ? row.clientId : "",
+        current && !current.deleted ? (workspace.readClinical(current).historyId ?? null) : null,
       );
     },
   });
@@ -357,7 +367,8 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     ...space,
     localClinical,
     clinical,
-    clinicalEditing,
+    clinicalEditing:
+      clinicalEditing && Boolean(workspace) && clinicalForm.values.scope === workspace?.scope,
     clinicalEditor,
     clinicalForm,
     saveClinical,
@@ -367,6 +378,7 @@ export function useClinicalRecords(patientId: string, view: "records" | "visits"
     createClinical: () => {
       clinicalForm.reset();
       clinicalForm.setValues({
+        scope: workspace?.scope ?? "",
         patientClientId: patientId,
         kind: view === "visits" ? "visit" : "history",
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
