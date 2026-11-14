@@ -487,3 +487,21 @@ test("personal library routes render independent safe entries without private da
     );
   }
 });
+
+test("organization membership routes render protected device entries without private administrative data", async () => {
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/organization/members`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Organization members and access/);
+    assert.doesNotMatch(
+      html,
+      /Private membership rationale|Private suspension reason|Private doctor|Clinical secret/,
+    );
+    assert.doesNotMatch(html, /\/patients\/undefined|\/organization\/undefined/);
+  }
+});
