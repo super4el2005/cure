@@ -1,3 +1,4 @@
+import type * as organizationMembers from "@/convex/organizationMembers";
 import type * as library from "@/convex/library";
 import type * as studyForms from "@/convex/studyForms";
 import type * as clinicalRecords from "@/convex/clinicalRecords";
@@ -30,6 +31,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  organizationMembers: typeof organizationMembers;
   library:typeof library;
   studyForms: typeof studyForms;
   analyses: typeof analyses;

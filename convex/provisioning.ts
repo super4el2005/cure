@@ -31,10 +31,15 @@ export const approveMembership = internalMutation({
       )
       .unique();
     if (previous) {
-      await ctx.db.patch(previous._id, { role: args.role, verified: true, active: true });
+      await ctx.db.patch(previous._id, {
+        role: args.role,
+        verified: true,
+        active: true,
+        revision: (previous.revision ?? 0) + 1,
+      });
       return previous._id;
     }
-    return ctx.db.insert("memberships", { ...args, verified: true, active: true });
+    return ctx.db.insert("memberships", { ...args, verified: true, active: true, revision: 1 });
   },
 });
 export const verifyProfile = internalMutation({

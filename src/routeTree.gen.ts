@@ -38,10 +38,12 @@ import { Route as MWorkspaceRouteImport } from './routes/m_.workspace'
 import { Route as ApiAiChatRouteImport } from './routes/api.ai.chat'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiMedicalSearchRouteImport } from './routes/api.medical.search'
+import { Route as DOrganizationMembersRouteImport } from './routes/d_.organization.members'
 import { Route as DOrganizationsIdRouteImport } from './routes/d_.organizations_.$id'
 import { Route as DPatientsIdRouteImport } from './routes/d_.patients_.$id'
 import { Route as DResearchIdRouteImport } from './routes/d_.research_.$id'
 import { Route as DSpecialistsIdRouteImport } from './routes/d_.specialists_.$id'
+import { Route as MOrganizationMembersRouteImport } from './routes/m_.organization.members'
 import { Route as MOrganizationsIdRouteImport } from './routes/m_.organizations_.$id'
 import { Route as MPatientsIdRouteImport } from './routes/m_.patients_.$id'
 import { Route as MResearchIdRouteImport } from './routes/m_.research_.$id'
@@ -218,6 +220,11 @@ const ApiMedicalSearchRoute = ApiMedicalSearchRouteImport.update({
   path: '/api/medical/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DOrganizationMembersRoute = DOrganizationMembersRouteImport.update({
+  id: '/d_/organization/members',
+  path: '/d/organization/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DOrganizationsIdRoute = DOrganizationsIdRouteImport.update({
   id: '/d_/organizations_/$id',
   path: '/d/organizations/$id',
@@ -236,6 +243,11 @@ const DResearchIdRoute = DResearchIdRouteImport.update({
 const DSpecialistsIdRoute = DSpecialistsIdRouteImport.update({
   id: '/d_/specialists_/$id',
   path: '/d/specialists/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MOrganizationMembersRoute = MOrganizationMembersRouteImport.update({
+  id: '/m_/organization/members',
+  path: '/m/organization/members',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MOrganizationsIdRoute = MOrganizationsIdRouteImport.update({
@@ -419,10 +431,12 @@ export interface FileRoutesByFullPath {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d/organization/members': typeof DOrganizationMembersRoute
   '/d/organizations/$id': typeof DOrganizationsIdRoute
   '/d/patients/$id': typeof DPatientsIdRoute
   '/d/research/$id': typeof DResearchIdRoute
   '/d/specialists/$id': typeof DSpecialistsIdRoute
+  '/m/organization/members': typeof MOrganizationMembersRoute
   '/m/organizations/$id': typeof MOrganizationsIdRoute
   '/m/patients/$id': typeof MPatientsIdRoute
   '/m/research/$id': typeof MResearchIdRoute
@@ -484,10 +498,12 @@ export interface FileRoutesByTo {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d/organization/members': typeof DOrganizationMembersRoute
   '/d/organizations/$id': typeof DOrganizationsIdRoute
   '/d/patients/$id': typeof DPatientsIdRoute
   '/d/research/$id': typeof DResearchIdRoute
   '/d/specialists/$id': typeof DSpecialistsIdRoute
+  '/m/organization/members': typeof MOrganizationMembersRoute
   '/m/organizations/$id': typeof MOrganizationsIdRoute
   '/m/patients/$id': typeof MPatientsIdRoute
   '/m/research/$id': typeof MResearchIdRoute
@@ -550,10 +566,12 @@ export interface FileRoutesById {
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/medical/search': typeof ApiMedicalSearchRoute
+  '/d_/organization/members': typeof DOrganizationMembersRoute
   '/d_/organizations_/$id': typeof DOrganizationsIdRoute
   '/d_/patients_/$id': typeof DPatientsIdRoute
   '/d_/research_/$id': typeof DResearchIdRoute
   '/d_/specialists_/$id': typeof DSpecialistsIdRoute
+  '/m_/organization/members': typeof MOrganizationMembersRoute
   '/m_/organizations_/$id': typeof MOrganizationsIdRoute
   '/m_/patients_/$id': typeof MPatientsIdRoute
   '/m_/research_/$id': typeof MResearchIdRoute
@@ -617,10 +635,12 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d/organization/members'
     | '/d/organizations/$id'
     | '/d/patients/$id'
     | '/d/research/$id'
     | '/d/specialists/$id'
+    | '/m/organization/members'
     | '/m/organizations/$id'
     | '/m/patients/$id'
     | '/m/research/$id'
@@ -682,10 +702,12 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d/organization/members'
     | '/d/organizations/$id'
     | '/d/patients/$id'
     | '/d/research/$id'
     | '/d/specialists/$id'
+    | '/m/organization/members'
     | '/m/organizations/$id'
     | '/m/patients/$id'
     | '/m/research/$id'
@@ -747,10 +769,12 @@ export interface FileRouteTypes {
     | '/api/ai/chat'
     | '/api/auth/$'
     | '/api/medical/search'
+    | '/d_/organization/members'
     | '/d_/organizations_/$id'
     | '/d_/patients_/$id'
     | '/d_/research_/$id'
     | '/d_/specialists_/$id'
+    | '/m_/organization/members'
     | '/m_/organizations_/$id'
     | '/m_/patients_/$id'
     | '/m_/research_/$id'
@@ -813,10 +837,12 @@ export interface RootRouteChildren {
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiMedicalSearchRoute: typeof ApiMedicalSearchRoute
+  DOrganizationMembersRoute: typeof DOrganizationMembersRoute
   DOrganizationsIdRoute: typeof DOrganizationsIdRoute
   DPatientsIdRoute: typeof DPatientsIdRoute
   DResearchIdRoute: typeof DResearchIdRoute
   DSpecialistsIdRoute: typeof DSpecialistsIdRoute
+  MOrganizationMembersRoute: typeof MOrganizationMembersRoute
   MOrganizationsIdRoute: typeof MOrganizationsIdRoute
   MPatientsIdRoute: typeof MPatientsIdRoute
   MResearchIdRoute: typeof MResearchIdRoute
@@ -1054,6 +1080,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMedicalSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/d_/organization/members': {
+      id: '/d_/organization/members'
+      path: '/d/organization/members'
+      fullPath: '/d/organization/members'
+      preLoaderRoute: typeof DOrganizationMembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/d_/organizations_/$id': {
       id: '/d_/organizations_/$id'
       path: '/d/organizations/$id'
@@ -1080,6 +1113,13 @@ declare module '@tanstack/react-router' {
       path: '/d/specialists/$id'
       fullPath: '/d/specialists/$id'
       preLoaderRoute: typeof DSpecialistsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m_/organization/members': {
+      id: '/m_/organization/members'
+      path: '/m/organization/members'
+      fullPath: '/m/organization/members'
+      preLoaderRoute: typeof MOrganizationMembersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/m_/organizations_/$id': {
@@ -1325,10 +1365,12 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiMedicalSearchRoute: ApiMedicalSearchRoute,
+  DOrganizationMembersRoute: DOrganizationMembersRoute,
   DOrganizationsIdRoute: DOrganizationsIdRoute,
   DPatientsIdRoute: DPatientsIdRoute,
   DResearchIdRoute: DResearchIdRoute,
   DSpecialistsIdRoute: DSpecialistsIdRoute,
+  MOrganizationMembersRoute: MOrganizationMembersRoute,
   MOrganizationsIdRoute: MOrganizationsIdRoute,
   MPatientsIdRoute: MPatientsIdRoute,
   MResearchIdRoute: MResearchIdRoute,

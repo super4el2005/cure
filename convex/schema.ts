@@ -679,7 +679,9 @@ export default defineSchema({
     city: v.string(),
     description: v.string(),
     published: v.boolean(),
-  }).index("by_published", ["published"]),
+  })
+    .index("by_published", ["published"])
+    .searchIndex("search_name", { searchField: "name", filterFields: ["published"] }),
   profiles: defineTable({
     userId: v.string(),
     displayName: v.string(),
@@ -694,7 +696,53 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_public", ["published", "verified"]),
+  membershipRequests: defineTable({
+    organizationId: v.id("organizations"),
+    userId: v.string(),
+    role: profession,
+    message: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("rejected"),
+      v.literal("withdrawn"),
+    ),
+    revision: v.number(),
+    baseMembershipRevision: v.number(),
+    submittedAt: v.number(),
+    updatedAt: v.number(),
+    reviewedBy: v.union(v.string(), v.null()),
+    reason: v.string(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_organization_user", ["organizationId", "userId"])
+    .index("by_organization_status", ["organizationId", "status"]),
+  membershipDecisionNotes: defineTable({
+    auditId: v.id("membershipAudit"),
+    reason: v.string(),
+  }).index("by_audit", ["auditId"]),
+  membershipAudit: defineTable({
+    organizationId: v.id("organizations"),
+    actorId: v.string(),
+    targetUserId: v.string(),
+    requestId: v.optional(v.id("membershipRequests")),
+    membershipId: v.optional(v.id("memberships")),
+    action: v.union(
+      v.literal("requested"),
+      v.literal("withdrawn"),
+      v.literal("approved"),
+      v.literal("rejected"),
+      v.literal("changed"),
+    ),
+    revision: v.number(),
+    previousRole: v.union(membershipRole, v.null()),
+    nextRole: membershipRole,
+    previousActive: v.boolean(),
+    nextActive: v.boolean(),
+    at: v.number(),
+  }).index("by_organization", ["organizationId"]),
   memberships: defineTable({
+    revision: v.optional(v.number()),
     userId: v.string(),
     organizationId: v.id("organizations"),
     role: membershipRole,
@@ -702,7 +750,9 @@ export default defineSchema({
     verified: v.boolean(),
   })
     .index("by_user", ["userId"])
-    .index("by_organization_user", ["organizationId", "userId"]),
+    .index("by_organization_user", ["organizationId", "userId"])
+    .index("by_organization", ["organizationId"])
+    .index("by_organization_role_active", ["organizationId", "role", "active", "verified"]),
   patientVersions: defineTable({
     organizationId: v.id("organizations"),
     clientId: v.string(),
