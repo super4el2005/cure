@@ -80,7 +80,14 @@ export function clinicalHistoryContent(
       ? i18n.date(new Date(`${value}T12:00:00Z`), { dateStyle: "medium", timeZone: "UTC" })
       : "—";
   const rows: [string, string][] = [
-    [_(msg`Дата записи (UTC)`), date(payload.occurredOn)],
+    [
+      _(
+        payload.kind === "visit" || payload.kind === "studyVisit"
+          ? msg`Календарная дата расписания`
+          : msg`Дата записи (UTC)`,
+      ),
+      date(payload.occurredOn),
+    ],
     [_(msg`Примечания`), payload.notes],
   ];
   const add = (label: MessageDescriptor, value: string) => rows.push([_(label), value || "—"]);
