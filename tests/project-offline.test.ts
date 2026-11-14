@@ -412,20 +412,47 @@ describe("durable research projects", () => {
     finalNetwork.disconnect();
     const formClientId = crypto.randomUUID();
     const versionId = crypto.randomUUID();
+    const numericId = crypto.randomUUID();
+    const questionId = crypto.randomUUID();
     const definition = {
       title: "Confidential form title",
       description: "Confidential form description",
       fields: [
         {
-          id: crypto.randomUUID(),
+          id: questionId,
           type: "text" as const,
           label: "Confidential question",
           help: "",
           required: true,
           maxLength: 100,
         },
+        {
+          id: numericId,
+          type: "number" as const,
+          label: "Scale input",
+          help: "",
+          required: false,
+          minimum: 0,
+          maximum: 10,
+          unit: "",
+          visibleWhen: {
+            mode: "all" as const,
+            rules: [{ fieldId: questionId, operator: "notEquals" as const, value: "Never" }],
+          },
+        },
+      ],
+      scores: [
+        {
+          id: crypto.randomUUID(),
+          label: "Confidential scale",
+          description: "User defined",
+          unit: "points",
+          method: "sum" as const,
+          terms: [{ fieldId: numericId, weight: 1 }],
+        },
       ],
     };
+
     const queuedForm = await workspace.saveForm({
       clientId: versionId,
       projectClientId: clientId,

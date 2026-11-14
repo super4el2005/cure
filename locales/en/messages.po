@@ -114,6 +114,11 @@ msgstr "Medical history and clinical event"
 msgid "Архивировать задачу"
 msgstr "Archive task"
 
+#: src/routes/d_.projects_.$id.forms.tsx:671
+#: src/routes/m_.projects_.$id.forms.tsx:671
+msgid "Баллы"
+msgstr "Points"
+
 #: src/routes/d_.patients_.$id_.consents.tsx:307
 #: src/routes/d_.patients.tsx:356
 #: src/routes/m_.patients_.$id_.consents.tsx:307
@@ -188,6 +193,16 @@ msgstr "Hospital"
 msgid "Больницы и клиники — OpenStreetMap"
 msgstr "Hospitals and clinics — OpenStreetMap"
 
+#: src/routes/d_.projects_.$id.forms.tsx:65
+#: src/routes/m_.projects_.$id.forms.tsx:65
+msgid "Больше"
+msgstr "Greater than"
+
+#: src/routes/d_.projects_.$id.forms.tsx:66
+#: src/routes/m_.projects_.$id.forms.tsx:66
+msgid "Больше или равно"
+msgstr "Greater than or equal to"
+
 #: src/routes/d_.projects_.$id.work.tsx:429
 #: src/routes/d_.projects_.$id.work.tsx:512
 #: src/routes/m_.projects_.$id.work.tsx:429
@@ -220,10 +235,10 @@ msgstr "Do not include patient data in the public description. Publication and r
 #: src/routes/d_.library.tsx:162
 #: src/routes/d_.patients_.$id_.consents.tsx:118
 #: src/routes/d_.patients_.$id_.enrollment.tsx:172
-#: src/routes/d_.patients_.$id_.forms.tsx:162
+#: src/routes/d_.patients_.$id_.forms.tsx:176
 #: src/routes/d_.patients_.$id.tsx:129
 #: src/routes/d_.projects_.$id.enrollment.tsx:121
-#: src/routes/d_.projects_.$id.forms.tsx:146
+#: src/routes/d_.projects_.$id.forms.tsx:155
 #: src/routes/d_.projects_.$id.protocol.tsx:211
 #: src/routes/d_.projects_.$id.safety.tsx:225
 #: src/routes/d_.projects_.$id.team.tsx:191
@@ -235,10 +250,10 @@ msgstr "Do not include patient data in the public description. Publication and r
 #: src/routes/m_.library.tsx:162
 #: src/routes/m_.patients_.$id_.consents.tsx:118
 #: src/routes/m_.patients_.$id_.enrollment.tsx:172
-#: src/routes/m_.patients_.$id_.forms.tsx:162
+#: src/routes/m_.patients_.$id_.forms.tsx:176
 #: src/routes/m_.patients_.$id.tsx:129
 #: src/routes/m_.projects_.$id.enrollment.tsx:121
-#: src/routes/m_.projects_.$id.forms.tsx:146
+#: src/routes/m_.projects_.$id.forms.tsx:155
 #: src/routes/m_.projects_.$id.protocol.tsx:211
 #: src/routes/m_.projects_.$id.safety.tsx:225
 #: src/routes/m_.projects_.$id.team.tsx:191
@@ -269,19 +284,19 @@ msgstr "In progress"
 msgid "Ваши исследования, ближайшие задачи и приглашения выбранной организации."
 msgstr "Your studies, upcoming tasks and invitations for the selected organization."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:210
-#: src/routes/d_.patients_.$id_.forms.tsx:247
-#: src/routes/d_.patients_.$id_.forms.tsx:519
-#: src/routes/d_.patients_.$id_.forms.tsx:565
-#: src/routes/m_.patients_.$id_.forms.tsx:210
-#: src/routes/m_.patients_.$id_.forms.tsx:247
-#: src/routes/m_.patients_.$id_.forms.tsx:519
-#: src/routes/m_.patients_.$id_.forms.tsx:565
+#: src/routes/d_.patients_.$id_.forms.tsx:224
+#: src/routes/d_.patients_.$id_.forms.tsx:261
+#: src/routes/d_.patients_.$id_.forms.tsx:587
+#: src/routes/d_.patients_.$id_.forms.tsx:633
+#: src/routes/m_.patients_.$id_.forms.tsx:224
+#: src/routes/m_.patients_.$id_.forms.tsx:261
+#: src/routes/m_.patients_.$id_.forms.tsx:587
+#: src/routes/m_.patients_.$id_.forms.tsx:633
 msgid "Введённые ответы будут заменены. Сохранённые записи останутся доступными."
 msgstr "Your entered answers will be replaced. Saved records will remain available."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:412
-#: src/routes/m_.patients_.$id_.forms.tsx:412
+#: src/routes/d_.patients_.$id_.forms.tsx:450
+#: src/routes/m_.patients_.$id_.forms.tsx:450
 msgid "Введённые ответы будут потеряны. Сохранённые записи останутся доступными."
 msgstr "Your entered answers will be lost. Saved records will remain available."
 
@@ -294,8 +309,8 @@ msgstr "Enter between 2 and 100 characters"
 msgid "Введите сообщение от 1 до 10000 символов"
 msgstr "Enter a message between 1 and 10000 characters"
 
-#: src/routes/d_.projects_.$id.forms.tsx:237
-#: src/routes/m_.projects_.$id.forms.tsx:237
+#: src/routes/d_.projects_.$id.forms.tsx:246
+#: src/routes/m_.projects_.$id.forms.tsx:246
 msgid "Вверх"
 msgstr "Move up"
 
@@ -314,13 +329,13 @@ msgstr "Restore from archive"
 msgid "Вероятная связь"
 msgstr "Probable relationship"
 
-#: src/routes/d_.projects_.$id.forms.tsx:466
-#: src/routes/m_.projects_.$id.forms.tsx:466
+#: src/routes/d_.projects_.$id.forms.tsx:796
+#: src/routes/m_.projects_.$id.forms.tsx:796
 msgid "Версии шаблона"
 msgstr "Template versions"
 
-#: src/routes/d_.projects_.$id.forms.tsx:435
-#: src/routes/m_.projects_.$id.forms.tsx:435
+#: src/routes/d_.projects_.$id.forms.tsx:765
+#: src/routes/m_.projects_.$id.forms.tsx:765
 msgid "Версию нужно синхронизировать перед заполнением"
 msgstr "Synchronize this version before entering responses"
 
@@ -338,13 +353,13 @@ msgstr "Desktop version"
 msgid "Версия документа согласия"
 msgstr "Consent document version"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:448
-#: src/routes/m_.patients_.$id_.forms.tsx:448
+#: src/routes/d_.patients_.$id_.forms.tsx:486
+#: src/routes/m_.patients_.$id_.forms.tsx:486
 msgid "Версия записи:"
 msgstr "Record revision:"
 
-#: src/routes/d_.projects_.$id.forms.tsx:434
-#: src/routes/m_.projects_.$id.forms.tsx:434
+#: src/routes/d_.projects_.$id.forms.tsx:764
+#: src/routes/m_.projects_.$id.forms.tsx:764
 msgid "Версия получена с сервера"
 msgstr "Version received from the server"
 
@@ -357,10 +372,10 @@ msgstr "Version received from the server"
 msgid "Версия протокола:"
 msgstr "Protocol version:"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:260
-#: src/routes/d_.patients_.$id_.forms.tsx:451
-#: src/routes/m_.patients_.$id_.forms.tsx:260
-#: src/routes/m_.patients_.$id_.forms.tsx:451
+#: src/routes/d_.patients_.$id_.forms.tsx:274
+#: src/routes/d_.patients_.$id_.forms.tsx:489
+#: src/routes/m_.patients_.$id_.forms.tsx:274
+#: src/routes/m_.patients_.$id_.forms.tsx:489
 msgid "Версия шаблона:"
 msgstr "Template version:"
 
@@ -370,8 +385,8 @@ msgstr "Template version:"
 #: src/routes/d_.patients_.$id_.visits.tsx:338
 #: src/routes/d_.patients_.$id.tsx:153
 #: src/routes/d_.patients_.$id.tsx:501
-#: src/routes/d_.projects_.$id.forms.tsx:440
-#: src/routes/d_.projects_.$id.forms.tsx:475
+#: src/routes/d_.projects_.$id.forms.tsx:770
+#: src/routes/d_.projects_.$id.forms.tsx:805
 #: src/routes/d_.projects_.$id.protocol.tsx:335
 #: src/routes/d_.projects.tsx:355
 #: src/routes/m_.analytics.tsx:184
@@ -380,8 +395,8 @@ msgstr "Template version:"
 #: src/routes/m_.patients_.$id_.visits.tsx:338
 #: src/routes/m_.patients_.$id.tsx:153
 #: src/routes/m_.patients_.$id.tsx:501
-#: src/routes/m_.projects_.$id.forms.tsx:440
-#: src/routes/m_.projects_.$id.forms.tsx:475
+#: src/routes/m_.projects_.$id.forms.tsx:770
+#: src/routes/m_.projects_.$id.forms.tsx:805
 #: src/routes/m_.projects_.$id.protocol.tsx:335
 #: src/routes/m_.projects.tsx:355
 msgid "Версия:"
@@ -485,8 +500,8 @@ msgstr "Included in selection"
 msgid "Владелец"
 msgstr "Owner"
 
-#: src/routes/d_.projects_.$id.forms.tsx:247
-#: src/routes/m_.projects_.$id.forms.tsx:247
+#: src/routes/d_.projects_.$id.forms.tsx:256
+#: src/routes/m_.projects_.$id.forms.tsx:256
 msgid "Вниз"
 msgstr "Move down"
 
@@ -518,7 +533,7 @@ msgstr "Sign in and complete your professional profile to collaborate."
 #: src/routes/d_.analytics.tsx:74
 #: src/routes/d_.patients_.$id_.consents.tsx:63
 #: src/routes/d_.patients_.$id_.enrollment.tsx:115
-#: src/routes/d_.patients_.$id_.forms.tsx:105
+#: src/routes/d_.patients_.$id_.forms.tsx:119
 #: src/routes/d_.patients_.$id_.visits.tsx:98
 #: src/routes/d_.patients_.$id.tsx:80
 #: src/routes/d_.patients.tsx:104
@@ -528,7 +543,7 @@ msgstr "Sign in and complete your professional profile to collaborate."
 #: src/routes/m_.analytics.tsx:74
 #: src/routes/m_.patients_.$id_.consents.tsx:63
 #: src/routes/m_.patients_.$id_.enrollment.tsx:115
-#: src/routes/m_.patients_.$id_.forms.tsx:105
+#: src/routes/m_.patients_.$id_.forms.tsx:119
 #: src/routes/m_.patients_.$id_.visits.tsx:98
 #: src/routes/m_.patients_.$id.tsx:80
 #: src/routes/m_.patients.tsx:104
@@ -544,14 +559,14 @@ msgid "Войдите через Google и заполните профессио
 msgstr "Sign in with Google and complete your professional profile to open your personal library."
 
 #: src/routes/d_.invitations.tsx:52
-#: src/routes/d_.projects_.$id.forms.tsx:92
+#: src/routes/d_.projects_.$id.forms.tsx:101
 #: src/routes/d_.projects_.$id.protocol.tsx:162
 #: src/routes/d_.projects_.$id.team.tsx:137
 #: src/routes/d_.projects_.$id.work.tsx:246
 #: src/routes/d_.projects.tsx:139
 #: src/routes/d_.workspace.tsx:109
 #: src/routes/m_.invitations.tsx:52
-#: src/routes/m_.projects_.$id.forms.tsx:92
+#: src/routes/m_.projects_.$id.forms.tsx:101
 #: src/routes/m_.projects_.$id.protocol.tsx:162
 #: src/routes/m_.projects_.$id.team.tsx:137
 #: src/routes/m_.projects_.$id.work.tsx:246
@@ -580,10 +595,19 @@ msgstr "Sign in to create or view your profile."
 msgid "Войти через Google"
 msgstr "Sign in with Google"
 
-#: src/routes/d_.projects_.$id.forms.tsx:226
-#: src/routes/m_.projects_.$id.forms.tsx:226
+#: src/routes/d_.projects_.$id.forms.tsx:235
+#: src/routes/d_.projects_.$id.forms.tsx:338
+#: src/routes/d_.projects_.$id.forms.tsx:623
+#: src/routes/m_.projects_.$id.forms.tsx:235
+#: src/routes/m_.projects_.$id.forms.tsx:338
+#: src/routes/m_.projects_.$id.forms.tsx:623
 msgid "Вопрос"
 msgstr "Question"
+
+#: src/routes/d_.patients_.$id_.forms.tsx:399
+#: src/routes/m_.patients_.$id_.forms.tsx:399
+msgid "Вопросы меняются по условиям шаблона. Скрытые ответы не сохраняются; перед сохранением проверьте активную ветку."
+msgstr "Questions change according to template conditions. Hidden answers are not saved; review the active branch before saving."
 
 #: src/routes/d_.patients.tsx:681
 #: src/routes/m_.patients.tsx:681
@@ -693,6 +717,13 @@ msgstr "All statuses"
 msgid "Все указанные диагнозы"
 msgstr "All specified diagnoses"
 
+#: src/routes/d_.projects_.$id.forms.tsx:314
+#: src/routes/d_.projects_.$id.forms.tsx:826
+#: src/routes/m_.projects_.$id.forms.tsx:314
+#: src/routes/m_.projects_.$id.forms.tsx:826
+msgid "Все условия"
+msgstr "All conditions"
+
 #: src/routes/d_.library.tsx:539
 #: src/routes/m_.library.tsx:539
 msgid "Всего в PubMed:"
@@ -717,6 +748,13 @@ msgstr "Second occurrence of the hour"
 msgid "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
 msgstr "Sign-in was cancelled or an error occurred. Return to the home page and try again."
 
+#: src/routes/d_.projects_.$id.forms.tsx:333
+#: src/routes/d_.projects_.$id.forms.tsx:611
+#: src/routes/m_.projects_.$id.forms.tsx:333
+#: src/routes/m_.projects_.$id.forms.tsx:611
+msgid "Выберите вопрос"
+msgstr "Select a question"
+
 #: src/routes/d_.projects_.$id.work.tsx:363
 #: src/routes/m_.projects_.$id.work.tsx:363
 msgid "Выберите исполнителя"
@@ -736,12 +774,12 @@ msgstr "Select a researcher"
 #: src/routes/d_.invitations.tsx:65
 #: src/routes/d_.patients_.$id_.consents.tsx:76
 #: src/routes/d_.patients_.$id_.enrollment.tsx:127
-#: src/routes/d_.patients_.$id_.forms.tsx:117
+#: src/routes/d_.patients_.$id_.forms.tsx:131
 #: src/routes/d_.patients_.$id_.visits.tsx:110
 #: src/routes/d_.patients_.$id.tsx:93
 #: src/routes/d_.patients.tsx:119
 #: src/routes/d_.projects_.$id.enrollment.tsx:82
-#: src/routes/d_.projects_.$id.forms.tsx:104
+#: src/routes/d_.projects_.$id.forms.tsx:113
 #: src/routes/d_.projects_.$id.protocol.tsx:175
 #: src/routes/d_.projects_.$id.safety.tsx:178
 #: src/routes/d_.projects_.$id.team.tsx:150
@@ -753,12 +791,12 @@ msgstr "Select a researcher"
 #: src/routes/m_.invitations.tsx:65
 #: src/routes/m_.patients_.$id_.consents.tsx:76
 #: src/routes/m_.patients_.$id_.enrollment.tsx:127
-#: src/routes/m_.patients_.$id_.forms.tsx:117
+#: src/routes/m_.patients_.$id_.forms.tsx:131
 #: src/routes/m_.patients_.$id_.visits.tsx:110
 #: src/routes/m_.patients_.$id.tsx:93
 #: src/routes/m_.patients.tsx:119
 #: src/routes/m_.projects_.$id.enrollment.tsx:82
-#: src/routes/m_.projects_.$id.forms.tsx:104
+#: src/routes/m_.projects_.$id.forms.tsx:113
 #: src/routes/m_.projects_.$id.protocol.tsx:175
 #: src/routes/m_.projects_.$id.safety.tsx:178
 #: src/routes/m_.projects_.$id.team.tsx:150
@@ -820,14 +858,14 @@ msgstr "Sign out"
 
 #: src/routes/d_.library.tsx:107
 #: src/routes/d_.patients_.$id_.enrollment.tsx:105
-#: src/routes/d_.patients_.$id_.forms.tsx:94
-#: src/routes/d_.projects_.$id.forms.tsx:82
+#: src/routes/d_.patients_.$id_.forms.tsx:108
+#: src/routes/d_.projects_.$id.forms.tsx:91
 #: src/routes/d_.projects_.$id.safety.tsx:150
 #: src/routes/d_.projects_.$id.visits.tsx:116
 #: src/routes/m_.library.tsx:107
 #: src/routes/m_.patients_.$id_.enrollment.tsx:105
-#: src/routes/m_.patients_.$id_.forms.tsx:94
-#: src/routes/m_.projects_.$id.forms.tsx:82
+#: src/routes/m_.patients_.$id_.forms.tsx:108
+#: src/routes/m_.projects_.$id.forms.tsx:91
 #: src/routes/m_.projects_.$id.safety.tsx:150
 #: src/routes/m_.projects_.$id.visits.tsx:116
 msgid "Выйти без сохранения"
@@ -842,6 +880,11 @@ msgstr "Done"
 #: src/routes/m_.projects_.$id.work.tsx:96
 msgid "Высокий"
 msgstr "High"
+
+#: src/routes/d_.projects_.$id.forms.tsx:575
+#: src/routes/m_.projects_.$id.forms.tsx:575
+msgid "Вычисляемые шкалы"
+msgstr "Calculated scores"
 
 #: src/routes/d_.projects_.$id.protocol.tsx:258
 #: src/routes/d_.projects_.$id.protocol.tsx:339
@@ -872,20 +915,24 @@ msgstr "Hospitalization or prolonged hospitalization"
 msgid "Групп совпадений:"
 msgstr "Candidate groups:"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:343
-#: src/routes/d_.patients_.$id_.forms.tsx:472
-#: src/routes/m_.patients_.$id_.forms.tsx:343
-#: src/routes/m_.patients_.$id_.forms.tsx:472
+#: src/routes/d_.patients_.$id_.forms.tsx:363
+#: src/routes/d_.patients_.$id_.forms.tsx:519
+#: src/routes/d_.projects_.$id.forms.tsx:389
+#: src/routes/d_.projects_.$id.forms.tsx:663
+#: src/routes/m_.patients_.$id_.forms.tsx:363
+#: src/routes/m_.patients_.$id_.forms.tsx:519
+#: src/routes/m_.projects_.$id.forms.tsx:389
+#: src/routes/m_.projects_.$id.forms.tsx:663
 msgid "Да"
 msgstr "Yes"
 
-#: src/routes/d_.projects_.$id.forms.tsx:65
-#: src/routes/m_.projects_.$id.forms.tsx:65
+#: src/routes/d_.projects_.$id.forms.tsx:74
+#: src/routes/m_.projects_.$id.forms.tsx:74
 msgid "Да или нет"
 msgstr "Yes or no"
 
-#: src/routes/d_.projects_.$id.forms.tsx:64
-#: src/routes/m_.projects_.$id.forms.tsx:64
+#: src/routes/d_.projects_.$id.forms.tsx:73
+#: src/routes/m_.projects_.$id.forms.tsx:73
 msgid "Дата"
 msgstr "Date"
 
@@ -894,8 +941,8 @@ msgstr "Date"
 msgid "Дата возникновения (UTC)"
 msgstr "Occurrence date (UTC)"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:263
-#: src/routes/m_.patients_.$id_.forms.tsx:263
+#: src/routes/d_.patients_.$id_.forms.tsx:277
+#: src/routes/m_.patients_.$id_.forms.tsx:277
 msgid "Дата заполнения"
 msgstr "Response date"
 
@@ -1056,8 +1103,8 @@ msgstr "An internet connection is required to contact the AI provider."
 msgid "Для назначения и проведения нужны открытое исследовательское пространство той же организации, действующий протокол и право внесения данных. Существующий визит можно отменить, а сохранённый результат — исправить с обоснованием."
 msgstr "Scheduling and conducting visits require an unlocked research workspace of the same organization, a current protocol and permission to contribute. Existing visits can be canceled and recorded outcomes amended with a reason."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:189
-#: src/routes/m_.patients_.$id_.forms.tsx:189
+#: src/routes/d_.patients_.$id_.forms.tsx:203
+#: src/routes/m_.patients_.$id_.forms.tsx:203
 msgid "Для нового ответа откройте исследовательское пространство той же организации. Сохранённые ответы врач может просматривать и исправлять без участия в проекте."
 msgstr "To create a response, unlock the research workspace of the same organization. Physicians can read and correct saved clinical responses independently of project participation."
 
@@ -1101,8 +1148,8 @@ msgstr "Add 1 to {count}?"
 msgid "Добавить в личную библиотеку"
 msgstr "Add to personal library"
 
-#: src/routes/d_.projects_.$id.forms.tsx:382
-#: src/routes/m_.projects_.$id.forms.tsx:382
+#: src/routes/d_.projects_.$id.forms.tsx:563
+#: src/routes/m_.projects_.$id.forms.tsx:563
 msgid "Добавить вариант"
 msgstr "Add option"
 
@@ -1116,8 +1163,8 @@ msgstr "Add protocol version"
 msgid "Добавить визит"
 msgstr "Add visit"
 
-#: src/routes/d_.projects_.$id.forms.tsx:392
-#: src/routes/m_.projects_.$id.forms.tsx:392
+#: src/routes/d_.projects_.$id.forms.tsx:573
+#: src/routes/m_.projects_.$id.forms.tsx:573
 msgid "Добавить вопрос"
 msgstr "Add question"
 
@@ -1135,6 +1182,21 @@ msgstr "Add clinical record"
 #: src/routes/m_.patients.tsx:208
 msgid "Добавить пациента"
 msgstr "Add patient"
+
+#: src/routes/d_.projects_.$id.forms.tsx:700
+#: src/routes/m_.projects_.$id.forms.tsx:700
+msgid "Добавить слагаемое"
+msgstr "Add score term"
+
+#: src/routes/d_.projects_.$id.forms.tsx:456
+#: src/routes/m_.projects_.$id.forms.tsx:456
+msgid "Добавить условие"
+msgstr "Add condition"
+
+#: src/routes/d_.projects_.$id.forms.tsx:722
+#: src/routes/m_.projects_.$id.forms.tsx:722
+msgid "Добавить шкалу"
+msgstr "Add score"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:406
 #: src/routes/m_.patients_.$id_.enrollment.tsx:406
@@ -1215,10 +1277,10 @@ msgstr "Researcher access"
 msgid "Доступ исследователя к записи"
 msgstr "Researcher access to this record"
 
-#: src/routes/d_.projects_.$id.forms.tsx:211
-#: src/routes/d_.projects_.$id.forms.tsx:444
-#: src/routes/m_.projects_.$id.forms.tsx:211
-#: src/routes/m_.projects_.$id.forms.tsx:444
+#: src/routes/d_.projects_.$id.forms.tsx:220
+#: src/routes/d_.projects_.$id.forms.tsx:774
+#: src/routes/m_.projects_.$id.forms.tsx:220
+#: src/routes/m_.projects_.$id.forms.tsx:774
 msgid "Доступна для новых ответов"
 msgstr "Available for new responses"
 
@@ -1227,8 +1289,8 @@ msgstr "Available for new responses"
 msgid "Доступно записей до отбора"
 msgstr "Available records before selection"
 
-#: src/routes/d_.projects_.$id.forms.tsx:209
-#: src/routes/m_.projects_.$id.forms.tsx:209
+#: src/routes/d_.projects_.$id.forms.tsx:218
+#: src/routes/m_.projects_.$id.forms.tsx:218
 msgid "Доступность новой версии"
 msgstr "New version availability"
 
@@ -1260,11 +1322,16 @@ msgid "Другое медицински значимое событие"
 msgstr "Other medically important event"
 
 #: src/routes/d_.patients_.$id.tsx:449
-#: src/routes/d_.projects_.$id.forms.tsx:313
+#: src/routes/d_.projects_.$id.forms.tsx:494
 #: src/routes/m_.patients_.$id.tsx:449
-#: src/routes/m_.projects_.$id.forms.tsx:313
+#: src/routes/m_.projects_.$id.forms.tsx:494
 msgid "Единица измерения"
 msgstr "Unit"
+
+#: src/routes/d_.projects_.$id.forms.tsx:590
+#: src/routes/m_.projects_.$id.forms.tsx:590
+msgid "Единица результата"
+msgstr "Result unit"
 
 #: src/routes/d_.analytics.tsx:58
 #: src/routes/d_.patients_.$id.tsx:164
@@ -1306,12 +1373,12 @@ msgstr "Lock library"
 #: src/routes/d_.invitations.tsx:112
 #: src/routes/d_.patients_.$id_.consents.tsx:129
 #: src/routes/d_.patients_.$id_.enrollment.tsx:170
-#: src/routes/d_.patients_.$id_.forms.tsx:160
+#: src/routes/d_.patients_.$id_.forms.tsx:174
 #: src/routes/d_.patients_.$id_.visits.tsx:154
 #: src/routes/d_.patients_.$id.tsx:140
 #: src/routes/d_.patients.tsx:180
 #: src/routes/d_.projects_.$id.enrollment.tsx:119
-#: src/routes/d_.projects_.$id.forms.tsx:144
+#: src/routes/d_.projects_.$id.forms.tsx:153
 #: src/routes/d_.projects_.$id.protocol.tsx:222
 #: src/routes/d_.projects_.$id.safety.tsx:223
 #: src/routes/d_.projects_.$id.team.tsx:202
@@ -1322,12 +1389,12 @@ msgstr "Lock library"
 #: src/routes/m_.invitations.tsx:112
 #: src/routes/m_.patients_.$id_.consents.tsx:129
 #: src/routes/m_.patients_.$id_.enrollment.tsx:170
-#: src/routes/m_.patients_.$id_.forms.tsx:160
+#: src/routes/m_.patients_.$id_.forms.tsx:174
 #: src/routes/m_.patients_.$id_.visits.tsx:154
 #: src/routes/m_.patients_.$id.tsx:140
 #: src/routes/m_.patients.tsx:180
 #: src/routes/m_.projects_.$id.enrollment.tsx:119
-#: src/routes/m_.projects_.$id.forms.tsx:144
+#: src/routes/m_.projects_.$id.forms.tsx:153
 #: src/routes/m_.projects_.$id.protocol.tsx:222
 #: src/routes/m_.projects_.$id.safety.tsx:223
 #: src/routes/m_.projects_.$id.team.tsx:202
@@ -1387,11 +1454,11 @@ msgstr "Loading"
 #: src/routes/d_.library.tsx:180
 #: src/routes/d_.patients_.$id_.consents.tsx:131
 #: src/routes/d_.patients_.$id_.enrollment.tsx:191
-#: src/routes/d_.patients_.$id_.forms.tsx:180
+#: src/routes/d_.patients_.$id_.forms.tsx:194
 #: src/routes/d_.patients_.$id_.visits.tsx:172
 #: src/routes/d_.patients_.$id.tsx:142
 #: src/routes/d_.projects_.$id.enrollment.tsx:141
-#: src/routes/d_.projects_.$id.forms.tsx:160
+#: src/routes/d_.projects_.$id.forms.tsx:169
 #: src/routes/d_.projects_.$id.protocol.tsx:225
 #: src/routes/d_.projects_.$id.safety.tsx:246
 #: src/routes/d_.projects_.$id.team.tsx:206
@@ -1404,11 +1471,11 @@ msgstr "Loading"
 #: src/routes/m_.library.tsx:180
 #: src/routes/m_.patients_.$id_.consents.tsx:131
 #: src/routes/m_.patients_.$id_.enrollment.tsx:191
-#: src/routes/m_.patients_.$id_.forms.tsx:180
+#: src/routes/m_.patients_.$id_.forms.tsx:194
 #: src/routes/m_.patients_.$id_.visits.tsx:172
 #: src/routes/m_.patients_.$id.tsx:142
 #: src/routes/m_.projects_.$id.enrollment.tsx:141
-#: src/routes/m_.projects_.$id.forms.tsx:160
+#: src/routes/m_.projects_.$id.forms.tsx:169
 #: src/routes/m_.projects_.$id.protocol.tsx:225
 #: src/routes/m_.projects_.$id.safety.tsx:246
 #: src/routes/m_.projects_.$id.team.tsx:206
@@ -1437,10 +1504,10 @@ msgstr "Tasks"
 msgid "Заключение и решение"
 msgstr "Findings and decision"
 
-#: src/routes/d_.projects_.$id.forms.tsx:213
-#: src/routes/d_.projects_.$id.forms.tsx:445
-#: src/routes/m_.projects_.$id.forms.tsx:213
-#: src/routes/m_.projects_.$id.forms.tsx:445
+#: src/routes/d_.projects_.$id.forms.tsx:222
+#: src/routes/d_.projects_.$id.forms.tsx:775
+#: src/routes/m_.projects_.$id.forms.tsx:222
+#: src/routes/m_.projects_.$id.forms.tsx:775
 msgid "Закрыта для новых ответов"
 msgstr "Closed to new responses"
 
@@ -1454,20 +1521,20 @@ msgstr "Closed"
 msgid "Закрытые проекты, этапы работы и публикация открытого описания исследования."
 msgstr "Private projects, study stages and publication of public study descriptions."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:414
-#: src/routes/d_.projects_.$id.forms.tsx:410
-#: src/routes/m_.patients_.$id_.forms.tsx:414
-#: src/routes/m_.projects_.$id.forms.tsx:410
+#: src/routes/d_.patients_.$id_.forms.tsx:452
+#: src/routes/d_.projects_.$id.forms.tsx:740
+#: src/routes/m_.patients_.$id_.forms.tsx:452
+#: src/routes/m_.projects_.$id.forms.tsx:740
 msgid "Закрыть"
 msgstr "Close"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:410
-#: src/routes/m_.patients_.$id_.forms.tsx:410
+#: src/routes/d_.patients_.$id_.forms.tsx:448
+#: src/routes/m_.patients_.$id_.forms.tsx:448
 msgid "Закрыть несохранённый ответ?"
 msgstr "Close unsaved response?"
 
-#: src/routes/d_.projects_.$id.forms.tsx:406
-#: src/routes/m_.projects_.$id.forms.tsx:406
+#: src/routes/d_.projects_.$id.forms.tsx:736
+#: src/routes/m_.projects_.$id.forms.tsx:736
 msgid "Закрыть несохранённый шаблон?"
 msgstr "Close unsaved template?"
 
@@ -1482,23 +1549,23 @@ msgstr "Close unsaved template?"
 msgid "Заменить несохранённую запись?"
 msgstr "Replace the unsaved entry?"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:208
-#: src/routes/d_.patients_.$id_.forms.tsx:245
-#: src/routes/d_.patients_.$id_.forms.tsx:517
-#: src/routes/d_.patients_.$id_.forms.tsx:563
-#: src/routes/m_.patients_.$id_.forms.tsx:208
-#: src/routes/m_.patients_.$id_.forms.tsx:245
-#: src/routes/m_.patients_.$id_.forms.tsx:517
-#: src/routes/m_.patients_.$id_.forms.tsx:563
+#: src/routes/d_.patients_.$id_.forms.tsx:222
+#: src/routes/d_.patients_.$id_.forms.tsx:259
+#: src/routes/d_.patients_.$id_.forms.tsx:585
+#: src/routes/d_.patients_.$id_.forms.tsx:631
+#: src/routes/m_.patients_.$id_.forms.tsx:222
+#: src/routes/m_.patients_.$id_.forms.tsx:259
+#: src/routes/m_.patients_.$id_.forms.tsx:585
+#: src/routes/m_.patients_.$id_.forms.tsx:631
 msgid "Заменить несохранённый ответ?"
 msgstr "Replace unsaved response?"
 
-#: src/routes/d_.projects_.$id.forms.tsx:173
-#: src/routes/d_.projects_.$id.forms.tsx:454
-#: src/routes/d_.projects_.$id.forms.tsx:545
-#: src/routes/m_.projects_.$id.forms.tsx:173
-#: src/routes/m_.projects_.$id.forms.tsx:454
-#: src/routes/m_.projects_.$id.forms.tsx:545
+#: src/routes/d_.projects_.$id.forms.tsx:182
+#: src/routes/d_.projects_.$id.forms.tsx:784
+#: src/routes/d_.projects_.$id.forms.tsx:927
+#: src/routes/m_.projects_.$id.forms.tsx:182
+#: src/routes/m_.projects_.$id.forms.tsx:784
+#: src/routes/m_.projects_.$id.forms.tsx:927
 msgid "Заменить несохранённый шаблон?"
 msgstr "Replace unsaved template?"
 
@@ -1551,8 +1618,8 @@ msgstr "The record is unavailable, deleted or not yet saved on your device."
 msgid "Запланирован"
 msgstr "Planned"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:217
-#: src/routes/m_.patients_.$id_.forms.tsx:217
+#: src/routes/d_.patients_.$id_.forms.tsx:231
+#: src/routes/m_.patients_.$id_.forms.tsx:231
 msgid "Заполнить опросник"
 msgstr "Complete questionnaire"
 
@@ -1605,6 +1672,19 @@ msgstr "Record a decision"
 msgid "Здесь доступны ссылки на региональные PBF-выгрузки OSM. Архив не является готовым списком больниц и не загружается в браузер автоматически."
 msgstr "Regional OSM PBF downloads are linked here. These archives require processing and are not downloaded automatically."
 
+#: src/routes/d_.projects_.$id.forms.tsx:386
+#: src/routes/d_.projects_.$id.forms.tsx:401
+#: src/routes/d_.projects_.$id.forms.tsx:407
+#: src/routes/d_.projects_.$id.forms.tsx:413
+#: src/routes/d_.projects_.$id.forms.tsx:429
+#: src/routes/m_.projects_.$id.forms.tsx:386
+#: src/routes/m_.projects_.$id.forms.tsx:401
+#: src/routes/m_.projects_.$id.forms.tsx:407
+#: src/routes/m_.projects_.$id.forms.tsx:413
+#: src/routes/m_.projects_.$id.forms.tsx:429
+msgid "Значение условия"
+msgstr "Condition value"
+
 #: src/routes/d_.projects_.$id.safety.tsx:410
 #: src/routes/m_.projects_.$id.safety.tsx:410
 msgid "Значимость отклонения"
@@ -1645,14 +1725,14 @@ msgstr "Editor changes will be lost. Saved records will remain available."
 
 #: src/routes/d_.library.tsx:104
 #: src/routes/d_.patients_.$id_.enrollment.tsx:102
-#: src/routes/d_.patients_.$id_.forms.tsx:91
-#: src/routes/d_.projects_.$id.forms.tsx:79
+#: src/routes/d_.patients_.$id_.forms.tsx:105
+#: src/routes/d_.projects_.$id.forms.tsx:88
 #: src/routes/d_.projects_.$id.safety.tsx:147
 #: src/routes/d_.projects_.$id.visits.tsx:113
 #: src/routes/m_.library.tsx:104
 #: src/routes/m_.patients_.$id_.enrollment.tsx:102
-#: src/routes/m_.patients_.$id_.forms.tsx:91
-#: src/routes/m_.projects_.$id.forms.tsx:79
+#: src/routes/m_.patients_.$id_.forms.tsx:105
+#: src/routes/m_.projects_.$id.forms.tsx:88
 #: src/routes/m_.projects_.$id.safety.tsx:147
 #: src/routes/m_.projects_.$id.visits.tsx:113
 msgid "Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход."
@@ -1670,22 +1750,22 @@ msgstr "Changes can be made in the tab managing the synchronization queue."
 
 #: src/routes/d_.analytics.tsx:174
 #: src/routes/d_.invitations.tsx:192
-#: src/routes/d_.patients_.$id_.forms.tsx:427
+#: src/routes/d_.patients_.$id_.forms.tsx:465
 #: src/routes/d_.patients_.$id_.visits.tsx:313
 #: src/routes/d_.patients_.$id.tsx:483
 #: src/routes/d_.patients_.$id.tsx:617
-#: src/routes/d_.projects_.$id.forms.tsx:423
+#: src/routes/d_.projects_.$id.forms.tsx:753
 #: src/routes/d_.projects_.$id.protocol.tsx:326
 #: src/routes/d_.projects_.$id.team.tsx:367
 #: src/routes/d_.projects_.$id.work.tsx:606
 #: src/routes/d_.projects.tsx:287
 #: src/routes/m_.analytics.tsx:174
 #: src/routes/m_.invitations.tsx:192
-#: src/routes/m_.patients_.$id_.forms.tsx:427
+#: src/routes/m_.patients_.$id_.forms.tsx:465
 #: src/routes/m_.patients_.$id_.visits.tsx:313
 #: src/routes/m_.patients_.$id.tsx:483
 #: src/routes/m_.patients_.$id.tsx:617
-#: src/routes/m_.projects_.$id.forms.tsx:423
+#: src/routes/m_.projects_.$id.forms.tsx:753
 #: src/routes/m_.projects_.$id.protocol.tsx:326
 #: src/routes/m_.projects_.$id.team.tsx:367
 #: src/routes/m_.projects_.$id.work.tsx:606
@@ -1720,8 +1800,8 @@ msgstr "Edit record"
 msgid "Изменить источник"
 msgstr "Edit reference"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:526
-#: src/routes/m_.patients_.$id_.forms.tsx:526
+#: src/routes/d_.patients_.$id_.forms.tsx:594
+#: src/routes/m_.patients_.$id_.forms.tsx:594
 msgid "Изменить ответ"
 msgstr "Edit response"
 
@@ -1730,8 +1810,8 @@ msgstr "Edit response"
 msgid "Изменить событие"
 msgstr "Edit event"
 
-#: src/routes/d_.projects_.$id.forms.tsx:167
-#: src/routes/m_.projects_.$id.forms.tsx:167
+#: src/routes/d_.projects_.$id.forms.tsx:176
+#: src/routes/m_.projects_.$id.forms.tsx:176
 msgid "Изменять шаблоны могут владелец и координатор. Настройка формы не даёт права изменять данные пациентов."
 msgstr "Owners and coordinators can edit templates. Configuring a form does not grant permission to edit patient data."
 
@@ -1809,12 +1889,17 @@ msgstr "Assignee:"
 msgid "Использовать ключ"
 msgstr "Use key"
 
+#: src/routes/d_.projects_.$id.forms.tsx:310
+#: src/routes/m_.projects_.$id.forms.tsx:310
+msgid "Используйте только предыдущие вопросы. Скрытый, пустой или некорректный ответ не выполняет условие."
+msgstr "Use preceding questions only. Hidden, missing or invalid answers do not satisfy a condition."
+
 #: src/routes/d_.invitations.tsx:122
-#: src/routes/d_.patients_.$id_.forms.tsx:71
+#: src/routes/d_.patients_.$id_.forms.tsx:85
 #: src/routes/d_.workspace.tsx:97
 #: src/routes/d_.workspace.tsx:320
 #: src/routes/m_.invitations.tsx:122
-#: src/routes/m_.patients_.$id_.forms.tsx:71
+#: src/routes/m_.patients_.$id_.forms.tsx:85
 #: src/routes/m_.workspace.tsx:97
 #: src/routes/m_.workspace.tsx:320
 msgid "Исследование"
@@ -1830,8 +1915,8 @@ msgstr "Study and protocol"
 msgid "Исследование не найдено или не опубликовано."
 msgstr "The study was not found or is not published."
 
-#: src/routes/d_.projects_.$id.forms.tsx:162
-#: src/routes/m_.projects_.$id.forms.tsx:162
+#: src/routes/d_.projects_.$id.forms.tsx:171
+#: src/routes/m_.projects_.$id.forms.tsx:171
 msgid "Исследование не найдено или недоступно в выбранной организации."
 msgstr "The study was not found or is unavailable in the selected organization."
 
@@ -1950,6 +2035,13 @@ msgstr "Event outcome"
 msgid "Исходная запись отсутствует. Для создания нового события выберите статус «Открыто»; прежнее рассмотрение не переносится."
 msgstr "The original record is missing. To create a new event, select Open; the previous review is not transferred."
 
+#: src/routes/d_.projects_.$id.forms.tsx:330
+#: src/routes/d_.projects_.$id.forms.tsx:608
+#: src/routes/m_.projects_.$id.forms.tsx:330
+#: src/routes/m_.projects_.$id.forms.tsx:608
+msgid "Исходный вопрос"
+msgstr "Source question"
+
 #: src/routes/d_.projects_.$id.work.tsx:91
 #: src/routes/m_.projects_.$id.work.tsx:91
 msgid "К выполнению"
@@ -1965,8 +2057,8 @@ msgstr "To read"
 msgid "Каждая исключённая запись учитывается в первом подходящем шаге; этапы не пересекаются."
 msgstr "Each excluded record is counted at the first matching step; exclusion steps do not overlap."
 
-#: src/routes/d_.projects_.$id.forms.tsx:90
-#: src/routes/m_.projects_.$id.forms.tsx:90
+#: src/routes/d_.projects_.$id.forms.tsx:99
+#: src/routes/m_.projects_.$id.forms.tsx:99
 msgid "Каждое сохранение создаёт отдельную версию шаблона. Старые ответы не изменяются при редактировании формы."
 msgstr "Each save creates a separate template version. Editing a form does not change existing responses."
 
@@ -1976,12 +2068,12 @@ msgstr "System default"
 
 #: src/routes/d_.patients_.$id_.consents.tsx:60
 #: src/routes/d_.patients_.$id_.enrollment.tsx:112
-#: src/routes/d_.patients_.$id_.forms.tsx:102
+#: src/routes/d_.patients_.$id_.forms.tsx:116
 #: src/routes/d_.patients_.$id_.visits.tsx:95
 #: src/routes/d_.patients_.$id.tsx:78
 #: src/routes/m_.patients_.$id_.consents.tsx:60
 #: src/routes/m_.patients_.$id_.enrollment.tsx:112
-#: src/routes/m_.patients_.$id_.forms.tsx:102
+#: src/routes/m_.patients_.$id_.forms.tsx:116
 #: src/routes/m_.patients_.$id_.visits.tsx:95
 #: src/routes/m_.patients_.$id.tsx:78
 msgid "Карта пациента"
@@ -2068,8 +2160,8 @@ msgstr "The key is ready to use."
 msgid "Ключ хранится только в памяти вкладки. После перезагрузки введите его снова."
 msgstr "The key stays in tab memory only. Enter it again after reloading."
 
-#: src/routes/d_.projects_.$id.forms.tsx:346
-#: src/routes/m_.projects_.$id.forms.tsx:346
+#: src/routes/d_.projects_.$id.forms.tsx:527
+#: src/routes/m_.projects_.$id.forms.tsx:527
 msgid "Код варианта"
 msgstr "Option code"
 
@@ -2161,6 +2253,11 @@ msgstr "Root cause"
 #: src/routes/m_.projects_.$id.safety.tsx:614
 msgid "Корректирующие действия или обоснование их отсутствия"
 msgstr "Corrective actions or rationale for taking none"
+
+#: src/routes/d_.projects_.$id.forms.tsx:653
+#: src/routes/m_.projects_.$id.forms.tsx:653
+msgid "Коэффициент"
+msgstr "Coefficient"
 
 #: src/routes/d_.projects_.$id.safety.tsx:311
 #: src/routes/m_.projects_.$id.safety.tsx:311
@@ -2298,17 +2395,17 @@ msgstr "The local dataset is not ready yet. Wait for it to load; this does not m
 msgid "Любой"
 msgstr "Any"
 
-#: src/routes/d_.projects_.$id.forms.tsx:302
-#: src/routes/d_.projects_.$id.forms.tsx:502
-#: src/routes/m_.projects_.$id.forms.tsx:302
-#: src/routes/m_.projects_.$id.forms.tsx:502
+#: src/routes/d_.projects_.$id.forms.tsx:483
+#: src/routes/d_.projects_.$id.forms.tsx:852
+#: src/routes/m_.projects_.$id.forms.tsx:483
+#: src/routes/m_.projects_.$id.forms.tsx:852
 msgid "Максимальное значение"
 msgstr "Maximum value"
 
-#: src/routes/d_.projects_.$id.forms.tsx:281
-#: src/routes/d_.projects_.$id.forms.tsx:493
-#: src/routes/m_.projects_.$id.forms.tsx:281
-#: src/routes/m_.projects_.$id.forms.tsx:493
+#: src/routes/d_.projects_.$id.forms.tsx:462
+#: src/routes/d_.projects_.$id.forms.tsx:843
+#: src/routes/m_.projects_.$id.forms.tsx:462
+#: src/routes/m_.projects_.$id.forms.tsx:843
 msgid "Максимум символов"
 msgstr "Maximum characters"
 
@@ -2328,6 +2425,16 @@ msgstr "Medical catalogs"
 #: src/routes/m.tsx:79
 msgid "Медицинские справочники и AI"
 msgstr "Medical reference tools and AI"
+
+#: src/routes/d_.projects_.$id.forms.tsx:67
+#: src/routes/m_.projects_.$id.forms.tsx:67
+msgid "Меньше"
+msgstr "Less than"
+
+#: src/routes/d_.projects_.$id.forms.tsx:68
+#: src/routes/m_.projects_.$id.forms.tsx:68
+msgid "Меньше или равно"
+msgstr "Less than or equal to"
 
 #: src/routes/d_.projects_.$id.visits.tsx:265
 #: src/routes/m_.projects_.$id.visits.tsx:265
@@ -2353,15 +2460,20 @@ msgstr "Metadata downloaded:"
 msgid "Метки"
 msgstr "Tags"
 
+#: src/routes/d_.projects_.$id.forms.tsx:586
+#: src/routes/m_.projects_.$id.forms.tsx:586
+msgid "Метод, назначение и ограничения шкалы"
+msgstr "Score method, purpose and limitations"
+
 #: src/routes/d_.projects_.$id.visits.tsx:436
 #: src/routes/m_.projects_.$id.visits.tsx:436
 msgid "мин"
 msgstr "min"
 
-#: src/routes/d_.projects_.$id.forms.tsx:291
-#: src/routes/d_.projects_.$id.forms.tsx:498
-#: src/routes/m_.projects_.$id.forms.tsx:291
-#: src/routes/m_.projects_.$id.forms.tsx:498
+#: src/routes/d_.projects_.$id.forms.tsx:472
+#: src/routes/d_.projects_.$id.forms.tsx:848
+#: src/routes/m_.projects_.$id.forms.tsx:472
+#: src/routes/m_.projects_.$id.forms.tsx:848
 msgid "Минимальное значение"
 msgstr "Minimum value"
 
@@ -2387,9 +2499,9 @@ msgstr "Model"
 #: src/routes/__root.tsx:312
 #: src/routes/d_.invitations.tsx:48
 #: src/routes/d_.patients_.$id_.enrollment.tsx:203
-#: src/routes/d_.patients_.$id_.forms.tsx:190
+#: src/routes/d_.patients_.$id_.forms.tsx:204
 #: src/routes/d_.projects_.$id.enrollment.tsx:64
-#: src/routes/d_.projects_.$id.forms.tsx:88
+#: src/routes/d_.projects_.$id.forms.tsx:97
 #: src/routes/d_.projects_.$id.protocol.tsx:159
 #: src/routes/d_.projects_.$id.safety.tsx:155
 #: src/routes/d_.projects_.$id.team.tsx:132
@@ -2401,9 +2513,9 @@ msgstr "Model"
 #: src/routes/d_.workspace.tsx:413
 #: src/routes/m_.invitations.tsx:48
 #: src/routes/m_.patients_.$id_.enrollment.tsx:203
-#: src/routes/m_.patients_.$id_.forms.tsx:190
+#: src/routes/m_.patients_.$id_.forms.tsx:204
 #: src/routes/m_.projects_.$id.enrollment.tsx:64
-#: src/routes/m_.projects_.$id.forms.tsx:88
+#: src/routes/m_.projects_.$id.forms.tsx:97
 #: src/routes/m_.projects_.$id.protocol.tsx:159
 #: src/routes/m_.projects_.$id.safety.tsx:155
 #: src/routes/m_.projects_.$id.team.tsx:132
@@ -2548,10 +2660,15 @@ msgstr "Study title"
 msgid "Название публикации"
 msgstr "Publication title"
 
-#: src/routes/d_.projects_.$id.forms.tsx:198
-#: src/routes/m_.projects_.$id.forms.tsx:198
+#: src/routes/d_.projects_.$id.forms.tsx:207
+#: src/routes/m_.projects_.$id.forms.tsx:207
 msgid "Название формы"
 msgstr "Form title"
+
+#: src/routes/d_.projects_.$id.forms.tsx:581
+#: src/routes/m_.projects_.$id.forms.tsx:581
+msgid "Название шкалы"
+msgstr "Score name"
 
 #: src/routes/d_.tools.tsx:544
 #: src/routes/m_.tools.tsx:500
@@ -2648,6 +2765,11 @@ msgstr "At least 12 characters"
 #: src/routes/m_.projects_.$id.safety.tsx:94
 msgid "Не оценена"
 msgstr "Not assessed"
+
+#: src/routes/d_.projects_.$id.forms.tsx:63
+#: src/routes/m_.projects_.$id.forms.tsx:63
+msgid "Не равно"
+msgstr "Does not equal"
 
 #: src/routes/d_.patients_.$id.tsx:163
 #: src/routes/d_.patients_.$id.tsx:169
@@ -2795,8 +2917,8 @@ msgstr "Could not save or load the event. Check physician permissions, participa
 msgid "Не удалось сохранить настройки AI."
 msgstr "Unable to save AI settings."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:151
-#: src/routes/m_.patients_.$id_.forms.tsx:151
+#: src/routes/d_.patients_.$id_.forms.tsx:165
+#: src/routes/m_.patients_.$id_.forms.tsx:165
 msgid "Не удалось сохранить ответ. Проверьте права проекта, актуальность шаблона и версию записи. Введённые значения остаются в форме."
 msgstr "Unable to save the response. Check project permissions, template availability and the record revision. Your input remains in the form."
 
@@ -2805,8 +2927,8 @@ msgstr "Unable to save the response. Check project permissions, template availab
 msgid "Не удалось сохранить участие. Проверьте статус исследования, протокол, согласие и текущую версию записи. Введённые данные остаются в редакторе."
 msgstr "Could not save participation. Check the study status, protocol, consent and current record version. Your input remains in the editor."
 
-#: src/routes/d_.projects_.$id.forms.tsx:135
-#: src/routes/m_.projects_.$id.forms.tsx:135
+#: src/routes/d_.projects_.$id.forms.tsx:144
+#: src/routes/m_.projects_.$id.forms.tsx:144
 msgid "Не удалось сохранить форму. Проверьте доступ и текущую версию; введённые данные остаются в редакторе."
 msgstr "Unable to save the form. Check access and the current version; your input remains in the editor."
 
@@ -2854,6 +2976,13 @@ msgstr "Inactive"
 msgid "Недавняя работа"
 msgstr "Recent work"
 
+#: src/routes/d_.patients_.$id_.forms.tsx:411
+#: src/routes/d_.patients_.$id_.forms.tsx:561
+#: src/routes/m_.patients_.$id_.forms.tsx:411
+#: src/routes/m_.patients_.$id_.forms.tsx:561
+msgid "Недостаточно ответов для расчёта"
+msgstr "Not enough answers to calculate"
+
 #: src/routes/d_.projects_.$id.safety.tsx:74
 #: src/routes/d_.workspace.tsx:184
 #: src/routes/m_.projects_.$id.safety.tsx:74
@@ -2891,24 +3020,31 @@ msgstr "The AI provider timed out. Try again later."
 msgid "Нейросеть ответила. Подключение работает."
 msgstr "The AI provider responded. The connection works."
 
+#: src/routes/d_.patients_.$id_.forms.tsx:412
+#: src/routes/d_.patients_.$id_.forms.tsx:562
+#: src/routes/m_.patients_.$id_.forms.tsx:412
+#: src/routes/m_.patients_.$id_.forms.tsx:562
+msgid "Некорректные исходные значения"
+msgstr "Invalid source values"
+
 #: src/routes/d_.projects_.$id.safety.tsx:96
 #: src/routes/m_.projects_.$id.safety.tsx:96
 msgid "Неожиданное"
 msgstr "Unexpected"
 
-#: src/routes/d_.projects_.$id.forms.tsx:67
-#: src/routes/m_.projects_.$id.forms.tsx:67
+#: src/routes/d_.projects_.$id.forms.tsx:76
+#: src/routes/m_.projects_.$id.forms.tsx:76
 msgid "Несколько вариантов"
 msgstr "Multiple choices"
 
-#: src/routes/d_.projects_.$id.forms.tsx:175
-#: src/routes/d_.projects_.$id.forms.tsx:408
-#: src/routes/d_.projects_.$id.forms.tsx:456
-#: src/routes/d_.projects_.$id.forms.tsx:547
-#: src/routes/m_.projects_.$id.forms.tsx:175
-#: src/routes/m_.projects_.$id.forms.tsx:408
-#: src/routes/m_.projects_.$id.forms.tsx:456
-#: src/routes/m_.projects_.$id.forms.tsx:547
+#: src/routes/d_.projects_.$id.forms.tsx:184
+#: src/routes/d_.projects_.$id.forms.tsx:738
+#: src/routes/d_.projects_.$id.forms.tsx:786
+#: src/routes/d_.projects_.$id.forms.tsx:929
+#: src/routes/m_.projects_.$id.forms.tsx:184
+#: src/routes/m_.projects_.$id.forms.tsx:738
+#: src/routes/m_.projects_.$id.forms.tsx:786
+#: src/routes/m_.projects_.$id.forms.tsx:929
 msgid "Несохранённые вопросы будут заменены; опубликованные версии останутся доступными."
 msgstr "Unsaved questions will be replaced; published versions will remain available."
 
@@ -2921,10 +3057,14 @@ msgstr "Unsaved questions will be replaced; published versions will remain avail
 msgid "Несохранённые критерии и название будут заменены. Сохранённая версия останется доступной."
 msgstr "Unsaved criteria and title will be replaced. The saved version will remain available."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:344
-#: src/routes/d_.patients_.$id_.forms.tsx:473
-#: src/routes/m_.patients_.$id_.forms.tsx:344
-#: src/routes/m_.patients_.$id_.forms.tsx:473
+#: src/routes/d_.patients_.$id_.forms.tsx:364
+#: src/routes/d_.patients_.$id_.forms.tsx:520
+#: src/routes/d_.projects_.$id.forms.tsx:390
+#: src/routes/d_.projects_.$id.forms.tsx:664
+#: src/routes/m_.patients_.$id_.forms.tsx:364
+#: src/routes/m_.patients_.$id_.forms.tsx:520
+#: src/routes/m_.projects_.$id.forms.tsx:390
+#: src/routes/m_.projects_.$id.forms.tsx:664
 msgid "Нет"
 msgstr "No"
 
@@ -2943,8 +3083,8 @@ msgstr "No current ethics approval"
 msgid "Нет доступного набора с подтверждённым протоколом и действующим этическим разрешением. Новые версии протоколов сначала нужно синхронизировать."
 msgstr "No recruitment is available with a confirmed protocol and current ethics approval. New protocol versions must be synchronized first."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:222
-#: src/routes/m_.patients_.$id_.forms.tsx:222
+#: src/routes/d_.patients_.$id_.forms.tsx:236
+#: src/routes/m_.patients_.$id_.forms.tsx:236
 msgid "Нет доступных опубликованных форм. Владелец или координатор может добавить шаблон в исследовании."
 msgstr "No published forms are available. An owner or coordinator can add a study template."
 
@@ -3003,8 +3143,8 @@ msgstr "You are offline: search is limited to saved records."
 msgid "Низкий"
 msgstr "Low"
 
-#: src/routes/d_.projects_.$id.forms.tsx:182
-#: src/routes/m_.projects_.$id.forms.tsx:182
+#: src/routes/d_.projects_.$id.forms.tsx:191
+#: src/routes/m_.projects_.$id.forms.tsx:191
 msgid "Новая форма"
 msgstr "New form"
 
@@ -3013,8 +3153,8 @@ msgstr "New form"
 msgid "Новое сообщение"
 msgstr "New message"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:219
-#: src/routes/m_.patients_.$id_.forms.tsx:219
+#: src/routes/d_.patients_.$id_.forms.tsx:233
+#: src/routes/m_.patients_.$id_.forms.tsx:233
 msgid "Новые версии шаблонов ещё не отправлены. Сначала синхронизируйте исследовательское пространство; затем их можно будет заполнять без сети."
 msgstr "New template versions have not been sent yet. Synchronize the research workspace first; then they can be used for offline responses."
 
@@ -3100,20 +3240,25 @@ msgstr "Discussion and tasks"
 msgid "Обсуждения и задачи исследования"
 msgstr "Study discussion and tasks"
 
+#: src/routes/d_.projects_.$id.forms.tsx:312
+#: src/routes/m_.projects_.$id.forms.tsx:312
+msgid "Объединение условий"
+msgstr "Combine conditions"
+
 #: src/routes/d_.projects_.$id.work.tsx:96
 #: src/routes/m_.projects_.$id.work.tsx:96
 msgid "Обычный"
 msgstr "Normal"
 
-#: src/routes/d_.projects_.$id.forms.tsx:274
-#: src/routes/d_.projects_.$id.forms.tsx:488
-#: src/routes/m_.projects_.$id.forms.tsx:274
-#: src/routes/m_.projects_.$id.forms.tsx:488
+#: src/routes/d_.projects_.$id.forms.tsx:283
+#: src/routes/d_.projects_.$id.forms.tsx:818
+#: src/routes/m_.projects_.$id.forms.tsx:283
+#: src/routes/m_.projects_.$id.forms.tsx:818
 msgid "Обязательный ответ"
 msgstr "Required response"
 
-#: src/routes/d_.projects_.$id.forms.tsx:66
-#: src/routes/m_.projects_.$id.forms.tsx:66
+#: src/routes/d_.projects_.$id.forms.tsx:75
+#: src/routes/m_.projects_.$id.forms.tsx:75
 msgid "Один вариант"
 msgstr "Single choice"
 
@@ -3156,10 +3301,10 @@ msgstr "Awaiting confirmation"
 msgid "Ожидают вашего ответа"
 msgstr "Awaiting your response"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:274
-#: src/routes/d_.patients_.$id_.forms.tsx:445
-#: src/routes/m_.patients_.$id_.forms.tsx:274
-#: src/routes/m_.patients_.$id_.forms.tsx:445
+#: src/routes/d_.patients_.$id_.forms.tsx:288
+#: src/routes/d_.patients_.$id_.forms.tsx:483
+#: src/routes/m_.patients_.$id_.forms.tsx:288
+#: src/routes/m_.patients_.$id_.forms.tsx:483
 msgid "Окончательный ответ"
 msgstr "Final response"
 
@@ -3198,8 +3343,8 @@ msgstr "Task description"
 msgid "Описание события"
 msgstr "Event description"
 
-#: src/routes/d_.projects_.$id.forms.tsx:204
-#: src/routes/m_.projects_.$id.forms.tsx:204
+#: src/routes/d_.projects_.$id.forms.tsx:213
+#: src/routes/m_.projects_.$id.forms.tsx:213
 msgid "Описание формы"
 msgstr "Form description"
 
@@ -3213,9 +3358,9 @@ msgstr "Descriptive analysis of available records in the selected organization. 
 msgid "Опросник"
 msgstr "Questionnaire"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:103
+#: src/routes/d_.patients_.$id_.forms.tsx:117
 #: src/routes/d_.patients_.$id.tsx:290
-#: src/routes/m_.patients_.$id_.forms.tsx:103
+#: src/routes/m_.patients_.$id_.forms.tsx:117
 #: src/routes/m_.patients_.$id.tsx:290
 msgid "Опросники пациента"
 msgstr "Patient questionnaires"
@@ -3252,12 +3397,12 @@ msgstr "Organizations"
 #: src/routes/d_.invitations.tsx:64
 #: src/routes/d_.patients_.$id_.consents.tsx:75
 #: src/routes/d_.patients_.$id_.enrollment.tsx:126
-#: src/routes/d_.patients_.$id_.forms.tsx:116
+#: src/routes/d_.patients_.$id_.forms.tsx:130
 #: src/routes/d_.patients_.$id_.visits.tsx:109
 #: src/routes/d_.patients_.$id.tsx:92
 #: src/routes/d_.patients.tsx:118
 #: src/routes/d_.projects_.$id.enrollment.tsx:81
-#: src/routes/d_.projects_.$id.forms.tsx:103
+#: src/routes/d_.projects_.$id.forms.tsx:112
 #: src/routes/d_.projects_.$id.protocol.tsx:174
 #: src/routes/d_.projects_.$id.safety.tsx:177
 #: src/routes/d_.projects_.$id.team.tsx:149
@@ -3269,12 +3414,12 @@ msgstr "Organizations"
 #: src/routes/m_.invitations.tsx:64
 #: src/routes/m_.patients_.$id_.consents.tsx:75
 #: src/routes/m_.patients_.$id_.enrollment.tsx:126
-#: src/routes/m_.patients_.$id_.forms.tsx:116
+#: src/routes/m_.patients_.$id_.forms.tsx:130
 #: src/routes/m_.patients_.$id_.visits.tsx:109
 #: src/routes/m_.patients_.$id.tsx:92
 #: src/routes/m_.patients.tsx:118
 #: src/routes/m_.projects_.$id.enrollment.tsx:81
-#: src/routes/m_.projects_.$id.forms.tsx:103
+#: src/routes/m_.projects_.$id.forms.tsx:112
 #: src/routes/m_.projects_.$id.protocol.tsx:174
 #: src/routes/m_.projects_.$id.safety.tsx:177
 #: src/routes/m_.projects_.$id.team.tsx:149
@@ -3301,14 +3446,14 @@ msgstr "Leave empty if no seriousness criteria apply."
 
 #: src/routes/d_.library.tsx:106
 #: src/routes/d_.patients_.$id_.enrollment.tsx:104
-#: src/routes/d_.patients_.$id_.forms.tsx:93
-#: src/routes/d_.projects_.$id.forms.tsx:81
+#: src/routes/d_.patients_.$id_.forms.tsx:107
+#: src/routes/d_.projects_.$id.forms.tsx:90
 #: src/routes/d_.projects_.$id.safety.tsx:149
 #: src/routes/d_.projects_.$id.visits.tsx:115
 #: src/routes/m_.library.tsx:106
 #: src/routes/m_.patients_.$id_.enrollment.tsx:104
-#: src/routes/m_.patients_.$id_.forms.tsx:93
-#: src/routes/m_.projects_.$id.forms.tsx:81
+#: src/routes/m_.patients_.$id_.forms.tsx:107
+#: src/routes/m_.projects_.$id.forms.tsx:90
 #: src/routes/m_.projects_.$id.safety.tsx:149
 #: src/routes/m_.projects_.$id.visits.tsx:115
 msgid "Остаться"
@@ -3319,12 +3464,12 @@ msgstr "Stay"
 msgid "От 1 до 365 дней"
 msgstr "Between 1 and 365 days"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:342
-#: src/routes/d_.patients_.$id_.forms.tsx:357
-#: src/routes/d_.patients_.$id_.forms.tsx:469
-#: src/routes/m_.patients_.$id_.forms.tsx:342
-#: src/routes/m_.patients_.$id_.forms.tsx:357
-#: src/routes/m_.patients_.$id_.forms.tsx:469
+#: src/routes/d_.patients_.$id_.forms.tsx:362
+#: src/routes/d_.patients_.$id_.forms.tsx:377
+#: src/routes/d_.patients_.$id_.forms.tsx:516
+#: src/routes/m_.patients_.$id_.forms.tsx:362
+#: src/routes/m_.patients_.$id_.forms.tsx:377
+#: src/routes/m_.patients_.$id_.forms.tsx:516
 msgid "Ответ не указан"
 msgstr "No response"
 
@@ -3335,13 +3480,13 @@ msgstr "No response"
 msgid "Ответственный врач за рассмотрение"
 msgstr "Assigned reviewing physician"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:539
-#: src/routes/m_.patients_.$id_.forms.tsx:539
+#: src/routes/d_.patients_.$id_.forms.tsx:607
+#: src/routes/m_.patients_.$id_.forms.tsx:607
 msgid "Ответы будут очищены после синхронизации. В аудите останутся метаданные удаления."
 msgstr "Responses will be cleared after synchronization. Deletion metadata will remain in the audit."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:430
-#: src/routes/m_.patients_.$id_.forms.tsx:430
+#: src/routes/d_.patients_.$id_.forms.tsx:468
+#: src/routes/m_.patients_.$id_.forms.tsx:468
 msgid "Ответы ещё не загружены. Для первой загрузки нужен интернет."
 msgstr "Responses have not been loaded yet. The initial download requires an internet connection."
 
@@ -3395,13 +3540,13 @@ msgstr "Decline invitation"
 msgid "Откройте клиническое пространство для просмотра визитов."
 msgstr "Unlock a clinical workspace to view visits."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:391
-#: src/routes/m_.patients_.$id_.forms.tsx:391
+#: src/routes/d_.patients_.$id_.forms.tsx:429
+#: src/routes/m_.patients_.$id_.forms.tsx:429
 msgid "Открыт отклонённый черновик. Перед сохранением сравните его с текущими ответами. Устаревший шаблон нужно выбрать заново; ответы не переносятся автоматически."
 msgstr "A rejected draft is open. Compare it with current responses before saving. Select a current template if the old one is outdated; answers are not transferred automatically."
 
-#: src/routes/d_.projects_.$id.forms.tsx:394
-#: src/routes/m_.projects_.$id.forms.tsx:394
+#: src/routes/d_.projects_.$id.forms.tsx:724
+#: src/routes/m_.projects_.$id.forms.tsx:724
 msgid "Открыт отклонённый черновик. Сохранение создаст новую версию после текущей; чужие изменения не перезаписываются."
 msgstr "A rejected draft is open. Saving will create a version after the current one; other edits are not overwritten."
 
@@ -3490,12 +3635,12 @@ msgstr "Open profile"
 #: src/routes/d_.invitations.tsx:86
 #: src/routes/d_.patients_.$id_.consents.tsx:97
 #: src/routes/d_.patients_.$id_.enrollment.tsx:148
-#: src/routes/d_.patients_.$id_.forms.tsx:138
+#: src/routes/d_.patients_.$id_.forms.tsx:152
 #: src/routes/d_.patients_.$id_.visits.tsx:131
 #: src/routes/d_.patients_.$id.tsx:114
 #: src/routes/d_.patients.tsx:141
 #: src/routes/d_.projects_.$id.enrollment.tsx:103
-#: src/routes/d_.projects_.$id.forms.tsx:125
+#: src/routes/d_.projects_.$id.forms.tsx:134
 #: src/routes/d_.projects_.$id.protocol.tsx:196
 #: src/routes/d_.projects_.$id.safety.tsx:199
 #: src/routes/d_.projects_.$id.team.tsx:171
@@ -3507,12 +3652,12 @@ msgstr "Open profile"
 #: src/routes/m_.invitations.tsx:86
 #: src/routes/m_.patients_.$id_.consents.tsx:97
 #: src/routes/m_.patients_.$id_.enrollment.tsx:148
-#: src/routes/m_.patients_.$id_.forms.tsx:138
+#: src/routes/m_.patients_.$id_.forms.tsx:152
 #: src/routes/m_.patients_.$id_.visits.tsx:131
 #: src/routes/m_.patients_.$id.tsx:114
 #: src/routes/m_.patients.tsx:141
 #: src/routes/m_.projects_.$id.enrollment.tsx:103
-#: src/routes/m_.projects_.$id.forms.tsx:125
+#: src/routes/m_.projects_.$id.forms.tsx:134
 #: src/routes/m_.projects_.$id.protocol.tsx:196
 #: src/routes/m_.projects_.$id.safety.tsx:199
 #: src/routes/m_.projects_.$id.team.tsx:171
@@ -3527,10 +3672,10 @@ msgstr "Open workspace"
 #: src/routes/d_.library.tsx:490
 #: src/routes/d_.patients_.$id_.consents.tsx:428
 #: src/routes/d_.patients_.$id_.enrollment.tsx:465
-#: src/routes/d_.patients_.$id_.forms.tsx:572
+#: src/routes/d_.patients_.$id_.forms.tsx:640
 #: src/routes/d_.patients_.$id_.visits.tsx:414
 #: src/routes/d_.patients_.$id.tsx:607
-#: src/routes/d_.projects_.$id.forms.tsx:554
+#: src/routes/d_.projects_.$id.forms.tsx:936
 #: src/routes/d_.projects_.$id.protocol.tsx:376
 #: src/routes/d_.projects_.$id.safety.tsx:688
 #: src/routes/d_.projects_.$id.team.tsx:397
@@ -3541,10 +3686,10 @@ msgstr "Open workspace"
 #: src/routes/m_.library.tsx:490
 #: src/routes/m_.patients_.$id_.consents.tsx:428
 #: src/routes/m_.patients_.$id_.enrollment.tsx:465
-#: src/routes/m_.patients_.$id_.forms.tsx:572
+#: src/routes/m_.patients_.$id_.forms.tsx:640
 #: src/routes/m_.patients_.$id_.visits.tsx:414
 #: src/routes/m_.patients_.$id.tsx:607
-#: src/routes/m_.projects_.$id.forms.tsx:554
+#: src/routes/m_.projects_.$id.forms.tsx:936
 #: src/routes/m_.projects_.$id.protocol.tsx:376
 #: src/routes/m_.projects_.$id.safety.tsx:688
 #: src/routes/m_.projects_.$id.team.tsx:397
@@ -3571,13 +3716,13 @@ msgstr "Open this version for a new revision"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:87
 #: src/routes/d_.patients_.$id_.enrollment.tsx:335
 #: src/routes/d_.patients_.$id_.enrollment.tsx:444
-#: src/routes/d_.patients_.$id_.forms.tsx:212
-#: src/routes/d_.patients_.$id_.forms.tsx:249
-#: src/routes/d_.patients_.$id_.forms.tsx:414
-#: src/routes/d_.patients_.$id_.forms.tsx:419
-#: src/routes/d_.patients_.$id_.forms.tsx:521
-#: src/routes/d_.patients_.$id_.forms.tsx:541
-#: src/routes/d_.patients_.$id_.forms.tsx:567
+#: src/routes/d_.patients_.$id_.forms.tsx:226
+#: src/routes/d_.patients_.$id_.forms.tsx:263
+#: src/routes/d_.patients_.$id_.forms.tsx:452
+#: src/routes/d_.patients_.$id_.forms.tsx:457
+#: src/routes/d_.patients_.$id_.forms.tsx:589
+#: src/routes/d_.patients_.$id_.forms.tsx:609
+#: src/routes/d_.patients_.$id_.forms.tsx:635
 #: src/routes/d_.patients_.$id_.visits.tsx:305
 #: src/routes/d_.patients_.$id_.visits.tsx:395
 #: src/routes/d_.patients_.$id.tsx:214
@@ -3589,11 +3734,11 @@ msgstr "Open this version for a new revision"
 #: src/routes/d_.patients.tsx:427
 #: src/routes/d_.patients.tsx:646
 #: src/routes/d_.profile.tsx:173
-#: src/routes/d_.projects_.$id.forms.tsx:177
-#: src/routes/d_.projects_.$id.forms.tsx:410
-#: src/routes/d_.projects_.$id.forms.tsx:415
-#: src/routes/d_.projects_.$id.forms.tsx:458
-#: src/routes/d_.projects_.$id.forms.tsx:549
+#: src/routes/d_.projects_.$id.forms.tsx:186
+#: src/routes/d_.projects_.$id.forms.tsx:740
+#: src/routes/d_.projects_.$id.forms.tsx:745
+#: src/routes/d_.projects_.$id.forms.tsx:788
+#: src/routes/d_.projects_.$id.forms.tsx:931
 #: src/routes/d_.projects_.$id.protocol.tsx:319
 #: src/routes/d_.projects_.$id.safety.tsx:132
 #: src/routes/d_.projects_.$id.safety.tsx:513
@@ -3618,13 +3763,13 @@ msgstr "Open this version for a new revision"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:87
 #: src/routes/m_.patients_.$id_.enrollment.tsx:335
 #: src/routes/m_.patients_.$id_.enrollment.tsx:444
-#: src/routes/m_.patients_.$id_.forms.tsx:212
-#: src/routes/m_.patients_.$id_.forms.tsx:249
-#: src/routes/m_.patients_.$id_.forms.tsx:414
-#: src/routes/m_.patients_.$id_.forms.tsx:419
-#: src/routes/m_.patients_.$id_.forms.tsx:521
-#: src/routes/m_.patients_.$id_.forms.tsx:541
-#: src/routes/m_.patients_.$id_.forms.tsx:567
+#: src/routes/m_.patients_.$id_.forms.tsx:226
+#: src/routes/m_.patients_.$id_.forms.tsx:263
+#: src/routes/m_.patients_.$id_.forms.tsx:452
+#: src/routes/m_.patients_.$id_.forms.tsx:457
+#: src/routes/m_.patients_.$id_.forms.tsx:589
+#: src/routes/m_.patients_.$id_.forms.tsx:609
+#: src/routes/m_.patients_.$id_.forms.tsx:635
 #: src/routes/m_.patients_.$id_.visits.tsx:305
 #: src/routes/m_.patients_.$id_.visits.tsx:395
 #: src/routes/m_.patients_.$id.tsx:214
@@ -3636,11 +3781,11 @@ msgstr "Open this version for a new revision"
 #: src/routes/m_.patients.tsx:427
 #: src/routes/m_.patients.tsx:646
 #: src/routes/m_.profile.tsx:173
-#: src/routes/m_.projects_.$id.forms.tsx:177
-#: src/routes/m_.projects_.$id.forms.tsx:410
-#: src/routes/m_.projects_.$id.forms.tsx:415
-#: src/routes/m_.projects_.$id.forms.tsx:458
-#: src/routes/m_.projects_.$id.forms.tsx:549
+#: src/routes/m_.projects_.$id.forms.tsx:186
+#: src/routes/m_.projects_.$id.forms.tsx:740
+#: src/routes/m_.projects_.$id.forms.tsx:745
+#: src/routes/m_.projects_.$id.forms.tsx:788
+#: src/routes/m_.projects_.$id.forms.tsx:931
 #: src/routes/m_.projects_.$id.protocol.tsx:319
 #: src/routes/m_.projects_.$id.safety.tsx:132
 #: src/routes/m_.projects_.$id.safety.tsx:513
@@ -3701,12 +3846,12 @@ msgstr "Personal library passphrase"
 #: src/routes/d_.invitations.tsx:69
 #: src/routes/d_.patients_.$id_.consents.tsx:80
 #: src/routes/d_.patients_.$id_.enrollment.tsx:131
-#: src/routes/d_.patients_.$id_.forms.tsx:121
+#: src/routes/d_.patients_.$id_.forms.tsx:135
 #: src/routes/d_.patients_.$id_.visits.tsx:114
 #: src/routes/d_.patients_.$id.tsx:97
 #: src/routes/d_.patients.tsx:123
 #: src/routes/d_.projects_.$id.enrollment.tsx:86
-#: src/routes/d_.projects_.$id.forms.tsx:108
+#: src/routes/d_.projects_.$id.forms.tsx:117
 #: src/routes/d_.projects_.$id.protocol.tsx:179
 #: src/routes/d_.projects_.$id.safety.tsx:182
 #: src/routes/d_.projects_.$id.team.tsx:154
@@ -3718,12 +3863,12 @@ msgstr "Personal library passphrase"
 #: src/routes/m_.invitations.tsx:69
 #: src/routes/m_.patients_.$id_.consents.tsx:80
 #: src/routes/m_.patients_.$id_.enrollment.tsx:131
-#: src/routes/m_.patients_.$id_.forms.tsx:121
+#: src/routes/m_.patients_.$id_.forms.tsx:135
 #: src/routes/m_.patients_.$id_.visits.tsx:114
 #: src/routes/m_.patients_.$id.tsx:97
 #: src/routes/m_.patients.tsx:123
 #: src/routes/m_.projects_.$id.enrollment.tsx:86
-#: src/routes/m_.projects_.$id.forms.tsx:108
+#: src/routes/m_.projects_.$id.forms.tsx:117
 #: src/routes/m_.projects_.$id.protocol.tsx:179
 #: src/routes/m_.projects_.$id.safety.tsx:182
 #: src/routes/m_.projects_.$id.team.tsx:154
@@ -3748,10 +3893,10 @@ msgid "Пациент"
 msgstr "Patient"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:194
-#: src/routes/d_.patients_.$id_.forms.tsx:182
+#: src/routes/d_.patients_.$id_.forms.tsx:196
 #: src/routes/d_.patients_.$id_.visits.tsx:174
 #: src/routes/m_.patients_.$id_.enrollment.tsx:194
-#: src/routes/m_.patients_.$id_.forms.tsx:182
+#: src/routes/m_.patients_.$id_.forms.tsx:196
 #: src/routes/m_.patients_.$id_.visits.tsx:174
 msgid "Пациент не найден или недоступен в выбранной организации."
 msgstr "The patient was not found or is unavailable in the selected organization."
@@ -3840,12 +3985,12 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/d_.library.tsx:130
 #: src/routes/d_.patients_.$id_.consents.tsx:88
 #: src/routes/d_.patients_.$id_.enrollment.tsx:139
-#: src/routes/d_.patients_.$id_.forms.tsx:129
+#: src/routes/d_.patients_.$id_.forms.tsx:143
 #: src/routes/d_.patients_.$id_.visits.tsx:122
 #: src/routes/d_.patients_.$id.tsx:105
 #: src/routes/d_.patients.tsx:132
 #: src/routes/d_.projects_.$id.enrollment.tsx:94
-#: src/routes/d_.projects_.$id.forms.tsx:116
+#: src/routes/d_.projects_.$id.forms.tsx:125
 #: src/routes/d_.projects_.$id.protocol.tsx:187
 #: src/routes/d_.projects_.$id.safety.tsx:190
 #: src/routes/d_.projects_.$id.team.tsx:162
@@ -3858,12 +4003,12 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/m_.library.tsx:130
 #: src/routes/m_.patients_.$id_.consents.tsx:88
 #: src/routes/m_.patients_.$id_.enrollment.tsx:139
-#: src/routes/m_.patients_.$id_.forms.tsx:129
+#: src/routes/m_.patients_.$id_.forms.tsx:143
 #: src/routes/m_.patients_.$id_.visits.tsx:122
 #: src/routes/m_.patients_.$id.tsx:105
 #: src/routes/m_.patients.tsx:132
 #: src/routes/m_.projects_.$id.enrollment.tsx:94
-#: src/routes/m_.projects_.$id.forms.tsx:116
+#: src/routes/m_.projects_.$id.forms.tsx:125
 #: src/routes/m_.projects_.$id.protocol.tsx:187
 #: src/routes/m_.projects_.$id.safety.tsx:190
 #: src/routes/m_.projects_.$id.team.tsx:162
@@ -3889,12 +4034,12 @@ msgstr "Retry"
 #: src/routes/d_.library.tsx:177
 #: src/routes/d_.patients_.$id_.consents.tsx:125
 #: src/routes/d_.patients_.$id_.enrollment.tsx:183
-#: src/routes/d_.patients_.$id_.forms.tsx:173
+#: src/routes/d_.patients_.$id_.forms.tsx:187
 #: src/routes/d_.patients_.$id_.visits.tsx:165
 #: src/routes/d_.patients_.$id.tsx:136
 #: src/routes/d_.patients.tsx:195
 #: src/routes/d_.projects_.$id.enrollment.tsx:132
-#: src/routes/d_.projects_.$id.forms.tsx:157
+#: src/routes/d_.projects_.$id.forms.tsx:166
 #: src/routes/d_.projects_.$id.protocol.tsx:218
 #: src/routes/d_.projects_.$id.safety.tsx:236
 #: src/routes/d_.projects_.$id.team.tsx:198
@@ -3907,12 +4052,12 @@ msgstr "Retry"
 #: src/routes/m_.library.tsx:177
 #: src/routes/m_.patients_.$id_.consents.tsx:125
 #: src/routes/m_.patients_.$id_.enrollment.tsx:183
-#: src/routes/m_.patients_.$id_.forms.tsx:173
+#: src/routes/m_.patients_.$id_.forms.tsx:187
 #: src/routes/m_.patients_.$id_.visits.tsx:165
 #: src/routes/m_.patients_.$id.tsx:136
 #: src/routes/m_.patients.tsx:195
 #: src/routes/m_.projects_.$id.enrollment.tsx:132
-#: src/routes/m_.projects_.$id.forms.tsx:157
+#: src/routes/m_.projects_.$id.forms.tsx:166
 #: src/routes/m_.projects_.$id.protocol.tsx:218
 #: src/routes/m_.projects_.$id.safety.tsx:236
 #: src/routes/m_.projects_.$id.team.tsx:198
@@ -3956,8 +4101,8 @@ msgstr "Preparing"
 msgid "Подозреваемый препарат или воздействие"
 msgstr "Suspected drug or exposure"
 
-#: src/routes/d_.projects_.$id.forms.tsx:269
-#: src/routes/m_.projects_.$id.forms.tsx:269
+#: src/routes/d_.projects_.$id.forms.tsx:278
+#: src/routes/m_.projects_.$id.forms.tsx:278
 msgid "Подсказка к вопросу"
 msgstr "Question help text"
 
@@ -4113,16 +4258,21 @@ msgstr "Observation or examination"
 msgid "Показывать архивные задачи"
 msgstr "Show archived tasks"
 
+#: src/routes/d_.projects_.$id.forms.tsx:290
+#: src/routes/m_.projects_.$id.forms.tsx:290
+msgid "Показывать по условию"
+msgstr "Show conditionally"
+
 #: src/routes/d_.library.tsx:101
 #: src/routes/d_.patients_.$id_.enrollment.tsx:99
-#: src/routes/d_.patients_.$id_.forms.tsx:88
-#: src/routes/d_.projects_.$id.forms.tsx:76
+#: src/routes/d_.patients_.$id_.forms.tsx:102
+#: src/routes/d_.projects_.$id.forms.tsx:85
 #: src/routes/d_.projects_.$id.safety.tsx:143
 #: src/routes/d_.projects_.$id.visits.tsx:109
 #: src/routes/m_.library.tsx:101
 #: src/routes/m_.patients_.$id_.enrollment.tsx:99
-#: src/routes/m_.patients_.$id_.forms.tsx:88
-#: src/routes/m_.projects_.$id.forms.tsx:76
+#: src/routes/m_.patients_.$id_.forms.tsx:102
+#: src/routes/m_.projects_.$id.forms.tsx:85
 #: src/routes/m_.projects_.$id.safety.tsx:143
 #: src/routes/m_.projects_.$id.visits.tsx:109
 msgid "Покинуть страницу с несохранёнными изменениями?"
@@ -4234,8 +4384,8 @@ msgstr "Actions taken"
 msgid "Предупреждающие действия или обоснование их отсутствия"
 msgstr "Preventive actions or rationale for taking none"
 
-#: src/routes/d_.projects_.$id.forms.tsx:195
-#: src/routes/m_.projects_.$id.forms.tsx:195
+#: src/routes/d_.projects_.$id.forms.tsx:204
+#: src/routes/m_.projects_.$id.forms.tsx:204
 msgid "Предыдущая версия:"
 msgstr "Previous version:"
 
@@ -4318,10 +4468,10 @@ msgstr "Application"
 msgid "Приложение готово к запуску без интернета."
 msgstr "The app is ready to open offline."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:380
+#: src/routes/d_.patients_.$id_.forms.tsx:418
 #: src/routes/d_.patients_.$id_.visits.tsx:286
 #: src/routes/d_.patients_.$id.tsx:456
-#: src/routes/m_.patients_.$id_.forms.tsx:380
+#: src/routes/m_.patients_.$id_.forms.tsx:418
 #: src/routes/m_.patients_.$id_.visits.tsx:286
 #: src/routes/m_.patients_.$id.tsx:456
 msgid "Примечание к записи"
@@ -4376,14 +4526,14 @@ msgstr "Reference exclusion reason"
 msgid "Причина исправления"
 msgstr "Amendment reason"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:385
-#: src/routes/m_.patients_.$id_.forms.tsx:385
+#: src/routes/d_.patients_.$id_.forms.tsx:423
+#: src/routes/m_.patients_.$id_.forms.tsx:423
 msgid "Причина исправления окончательного ответа"
 msgstr "Reason for amending the final response"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:502
+#: src/routes/d_.patients_.$id_.forms.tsx:570
 #: src/routes/d_.projects_.$id.visits.tsx:457
-#: src/routes/m_.patients_.$id_.forms.tsx:502
+#: src/routes/m_.patients_.$id_.forms.tsx:570
 #: src/routes/m_.projects_.$id.visits.tsx:457
 msgid "Причина исправления:"
 msgstr "Amendment reason:"
@@ -4430,8 +4580,8 @@ msgstr "Verified"
 msgid "Проверить подключение"
 msgstr "Check connection"
 
-#: src/routes/d_.projects_.$id.forms.tsx:219
-#: src/routes/m_.projects_.$id.forms.tsx:219
+#: src/routes/d_.projects_.$id.forms.tsx:228
+#: src/routes/m_.projects_.$id.forms.tsx:228
 msgid "Проверьте вопросы, варианты ответа и границы значений. В форме должно быть от 1 до 50 вопросов."
 msgstr "Check the questions, options and value bounds. A form must contain between 1 and 50 questions."
 
@@ -4470,7 +4620,7 @@ msgstr "Check your query and search parameters."
 #: src/lib/use-patient-workspace.ts:133
 #: src/lib/use-questionnaires.ts:119
 #: src/lib/use-saved-analyses.ts:40
-#: src/lib/use-study-forms.ts:64
+#: src/lib/use-study-forms.ts:74
 #: src/routes/d_.projects_.$id.protocol.tsx:90
 #: src/routes/d_.projects_.$id.work.tsx:120
 #: src/routes/d_.projects.tsx:65
@@ -4480,8 +4630,8 @@ msgstr "Check your query and search parameters."
 msgid "Проверьте значение поля"
 msgstr "Check this field"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:280
-#: src/routes/m_.patients_.$id_.forms.tsx:280
+#: src/routes/d_.patients_.$id_.forms.tsx:294
+#: src/routes/m_.patients_.$id_.forms.tsx:294
 msgid "Проверьте ответы и обязательные поля. Значения должны соответствовать типам и границам шаблона."
 msgstr "Check the answers and required fields. Values must match the template types and bounds."
 
@@ -4539,13 +4689,13 @@ msgstr "Duration in minutes"
 #: src/routes/d_.analytics.tsx:250
 #: src/routes/d_.library.tsx:89
 #: src/routes/d_.patients_.$id_.enrollment.tsx:87
-#: src/routes/d_.patients_.$id_.forms.tsx:212
-#: src/routes/d_.patients_.$id_.forms.tsx:249
-#: src/routes/d_.patients_.$id_.forms.tsx:521
-#: src/routes/d_.patients_.$id_.forms.tsx:567
-#: src/routes/d_.projects_.$id.forms.tsx:177
-#: src/routes/d_.projects_.$id.forms.tsx:458
-#: src/routes/d_.projects_.$id.forms.tsx:549
+#: src/routes/d_.patients_.$id_.forms.tsx:226
+#: src/routes/d_.patients_.$id_.forms.tsx:263
+#: src/routes/d_.patients_.$id_.forms.tsx:589
+#: src/routes/d_.patients_.$id_.forms.tsx:635
+#: src/routes/d_.projects_.$id.forms.tsx:186
+#: src/routes/d_.projects_.$id.forms.tsx:788
+#: src/routes/d_.projects_.$id.forms.tsx:931
 #: src/routes/d_.projects_.$id.safety.tsx:132
 #: src/routes/d_.projects_.$id.visits.tsx:98
 #: src/routes/m_.analytics.tsx:161
@@ -4553,13 +4703,13 @@ msgstr "Duration in minutes"
 #: src/routes/m_.analytics.tsx:250
 #: src/routes/m_.library.tsx:89
 #: src/routes/m_.patients_.$id_.enrollment.tsx:87
-#: src/routes/m_.patients_.$id_.forms.tsx:212
-#: src/routes/m_.patients_.$id_.forms.tsx:249
-#: src/routes/m_.patients_.$id_.forms.tsx:521
-#: src/routes/m_.patients_.$id_.forms.tsx:567
-#: src/routes/m_.projects_.$id.forms.tsx:177
-#: src/routes/m_.projects_.$id.forms.tsx:458
-#: src/routes/m_.projects_.$id.forms.tsx:549
+#: src/routes/m_.patients_.$id_.forms.tsx:226
+#: src/routes/m_.patients_.$id_.forms.tsx:263
+#: src/routes/m_.patients_.$id_.forms.tsx:589
+#: src/routes/m_.patients_.$id_.forms.tsx:635
+#: src/routes/m_.projects_.$id.forms.tsx:186
+#: src/routes/m_.projects_.$id.forms.tsx:788
+#: src/routes/m_.projects_.$id.forms.tsx:931
 #: src/routes/m_.projects_.$id.safety.tsx:132
 #: src/routes/m_.projects_.$id.visits.tsx:98
 msgid "Продолжить"
@@ -4667,6 +4817,11 @@ msgstr "The public cache is not prepared yet. The initial download requires an i
 msgid "Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя."
 msgstr "Your workspace is protected by a passphrase that is not sent to the server. Keep it safe: local data and unsent changes cannot be recovered without it."
 
+#: src/routes/d_.projects_.$id.forms.tsx:62
+#: src/routes/m_.projects_.$id.forms.tsx:62
+msgid "Равно"
+msgstr "Equals"
+
 #: src/routes/d_.tools.tsx:583
 #: src/routes/m_.tools.tsx:537
 msgid "Радиус, метры (до 10 000)"
@@ -4731,6 +4886,11 @@ msgstr "Sex distribution"
 msgid "Рассмотрено"
 msgstr "Reviewed"
 
+#: src/routes/d_.projects_.$id.forms.tsx:594
+#: src/routes/m_.projects_.$id.forms.tsx:594
+msgid "Расчёт"
+msgstr "Calculation"
+
 #: src/routes/d_.analytics.tsx:130
 #: src/routes/m_.analytics.tsx:130
 msgid "Расчёт выполнен по локальным данным. Без синхронизации изменения других участников и новые отзывы доступа могут быть ещё не получены."
@@ -4783,8 +4943,8 @@ msgstr "Edit profile"
 msgid "Редактировать сообщение"
 msgstr "Edit message"
 
-#: src/routes/d_.projects_.$id.forms.tsx:193
-#: src/routes/m_.projects_.$id.forms.tsx:193
+#: src/routes/d_.projects_.$id.forms.tsx:202
+#: src/routes/m_.projects_.$id.forms.tsx:202
 msgid "Редактор шаблона"
 msgstr "Template editor"
 
@@ -4868,17 +5028,17 @@ msgstr "Study role"
 msgid "Ручной ввод"
 msgstr "Manual entry"
 
-#: src/routes/d_.projects_.$id.forms.tsx:331
 #: src/routes/d_.projects_.$id.forms.tsx:512
-#: src/routes/m_.projects_.$id.forms.tsx:331
+#: src/routes/d_.projects_.$id.forms.tsx:862
 #: src/routes/m_.projects_.$id.forms.tsx:512
+#: src/routes/m_.projects_.$id.forms.tsx:862
 msgid "Самая поздняя дата"
 msgstr "Latest date"
 
-#: src/routes/d_.projects_.$id.forms.tsx:322
-#: src/routes/d_.projects_.$id.forms.tsx:511
-#: src/routes/m_.projects_.$id.forms.tsx:322
-#: src/routes/m_.projects_.$id.forms.tsx:511
+#: src/routes/d_.projects_.$id.forms.tsx:503
+#: src/routes/d_.projects_.$id.forms.tsx:861
+#: src/routes/m_.projects_.$id.forms.tsx:503
+#: src/routes/m_.projects_.$id.forms.tsx:861
 msgid "Самая ранняя дата"
 msgstr "Earliest date"
 
@@ -4933,8 +5093,8 @@ msgstr "Related as assessed by physician"
 msgid "Сервер не смог проверить сертификат нейросети."
 msgstr "The server could not verify the AI provider certificate."
 
-#: src/routes/d_.projects_.$id.forms.tsx:537
-#: src/routes/m_.projects_.$id.forms.tsx:537
+#: src/routes/d_.projects_.$id.forms.tsx:919
+#: src/routes/m_.projects_.$id.forms.tsx:919
 msgid "Сервер отклонил версию формы. Черновик сохранён отдельно."
 msgstr "The server rejected the form version. The draft is saved separately."
 
@@ -4951,7 +5111,7 @@ msgstr "The server rejected the change. Your local version was saved for review.
 #: src/routes/d_.library.tsx:483
 #: src/routes/d_.patients_.$id_.consents.tsx:423
 #: src/routes/d_.patients_.$id_.enrollment.tsx:458
-#: src/routes/d_.patients_.$id_.forms.tsx:554
+#: src/routes/d_.patients_.$id_.forms.tsx:622
 #: src/routes/d_.patients_.$id_.visits.tsx:408
 #: src/routes/d_.patients_.$id.tsx:601
 #: src/routes/d_.projects_.$id.safety.tsx:681
@@ -4961,7 +5121,7 @@ msgstr "The server rejected the change. Your local version was saved for review.
 #: src/routes/m_.library.tsx:483
 #: src/routes/m_.patients_.$id_.consents.tsx:423
 #: src/routes/m_.patients_.$id_.enrollment.tsx:458
-#: src/routes/m_.patients_.$id_.forms.tsx:554
+#: src/routes/m_.patients_.$id_.forms.tsx:622
 #: src/routes/m_.patients_.$id_.visits.tsx:408
 #: src/routes/m_.patients_.$id.tsx:601
 #: src/routes/m_.projects_.$id.safety.tsx:681
@@ -4992,20 +5152,20 @@ msgstr "Synchronization connected"
 
 #: src/routes/d_.library.tsx:171
 #: src/routes/d_.patients_.$id_.enrollment.tsx:177
-#: src/routes/d_.patients_.$id_.forms.tsx:167
+#: src/routes/d_.patients_.$id_.forms.tsx:181
 #: src/routes/d_.patients_.$id_.visits.tsx:159
 #: src/routes/d_.patients.tsx:189
 #: src/routes/d_.projects_.$id.enrollment.tsx:126
-#: src/routes/d_.projects_.$id.forms.tsx:151
+#: src/routes/d_.projects_.$id.forms.tsx:160
 #: src/routes/d_.projects_.$id.safety.tsx:230
 #: src/routes/d_.projects_.$id.visits.tsx:192
 #: src/routes/m_.library.tsx:171
 #: src/routes/m_.patients_.$id_.enrollment.tsx:177
-#: src/routes/m_.patients_.$id_.forms.tsx:167
+#: src/routes/m_.patients_.$id_.forms.tsx:181
 #: src/routes/m_.patients_.$id_.visits.tsx:159
 #: src/routes/m_.patients.tsx:189
 #: src/routes/m_.projects_.$id.enrollment.tsx:126
-#: src/routes/m_.projects_.$id.forms.tsx:151
+#: src/routes/m_.projects_.$id.forms.tsx:160
 #: src/routes/m_.projects_.$id.safety.tsx:230
 #: src/routes/m_.projects_.$id.visits.tsx:192
 msgid "Синхронизация приостановлена. Нужны сеть и подтверждённая сессия того же пользователя."
@@ -5022,6 +5182,11 @@ msgstr "Download PBF from source"
 #: src/routes/m_.projects_.$id.enrollment.tsx:54
 msgid "Скрининг"
 msgstr "Screening"
+
+#: src/routes/d_.projects_.$id.forms.tsx:605
+#: src/routes/m_.projects_.$id.forms.tsx:605
+msgid "Слагаемое шкалы"
+msgstr "Score term"
 
 #: src/routes/d_.library.tsx:569
 #: src/routes/m_.library.tsx:569
@@ -5101,8 +5266,8 @@ msgstr "Consent expired"
 msgid "Согласие на исследовательское использование данных"
 msgstr "Consent for research use of data"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:177
-#: src/routes/m_.patients_.$id_.forms.tsx:177
+#: src/routes/d_.patients_.$id_.forms.tsx:191
+#: src/routes/m_.patients_.$id_.forms.tsx:191
 msgid "Согласие на пол и диагнозы не открывает ответы опросников исследователю."
 msgstr "Consent for sex and diagnoses does not grant researchers access to questionnaire responses."
 
@@ -5145,6 +5310,11 @@ msgstr "The content will be cleared after synchronization. The action will remai
 msgid "Содержимое визита будет очищено после синхронизации. Для отмены назначенного визита используйте статус отмены."
 msgstr "Visit contents will be cleared after synchronization. Use the canceled status to cancel a scheduled visit."
 
+#: src/routes/d_.projects_.$id.forms.tsx:64
+#: src/routes/m_.projects_.$id.forms.tsx:64
+msgid "Содержит вариант"
+msgstr "Includes option"
+
 #: src/routes/d_.projects_.$id.work.tsx:343
 #: src/routes/m_.projects_.$id.work.tsx:343
 msgid "Создать задачу"
@@ -5155,8 +5325,8 @@ msgstr "Create task"
 msgid "Создать исследование"
 msgstr "Create study"
 
-#: src/routes/d_.projects_.$id.forms.tsx:463
-#: src/routes/m_.projects_.$id.forms.tsx:463
+#: src/routes/d_.projects_.$id.forms.tsx:793
+#: src/routes/m_.projects_.$id.forms.tsx:793
 msgid "Создать следующую версию"
 msgstr "Create next version"
 
@@ -5175,8 +5345,8 @@ msgstr "Patient sorting"
 msgid "Сохранение на устройстве и отправка на сервер — разные статусы. Неотправленные изменения остаются в шифруемой очереди."
 msgstr "Local saving and uploading have separate statuses. Unsent changes stay in the encrypted queue."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:79
-#: src/routes/m_.patients_.$id_.forms.tsx:79
+#: src/routes/d_.patients_.$id_.forms.tsx:93
+#: src/routes/m_.patients_.$id_.forms.tsx:93
 msgid "Сохранённая версия"
 msgstr "Saved version"
 
@@ -5238,7 +5408,7 @@ msgstr "Save locally"
 #: src/routes/d_.library.tsx:277
 #: src/routes/d_.patients_.$id_.consents.tsx:314
 #: src/routes/d_.patients_.$id_.enrollment.tsx:325
-#: src/routes/d_.patients_.$id_.forms.tsx:404
+#: src/routes/d_.patients_.$id_.forms.tsx:442
 #: src/routes/d_.patients_.$id_.visits.tsx:298
 #: src/routes/d_.patients_.$id.tsx:261
 #: src/routes/d_.patients_.$id.tsx:468
@@ -5249,7 +5419,7 @@ msgstr "Save locally"
 #: src/routes/m_.library.tsx:277
 #: src/routes/m_.patients_.$id_.consents.tsx:314
 #: src/routes/m_.patients_.$id_.enrollment.tsx:325
-#: src/routes/m_.patients_.$id_.forms.tsx:404
+#: src/routes/m_.patients_.$id_.forms.tsx:442
 #: src/routes/m_.patients_.$id_.visits.tsx:298
 #: src/routes/m_.patients_.$id.tsx:261
 #: src/routes/m_.patients_.$id.tsx:468
@@ -5260,8 +5430,8 @@ msgstr "Save locally"
 msgid "Сохранить на устройстве"
 msgstr "Save on device"
 
-#: src/routes/d_.projects_.$id.forms.tsx:400
-#: src/routes/m_.projects_.$id.forms.tsx:400
+#: src/routes/d_.projects_.$id.forms.tsx:730
+#: src/routes/m_.projects_.$id.forms.tsx:730
 msgid "Сохранить новую версию на устройстве"
 msgstr "Save new version on this device"
 
@@ -5335,6 +5505,23 @@ msgstr "Route of administration"
 #: src/routes/__root.tsx:318
 msgid "Справочники и AI"
 msgstr "Reference tools and AI"
+
+#: src/routes/d_.projects_.$id.forms.tsx:365
+#: src/routes/m_.projects_.$id.forms.tsx:365
+msgid "Сравнение"
+msgstr "Comparison"
+
+#: src/routes/d_.projects_.$id.forms.tsx:597
+#: src/routes/d_.projects_.$id.forms.tsx:884
+#: src/routes/m_.projects_.$id.forms.tsx:597
+#: src/routes/m_.projects_.$id.forms.tsx:884
+msgid "Среднее взвешенных значений"
+msgstr "Mean of weighted values"
+
+#: src/routes/d_.projects_.$id.forms.tsx:601
+#: src/routes/m_.projects_.$id.forms.tsx:601
+msgid "Среднее: сумма произведений на коэффициенты, делённая на число вопросов. Все исходные вопросы должны быть видимы и заполнены."
+msgstr "Mean: sum of values multiplied by their coefficients, divided by the number of questions. All source questions must be visible and answered."
 
 #: src/routes/d_.patients_.$id_.consents.tsx:277
 #: src/routes/d_.patients.tsx:326
@@ -5456,8 +5643,8 @@ msgstr "Visit status"
 msgid "Статус задачи"
 msgstr "Task status"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:269
-#: src/routes/m_.patients_.$id_.forms.tsx:269
+#: src/routes/d_.patients_.$id_.forms.tsx:283
+#: src/routes/m_.patients_.$id_.forms.tsx:283
 msgid "Статус ответа"
 msgstr "Response status"
 
@@ -5509,23 +5696,30 @@ msgstr "Organization page"
 msgid "Страница содержит только сведения, разрешённые авторами к публикации."
 msgstr "This page contains only information approved for publication by its authors."
 
+#: src/routes/d_.projects_.$id.forms.tsx:596
+#: src/routes/d_.projects_.$id.forms.tsx:883
+#: src/routes/m_.projects_.$id.forms.tsx:596
+#: src/routes/m_.projects_.$id.forms.tsx:883
+msgid "Сумма взвешенных значений"
+msgstr "Sum of weighted values"
+
 #: src/routes/d_.analytics.tsx:350
 #: src/routes/m_.analytics.tsx:350
 msgid "Схема отбора"
 msgstr "Selection flow"
 
-#: src/routes/d_.projects_.$id.forms.tsx:62
-#: src/routes/m_.projects_.$id.forms.tsx:62
+#: src/routes/d_.projects_.$id.forms.tsx:71
+#: src/routes/m_.projects_.$id.forms.tsx:71
 msgid "Текст"
 msgstr "Text"
 
-#: src/routes/d_.projects_.$id.forms.tsx:354
-#: src/routes/m_.projects_.$id.forms.tsx:354
+#: src/routes/d_.projects_.$id.forms.tsx:535
+#: src/routes/m_.projects_.$id.forms.tsx:535
 msgid "Текст варианта"
 msgstr "Option label"
 
-#: src/routes/d_.projects_.$id.forms.tsx:263
-#: src/routes/m_.projects_.$id.forms.tsx:263
+#: src/routes/d_.projects_.$id.forms.tsx:272
+#: src/routes/m_.projects_.$id.forms.tsx:272
 msgid "Текст вопроса"
 msgstr "Question text"
 
@@ -5564,8 +5758,8 @@ msgstr "Dark"
 msgid "Тип визита"
 msgstr "Visit type"
 
-#: src/routes/d_.projects_.$id.forms.tsx:255
-#: src/routes/m_.projects_.$id.forms.tsx:255
+#: src/routes/d_.projects_.$id.forms.tsx:264
+#: src/routes/m_.projects_.$id.forms.tsx:264
 msgid "Тип вопроса"
 msgstr "Question type"
 
@@ -5640,13 +5834,13 @@ msgstr "Symptom severity"
 msgid "Тяжесть симптомов и критерии серьёзности оцениваются отдельно. Причинную связь и ожидаемость определяет врач; приложение не устанавливает их автоматически."
 msgstr "Symptom severity and seriousness criteria are assessed separately. The physician determines causality and expectedness; the application does not determine them automatically."
 
-#: src/routes/d_.projects_.$id.forms.tsx:426
-#: src/routes/m_.projects_.$id.forms.tsx:426
+#: src/routes/d_.projects_.$id.forms.tsx:756
+#: src/routes/m_.projects_.$id.forms.tsx:756
 msgid "У исследования пока нет форм."
 msgstr "This study has no forms yet."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:433
-#: src/routes/m_.patients_.$id_.forms.tsx:433
+#: src/routes/d_.patients_.$id_.forms.tsx:471
+#: src/routes/m_.patients_.$id_.forms.tsx:471
 msgid "У пациента пока нет ответов на опросники."
 msgstr "The patient has no questionnaire responses yet."
 
@@ -5662,14 +5856,14 @@ msgstr "Deletion was rejected. Open the current analysis before attempting delet
 
 #: src/routes/d_.library.tsx:492
 #: src/routes/d_.patients_.$id_.enrollment.tsx:467
-#: src/routes/d_.patients_.$id_.forms.tsx:574
+#: src/routes/d_.patients_.$id_.forms.tsx:642
 #: src/routes/d_.patients_.$id_.visits.tsx:416
 #: src/routes/d_.patients_.$id.tsx:609
 #: src/routes/d_.projects_.$id.safety.tsx:690
 #: src/routes/d_.projects_.$id.visits.tsx:501
 #: src/routes/m_.library.tsx:492
 #: src/routes/m_.patients_.$id_.enrollment.tsx:467
-#: src/routes/m_.patients_.$id_.forms.tsx:574
+#: src/routes/m_.patients_.$id_.forms.tsx:642
 #: src/routes/m_.patients_.$id_.visits.tsx:416
 #: src/routes/m_.patients_.$id.tsx:609
 #: src/routes/m_.projects_.$id.safety.tsx:690
@@ -5688,8 +5882,8 @@ msgstr "Message deletion"
 #: src/routes/d_.library.tsx:413
 #: src/routes/d_.patients_.$id_.enrollment.tsx:444
 #: src/routes/d_.patients_.$id_.enrollment.tsx:448
-#: src/routes/d_.patients_.$id_.forms.tsx:541
-#: src/routes/d_.patients_.$id_.forms.tsx:545
+#: src/routes/d_.patients_.$id_.forms.tsx:609
+#: src/routes/d_.patients_.$id_.forms.tsx:613
 #: src/routes/d_.patients_.$id_.visits.tsx:395
 #: src/routes/d_.patients_.$id_.visits.tsx:399
 #: src/routes/d_.patients_.$id.tsx:214
@@ -5707,8 +5901,8 @@ msgstr "Message deletion"
 #: src/routes/m_.library.tsx:413
 #: src/routes/m_.patients_.$id_.enrollment.tsx:444
 #: src/routes/m_.patients_.$id_.enrollment.tsx:448
-#: src/routes/m_.patients_.$id_.forms.tsx:541
-#: src/routes/m_.patients_.$id_.forms.tsx:545
+#: src/routes/m_.patients_.$id_.forms.tsx:609
+#: src/routes/m_.patients_.$id_.forms.tsx:613
 #: src/routes/m_.patients_.$id_.visits.tsx:395
 #: src/routes/m_.patients_.$id_.visits.tsx:399
 #: src/routes/m_.patients_.$id.tsx:214
@@ -5723,8 +5917,8 @@ msgstr "Message deletion"
 msgid "Удалить"
 msgstr "Delete"
 
-#: src/routes/d_.projects_.$id.forms.tsx:370
-#: src/routes/m_.projects_.$id.forms.tsx:370
+#: src/routes/d_.projects_.$id.forms.tsx:551
+#: src/routes/m_.projects_.$id.forms.tsx:551
 msgid "Удалить вариант"
 msgstr "Remove option"
 
@@ -5735,8 +5929,8 @@ msgstr "Remove option"
 msgid "Удалить визит?"
 msgstr "Delete visit?"
 
-#: src/routes/d_.projects_.$id.forms.tsx:252
-#: src/routes/m_.projects_.$id.forms.tsx:252
+#: src/routes/d_.projects_.$id.forms.tsx:261
+#: src/routes/m_.projects_.$id.forms.tsx:261
 msgid "Удалить вопрос"
 msgstr "Remove question"
 
@@ -5777,10 +5971,15 @@ msgstr "Delete this clinical record?"
 msgid "Удалить ключ"
 msgstr "Remove key"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:537
-#: src/routes/m_.patients_.$id_.forms.tsx:537
+#: src/routes/d_.patients_.$id_.forms.tsx:605
+#: src/routes/m_.patients_.$id_.forms.tsx:605
 msgid "Удалить ответ опросника?"
 msgstr "Delete questionnaire response?"
+
+#: src/routes/d_.projects_.$id.forms.tsx:686
+#: src/routes/m_.projects_.$id.forms.tsx:686
+msgid "Удалить слагаемое"
+msgstr "Remove score term"
 
 #: src/routes/d_.projects_.$id.safety.tsx:664
 #: src/routes/m_.projects_.$id.safety.tsx:664
@@ -5801,6 +6000,16 @@ msgstr "Delete this message?"
 #: src/routes/m_.analytics.tsx:220
 msgid "Удалить сохранённый анализ?"
 msgstr "Delete saved analysis?"
+
+#: src/routes/d_.projects_.$id.forms.tsx:442
+#: src/routes/m_.projects_.$id.forms.tsx:442
+msgid "Удалить условие"
+msgstr "Remove condition"
+
+#: src/routes/d_.projects_.$id.forms.tsx:705
+#: src/routes/m_.projects_.$id.forms.tsx:705
+msgid "Удалить шкалу"
+msgstr "Remove score"
 
 #: src/routes/d_.projects_.$id.protocol.tsx:95
 #: src/routes/m_.projects_.$id.protocol.tsx:95
@@ -5849,6 +6058,13 @@ msgstr "University"
 #: src/routes/m_.tools.tsx:243
 msgid "Университеты — ROR"
 msgstr "Universities — ROR"
+
+#: src/routes/d_.projects_.$id.forms.tsx:308
+#: src/routes/d_.projects_.$id.forms.tsx:824
+#: src/routes/m_.projects_.$id.forms.tsx:308
+#: src/routes/m_.projects_.$id.forms.tsx:824
+msgid "Условия видимости"
+msgstr "Visibility conditions"
 
 #: src/routes/d_.research_.$id.tsx:79
 #: src/routes/m_.research_.$id.tsx:79
@@ -5951,11 +6167,11 @@ msgstr "Filter by visit status"
 msgid "ФИО"
 msgstr "Full name"
 
-#: src/routes/d_.projects_.$id.forms.tsx:89
+#: src/routes/d_.projects_.$id.forms.tsx:98
 #: src/routes/d_.projects.tsx:341
 #: src/routes/d_.workspace.tsx:96
 #: src/routes/d_.workspace.tsx:424
-#: src/routes/m_.projects_.$id.forms.tsx:89
+#: src/routes/m_.projects_.$id.forms.tsx:98
 #: src/routes/m_.projects.tsx:341
 #: src/routes/m_.workspace.tsx:96
 #: src/routes/m_.workspace.tsx:424
@@ -5966,6 +6182,13 @@ msgstr "Study forms"
 #: src/routes/m_.analytics.tsx:300
 msgid "Хотя бы один"
 msgstr "At least one code"
+
+#: src/routes/d_.projects_.$id.forms.tsx:315
+#: src/routes/d_.projects_.$id.forms.tsx:827
+#: src/routes/m_.projects_.$id.forms.tsx:315
+#: src/routes/m_.projects_.$id.forms.tsx:827
+msgid "Хотя бы одно условие"
+msgstr "Any condition"
 
 #: src/routes/d_.projects_.$id.visits.tsx:333
 #: src/routes/m_.projects_.$id.visits.tsx:333
@@ -5996,13 +6219,13 @@ msgstr "Appointment time zone"
 msgid "Частота диагнозов"
 msgstr "Diagnosis frequency"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:273
-#: src/routes/d_.patients_.$id_.forms.tsx:444
+#: src/routes/d_.patients_.$id_.forms.tsx:287
+#: src/routes/d_.patients_.$id_.forms.tsx:482
 #: src/routes/d_.projects.tsx:76
 #: src/routes/d_.research_.$id.tsx:38
 #: src/routes/d_.research.tsx:69
-#: src/routes/m_.patients_.$id_.forms.tsx:273
-#: src/routes/m_.patients_.$id_.forms.tsx:444
+#: src/routes/m_.patients_.$id_.forms.tsx:287
+#: src/routes/m_.patients_.$id_.forms.tsx:482
 #: src/routes/m_.projects.tsx:76
 #: src/routes/m_.research_.$id.tsx:38
 #: src/routes/m_.research.tsx:69
@@ -6016,8 +6239,8 @@ msgstr "Draft"
 msgid "Черновик будет сохранён как новая клиническая запись. Удалённая версия не восстанавливается автоматически."
 msgstr "The draft will be saved as a new clinical record. The deleted version is not restored automatically."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:278
-#: src/routes/m_.patients_.$id_.forms.tsx:278
+#: src/routes/d_.patients_.$id_.forms.tsx:292
+#: src/routes/m_.patients_.$id_.forms.tsx:292
 msgid "Черновик может быть неполным. Для окончательного ответа заполните все обязательные вопросы."
 msgstr "A draft may be incomplete. Complete all required questions for a final response."
 
@@ -6026,8 +6249,8 @@ msgstr "A draft may be incomplete. Complete all required questions for a final r
 msgid "Черновик сохранится как новый анализ; удалённая запись не восстанавливается автоматически."
 msgstr "The draft will be saved as a new analysis; the deleted record is not restored automatically."
 
-#: src/routes/d_.projects_.$id.forms.tsx:63
-#: src/routes/m_.projects_.$id.forms.tsx:63
+#: src/routes/d_.projects_.$id.forms.tsx:72
+#: src/routes/m_.projects_.$id.forms.tsx:72
 msgid "Число"
 msgstr "Number"
 
@@ -6051,15 +6274,15 @@ msgstr "Reading"
 msgid "Чтение разрешённых данных пациентов без изменения карт."
 msgstr "Read permitted patient data without modifying records."
 
-#: src/routes/d_.patients_.$id_.forms.tsx:232
-#: src/routes/m_.patients_.$id_.forms.tsx:232
+#: src/routes/d_.patients_.$id_.forms.tsx:246
+#: src/routes/m_.patients_.$id_.forms.tsx:246
 msgid "Шаблон опросника"
 msgstr "Questionnaire template"
 
-#: src/routes/d_.patients_.$id_.forms.tsx:194
-#: src/routes/d_.projects_.$id.forms.tsx:184
-#: src/routes/m_.patients_.$id_.forms.tsx:194
-#: src/routes/m_.projects_.$id.forms.tsx:184
+#: src/routes/d_.patients_.$id_.forms.tsx:208
+#: src/routes/d_.projects_.$id.forms.tsx:193
+#: src/routes/m_.patients_.$id_.forms.tsx:208
+#: src/routes/m_.projects_.$id.forms.tsx:193
 msgid "Шаблоны ещё не загружены. Для первой загрузки нужен интернет."
 msgstr "Templates have not been loaded yet. The initial download requires an internet connection."
 
@@ -6072,6 +6295,18 @@ msgstr "Step"
 #: src/routes/m_.tools.tsx:513
 msgid "Широта"
 msgstr "Latitude"
+
+#: src/routes/d_.patients_.$id_.forms.tsx:409
+#: src/routes/d_.patients_.$id_.forms.tsx:559
+#: src/routes/m_.patients_.$id_.forms.tsx:409
+#: src/routes/m_.patients_.$id_.forms.tsx:559
+msgid "Шкала не применима к активной ветке"
+msgstr "Score does not apply to the active branch"
+
+#: src/routes/d_.projects_.$id.forms.tsx:576
+#: src/routes/m_.projects_.$id.forms.tsx:576
+msgid "Шкалы задаёт автор формы. Это расчёт по указанным правилам, а не автоматически подтверждённый медицинский инструмент. Скрытые или пропущенные исходные ответы не заменяются нулями."
+msgstr "Scores are defined by the form author. They follow the specified calculation rules and are not automatically validated medical instruments. Hidden or missing source answers are not replaced with zero."
 
 #: src/routes/d_.projects.tsx:249
 #: src/routes/m_.projects.tsx:249

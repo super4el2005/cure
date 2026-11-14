@@ -19,6 +19,7 @@ import schema from "@/convex/schema";
 import type { ClinicalPayload } from "@/src/lib/clinical-record-model";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
+import { calculateStudyScores } from "@/src/lib/study-form-model";
 rstest.mock("@/src/observability/events", () => ({ reportFailure: rstest.fn() }));
 function memoryStorage(): StorageAdapter & { values: Map<string, string> } {
   const values = new Map<string, string>();
@@ -115,6 +116,7 @@ it.each(["history", "visit", "questionnaire"] as const)(
     const formClientId = crypto.randomUUID();
     const formVersionClientId = crypto.randomUUID();
     const fieldId = crypto.randomUUID();
+    const numericId = crypto.randomUUID();
     const definition = {
       title: "Confidential questionnaire title",
       description: "",
@@ -126,6 +128,30 @@ it.each(["history", "visit", "questionnaire"] as const)(
           help: "",
           required: true,
           maxLength: 1000,
+        },
+        {
+          id: numericId,
+          type: "number" as const,
+          label: "Confidential score input",
+          help: "",
+          required: true,
+          minimum: 0,
+          maximum: 10,
+          unit: "",
+          visibleWhen: {
+            mode: "all" as const,
+            rules: [{ fieldId, operator: "notEquals" as const, value: "Never" }],
+          },
+        },
+      ],
+      scores: [
+        {
+          id: crypto.randomUUID(),
+          label: "Confidential score",
+          description: "Custom research score",
+          unit: "points",
+          method: "sum" as const,
+          terms: [{ fieldId: numericId, weight: 2 }],
         },
       ],
     };
@@ -274,7 +300,7 @@ it.each(["history", "visit", "questionnaire"] as const)(
               formVersionClientId,
               formVersion: 1,
               definition,
-              answers: { [fieldId]: privateContent },
+              answers: { [fieldId]: privateContent, [numericId]: 0 },
               status: "draft",
               amendmentReason: "",
             }
@@ -301,6 +327,11 @@ it.each(["history", "visit", "questionnaire"] as const)(
     });
     if (kind === "questionnaire")
       payload = workspace.readClinical(workspace.clinicalRecords.get(clientId)!).payload!;
+    if (payload.kind === "questionnaire")
+      expect(calculateStudyScores(payload.definition, payload.answers)[0]).toMatchObject({
+        status: "calculated",
+        value: 0,
+      });
     expect(calls).toBe(0);
     expect(JSON.stringify([...storage.values.values()])).not.toContain(privateContent);
     await workspace.close();
@@ -332,6 +363,7 @@ it.each(["history", "visit", "questionnaire"] as const)(
       sqlite.prepare(`SELECT * FROM "${table.name.replaceAll('"', '""')}"`).all(),
     );
     expect(JSON.stringify(storedRows)).not.toContain(privateContent);
+    expect(JSON.stringify(storedRows)).not.toContain("Confidential score");
     expect(JSON.stringify(storedRows)).not.toContain(payload.notes);
     await refresh();
     connection.disconnect();

@@ -7,7 +7,7 @@ import { useBlocker } from "@tanstack/react-router";
 
 import type { FailedProjectAction } from "@/src/lib/project-workspace";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
-import type { StudyField, FormVersion } from "@/src/lib/study-form-model";
+import type { StudyScore, StudyField, FormVersion } from "@/src/lib/study-form-model";
 import { useProjectWorkspace } from "@/src/lib/use-project-workspace";
 
 export const newStudyField = () => ({
@@ -16,6 +16,7 @@ export const newStudyField = () => ({
   label: "",
   help: "",
   required: false,
+  visibleWhen: undefined as StudyField["visibleWhen"],
   maxLength: 1000 as number | string,
   minimum: null as number | string | null,
   maximum: null as number | string | null,
@@ -35,7 +36,16 @@ const initial = {
   title: "",
   description: "",
   fields: [] as ReturnType<typeof newStudyField>[],
+  scores: [] as StudyScore[],
 };
+function definitionInput(values: typeof initial) {
+  return {
+    ...values,
+    fields: values.fields.map(({ visibleWhen, ...field }) =>
+      visibleWhen ? { ...field, visibleWhen } : field,
+    ),
+  };
+}
 export function useStudyForms(projectId: string) {
   const space = useProjectWorkspace();
   const { workspace, rows, status } = space;
@@ -57,7 +67,7 @@ export function useStudyForms(projectId: string) {
   const form = useForm({
     initialValues: initial,
     validate: (values) => {
-      const result = formDefinitionSchema.safeParse(values);
+      const result = formDefinitionSchema.safeParse(definitionInput(values));
       return result.success
         ? {}
         : Object.fromEntries(
@@ -82,6 +92,7 @@ export function useStudyForms(projectId: string) {
       status: record?.status ?? "published",
       title: record?.definition.title ?? "",
       description: record?.definition.description ?? "",
+      scores: record?.definition.scores ?? [],
       fields: record
         ? record.definition.fields.map((field) => ({ ...newStudyField(), ...field }))
         : [newStudyField()],
@@ -117,7 +128,7 @@ export function useStudyForms(projectId: string) {
         formClientId: values.formClientId,
         expectedVersion: values.expectedVersion,
         baseVersionClientId: values.baseVersionClientId,
-        definition: formDefinitionSchema.parse(values),
+        definition: formDefinitionSchema.parse(definitionInput(values)),
         status: values.status,
       });
       if (values.failureId) await workspace.dismissFailure(values.failureId);

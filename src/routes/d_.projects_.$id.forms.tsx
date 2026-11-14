@@ -58,6 +58,15 @@ function StudyForms() {
     newVersion,
     canEdit,
   } = useStudyForms(id);
+  const operators: Record<string, string> = {
+    equals: t`Равно`,
+    notEquals: t`Не равно`,
+    includes: t`Содержит вариант`,
+    gt: t`Больше`,
+    gte: t`Больше или равно`,
+    lt: t`Меньше`,
+    lte: t`Меньше или равно`,
+  };
   const types = {
     text: t`Текст`,
     number: t`Число`,
@@ -276,6 +285,178 @@ function StudyForms() {
                                       type: "checkbox",
                                     })}
                                   />
+
+                                  <Checkbox
+                                    label={t`Показывать по условию`}
+                                    disabled={index === 0 && !field.visibleWhen}
+                                    checked={Boolean(field.visibleWhen)}
+                                    onChange={(event) =>
+                                      form.setFieldValue(
+                                        `fields.${index}.visibleWhen`,
+                                        event.currentTarget.checked
+                                          ? {
+                                              mode: "all",
+                                              rules: [
+                                                { fieldId: "", operator: "equals", value: "" },
+                                              ],
+                                            }
+                                          : undefined,
+                                      )
+                                    }
+                                  />
+                                  {field.visibleWhen && (
+                                    <Fieldset legend={t`Условия видимости`}>
+                                      <Stack>
+                                        <Text>{t`Используйте только предыдущие вопросы. Скрытый, пустой или некорректный ответ не выполняет условие.`}</Text>
+                                        <NativeSelect
+                                          label={t`Объединение условий`}
+                                          data={[
+                                            { value: "all", label: t`Все условия` },
+                                            { value: "any", label: t`Хотя бы одно условие` },
+                                          ]}
+                                          {...form.getInputProps(
+                                            `fields.${index}.visibleWhen.mode`,
+                                          )}
+                                        />
+                                        {field.visibleWhen.rules.map((rule, ruleIndex) => {
+                                          const source = form.values.fields.find(
+                                            (row) => row.id === rule.fieldId,
+                                          );
+                                          const path = `fields.${index}.visibleWhen.rules.${ruleIndex}`;
+                                          return (
+                                            <Paper withBorder p="sm" key={ruleIndex}>
+                                              <Stack>
+                                                <NativeSelect
+                                                  label={t`Исходный вопрос`}
+                                                  value={rule.fieldId}
+                                                  data={[
+                                                    { value: "", label: t`Выберите вопрос` },
+                                                    ...form.values.fields
+                                                      .slice(0, index)
+                                                      .map((row) => ({
+                                                        value: row.id,
+                                                        label: row.label || t`Вопрос`,
+                                                      })),
+                                                  ]}
+                                                  onChange={(event) => {
+                                                    const source = form.values.fields.find(
+                                                      (row) => row.id === event.currentTarget.value,
+                                                    );
+                                                    form.replaceListItem(
+                                                      `fields.${index}.visibleWhen.rules`,
+                                                      ruleIndex,
+                                                      {
+                                                        fieldId: event.currentTarget.value,
+                                                        operator:
+                                                          source?.type === "multiChoice"
+                                                            ? "includes"
+                                                            : "equals",
+                                                        value:
+                                                          source?.type === "boolean"
+                                                            ? false
+                                                            : source?.type === "number"
+                                                              ? 0
+                                                              : (source?.choices[0]?.value ?? ""),
+                                                      },
+                                                    );
+                                                  }}
+                                                />
+                                                <NativeSelect
+                                                  label={t`Сравнение`}
+                                                  data={(source?.type === "multiChoice"
+                                                    ? ["includes"]
+                                                    : source?.type === "number"
+                                                      ? [
+                                                          "equals",
+                                                          "notEquals",
+                                                          "gt",
+                                                          "gte",
+                                                          "lt",
+                                                          "lte",
+                                                        ]
+                                                      : ["equals", "notEquals"]
+                                                  ).map((value) => ({
+                                                    value,
+                                                    label: operators[value]!,
+                                                  }))}
+                                                  {...form.getInputProps(`${path}.operator`)}
+                                                />
+                                                {source?.type === "boolean" ? (
+                                                  <NativeSelect
+                                                    label={t`Значение условия`}
+                                                    value={String(rule.value)}
+                                                    data={[
+                                                      { value: "true", label: t`Да` },
+                                                      { value: "false", label: t`Нет` },
+                                                    ]}
+                                                    onChange={(event) =>
+                                                      form.setFieldValue(
+                                                        `${path}.value`,
+                                                        event.currentTarget.value === "true",
+                                                      )
+                                                    }
+                                                  />
+                                                ) : source?.type === "number" ? (
+                                                  <NumberInput
+                                                    label={t`Значение условия`}
+                                                    {...form.getInputProps(`${path}.value`)}
+                                                  />
+                                                ) : source?.type === "choice" ||
+                                                  source?.type === "multiChoice" ? (
+                                                  <NativeSelect
+                                                    label={t`Значение условия`}
+                                                    data={source.choices}
+                                                    {...form.getInputProps(`${path}.value`)}
+                                                  />
+                                                ) : source?.type === "date" ? (
+                                                  <DateInput
+                                                    label={t`Значение условия`}
+                                                    locale={i18n.locale}
+                                                    value={
+                                                      typeof rule.value === "string"
+                                                        ? rule.value || null
+                                                        : null
+                                                    }
+                                                    onChange={(value) =>
+                                                      form.setFieldValue(
+                                                        `${path}.value`,
+                                                        value ?? "",
+                                                      )
+                                                    }
+                                                  />
+                                                ) : (
+                                                  <TextInput
+                                                    label={t`Значение условия`}
+                                                    {...form.getInputProps(`${path}.value`)}
+                                                  />
+                                                )}
+                                                <Button
+                                                  variant="default"
+                                                  disabled={field.visibleWhen!.rules.length === 1}
+                                                  onClick={() =>
+                                                    form.removeListItem(
+                                                      `fields.${index}.visibleWhen.rules`,
+                                                      ruleIndex,
+                                                    )
+                                                  }
+                                                >{t`Удалить условие`}</Button>
+                                              </Stack>
+                                            </Paper>
+                                          );
+                                        })}
+                                        <Button
+                                          variant="default"
+                                          disabled={field.visibleWhen.rules.length >= 10}
+                                          onClick={() =>
+                                            form.insertListItem(
+                                              `fields.${index}.visibleWhen.rules`,
+                                              { fieldId: "", operator: "equals", value: "" },
+                                            )
+                                          }
+                                        >{t`Добавить условие`}</Button>
+                                      </Stack>
+                                    </Fieldset>
+                                  )}
                                   {field.type === "text" && (
                                     <NumberInput
                                       label={t`Максимум символов`}
@@ -390,6 +571,155 @@ function StudyForms() {
                               disabled={form.values.fields.length >= 50}
                               onClick={() => form.insertListItem("fields", newStudyField())}
                             >{t`Добавить вопрос`}</Button>
+
+                            <Title order={3}>{t`Вычисляемые шкалы`}</Title>
+                            <Alert>{t`Шкалы задаёт автор формы. Это расчёт по указанным правилам, а не автоматически подтверждённый медицинский инструмент. Скрытые или пропущенные исходные ответы не заменяются нулями.`}</Alert>
+                            {form.values.scores.map((score, scoreIndex) => (
+                              <Paper withBorder p="md" key={score.id}>
+                                <Stack>
+                                  <TextInput
+                                    label={t`Название шкалы`}
+                                    required
+                                    {...form.getInputProps(`scores.${scoreIndex}.label`)}
+                                  />
+                                  <Textarea
+                                    label={t`Метод, назначение и ограничения шкалы`}
+                                    {...form.getInputProps(`scores.${scoreIndex}.description`)}
+                                  />
+                                  <TextInput
+                                    label={t`Единица результата`}
+                                    {...form.getInputProps(`scores.${scoreIndex}.unit`)}
+                                  />
+                                  <NativeSelect
+                                    label={t`Расчёт`}
+                                    data={[
+                                      { value: "sum", label: t`Сумма взвешенных значений` },
+                                      { value: "mean", label: t`Среднее взвешенных значений` },
+                                    ]}
+                                    {...form.getInputProps(`scores.${scoreIndex}.method`)}
+                                  />
+                                  <Text>{t`Среднее: сумма произведений на коэффициенты, делённая на число вопросов. Все исходные вопросы должны быть видимы и заполнены.`}</Text>
+                                  {score.terms.map((term, termIndex) => {
+                                    const path = `scores.${scoreIndex}.terms.${termIndex}`;
+                                    return (
+                                      <Fieldset key={termIndex} legend={t`Слагаемое шкалы`}>
+                                        <Stack>
+                                          <NativeSelect
+                                            label={t`Исходный вопрос`}
+                                            value={term.fieldId}
+                                            data={[
+                                              { value: "", label: t`Выберите вопрос` },
+                                              ...form.values.fields
+                                                .filter((row) =>
+                                                  [
+                                                    "number",
+                                                    "boolean",
+                                                    "choice",
+                                                    "multiChoice",
+                                                  ].includes(row.type),
+                                                )
+                                                .map((row) => ({
+                                                  value: row.id,
+                                                  label: row.label || t`Вопрос`,
+                                                })),
+                                            ]}
+                                            onChange={(event) => {
+                                              const source = form.values.fields.find(
+                                                (row) => row.id === event.currentTarget.value,
+                                              );
+                                              const choices =
+                                                source?.type === "boolean"
+                                                  ? [false, true]
+                                                  : (source?.choices.map((row) => row.value) ?? []);
+                                              form.replaceListItem(
+                                                `scores.${scoreIndex}.terms`,
+                                                termIndex,
+                                                {
+                                                  fieldId: event.currentTarget.value,
+                                                  weight: 1,
+                                                  ...(source?.type !== "number"
+                                                    ? {
+                                                        mapping: choices.map((value) => ({
+                                                          value,
+                                                          score: 0,
+                                                        })),
+                                                      }
+                                                    : {}),
+                                                },
+                                              );
+                                            }}
+                                          />
+                                          <NumberInput
+                                            label={t`Коэффициент`}
+                                            {...form.getInputProps(`${path}.weight`)}
+                                          />
+                                          {term.mapping?.map((item, itemIndex) => {
+                                            const source = form.values.fields.find(
+                                              (row) => row.id === term.fieldId,
+                                            );
+                                            const label =
+                                              typeof item.value === "boolean"
+                                                ? item.value
+                                                  ? t`Да`
+                                                  : t`Нет`
+                                                : (source?.choices.find(
+                                                    (row) => row.value === item.value,
+                                                  )?.label ?? String(item.value));
+                                            return (
+                                              <NumberInput
+                                                key={String(item.value)}
+                                                label={`${t`Баллы`}: ${label}`}
+                                                {...form.getInputProps(
+                                                  `${path}.mapping.${itemIndex}.score`,
+                                                )}
+                                              />
+                                            );
+                                          })}
+                                          <Button
+                                            variant="default"
+                                            onClick={() =>
+                                              form.removeListItem(
+                                                `scores.${scoreIndex}.terms`,
+                                                termIndex,
+                                              )
+                                            }
+                                          >{t`Удалить слагаемое`}</Button>
+                                        </Stack>
+                                      </Fieldset>
+                                    );
+                                  })}
+                                  <Button
+                                    variant="default"
+                                    disabled={score.terms.length >= 50}
+                                    onClick={() =>
+                                      form.insertListItem(`scores.${scoreIndex}.terms`, {
+                                        fieldId: "",
+                                        weight: 1,
+                                      })
+                                    }
+                                  >{t`Добавить слагаемое`}</Button>
+                                  <Button
+                                    color="red"
+                                    variant="light"
+                                    onClick={() => form.removeListItem("scores", scoreIndex)}
+                                  >{t`Удалить шкалу`}</Button>
+                                </Stack>
+                              </Paper>
+                            ))}
+                            <Button
+                              variant="default"
+                              disabled={form.values.scores.length >= 20}
+                              onClick={() =>
+                                form.insertListItem("scores", {
+                                  id: crypto.randomUUID(),
+                                  label: "",
+                                  description: "",
+                                  unit: "",
+                                  method: "sum",
+                                  terms: [{ fieldId: "", weight: 1 }],
+                                })
+                              }
+                            >{t`Добавить шкалу`}</Button>
                             {form.values.failureId && (
                               <Alert>{t`Открыт отклонённый черновик. Сохранение создаст новую версию после текущей; чужие изменения не перезаписываются.`}</Alert>
                             )}
@@ -488,6 +818,26 @@ function StudyForms() {
                                             {field.required ? t`Обязательный ответ` : ""}
                                           </Text>
                                           <Text>{field.help}</Text>
+                                          {field.visibleWhen && (
+                                            <Stack>
+                                              <Text>
+                                                {t`Условия видимости`}:{" "}
+                                                {field.visibleWhen.mode === "all"
+                                                  ? t`Все условия`
+                                                  : t`Хотя бы одно условие`}
+                                              </Text>
+                                              {field.visibleWhen.rules.map((rule, index) => (
+                                                <Text key={index}>
+                                                  {
+                                                    version.definition.fields.find(
+                                                      (row) => row.id === rule.fieldId,
+                                                    )?.label
+                                                  }{" "}
+                                                  {operators[rule.operator]} {String(rule.value)}
+                                                </Text>
+                                              ))}
+                                            </Stack>
+                                          )}
                                           {field.type === "text" && (
                                             <Text>
                                               {t`Максимум символов`}: {field.maxLength}
@@ -521,6 +871,38 @@ function StudyForms() {
                                             ))}
                                         </Stack>
                                       ))}{" "}
+                                      {(version.definition.scores ?? []).map((score) => (
+                                        <Paper withBorder p="sm" key={score.id}>
+                                          <Stack>
+                                            <Text fw={600}>
+                                              {score.label} ({score.unit})
+                                            </Text>
+                                            <Text>{score.description}</Text>
+                                            <Text>
+                                              {score.method === "sum"
+                                                ? t`Сумма взвешенных значений`
+                                                : t`Среднее взвешенных значений`}
+                                            </Text>
+                                            {score.terms.map((term) => (
+                                              <Stack key={term.fieldId}>
+                                                <Text>
+                                                  {
+                                                    version.definition.fields.find(
+                                                      (row) => row.id === term.fieldId,
+                                                    )?.label
+                                                  }
+                                                  : × {i18n.number(term.weight)}
+                                                </Text>
+                                                {term.mapping?.map((item) => (
+                                                  <Text key={String(item.value)}>
+                                                    {String(item.value)}: {i18n.number(item.score)}
+                                                  </Text>
+                                                ))}
+                                              </Stack>
+                                            ))}
+                                          </Stack>
+                                        </Paper>
+                                      ))}
                                     </Stack>
                                   </Paper>
                                 ))}

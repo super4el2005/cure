@@ -4,6 +4,7 @@ import type { FunctionArgs } from "convex/server";
 
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
+import { calculateStudyScores } from "@/src/lib/study-form-model";
 import type { QuestionnairePayload } from "@/src/lib/study-form-model";
 const modules = {
   "../convex/_generated/server.js": () => import("@/convex/_generated/server.js"),
@@ -379,4 +380,97 @@ describe("questionnaire clinical permissions and version binding", () => {
       )[0],
     ).toMatchObject({ deleted: true, payload: null });
   });
+});
+
+it("enforces conditional branches against the published version and recomputes scores without accepting forged rules", async () => {
+  const { doctor, researcher, clinic, args, formArgs, boolId, numberId } = await setup();
+  const definition = {
+    ...formArgs.definition,
+    fields: formArgs.definition.fields.map((field) =>
+      field.id === numberId
+        ? {
+            ...field,
+            visibleWhen: {
+              mode: "all" as const,
+              rules: [{ fieldId: boolId, operator: "equals" as const, value: false }],
+            },
+          }
+        : field,
+    ),
+    scores: [
+      {
+        id: crypto.randomUUID(),
+        label: "Research score",
+        description: "Unvalidated author-defined scale",
+        unit: "points",
+        method: "sum" as const,
+        terms: [{ fieldId: numberId, weight: 2 }],
+      },
+    ],
+  };
+  const next = {
+    ...formArgs,
+    clientId: crypto.randomUUID(),
+    expectedVersion: 1,
+    baseVersionClientId: formArgs.clientId,
+    definition,
+    idempotencyKey: "conditional-form",
+  };
+  await researcher.mutation(api.studyForms.append, next);
+  const payload = {
+    ...args.payload,
+    definition,
+    formVersionClientId: next.clientId,
+    formVersion: 2,
+    status: "final" as const,
+    answers: { [boolId]: false, [numberId]: 0 },
+  };
+  await doctor.mutation(api.clinicalRecords.apply, { ...args, payload });
+  await expect(
+    doctor.mutation(api.clinicalRecords.apply, {
+      ...args,
+      clientId: crypto.randomUUID(),
+      idempotencyKey: "hidden",
+      payload: { ...payload, answers: { [boolId]: true, [numberId]: 5 } },
+    }),
+  ).rejects.toThrow("INVALID_CLINICAL_RECORD");
+  await expect(
+    doctor.mutation(api.clinicalRecords.apply, {
+      ...args,
+      clientId: crypto.randomUUID(),
+      idempotencyKey: "required",
+      payload: { ...payload, answers: { [boolId]: false } },
+    }),
+  ).rejects.toThrow("INVALID_CLINICAL_RECORD");
+  await expect(
+    doctor.mutation(api.clinicalRecords.apply, {
+      ...args,
+      clientId: crypto.randomUUID(),
+      idempotencyKey: "forged-score",
+      payload: {
+        ...payload,
+        definition: {
+          ...definition,
+          scores: [{ ...definition.scores[0]!, terms: [{ fieldId: numberId, weight: 3 }] }],
+        },
+      },
+    }),
+  ).rejects.toThrow("INVALID_STUDY_FORM");
+  await doctor.mutation(api.clinicalRecords.apply, {
+    ...args,
+    clientId: crypto.randomUUID(),
+    idempotencyKey: "inactive-branch",
+    payload: { ...payload, answers: { [boolId]: true } },
+  });
+  const rows = await doctor.query(api.clinicalRecords.list, {
+    actorId: "doctor",
+    organizationId: clinic,
+  });
+  const results = rows.flatMap((row) =>
+    row.payload?.kind === "questionnaire"
+      ? calculateStudyScores(row.payload.definition, row.payload.answers)
+      : [],
+  );
+  expect(results.map((result) => result.status).sort()).toEqual(["calculated", "notApplicable"]);
+  expect(results.find((result) => result.status === "calculated")).toMatchObject({ value: 0 });
 });
