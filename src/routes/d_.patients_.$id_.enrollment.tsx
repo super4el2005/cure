@@ -8,10 +8,9 @@ import {
   Container,
   Group,
   Modal,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
-  Select,
   Stack,
   Text,
   Textarea,
@@ -90,15 +89,15 @@ function Enrollment() {
     else action();
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
             onClose={blocker.reset}
             title={t`Покинуть страницу с несохранёнными изменениями?`}
           >
-            <Stack>
+            <Stack gap="sm">
               <Text>{t`Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход.`}</Text>
               <Group>
                 <Button onClick={blocker.reset}>{t`Остаться`}</Button>
@@ -115,14 +114,15 @@ function Enrollment() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -222,14 +222,15 @@ function Enrollment() {
                     {editing &&
                       form.values.scope === workspace.scope &&
                       form.values.patientClientId === id && (
-                        <Paper withBorder p="md">
+                        <Paper withBorder p="sm">
                           <form onSubmit={form.onSubmit((input) => save.mutate(input))}>
-                            <Stack>
+                            <Stack gap="sm">
                               {form.values.failureId && (
                                 <Alert color="yellow">{t`Открыт отклонённый черновик. Сравните решение с текущей историей перед сохранением. Повторное применение требует явного подтверждения.`}</Alert>
                               )}
                               {!form.values.previous && (
                                 <Select
+                                  allowDeselect={false}
                                   label={t`Исследование и протокол`}
                                   data={available.map((row) => ({
                                     value: row.clientId,
@@ -345,8 +346,8 @@ function Enrollment() {
                       const payload = record.payload;
                       return (
                         payload?.kind === "enrollment" && (
-                          <Paper key={record.clientId} withBorder p="md">
-                            <Stack>
+                          <Paper key={record.clientId} withBorder p="sm">
+                            <Stack gap="sm">
                               <Title order={3}>
                                 {projectMap.get(payload.projectClientId)?.title ??
                                   payload.projectClientId}
@@ -454,7 +455,7 @@ function Enrollment() {
                     })}
                     {failures.data?.map((failure) => (
                       <Alert key={failure.id} color="yellow">
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                           <Text>{failure.code}</Text>
                           {failure.action !== "delete" ? (

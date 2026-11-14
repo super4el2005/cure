@@ -8,7 +8,7 @@ import {
   Checkbox,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   Stack,
   Text,
@@ -84,13 +84,13 @@ function Profile() {
   });
   const profile = details.data?.profile;
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d">{t`На главную`}</Anchor>
         <Title>{t`Мой профессиональный профиль`}</Title>
         {isLoading && <Text>{t`Проверяем сессию…`}</Text>}
         {!isLoading && !isAuthenticated && (
-          <Stack>
+          <Stack gap="sm">
             <Text>{t`Войдите, чтобы создать или открыть свой профиль.`}</Text>
             <Button
               onClick={() => signIn.mutate()}
@@ -103,8 +103,8 @@ function Profile() {
         )}
         {isAuthenticated && details.isSuccess && (
           <>
-            <Paper withBorder p="md">
-              <Stack>
+            <Paper withBorder p="sm">
+              <Stack gap="sm">
                 <Title order={2}>{profile?.displayName ?? t`Профиль ещё не заполнен`}</Title>
                 <Badge>
                   {profile?.verified
@@ -137,14 +137,15 @@ function Profile() {
             </Paper>
             {editing && form.values.actorId === details.data.userId && (
               <form onSubmit={form.onSubmit((values) => save.mutate(values))}>
-                <Stack>
+                <Stack gap="sm">
                   <TextInput
                     label={t`Имя`}
                     required
                     maxLength={150}
                     {...form.getInputProps("displayName")}
                   />
-                  <NativeSelect
+                  <Select
+                    allowDeselect={false}
                     label={t`Профессия`}
                     disabled={Boolean(profile?.verified)}
                     data={[
@@ -180,8 +181,8 @@ function Profile() {
               <Text>{t`Подтверждённых организаций пока нет.`}</Text>
             )}
             {details.data.memberships.map((m) => (
-              <Paper withBorder p="md" key={m._id}>
-                <Stack>
+              <Paper withBorder p="sm" key={m._id}>
+                <Stack gap="sm">
                   <Text>{m.organization?.name}</Text>
                   <Badge>
                     {

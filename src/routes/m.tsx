@@ -1,86 +1,259 @@
 import { useLingui } from "@lingui/react/macro";
 import {
+  ActionIcon,
   Anchor,
   Badge,
+  Box,
   Button,
-  Container,
   Group,
-  List,
+  Modal,
   Paper,
-  SimpleGrid,
+  Progress,
+  Select,
   Stack,
+  Table,
   Text,
   Title,
+  useMantineColorScheme,
 } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useDisclosure, useMounted, useReducedMotion } from "@mantine/hooks";
+import { Player } from "@remotion/player";
+import { createFileRoute, Link, Navigate, redirect, useRouter } from "@tanstack/react-router";
+import { useContext } from "react";
+import { FiSun, FiMoon } from "react-icons/fi";
+import { useCurrentFrame } from "remotion";
 
 import { authClient } from "@/src/lib/auth-client";
-export const Route = createFileRoute("/m")({ component: Home });
+import { saveLanguage } from "@/src/lib/language";
+import { PwaInstallContext } from "@/src/lib/pwa-install";
+
+export const Route = createFileRoute("/m")({
+  beforeLoad: ({ context }) => {
+    if (context.isAuthenticated) throw redirect({ to: "/m/workspace", replace: true });
+  },
+  component: Home,
+});
 function Home() {
-  const { t } = useLingui();
-  const signIn = useMutation({
-    mutationKey: ["authentication"],
-    retry: false,
-    mutationFn: async () => {
-      const result = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: new URL("/m/profile", window.location.origin).href,
-        errorCallbackURL: new URL("/auth/error", window.location.origin).href,
-      });
-      if (result.error) throw new Error("SIGN_IN_FAILED");
-    },
-  });
+  const { t, i18n } = useLingui();
+  const router = useRouter();
+  const pwa = useContext(PwaInstallContext);
+  const [instructions, dialog] = useDisclosure();
+  const mounted = useMounted();
+  const reducedMotion = useReducedMotion();
+  const session = authClient.useSession();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  if (session.data?.user) return <Navigate to="/m/workspace" replace />;
   return (
-    <Container component="main" data-page="mobile" py="xl">
-      <Stack>
-        <Badge>Cure</Badge>
-        <Title>{t`Врачи и исследователи — вместе`}</Title>
-        <Text size="lg">{t`Связываем клиническую практику и университетскую науку для совместных исследований.`}</Text>
-        <Group>
-          <Button
-            loading={signIn.isPending}
-            onClick={() => signIn.mutate()}
-          >{t`Войти через Google`}</Button>
-          <Anchor component={Link} to="/m/profile">{t`Мой профиль`}</Anchor>
+    <Box
+      component="main"
+      data-page="mobile"
+      h="100dvh"
+      p="sm"
+      display="flex"
+      style={{ flexDirection: "column", overflow: "hidden" }}
+    >
+      <Group justify="space-between" wrap="nowrap">
+        <Text fw={700} size="xl">
+          Cure
+        </Text>
+        <Group gap="xs">
+          <Select
+            w={105}
+            size="xs"
+            aria-label={t`Язык интерфейса`}
+            value={i18n.locale}
+            allowDeselect={false}
+            data={[
+              { value: "ru", label: "Русский" },
+              { value: "en", label: "English" },
+            ]}
+            onChange={(value) => {
+              if (value === "ru" || value === "en") {
+                saveLanguage(value);
+                void router.invalidate().catch(() => undefined);
+              }
+            }}
+          />
+          <ActionIcon
+            variant="default"
+            aria-label={t`Сменить тему`}
+            onClick={() => toggleColorScheme()}
+          >
+            {colorScheme === "dark" ? <FiSun /> : <FiMoon />}
+          </ActionIcon>
         </Group>
-        {signIn.isError && <Text role="alert">{t`Не удалось войти. Повторите попытку.`}</Text>}
-        <SimpleGrid cols={1}>
-          <Paper withBorder p="md">
-            <Stack>
-              <Title order={2}>{t`Врачам`}</Title>
-              <List>
-                <List.Item>{t`Ведение данных пациентов в рамках предоставленного доступа.`}</List.Item>
-                <List.Item>{t`Поиск исследователей для клинических задач.`}</List.Item>
-                <List.Item>{t`Участие в совместных исследованиях.`}</List.Item>
-              </List>
-              <Anchor component={Link} to="/m/specialists">{t`Найти специалиста`}</Anchor>
-            </Stack>
-          </Paper>
-          <Paper withBorder p="md">
-            <Stack>
-              <Title order={2}>{t`Исследователям`}</Title>
-              <List>
-                <List.Item>{t`Поиск клинических партнёров и исследовательских центров.`}</List.Item>
-                <List.Item>{t`Чтение разрешённых данных пациентов без изменения карт.`}</List.Item>
-                <List.Item>{t`Связь научных вопросов с клинической практикой.`}</List.Item>
-              </List>
-              <Anchor component={Link} to="/m/organizations">{t`Найти организацию`}</Anchor>
-            </Stack>
-          </Paper>
-        </SimpleGrid>
-        <Paper withBorder p="md">
-          <Stack>
-            <Title order={2}>{t`Открытые каталоги`}</Title>
-            <Text>{t`Просматривайте опубликованные профили и организации без входа. Данные пациентов не публикуются.`}</Text>
-            <Group>
-              <Anchor component={Link} to="/m/specialists">{t`Специалисты`}</Anchor>
-              <Anchor component={Link} to="/m/organizations">{t`Организации`}</Anchor>
-              <Anchor component={Link} to="/m/tools">{t`Медицинские справочники и AI`}</Anchor>
-            </Group>
-          </Stack>
-        </Paper>
+      </Group>
+      <Box
+        flex={1}
+        mih={0}
+        display="flex"
+        style={{ flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}
+      >
+        <Stack gap="sm" maw={520}>
+          <Text size="xs" c="dimmed">{t`Клиническая практика × наука`}</Text>
+          <Title order={1} size="h3">{t`Врачи и исследователи — вместе`}</Title>
+          <Text size="sm">{t`Пациенты, исследования и аналитика — в одном рабочем пространстве.`}</Text>
+          <Group gap="xs" wrap="nowrap">
+            <Button
+              size="xs"
+              variant="default"
+              loading={pwa.pending}
+              onClick={() => (pwa.available ? pwa.install() : dialog.open())}
+            >{t`Скачать приложение`}</Button>
+            <Button size="xs" component={Link} to="/m/workspace">{t`Открыть в браузере`}</Button>
+          </Group>
+          <Text
+            size="xs"
+            c="dimmed"
+          >{t`Google-вход · Работа с подготовленными данными офлайн`}</Text>
+        </Stack>
+        <Box w="100%" maw={720} mah="29dvh" style={{ overflow: "hidden" }}>
+          <Text size="xs" c="dimmed" mb={4}>{t`Демо приложения · вымышленные данные`}</Text>
+          {mounted ? (
+            <Player
+              component={ApplicationDemo}
+              durationInFrames={450}
+              compositionWidth={960}
+              compositionHeight={540}
+              fps={30}
+              controls
+              loop
+              autoPlay={!reducedMotion}
+              showVolumeControls={false}
+              style={{ width: "100%", maxHeight: "29dvh" }}
+            />
+          ) : (
+            <Paper withBorder p="sm">
+              <Text>{t`Пациенты → Исследование → Аналитика`}</Text>
+            </Paper>
+          )}
+        </Box>
+      </Box>
+      <Stack gap={4} pt="xs">
+        <Text size="xs" fw={600}>{t`Примеры медицинских организаций · не партнёры Cure`}</Text>
+        <Group gap="md">
+          <Anchor
+            size="xs"
+            href="https://www.sechenov.ru/eng/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >{t`Сеченовский университет`}</Anchor>
+          <Anchor
+            size="xs"
+            href="https://www.charite.de/en/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Charité
+          </Anchor>
+          <Anchor
+            size="xs"
+            href="https://www.mayoclinic.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Mayo Clinic
+          </Anchor>
+        </Group>
+        <Text
+          size="xs"
+          c="dimmed"
+        >{t`Результат демо: пациент включён в исследование, когорта подготовлена для анализа.`}</Text>
       </Stack>
-    </Container>
+      <Modal opened={instructions} onClose={dialog.close} title={t`Установка Cure`}>
+        <Stack gap="sm">
+          <Text size="sm">{t`В Chrome или Edge выберите «Установить приложение» в меню браузера. На iPhone: «Поделиться» → «На экран Домой».`}</Text>
+          <Text size="sm">{t`Если установка недоступна, откройте приложение в браузере.`}</Text>
+          <Button component={Link} to="/m/workspace">{t`Открыть в браузере`}</Button>
+        </Stack>
+      </Modal>
+    </Box>
+  );
+}
+
+// An isolated, deterministic walkthrough. No patient data, network or real mutations.
+function ApplicationDemo() {
+  const { t } = useLingui();
+  const frame = useCurrentFrame();
+  const phase = Math.min(2, Math.floor(frame / 150));
+  const titles = [t`Пациенты`, t`Исследование`, t`Аналитика`];
+  return (
+    <Paper withBorder h={540} p="md">
+      <Stack gap="md">
+        <Group justify="space-between">
+          <Text fw={700}>Cure</Text>
+          <Badge variant="light">{t`Демонстрация`}</Badge>
+        </Group>
+        <Group align="flex-start" wrap="nowrap">
+          <Stack w={170} gap="xs">
+            {titles.map((title, index) => (
+              <Button key={title} variant={index === phase ? "light" : "subtle"} justify="start">
+                {title}
+              </Button>
+            ))}
+          </Stack>
+          <Stack flex={1} gap="md">
+            <Title order={2}>{titles[phase]}</Title>
+            {phase === 0 && (
+              <>
+                <Text>{t`Карта пациента · Демо-001`}</Text>
+                <Table withTableBorder>
+                  <Table.Tbody>
+                    <Table.Tr>
+                      <Table.Td>{t`Диагноз`}</Table.Td>
+                      <Table.Td>J45</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Td>{t`Согласие`}</Table.Td>
+                      <Table.Td>{t`Зарегистрировано`}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Td>{t`Визит`}</Table.Td>
+                      <Table.Td>{t`Запланирован`}</Table.Td>
+                    </Table.Tr>
+                  </Table.Tbody>
+                </Table>
+                <Badge color="green">{t`Сохранено на устройстве`}</Badge>
+              </>
+            )}
+            {phase === 1 && (
+              <>
+                <Text fw={600}>{t`Наблюдение пациентов с астмой`}</Text>
+                <Text>{t`Демо-001 включён в исследование`}</Text>
+                <Progress value={65} />
+                <Text size="sm">{t`Набор: 13 из 20 участников · пример`}</Text>
+                <Badge>{t`Согласие проверено`}</Badge>
+              </>
+            )}
+            {phase === 2 && (
+              <>
+                <Text>{t`Сравнение двух когорт`}</Text>
+                <Table withTableBorder>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>{t`Когорта`}</Table.Th>
+                      <Table.Th>n</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    <Table.Tr>
+                      <Table.Td>A</Table.Td>
+                      <Table.Td>8</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Td>B</Table.Td>
+                      <Table.Td>5</Table.Td>
+                    </Table.Tr>
+                  </Table.Tbody>
+                </Table>
+                <Text size="sm">{t`Таблица для анализа подготовлена`}</Text>
+                <Badge variant="light">{t`Демонстрационные значения`}</Badge>
+              </>
+            )}
+          </Stack>
+        </Group>
+        <Progress value={((frame % 150) / 150) * 100} size="xs" />
+      </Stack>
+    </Paper>
   );
 }

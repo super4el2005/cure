@@ -8,7 +8,7 @@ import {
   Container,
   Group,
   MultiSelect,
-  NativeSelect,
+  Select,
   Pagination,
   Paper,
   PasswordInput,
@@ -59,8 +59,8 @@ function Recruitment() {
     completed: t`Участие завершено`,
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
         <Title>{t`Журнал набора клиники`}</Title>
         <Text>
@@ -70,14 +70,15 @@ function Recruitment() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}

@@ -7,11 +7,10 @@ import {
   Container,
   Fieldset,
   Group,
-  NativeSelect,
+  Select,
   NumberInput,
   Paper,
   PasswordInput,
-  Select,
   Stack,
   Text,
   Textarea,
@@ -88,8 +87,8 @@ function Visits() {
     Boolean(clinicalForm.values.clientId) &&
     ["completed", "cancelled", "noShow"].includes(clinicalForm.values.originalVisitStatus);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor
           renderRoot={(props) => <Link {...props} to="/d/patients/$id" params={{ id }} />}
         >{t`Карта пациента`}</Anchor>
@@ -98,14 +97,15 @@ function Visits() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -181,12 +181,12 @@ function Visits() {
                       onClick={createClinical}
                     >{t`Добавить визит`}</Button>
                     {clinicalEditing && clinicalForm.values.patientClientId === id && (
-                      <Paper withBorder p="md">
+                      <Paper withBorder p="sm">
                         <form
                           onSubmit={clinicalForm.onSubmit((values) => saveClinical.mutate(values))}
                         >
                           <Fieldset disabled={saveClinical.isPending}>
-                            <Stack>
+                            <Stack gap="sm">
                               <DateTimePicker
                                 label={t`Дата и время визита`}
                                 locale={i18n.locale}
@@ -208,7 +208,8 @@ function Visits() {
                                 ]}
                                 {...clinicalForm.getInputProps("timeZone")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`При повторении часа при переводе часов`}
                                 disabled={scheduleLocked}
                                 data={[
@@ -230,7 +231,8 @@ function Visits() {
                               {scheduleLocked && (
                                 <Text>{t`Время завершённого или отменённого визита не переносится. Для нового приёма создайте отдельный визит.`}</Text>
                               )}
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Тип визита`}
                                 data={Object.entries(typeLabels).map(([value, label]) => ({
                                   value,
@@ -238,7 +240,8 @@ function Visits() {
                                 }))}
                                 {...clinicalForm.getInputProps("visitType")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Статус визита`}
                                 data={Object.entries(statusLabels)
                                   .filter(
@@ -312,7 +315,8 @@ function Visits() {
                     {(saveClinical.isSuccess || deleteClinical.isSuccess) && (
                       <Alert color="green">{t`Изменения сохранены локально. Статус отправки отображается в очереди.`}</Alert>
                     )}
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Фильтр по статусу визита`}
                       data={[
                         { value: "all", label: t`Все статусы` },
@@ -329,8 +333,8 @@ function Visits() {
                     {visits.map(
                       (record) =>
                         record.payload?.kind === "visit" && (
-                          <Paper withBorder p="md" key={record.clientId}>
-                            <Stack>
+                          <Paper withBorder p="sm" key={record.clientId}>
+                            <Stack gap="sm">
                               <Group>
                                 <Badge>{statusLabels[record.payload.status]}</Badge>
                                 <Badge>{typeLabels[record.payload.visitType]}</Badge>
@@ -404,7 +408,7 @@ function Visits() {
                     )}
                     {clinicalFailures.data?.map((failure) => (
                       <Alert color="yellow" key={failure.id}>
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                           <Text>{failure.code}</Text>
                           {failure.action !== "delete" ? (

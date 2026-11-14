@@ -8,7 +8,7 @@ import {
   Button,
   Container,
   Group,
-  NativeSelect,
+  Select,
   MultiSelect,
   NumberInput,
   Checkbox,
@@ -95,8 +95,8 @@ function Patients() {
   ].sort();
 
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/m">{t`На главную`}</Anchor>
         <Title>{t`Пациенты`}</Title>
         {!userId && (
@@ -106,15 +106,16 @@ function Patients() {
           </Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -212,13 +213,13 @@ function Patients() {
               <Alert>{t`Изменение сохранено на устройстве. Состояние отправки показано отдельно.`}</Alert>
             )}
             {editing && opened.role === "doctor" && (
-              <Paper withBorder p="md">
+              <Paper withBorder p="sm">
                 <form
                   onSubmit={patientForm.onSubmit((values) =>
                     save.mutateAsync(values).catch(() => undefined),
                   )}
                 >
-                  <Stack>
+                  <Stack gap="sm">
                     <TextInput
                       label={t`Имя пациента`}
                       required
@@ -230,7 +231,8 @@ function Patients() {
                       required
                       {...patientForm.getInputProps("birthDate")}
                     />
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Пол`}
                       data={[
                         { value: "unknown", label: t`Не указан` },
@@ -263,16 +265,17 @@ function Patients() {
               <Alert>{t`Согласие или отзыв сохранены на устройстве. Для выдачи доступа дождитесь отправки на сервер.`}</Alert>
             )}
             {consenting && opened.role === "doctor" && (
-              <Paper withBorder p="md">
+              <Paper withBorder p="sm">
                 <form
                   onSubmit={consentForm.onSubmit((values) =>
                     consent.mutateAsync(values).catch(() => undefined),
                   )}
                 >
-                  <Stack>
+                  <Stack gap="sm">
                     <Title order={2}>{t`Согласие на исследовательское использование данных`}</Title>
                     <Text>{t`Врач фиксирует уже полученное согласие или его отзыв. Запись в системе не заменяет подпись пациента.`}</Text>
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Действие`}
                       data={[
                         { value: "granted", label: t`Зарегистрировать новую версию согласия` },
@@ -331,7 +334,7 @@ function Patients() {
                     />
                     {Boolean(consentForm.values.archivedExpiresAt) && (
                       <Alert>
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>{t`Срок восстановленного согласия сохранён без продления.`}</Text>
                           <Text>
                             {new Intl.DateTimeFormat(i18n.locale, {
@@ -398,15 +401,16 @@ function Patients() {
             )}
             {share.isSuccess && <Alert>{t`Права доступа обновлены на сервере.`}</Alert>}
             {sharing && opened.role === "doctor" && (
-              <Paper withBorder p="md">
+              <Paper withBorder p="sm">
                 <form
                   onSubmit={shareForm.onSubmit((values) =>
                     share.mutateAsync(values).catch(() => undefined),
                   )}
                 >
-                  <Stack>
+                  <Stack gap="sm">
                     <Title order={2}>{t`Доступ исследователя к записи`}</Title>
-                    <NativeSelect
+                    <Select
+                      allowDeselect={false}
                       label={t`Исследователь`}
                       data={[
                         { value: "", label: t`Выберите исследователя` },
@@ -453,7 +457,7 @@ function Patients() {
                 <Accordion.Control>{t`Поиск и фильтры пациентов`}</Accordion.Control>
                 <Accordion.Panel>
                   {searchForm.values.scope === workspace.scope && (
-                    <Stack>
+                    <Stack gap="sm">
                       <TextInput
                         label={
                           opened.role === "doctor"
@@ -472,7 +476,8 @@ function Patients() {
                         {...searchForm.getInputProps("diagnoses")}
                       />
                       <Text>{t`Коды диагнозов сравниваются целиком без учёта регистра. Недоступные по согласию поля не считаются пустыми.`}</Text>
-                      <NativeSelect
+                      <Select
+                        allowDeselect={false}
                         label={t`Пол`}
                         data={[
                           { value: "any", label: t`Любой` },
@@ -506,7 +511,8 @@ function Patients() {
                       {!patientSearchSchema.safeParse(searchForm.values).success && (
                         <Alert color="red">{t`Проверьте диапазон дат: начало не должно быть позже окончания.`}</Alert>
                       )}
-                      <NativeSelect
+                      <Select
+                        allowDeselect={false}
                         label={t`Сортировка пациентов`}
                         data={[
                           { value: "recent", label: t`По последнему изменению` },
@@ -531,7 +537,7 @@ function Patients() {
                 <Accordion.Item value="duplicates">
                   <Accordion.Control>{t`Возможные дубликаты пациентов`}</Accordion.Control>
                   <Accordion.Panel>
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Совпадение имени и даты рождения — повод для проверки, а не подтверждение личности. Записи, согласия и история не объединяются автоматически.`}</Text>
                       {duplicates.length === 0 && (
                         <Text>{t`Совпадений в загруженном наборе не найдено.`}</Text>
@@ -540,8 +546,8 @@ function Patients() {
                         {t`Групп совпадений:`} {duplicates.length}
                       </Text>
                       {duplicates.slice(0, 20).map((group) => (
-                        <Paper withBorder p="md" key={group[0]!.clientId}>
-                          <Stack>
+                        <Paper withBorder p="sm" key={group[0]!.clientId}>
+                          <Stack gap="sm">
                             <Title order={3}>{group[0]!.fullName}</Title>
                             <Text>
                               {i18n.date(new Date(`${group[0]!.birthDate}T12:00:00`), {
@@ -689,14 +695,14 @@ function Patients() {
             )}
             {status.data?.failures.map((failure) => (
               <Alert key={failure.id} color="red">
-                <Stack>
+                <Stack gap="sm">
                   <Text>
                     {failure.code === "REVISION_CONFLICT"
                       ? t`Запись изменена другим участником. Проверьте актуальные данные перед повторным сохранением.`
                       : t`Сервер отклонил изменение. Локальная версия сохранена для разбора.`}
                   </Text>
                   {failure.action === "delete" ? (
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Удаление не выполнено. Откройте актуальную карту и повторно рассмотрите удаление; исходные данные сохранены в архиве решения.`}</Text>
                       <Anchor
                         renderRoot={(props) => (

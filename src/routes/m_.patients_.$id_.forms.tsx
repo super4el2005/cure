@@ -9,11 +9,10 @@ import {
   Fieldset,
   Group,
   MultiSelect,
-  NativeSelect,
+  Select,
   NumberInput,
   Paper,
   PasswordInput,
-  Select,
   Stack,
   Text,
   Textarea,
@@ -93,15 +92,15 @@ function Questionnaires() {
       label: `${form.values.template.definition.title} (${t`Сохранённая версия`}: ${form.values.template.version})`,
     });
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
             onClose={blocker.reset}
             title={t`Покинуть страницу с несохранёнными изменениями?`}
           >
-            <Stack>
+            <Stack gap="sm">
               <Text>{t`Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход.`}</Text>
               <Group>
                 <Button variant="default" onClick={blocker.reset}>{t`Остаться`}</Button>
@@ -119,14 +118,15 @@ function Questionnaires() {
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -238,10 +238,10 @@ function Questionnaires() {
                     {editing &&
                       form.values.scope === workspace.scope &&
                       form.values.patientClientId === id && (
-                        <Paper withBorder p="md">
+                        <Paper withBorder p="sm">
                           <form onSubmit={form.onSubmit((values) => saveResponse.mutate(values))}>
                             <Fieldset disabled={saveResponse.isPending}>
-                              <Stack>
+                              <Stack gap="sm">
                                 <Select
                                   label={t`Шаблон опросника`}
                                   searchable
@@ -279,7 +279,8 @@ function Questionnaires() {
                                       locale={i18n.locale}
                                       {...form.getInputProps("occurredOn")}
                                     />
-                                    <NativeSelect
+                                    <Select
+                                      allowDeselect={false}
                                       label={t`Статус ответа`}
                                       data={[
                                         ...(form.values.originalStatus === "final"
@@ -296,8 +297,8 @@ function Questionnaires() {
                                     {form.values.template.definition.fields
                                       .filter((field) => activeFields.has(field.id))
                                       .map((field) => (
-                                        <Paper withBorder p="md" key={field.id}>
-                                          <Stack>
+                                        <Paper withBorder p="sm" key={field.id}>
+                                          <Stack gap="sm">
                                             {field.type === "text" && (
                                               <Textarea
                                                 label={field.label}
@@ -352,7 +353,8 @@ function Questionnaires() {
                                               />
                                             )}
                                             {field.type === "boolean" && (
-                                              <NativeSelect
+                                              <Select
+                                                allowDeselect={false}
                                                 label={field.label}
                                                 description={field.help}
                                                 required={
@@ -367,7 +369,8 @@ function Questionnaires() {
                                               />
                                             )}
                                             {field.type === "choice" && (
-                                              <NativeSelect
+                                              <Select
+                                                allowDeselect={false}
                                                 label={field.label}
                                                 description={field.help}
                                                 required={
@@ -399,7 +402,7 @@ function Questionnaires() {
                                     <Alert>{t`Вопросы меняются по условиям шаблона. Скрытые ответы не сохраняются; перед сохранением проверьте активную ветку.`}</Alert>
                                     {currentScores.map((result) => (
                                       <Paper withBorder p="sm" key={result.score.id}>
-                                        <Stack>
+                                        <Stack gap="sm">
                                           <Text fw={600}>{result.score.label}</Text>
                                           <Text>{result.score.description}</Text>
                                           <Text>
@@ -473,8 +476,8 @@ function Questionnaires() {
                     {responses.map(
                       (record) =>
                         record.payload?.kind === "questionnaire" && (
-                          <Paper withBorder p="md" key={record.clientId}>
-                            <Stack>
+                          <Paper withBorder p="sm" key={record.clientId}>
+                            <Stack gap="sm">
                               <Title order={2}>{record.payload.definition.title}</Title>
                               <Group>
                                 <Badge>
@@ -549,7 +552,7 @@ function Questionnaires() {
                                 record.payload.answers,
                               ).map((result) => (
                                 <Paper withBorder p="sm" key={result.score.id}>
-                                  <Stack>
+                                  <Stack gap="sm">
                                     <Text fw={600}>{result.score.label}</Text>
                                     <Text>{result.score.description}</Text>
                                     <Text>
@@ -618,7 +621,7 @@ function Questionnaires() {
                     )}
                     {failures.data?.map((failure) => (
                       <Alert color="yellow" key={failure.id}>
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                           <Text>{failure.code}</Text>
                           {failure.action !== "delete" ? (

@@ -7,7 +7,7 @@ import {
   Container,
   Fieldset,
   Group,
-  NativeSelect,
+  Select,
   NumberInput,
   Paper,
   PasswordInput,
@@ -72,23 +72,24 @@ function Patient() {
   };
   const patient = rows.find((row) => row.clientId === id);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/m/patients">{t`Все пациенты`}</Anchor>
         <Title>{t`Карта пациента`}</Title>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -242,13 +243,13 @@ function Patient() {
                   </Group>
                 )}
                 {editing && opened.role === "doctor" && patientForm.values.clientId === id && (
-                  <Paper withBorder p="md">
+                  <Paper withBorder p="sm">
                     <form
                       onSubmit={patientForm.onSubmit((values) =>
                         save.mutateAsync(values).catch(() => undefined),
                       )}
                     >
-                      <Stack>
+                      <Stack gap="sm">
                         <TextInput
                           label={t`ФИО`}
                           required
@@ -261,7 +262,8 @@ function Patient() {
                           required
                           {...patientForm.getInputProps("birthDate")}
                         />
-                        <NativeSelect
+                        <Select
+                          allowDeselect={false}
                           label={t`Пол`}
                           data={[
                             { value: "unknown", label: t`Не указан` },
@@ -328,13 +330,14 @@ function Patient() {
                       <Alert color="red">{t`Не удалось сохранить изменение. Проверьте права и текущую версию записи. Ваш ввод остаётся в форме.`}</Alert>
                     )}
                     {clinicalEditing && clinicalForm.values.patientClientId === id && (
-                      <Paper withBorder p="md">
+                      <Paper withBorder p="sm">
                         <form
                           onSubmit={clinicalForm.onSubmit((input) => saveClinical.mutate(input))}
                         >
                           <Fieldset disabled={saveClinical.isPending}>
-                            <Stack>
-                              <NativeSelect
+                            <Stack gap="sm">
+                              <Select
+                                allowDeselect={false}
                                 label={t`Раздел карты`}
                                 disabled={Boolean(clinicalForm.values.clientId)}
                                 data={Object.entries(clinicalKinds)
@@ -375,7 +378,8 @@ function Patient() {
                                     maxLength={1000}
                                     {...clinicalForm.getInputProps("reaction")}
                                   />
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={t`Тяжесть реакции`}
                                     data={[
                                       { value: "unknown", label: t`Не указана` },
@@ -385,7 +389,8 @@ function Patient() {
                                     ]}
                                     {...clinicalForm.getInputProps("severity")}
                                   />
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={t`Статус аллергии`}
                                     data={[
                                       { value: "active", label: t`Активна` },
@@ -425,7 +430,8 @@ function Patient() {
                                     clearable
                                     {...clinicalForm.getInputProps("endedOn")}
                                   />
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={t`Статус терапии`}
                                     data={[
                                       { value: "active", label: t`Продолжается` },
@@ -449,7 +455,8 @@ function Patient() {
                                     maxLength={100}
                                     {...clinicalForm.getInputProps("code")}
                                   />
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={t`Тип результата`}
                                     data={[
                                       { value: "numeric", label: t`Числовой` },
@@ -514,8 +521,8 @@ function Patient() {
                     {clinical.map(
                       (record) =>
                         record.payload && (
-                          <Paper withBorder p="md" key={record.clientId}>
-                            <Stack>
+                          <Paper withBorder p="sm" key={record.clientId}>
+                            <Stack gap="sm">
                               <Group>
                                 <Badge>{clinicalKinds[record.payload.kind]}</Badge>
                                 <Text>
@@ -623,7 +630,7 @@ function Patient() {
                     )}
                     {clinicalFailures.data?.map((failure) => (
                       <Alert color="yellow" key={failure.id}>
-                        <Stack>
+                        <Stack gap="sm">
                           <Text>{t`Сервер отклонил изменение. Сохранённое решение не применяется автоматически.`}</Text>
                           <Text>{failure.code}</Text>
                           {failure.action !== "delete" ? (

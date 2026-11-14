@@ -30,8 +30,8 @@ function Specialist() {
   const profile = local.directory ? downloaded.data?.[0] : remote;
   const loading = !local.failed ? !downloaded.isReady : remote === undefined;
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d/specialists">{t`Все специалисты`}</Anchor>
         <Title>{t`Профиль специалиста`}</Title>
         {loading && <Loader aria-label={t`Загрузка`} />}
@@ -48,8 +48,8 @@ function Specialist() {
           <Alert>{t`Локальное хранилище недоступно. Каталог работает только при подключении к интернету.`}</Alert>
         )}
         {profile && (
-          <Paper withBorder p="md">
-            <Stack>
+          <Paper withBorder p="sm">
+            <Stack gap="sm">
               <Title order={2}>{profile.displayName}</Title>
               <Group>
                 <Badge>{profile.profession === "doctor" ? t`Врач` : t`Исследователь`}</Badge>
@@ -70,7 +70,7 @@ function Specialist() {
             </Stack>
           </Paper>
         )}
-        <Text>{t`Показаны только сведения, опубликованные специалистом. Данные пациентов и закрытые членства недоступны.`}</Text>
+        <Text>{t`Публичный профиль специалиста.`}</Text>
       </Stack>
     </Container>
   );

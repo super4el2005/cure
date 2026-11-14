@@ -74,8 +74,8 @@ function ResearchDirectory() {
     archived: t`В архиве`,
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/d">{t`На главную`}</Anchor>
         <Title>{t`Открытые исследования`}</Title>
         <Text>{t`Опубликованные исследования организаций. Рабочие протоколы и данные пациентов не публикуются.`}</Text>
@@ -97,8 +97,8 @@ function ResearchDirectory() {
         )}
         <SimpleGrid cols={2}>
           {rows?.map((row) => (
-            <Paper key={row.id} withBorder p="md">
-              <Stack>
+            <Paper key={row.id} withBorder p="sm">
+              <Stack gap="sm">
                 <Title order={2}>
                   <Anchor
                     renderRoot={(props) => (

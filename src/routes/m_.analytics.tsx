@@ -12,7 +12,7 @@ import {
   Container,
   Group,
   MultiSelect,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   Stack,
@@ -78,23 +78,24 @@ function Analytics() {
     { label: t`Включено в выборку`, value: report.flow.selected },
   ];
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/m/workspace">{t`Обзор работы`}</Anchor>
         <Title>{t`Аналитика`}</Title>
-        <Text>{t`Описательный анализ доступных записей выбранной организации. Изменение критериев не изменяет карты пациентов.`}</Text>
+        <Text>{t`Анализ доступных данных организации. Карты пациентов не изменяются.`}</Text>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -189,8 +190,8 @@ function Analytics() {
                 {analyses.map(
                   (record) =>
                     record.values && (
-                      <Paper key={record.clientId} withBorder p="md">
-                        <Stack>
+                      <Paper key={record.clientId} withBorder p="sm">
+                        <Stack gap="sm">
                           <Title order={3}>{record.values.title}</Title>
                           <Text>{record.values.description}</Text>
                           <Text>
@@ -246,7 +247,7 @@ function Analytics() {
                 )}
                 {analysisFailures.data?.map((failure) => (
                   <Alert color="yellow" key={failure.id}>
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил изменение анализа. Черновик сохранён отдельно и не применяется автоматически.`}</Text>
                       <Text>{failure.code}</Text>
                       {failure.action !== "delete" ? (
@@ -276,10 +277,10 @@ function Analytics() {
                   <Text>{t`Показан обзор всех доступных записей. Откройте или создайте анализ, чтобы настроить критерии.`}</Text>
                 )}
                 {currentAnalysis && (
-                  <Paper withBorder p="md">
+                  <Paper withBorder p="sm">
                     <form onSubmit={analysisForm.onSubmit((input) => saveAnalysis.mutate(input))}>
                       <Fieldset disabled={saveAnalysis.isPending}>
-                        <Stack>
+                        <Stack gap="sm">
                           <Title order={2}>{t`Критерии выборки`}</Title>
                           <TextInput
                             label={t`Название анализа`}
@@ -307,7 +308,8 @@ function Analytics() {
                             clearable
                             {...analysisForm.getInputProps("criteria.include")}
                           />
-                          <NativeSelect
+                          <Select
+                            allowDeselect={false}
                             label={t`Совпадение диагнозов включения`}
                             data={[
                               { value: "any", label: t`Хотя бы один` },
@@ -329,7 +331,8 @@ function Analytics() {
                             clearable
                             {...analysisForm.getInputProps("criteria.exclude")}
                           />
-                          <NativeSelect
+                          <Select
+                            allowDeselect={false}
                             label={t`Пол`}
                             data={[
                               { value: "any", label: t`Любой` },
@@ -354,7 +357,7 @@ function Analytics() {
                             })}
                           />
                           {analysisForm.values.comparisonEnabled && (
-                            <Stack>
+                            <Stack gap="sm">
                               <Title order={3}>{t`Референтная когорта`}</Title>
                               <MultiSelect
                                 label={t`Диагнозы включения второй группы`}
@@ -368,7 +371,8 @@ function Analytics() {
                                 ].sort()}
                                 {...analysisForm.getInputProps("comparison.reference.include")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Совпадение диагнозов включения`}
                                 data={[
                                   { value: "any", label: t`Хотя бы один` },
@@ -390,7 +394,8 @@ function Analytics() {
                                 ].sort()}
                                 {...analysisForm.getInputProps("comparison.reference.exclude")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Пол второй группы`}
                                 data={[
                                   { value: "any", label: t`Любой` },
@@ -401,13 +406,14 @@ function Analytics() {
                                 ]}
                                 {...analysisForm.getInputProps("comparison.reference.sex")}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Бинарный признак`}
                                 value={analysisForm.values.comparison.outcome.kind}
-                                onChange={(event) =>
+                                onChange={(value) =>
                                   analysisForm.setFieldValue(
                                     "comparison.outcome",
-                                    event.currentTarget.value === "sex"
+                                    (value ?? "") === "sex"
                                       ? { kind: "sex", value: "female" }
                                       : { kind: "diagnosis", code: "" },
                                   )
@@ -423,7 +429,8 @@ function Analytics() {
                                   {...analysisForm.getInputProps("comparison.outcome.code")}
                                 />
                               ) : (
-                                <NativeSelect
+                                <Select
+                                  allowDeselect={false}
                                   label={t`Значение признака`}
                                   data={[
                                     { value: "female", label: t`Женский` },
@@ -432,18 +439,20 @@ function Analytics() {
                                   {...analysisForm.getInputProps("comparison.outcome.value")}
                                 />
                               )}
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Доверительный уровень`}
-                                value={analysisForm.values.comparison.confidence}
-                                onChange={(event) =>
+                                value={String(analysisForm.values.comparison.confidence)}
+                                onChange={(value) =>
                                   analysisForm.setFieldValue(
                                     "comparison.confidence",
-                                    Number(event.currentTarget.value) as 90 | 95 | 99,
+                                    Number(value ?? "") as 90 | 95 | 99,
                                   )
                                 }
                                 data={["90", "95", "99"]}
                               />
-                              <NativeSelect
+                              <Select
+                                allowDeselect={false}
                                 label={t`Назначение сравнения`}
                                 data={[
                                   { value: "exploratory", label: t`Разведочный анализ` },
@@ -493,8 +502,8 @@ function Analytics() {
                   </Paper>
                 )}
                 {comparisonResult && (
-                  <Paper withBorder p="md">
-                    <Stack>
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
                       <Title order={2}>{t`Сравнение когорт`}</Title>
                       {comparisonStale ? (
                         <Alert color="yellow">{t`Данные или параметры изменились. Выполните расчёт повторно; предыдущий результат скрыт.`}</Alert>

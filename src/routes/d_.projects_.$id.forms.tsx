@@ -10,7 +10,7 @@ import {
   Container,
   Fieldset,
   Group,
-  NativeSelect,
+  Select,
   NumberInput,
   Paper,
   PasswordInput,
@@ -76,15 +76,15 @@ function StudyForms() {
     multiChoice: t`Несколько вариантов`,
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         {blocker.status === "blocked" && (
           <Modal
             opened
             onClose={blocker.reset}
             title={t`Покинуть страницу с несохранёнными изменениями?`}
           >
-            <Stack>
+            <Stack gap="sm">
               <Text>{t`Изменения в редакторе не сохранены на устройстве. Вернитесь и сохраните их или подтвердите выход.`}</Text>
               <Group>
                 <Button variant="default" onClick={blocker.reset}>{t`Остаться`}</Button>
@@ -101,14 +101,15 @@ function StudyForms() {
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <NativeSelect
+              <Stack gap="sm">
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -195,10 +196,10 @@ function StudyForms() {
                 {editing &&
                   form.values.scope === workspace.scope &&
                   form.values.projectClientId === id && (
-                    <Paper withBorder p="md">
+                    <Paper withBorder p="sm">
                       <form onSubmit={form.onSubmit((values) => saveForm.mutate(values))}>
                         <Fieldset disabled={saveForm.isPending || !canEdit}>
-                          <Stack>
+                          <Stack gap="sm">
                             <Title order={2}>{t`Редактор шаблона`}</Title>
                             <Text>
                               {t`Предыдущая версия:`} {form.values.expectedVersion}
@@ -214,7 +215,8 @@ function StudyForms() {
                               maxLength={2000}
                               {...form.getInputProps("description")}
                             />
-                            <NativeSelect
+                            <Select
+                              allowDeselect={false}
                               label={t`Доступность новой версии`}
                               data={[
                                 { value: "published", label: t`Доступна для новых ответов` },
@@ -228,8 +230,8 @@ function StudyForms() {
                               <Alert color="red">{t`Проверьте вопросы, варианты ответа и границы значений. В форме должно быть от 1 до 50 вопросов.`}</Alert>
                             )}
                             {form.values.fields.map((field, index) => (
-                              <Paper withBorder p="md" key={field.id}>
-                                <Stack>
+                              <Paper withBorder p="sm" key={field.id}>
+                                <Stack gap="sm">
                                   <Group>
                                     <Text>
                                       {t`Вопрос`} {index + 1}
@@ -260,7 +262,8 @@ function StudyForms() {
                                       onClick={() => form.removeListItem("fields", index)}
                                     >{t`Удалить вопрос`}</Button>
                                   </Group>
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={t`Тип вопроса`}
                                     data={Object.entries(types).map(([value, label]) => ({
                                       value,
@@ -306,9 +309,10 @@ function StudyForms() {
                                   />
                                   {field.visibleWhen && (
                                     <Fieldset legend={t`Условия видимости`}>
-                                      <Stack>
+                                      <Stack gap="sm">
                                         <Text>{t`Используйте только предыдущие вопросы. Скрытый, пустой или некорректный ответ не выполняет условие.`}</Text>
-                                        <NativeSelect
+                                        <Select
+                                          allowDeselect={false}
                                           label={t`Объединение условий`}
                                           data={[
                                             { value: "all", label: t`Все условия` },
@@ -325,8 +329,9 @@ function StudyForms() {
                                           const path = `fields.${index}.visibleWhen.rules.${ruleIndex}`;
                                           return (
                                             <Paper withBorder p="sm" key={ruleIndex}>
-                                              <Stack>
-                                                <NativeSelect
+                                              <Stack gap="sm">
+                                                <Select
+                                                  allowDeselect={false}
                                                   label={t`Исходный вопрос`}
                                                   value={rule.fieldId}
                                                   data={[
@@ -338,15 +343,15 @@ function StudyForms() {
                                                         label: row.label || t`Вопрос`,
                                                       })),
                                                   ]}
-                                                  onChange={(event) => {
+                                                  onChange={(value) => {
                                                     const source = form.values.fields.find(
-                                                      (row) => row.id === event.currentTarget.value,
+                                                      (row) => row.id === (value ?? ""),
                                                     );
                                                     form.replaceListItem(
                                                       `fields.${index}.visibleWhen.rules`,
                                                       ruleIndex,
                                                       {
-                                                        fieldId: event.currentTarget.value,
+                                                        fieldId: value ?? "",
                                                         operator:
                                                           source?.type === "multiChoice"
                                                             ? "includes"
@@ -361,7 +366,8 @@ function StudyForms() {
                                                     );
                                                   }}
                                                 />
-                                                <NativeSelect
+                                                <Select
+                                                  allowDeselect={false}
                                                   label={t`Сравнение`}
                                                   data={(source?.type === "multiChoice"
                                                     ? ["includes"]
@@ -382,17 +388,18 @@ function StudyForms() {
                                                   {...form.getInputProps(`${path}.operator`)}
                                                 />
                                                 {source?.type === "boolean" ? (
-                                                  <NativeSelect
+                                                  <Select
+                                                    allowDeselect={false}
                                                     label={t`Значение условия`}
                                                     value={String(rule.value)}
                                                     data={[
                                                       { value: "true", label: t`Да` },
                                                       { value: "false", label: t`Нет` },
                                                     ]}
-                                                    onChange={(event) =>
+                                                    onChange={(value) =>
                                                       form.setFieldValue(
                                                         `${path}.value`,
-                                                        event.currentTarget.value === "true",
+                                                        (value ?? "") === "true",
                                                       )
                                                     }
                                                   />
@@ -403,7 +410,8 @@ function StudyForms() {
                                                   />
                                                 ) : source?.type === "choice" ||
                                                   source?.type === "multiChoice" ? (
-                                                  <NativeSelect
+                                                  <Select
+                                                    allowDeselect={false}
                                                     label={t`Значение условия`}
                                                     data={source.choices}
                                                     {...form.getInputProps(`${path}.value`)}
@@ -575,8 +583,8 @@ function StudyForms() {
                             <Title order={3}>{t`Вычисляемые шкалы`}</Title>
                             <Alert>{t`Шкалы задаёт автор формы. Это расчёт по указанным правилам, а не автоматически подтверждённый медицинский инструмент. Скрытые или пропущенные исходные ответы не заменяются нулями.`}</Alert>
                             {form.values.scores.map((score, scoreIndex) => (
-                              <Paper withBorder p="md" key={score.id}>
-                                <Stack>
+                              <Paper withBorder p="sm" key={score.id}>
+                                <Stack gap="sm">
                                   <TextInput
                                     label={t`Название шкалы`}
                                     required
@@ -590,7 +598,8 @@ function StudyForms() {
                                     label={t`Единица результата`}
                                     {...form.getInputProps(`scores.${scoreIndex}.unit`)}
                                   />
-                                  <NativeSelect
+                                  <Select
+                                    allowDeselect={false}
                                     label={t`Расчёт`}
                                     data={[
                                       { value: "sum", label: t`Сумма взвешенных значений` },
@@ -603,8 +612,9 @@ function StudyForms() {
                                     const path = `scores.${scoreIndex}.terms.${termIndex}`;
                                     return (
                                       <Fieldset key={termIndex} legend={t`Слагаемое шкалы`}>
-                                        <Stack>
-                                          <NativeSelect
+                                        <Stack gap="sm">
+                                          <Select
+                                            allowDeselect={false}
                                             label={t`Исходный вопрос`}
                                             value={term.fieldId}
                                             data={[
@@ -623,9 +633,9 @@ function StudyForms() {
                                                   label: row.label || t`Вопрос`,
                                                 })),
                                             ]}
-                                            onChange={(event) => {
+                                            onChange={(value) => {
                                               const source = form.values.fields.find(
-                                                (row) => row.id === event.currentTarget.value,
+                                                (row) => row.id === (value ?? ""),
                                               );
                                               const choices =
                                                 source?.type === "boolean"
@@ -635,7 +645,7 @@ function StudyForms() {
                                                 `scores.${scoreIndex}.terms`,
                                                 termIndex,
                                                 {
-                                                  fieldId: event.currentTarget.value,
+                                                  fieldId: value ?? "",
                                                   weight: 1,
                                                   ...(source?.type !== "number"
                                                     ? {
@@ -756,8 +766,8 @@ function StudyForms() {
                   <Text>{t`У исследования пока нет форм.`}</Text>
                 )}
                 {latest.map((record) => (
-                  <Paper withBorder p="md" key={record.formClientId}>
-                    <Stack>
+                  <Paper withBorder p="sm" key={record.formClientId}>
+                    <Stack gap="sm">
                       <Title order={2}>{record.definition.title}</Title>
                       <Badge>
                         {record.confirmed
@@ -795,12 +805,12 @@ function StudyForms() {
                         <Accordion.Item value="history">
                           <Accordion.Control>{t`Версии шаблона`}</Accordion.Control>
                           <Accordion.Panel>
-                            <Stack>
+                            <Stack gap="sm">
                               {history
                                 .filter((version) => version.formClientId === record.formClientId)
                                 .map((version) => (
-                                  <Paper withBorder p="md" key={version.clientId}>
-                                    <Stack>
+                                  <Paper withBorder p="sm" key={version.clientId}>
+                                    <Stack gap="sm">
                                       <Text>
                                         {t`Версия:`} {version.version}
                                       </Text>
@@ -819,7 +829,7 @@ function StudyForms() {
                                           </Text>
                                           <Text>{field.help}</Text>
                                           {field.visibleWhen && (
-                                            <Stack>
+                                            <Stack gap="sm">
                                               <Text>
                                                 {t`Условия видимости`}:{" "}
                                                 {field.visibleWhen.mode === "all"
@@ -873,7 +883,7 @@ function StudyForms() {
                                       ))}{" "}
                                       {(version.definition.scores ?? []).map((score) => (
                                         <Paper withBorder p="sm" key={score.id}>
-                                          <Stack>
+                                          <Stack gap="sm">
                                             <Text fw={600}>
                                               {score.label} ({score.unit})
                                             </Text>
@@ -915,7 +925,7 @@ function StudyForms() {
                 ))}
                 {failures.data?.map((failure) => (
                   <Alert key={failure.id} color="yellow">
-                    <Stack>
+                    <Stack gap="sm">
                       <Text>{t`Сервер отклонил версию формы. Черновик сохранён отдельно.`}</Text>
                       <Text>{failure.code}</Text>
                       <Button

@@ -8,7 +8,7 @@ import {
   Container,
   Fieldset,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   Stack,
   Table,
@@ -97,11 +97,11 @@ function OrganizationMembers() {
     .filter((operation) => operation.isError)
     .map((operation) => failureDetails(operation.error).code);
   return (
-    <Container component="main" py="md">
-      <Stack>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
         <Anchor component={Link} to="/m/profile">{t`Мой профиль`}</Anchor>
         <Title>{t`Сотрудники и доступ организации`}</Title>
-        <Text>{t`Подайте заявку на вступление в организацию. Подтверждённые администраторы рассматривают заявки и управляют ролями сотрудников.`}</Text>
+        <Text>{t`Заявки на вступление и доступ сотрудников.`}</Text>
         <Alert>{t`Выдача и отзыв прав требуют связи с сервером. Права не выдаются локально и не считаются изменёнными до ответа Convex. Медицинские карты на этой странице не отображаются.`}</Alert>
         {isLoading && <Text>{t`Проверяем сессию…`}</Text>}
         {!isLoading && !isAuthenticated && (
@@ -140,7 +140,7 @@ function OrganizationMembers() {
             >{t`Обновить сведения о доступе`}</Button>
             <Title order={2}>{t`Мои организации`}</Title>
             {current.memberships.map((row) => (
-              <Paper withBorder p="md" key={row._id}>
+              <Paper withBorder p="sm" key={row._id}>
                 <Text>
                   {row.organization?.name} — {roles[row.role]}
                 </Text>
@@ -159,7 +159,8 @@ function OrganizationMembers() {
             {organizations.isSuccess && organizationRows.length === 0 && (
               <Text>{t`Организации не найдены. Уточните название.`}</Text>
             )}
-            <NativeSelect
+            <Select
+              allowDeselect={false}
               label={t`Организация для вступления`}
               value={requestForm.values.actorId === userId ? requestForm.values.organizationId : ""}
               disabled={busy || !current.profile?.verified}
@@ -180,8 +181,8 @@ function OrganizationMembers() {
                     ]
                   : []),
               ]}
-              onChange={(event) => {
-                const id = event.currentTarget.value;
+              onChange={(value) => {
+                const id = value ?? "";
                 const row = organizationRows.find((row) => row.id === id);
                 const begin = () => startRequest(id, row?.requestRevision ?? 0, row?.name ?? "");
                 if (requestForm.values.message.trim())
@@ -204,12 +205,13 @@ function OrganizationMembers() {
               >{t`Загрузить ещё организации`}</Button>
             )}
             {requestForm.values.actorId === userId && requestForm.values.organizationId && (
-              <Paper withBorder p="md">
+              <Paper withBorder p="sm">
                 <form onSubmit={requestForm.onSubmit((input) => request.mutate(input))}>
                   <Fieldset disabled={busy}>
-                    <Stack>
+                    <Stack gap="sm">
                       <Title order={3}>{requestForm.values.organizationName}</Title>
-                      <NativeSelect
+                      <Select
+                        allowDeselect={false}
                         label={t`Запрашиваемая роль`}
                         data={[
                           { value: "doctor", label: roles.doctor },
@@ -237,8 +239,8 @@ function OrganizationMembers() {
             {owned.isPending && <Text>{t`Загружаем заявки…`}</Text>}
             {owned.isSuccess && ownRows.length === 0 && <Text>{t`Заявок пока нет.`}</Text>}
             {ownRows.map((row) => (
-              <Paper withBorder p="md" key={row._id}>
-                <Stack>
+              <Paper withBorder p="sm" key={row._id}>
+                <Stack gap="sm">
                   <Text>
                     {row.organizationName} — {roles[row.role]}
                   </Text>
@@ -303,7 +305,8 @@ function OrganizationMembers() {
             )}
             <Title order={2}>{t`Администрирование организации`}</Title>
             <Text>{t`Администратор управляет членством, но его роль не предоставляет доступ к медицинским картам. Первый администратор назначается доверенным оператором платформы.`}</Text>
-            <NativeSelect
+            <Select
+              allowDeselect={false}
               label={t`Управляемая организация`}
               disabled={busy}
               data={[
@@ -323,8 +326,8 @@ function OrganizationMembers() {
                   <Text>{t`Нет заявок, ожидающих решения.`}</Text>
                 )}
                 {pendingRows.map((row) => (
-                  <Paper key={row._id} withBorder p="md">
-                    <Stack>
+                  <Paper key={row._id} withBorder p="sm">
+                    <Stack gap="sm">
                       <Text>
                         {row.displayName} — {roles[row.role]}
                       </Text>
@@ -382,7 +385,7 @@ function OrganizationMembers() {
                 {reviewForm.values.requestId &&
                   reviewForm.values.actorId === userId &&
                   reviewForm.values.organizationId === organizationId && (
-                    <Paper withBorder p="md">
+                    <Paper withBorder p="sm">
                       <form
                         onSubmit={reviewForm.onSubmit(
                           (input) =>
@@ -391,7 +394,7 @@ function OrganizationMembers() {
                                 ? t`Подтвердить членство и выдать запрошенную роль?`
                                 : t`Отклонить заявку?`,
                               children: (
-                                <Stack>
+                                <Stack gap="sm">
                                   <Text>
                                     {input.targetName} — {roles[input.requestedRole]}
                                   </Text>
@@ -405,7 +408,7 @@ function OrganizationMembers() {
                         )}
                       >
                         <Fieldset disabled={busy}>
-                          <Stack>
+                          <Stack gap="sm">
                             <Title order={3}>
                               {reviewForm.values.approved
                                 ? t`Одобрение заявки`
@@ -434,8 +437,8 @@ function OrganizationMembers() {
                 <Title order={3}>{t`Сотрудники организации`}</Title>
                 {members.isPending && <Text>{t`Загружаем сотрудников…`}</Text>}
                 {memberRows.map((row) => (
-                  <Paper key={row.id} withBorder p="md">
-                    <Stack>
+                  <Paper key={row.id} withBorder p="sm">
+                    <Stack gap="sm">
                       <Text>
                         {row.displayName} — {roles[row.role]}
                       </Text>
@@ -477,14 +480,14 @@ function OrganizationMembers() {
                 {changeForm.values.membershipId &&
                   changeForm.values.actorId === userId &&
                   changeForm.values.organizationId === organizationId && (
-                    <Paper withBorder p="md">
+                    <Paper withBorder p="sm">
                       <form
                         onSubmit={changeForm.onSubmit(
                           (input) =>
                             void modals.openConfirmModal({
                               title: t`Изменить права сотрудника?`,
                               children: (
-                                <Stack>
+                                <Stack gap="sm">
                                   <Text>{input.targetName}</Text>
                                   <Text>
                                     {roles[input.role]} —{" "}
@@ -500,10 +503,11 @@ function OrganizationMembers() {
                         )}
                       >
                         <Fieldset disabled={busy}>
-                          <Stack>
+                          <Stack gap="sm">
                             <Title order={3}>{t`Изменение членства`}</Title>
                             <Text>{changeForm.values.targetName}</Text>
-                            <NativeSelect
+                            <Select
+                              allowDeselect={false}
                               label={t`Роль сотрудника`}
                               data={Object.entries(roles).map(([value, label]) => ({
                                 value,

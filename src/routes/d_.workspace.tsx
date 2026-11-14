@@ -6,7 +6,7 @@ import {
   Button,
   Container,
   Group,
-  NativeSelect,
+  Select,
   Paper,
   PasswordInput,
   SimpleGrid,
@@ -102,23 +102,23 @@ function WorkspaceOverview() {
     message: t`Обсуждение`,
   };
   return (
-    <Container component="main" py="md">
-      <Stack>
-        <Title>{t`Обзор работы`}</Title>
-        <Text>{t`Ваши исследования, ближайшие задачи и приглашения выбранной организации.`}</Text>
+    <Container component="main" py="sm">
+      <Stack gap="sm">
+        <Title order={1}>{t`Обзор`}</Title>
         {!userId && (
           <Alert>{t`Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет.`}</Alert>
         )}
         {userId && !workspace && (
-          <Paper withBorder p="md">
+          <Paper withBorder p="sm">
             <form
               onSubmit={unlockForm.onSubmit((values) =>
                 unlock.mutate({ organizationId: values.organizationId }),
               )}
             >
-              <Stack>
-                <Text>{t`Рабочее пространство защищено парольной фразой. Она не отправляется на сервер. Сохраните её: без неё локальные данные и неотправленные изменения восстановить нельзя.`}</Text>
-                <NativeSelect
+              <Stack gap="sm">
+                <Text>{t`Сохраните парольную фразу: без неё локальные данные и очередь изменений не восстановить.`}</Text>
+                <Select
+                  allowDeselect={false}
                   label={t`Организация`}
                   data={[{ value: "", label: t`Выберите организацию` }, ...options]}
                   {...unlockForm.getInputProps("organizationId")}
@@ -168,13 +168,13 @@ function WorkspaceOverview() {
                     ?.label ?? t`Клиническое пространство`}
                 </Text>
                 <Title order={2}>{t`Назначенные мне рассмотрения событий`}</Title>
-                <Text>{t`События открытой клиники, по которым вы назначены ответственным. Сначала показаны ближайшие сроки, включая просроченные.`}</Text>
+                <Text>{t`Назначенные вам события, по ближайшему сроку.`}</Text>
                 {agenda.ready && agenda.reviews.length === 0 && (
                   <Text>{t`Открытых рассмотрений, назначенных вам, нет.`}</Text>
                 )}
                 {agenda.reviews.slice(0, 10).map(({ record, payload, patientName }) => (
-                  <Paper withBorder p="md" key={record.clientId}>
-                    <Stack>
+                  <Paper withBorder p="sm" key={record.clientId}>
+                    <Stack gap="sm">
                       <Title order={3}>{payload.title}</Title>
                       <Text>{patientName}</Text>
                       <Text>
@@ -201,14 +201,14 @@ function WorkspaceOverview() {
                   </Paper>
                 ))}
                 <Title order={2}>{t`Ближайшие и незавершённые визиты`}</Title>
-                <Text>{t`Визиты открытого клинического пространства; время указано в часовом поясе приёма.`}</Text>
+                <Text>{t`Время — в часовом поясе приёма.`}</Text>
                 {!agenda.ready && <Text>{t`Загрузка локальных данных…`}</Text>}
                 {agenda.ready && agenda.visits.length === 0 && (
                   <Text>{t`Нет запланированных или незавершённых визитов.`}</Text>
                 )}
                 {agenda.visits.slice(0, 10).map(({ record, payload, patientName, time }) => (
-                  <Paper withBorder p="md" key={record.clientId}>
-                    <Stack>
+                  <Paper withBorder p="sm" key={record.clientId}>
+                    <Stack gap="sm">
                       <Title order={3}>{patientName}</Title>
                       <Text>
                         {i18n.date(new Date(time.epoch), {
@@ -286,21 +286,21 @@ function WorkspaceOverview() {
               <Alert>{t`Показаны сохранённые на устройстве данные. Новые приглашения и изменения коллег появятся после подключения.`}</Alert>
             )}
             <SimpleGrid cols={3}>
-              <Paper withBorder p="md">
-                <Stack>
+              <Paper withBorder p="sm">
+                <Stack gap="sm">
                   <Text>{t`Активные задачи`}</Text>
                   <Title order={2}>{localWork.isReady ? i18n.number(tasks.length) : "…"}</Title>
                 </Stack>
               </Paper>
-              <Paper withBorder p="md">
-                <Stack>
+              <Paper withBorder p="sm">
+                <Stack gap="sm">
                   <Text>{t`Ожидают вашего ответа`}</Text>
                   <Title order={2}>{local.isReady ? i18n.number(invitations.length) : "…"}</Title>
                   <Anchor component={Link} to="/d/invitations">{t`Мои приглашения`}</Anchor>
                 </Stack>
               </Paper>
-              <Paper withBorder p="md">
-                <Stack>
+              <Paper withBorder p="sm">
+                <Stack gap="sm">
                   <Text>{t`Доступные исследования`}</Text>
                   <Title order={2}>{downloaded.isReady ? i18n.number(rows.length) : "…"}</Title>
                   <Anchor component={Link} to="/d/projects">{t`Мои исследования`}</Anchor>
@@ -315,8 +315,8 @@ function WorkspaceOverview() {
             {tasks.slice(0, 10).map(
               (task) =>
                 task.entity === "task" && (
-                  <Paper withBorder p="md" key={task.key}>
-                    <Stack>
+                  <Paper withBorder p="sm" key={task.key}>
+                    <Stack gap="sm">
                       <Title order={3}>{task.title}</Title>
                       <Text>{projects.get(task.projectClientId)?.title ?? t`Исследование`}</Text>
                       {task.dueAt > 0 ? (
@@ -352,8 +352,8 @@ function WorkspaceOverview() {
             <Title order={2}>{t`Недавняя работа`}</Title>
             {downloaded.isReady && rows.length === 0 && <Text>{t`Исследований пока нет.`}</Text>}
             {recent.slice(0, 5).map((project) => (
-              <Paper withBorder p="md" key={project.clientId}>
-                <Stack>
+              <Paper withBorder p="sm" key={project.clientId}>
+                <Stack gap="sm">
                   <Title order={3}>{project.title}</Title>
                   <Text>{project.topic}</Text>
                   <Group>
@@ -403,7 +403,7 @@ function WorkspaceOverview() {
             )}
             {rejected.data?.map((failure) => (
               <Alert color="yellow" key={failure.id}>
-                <Stack>
+                <Stack gap="sm">
                   <Text>{domains[failure.domain]}</Text>
                   <Text>{failure.code}</Text>
                   <Text>

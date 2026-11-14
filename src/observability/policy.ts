@@ -69,6 +69,7 @@ export const actions: Record<string, string> = {
   "device-counter": "counter.increment",
   "ai-preferences": "ai.preferences.save",
   "ai-key": "ai.key.update",
+  "ai-chat": "ai.chat.send",
   "ai-connection-check": "ai.connection.check",
   "save-medical-records": "catalog.persist",
   searchMedical: "catalog.search",
