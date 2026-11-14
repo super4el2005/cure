@@ -505,3 +505,22 @@ test("organization membership routes render protected device entries without pri
     assert.doesNotMatch(html, /\/patients\/undefined|\/organization\/undefined/);
   }
 });
+
+test("patient timeline has independent protected device routes without medical contents", async () => {
+  const id = "f8ffb8a1-4e31-4bb7-8e33-7f3f564c5258";
+  for (const device of ["d", "m"]) {
+    const response = await app.fetch(
+      new Request(`https://cure-sooty.vercel.app/${device}/patients/${id}/timeline`, {
+        headers: { "accept-language": "en" },
+      }),
+    );
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Patient timeline/);
+    assert.doesNotMatch(
+      html,
+      /Private history|Private reason|Confidential clinical content|Test Patient/,
+    );
+    assert.doesNotMatch(html, /Source last saved at:|<textarea/);
+  }
+});

@@ -150,3 +150,12 @@ it("observes library and research actions without exposing record identifiers or
     "app.outcome": "error",
   });
 });
+
+it("records timeline and membership route names without patient IDs or query values", () => {
+  expect(safePath("/d/patients/private-patient/timeline?query=Private%20diagnosis")).toBe(
+    "/d/patients/:id/timeline",
+  );
+  expect(safePath("/m/patients/private-patient/timeline")).toBe("/m/patients/:id/timeline");
+  expect(safePath("/m/projects/private-study/timeline")).toBe("/:redacted");
+  expect(safePath("/d/organization/members?userId=private-user")).toBe("/d/organization/members");
+});

@@ -188,11 +188,18 @@ function Patient() {
                   )}
                 >{t`Согласия пациента`}</Anchor>
                 {opened.role === "doctor" && (
-                  <Anchor
-                    renderRoot={(props) => (
-                      <Link {...props} to="/d/patients/$id/history" params={{ id }} />
-                    )}
-                  >{t`История карты и клинических записей`}</Anchor>
+                  <Group>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/d/patients/$id/timeline" params={{ id }} />
+                      )}
+                    >{t`Хронология пациента`}</Anchor>
+                    <Anchor
+                      renderRoot={(props) => (
+                        <Link {...props} to="/d/patients/$id/history" params={{ id }} />
+                      )}
+                    >{t`История карты и клинических записей`}</Anchor>
+                  </Group>
                 )}
 
                 {opened.role === "doctor" && (

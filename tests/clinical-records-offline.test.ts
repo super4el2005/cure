@@ -17,6 +17,7 @@ import type { Value } from "convex/values";
 import { api, internal } from "@/convex/_generated/api";
 import schema from "@/convex/schema";
 import type { ClinicalPayload } from "@/src/lib/clinical-record-model";
+import { patientTimeline } from "@/src/lib/patient-timeline";
 import { newVaultSalt, unlockVault } from "@/src/lib/patient-vault";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
 import { calculateStudyScores } from "@/src/lib/study-form-model";
@@ -354,6 +355,18 @@ it.each(["history", "visit", "questionnaire"] as const)(
     expect(workspace.readClinical(workspace.clinicalRecords.get(clientId)!).payload).toEqual(
       payload,
     );
+    const timeline = patientTimeline(
+      [workspace.readClinical(workspace.clinicalRecords.get(clientId)!)],
+      {
+        patientId: patientClientId,
+        role: "doctor",
+        expiresAt: Date.now() + 60000,
+        now: Date.now(),
+      },
+    );
+    expect(timeline).toHaveLength(1);
+    expect(timeline[0]?.source.payload).toEqual(payload);
+    expect(timeline[0]?.type).toBe(kind === "visit" ? "visitSchedule" : "entry");
     expect(
       workspace.readClinicalVersion(workspace.clinicalVersions.get(initialHistoryId)!),
     ).toMatchObject({ revision: 1, payload, confirmed: false });

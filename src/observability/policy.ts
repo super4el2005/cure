@@ -135,6 +135,7 @@ export const errorCodes = new Set([
   "MEMBERSHIP_REQUEST_CLOSED",
   "MEMBERSHIP_REQUEST_PENDING",
   "ORGANIZATION_UNAVAILABLE",
+  "INVALID_TIMELINE_DATA",
   "INVALID_ANALYSIS",
   "ANALYSIS_CALCULATION_FAILED",
   "CLINICAL_KIND_IMMUTABLE",
@@ -216,6 +217,8 @@ const paths = new Set([
   "/api/medical/search",
   "/api/ai/chat",
   "/_shell.html",
+  "/d/organization/members",
+  "/m/organization/members",
 ]);
 export function safePath(value: unknown): string {
   try {
@@ -229,13 +232,15 @@ export function safePath(value: unknown): string {
     )
       return path;
     const detail = path.match(
-      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits|history))?$/,
+      /^\/([dm])\/(patients|projects|research|specialists|organizations)\/[^/]+(?:\/(consents|protocol|team|work|forms|visits|enrollment|safety|credits|history|timeline))?$/,
     );
     if (
       detail &&
       (!detail[3] ||
         (detail[2] === "patients" &&
-          ["consents", "forms", "visits", "enrollment", "history"].includes(detail[3])) ||
+          ["consents", "forms", "visits", "enrollment", "history", "timeline"].includes(
+            detail[3],
+          )) ||
         (detail[2] === "projects" &&
           [
             "protocol",
