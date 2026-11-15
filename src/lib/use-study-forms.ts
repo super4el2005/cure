@@ -40,6 +40,7 @@ const initial = {
   registryEnabled: false,
   registryCode: "",
   registryIndicators: [] as string[],
+  registryAutofill: {} as Record<string, string>,
 };
 function definitionInput(values: typeof initial) {
   return {
@@ -48,7 +49,21 @@ function definitionInput(values: typeof initial) {
       visibleWhen ? { ...field, visibleWhen } : field,
     ),
     ...(values.registryEnabled
-      ? { registry: { code: values.registryCode, indicators: values.registryIndicators } }
+      ? {
+          registry: {
+            code: values.registryCode,
+            indicators: values.registryIndicators,
+            autofill: Object.entries(values.registryAutofill)
+              .filter(
+                ([fieldId, observationCode]) =>
+                  observationCode.trim() && values.registryIndicators.includes(fieldId),
+              )
+              .map(([fieldId, observationCode]) => ({
+                fieldId,
+                observationCode: observationCode.trim(),
+              })),
+          },
+        }
       : {}),
   };
 }
@@ -102,6 +117,12 @@ export function useStudyForms(projectId: string) {
       registryEnabled: Boolean(record?.definition.registry),
       registryCode: record?.definition.registry?.code ?? "",
       registryIndicators: record?.definition.registry?.indicators ?? [],
+      registryAutofill: Object.fromEntries(
+        (record?.definition.registry?.autofill ?? []).map((rule) => [
+          rule.fieldId,
+          rule.observationCode,
+        ]),
+      ),
       fields: record
         ? record.definition.fields.map((field) => ({ ...newStudyField(), ...field }))
         : [newStudyField()],

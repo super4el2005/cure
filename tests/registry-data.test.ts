@@ -3,6 +3,7 @@ import { describe, expect, it } from "@rstest/core";
 import type { ClinicalRecord } from "@/src/lib/clinical-record-model";
 import {
   groupRegistrySeries,
+  registryAutofillAnswers,
   registryIndicators,
   registryObservations,
   registryValueText,
@@ -156,5 +157,115 @@ describe("registry observations", () => {
     expect(registryValueText(flag, true, labels)).toBe("Да");
     expect(registryValueText(flag, false, labels)).toBe("Нет");
     expect(registryValueText(numeric, undefined, labels)).toBe("");
+  });
+});
+
+function observation(overrides: {
+  patientClientId: string;
+  code: string;
+  numericValue: number | null;
+  occurredOn: string;
+  updatedAt?: number;
+  deleted?: boolean;
+}): ClinicalRecord {
+  return {
+    clientId: crypto.randomUUID(),
+    patientClientId: overrides.patientClientId,
+    revision: 1,
+    deleted: overrides.deleted ?? false,
+    payload: overrides.deleted
+      ? null
+      : {
+          kind: "observation",
+          occurredOn: overrides.occurredOn,
+          notes: "",
+          name: "Indicator",
+          code: overrides.code,
+          numericValue: overrides.numericValue,
+          textValue: "",
+          unit: "",
+        },
+    createdAt: 1000,
+    updatedAt: overrides.updatedAt ?? 1000,
+  };
+}
+describe("registry autofill", () => {
+  it("accepts autofill only for number indicators", () => {
+    const form = registryDefinition();
+    const valid = {
+      ...form,
+      registry: {
+        ...form.registry!,
+        autofill: [{ fieldId: form.fields[0]!.id, observationCode: "BP-SYS" }],
+      },
+    };
+    expect(formDefinitionSchema.safeParse(valid).success).toBe(true);
+    const notIndicator = {
+      ...form,
+      registry: {
+        ...form.registry!,
+        autofill: [{ fieldId: form.fields[2]!.id, observationCode: "BP-SYS" }],
+      },
+    };
+    expect(formDefinitionSchema.safeParse(notIndicator).success).toBe(false);
+    const duplicated = {
+      ...form,
+      registry: {
+        ...form.registry!,
+        autofill: [
+          { fieldId: form.fields[0]!.id, observationCode: "BP-SYS" },
+          { fieldId: form.fields[0]!.id, observationCode: "BP-DIA" },
+        ],
+      },
+    };
+    expect(formDefinitionSchema.safeParse(duplicated).success).toBe(false);
+  });
+  it("prefills from the latest matching clinical observation", () => {
+    const form = registryDefinition();
+    const definitionWithAutofill: FormDefinition = {
+      ...form,
+      registry: {
+        ...form.registry!,
+        autofill: [{ fieldId: form.fields[0]!.id, observationCode: "BP-SYS" }],
+      },
+    };
+    const patient = crypto.randomUUID();
+    const rows = [
+      observation({
+        patientClientId: patient,
+        code: "BP-SYS",
+        numericValue: 118,
+        occurredOn: "2026-01-01",
+      }),
+      observation({
+        patientClientId: patient,
+        code: "BP-SYS",
+        numericValue: 124,
+        occurredOn: "2026-03-01",
+      }),
+      observation({
+        patientClientId: patient,
+        code: "BP-SYS",
+        numericValue: 130,
+        occurredOn: "2026-02-01",
+        deleted: true,
+      }),
+      observation({
+        patientClientId: patient,
+        code: "BP-SYS",
+        numericValue: null,
+        occurredOn: "2026-04-01",
+      }),
+      observation({
+        patientClientId: patient,
+        code: "OTHER",
+        numericValue: 200,
+        occurredOn: "2026-05-01",
+      }),
+    ];
+    expect(registryAutofillAnswers(definitionWithAutofill, rows)).toEqual({
+      [form.fields[0]!.id]: 124,
+    });
+    expect(registryAutofillAnswers(registryDefinition(), rows)).toEqual({});
   });
 });

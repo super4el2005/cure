@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 
 import type { ClinicalRecord } from "@/src/lib/clinical-record-model";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
+import { registryAutofillAnswers } from "@/src/lib/registry-data";
 import { retainedWorkspaceOptions } from "@/src/lib/retained-workspaces";
 import { normalizeFormAnswers, questionnairePayloadSchema } from "@/src/lib/study-form-model";
 import type { FormVersion, QuestionnairePayload } from "@/src/lib/study-form-model";
@@ -108,6 +109,22 @@ export function useQuestionnaires(patientId: string) {
           })
           .sort((a, b) => b.updatedAt - a.updatedAt)
       : [];
+  const observationRecords =
+    workspace && opened?.role === "doctor"
+      ? (localResponses.data ?? [])
+          .filter((row) => row.clientId !== workspace.clinicalSnapshotId && !row.deleted)
+          .flatMap((envelope) => {
+            try {
+              const row = workspace.readClinical(envelope);
+              return row.patientClientId === patientId && row.payload?.kind === "observation"
+                ? [row]
+                : [];
+            } catch (error) {
+              if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
+              throw error;
+            }
+          })
+      : [];
   const [editing, editor] = useDisclosure(false);
   const form = useForm({
     initialValues: initial,
@@ -191,6 +208,7 @@ export function useQuestionnaires(patientId: string) {
     mutationFn: async (clientId: string) => {
       const template = availableTemplates.find((row) => row.clientId === clientId);
       if (!template || !workspace) throw new Error("FORM_VERSION_OUTDATED");
+      const autofill = registryAutofillAnswers(template.definition, observationRecords);
       const values = {
         ...form.getValues(),
         scope: workspace.scope,
@@ -199,7 +217,7 @@ export function useQuestionnaires(patientId: string) {
         answers: Object.fromEntries(
           template.definition.fields.map((field) => [
             field.id,
-            field.type === "multiChoice" ? [] : "",
+            autofill[field.id] ?? (field.type === "multiChoice" ? [] : ""),
           ]),
         ),
       };
