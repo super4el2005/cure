@@ -13,6 +13,14 @@ import {
   frozenSampleSignature,
 } from "@/src/lib/cohort-comparison";
 import { defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
+import {
+  availableObservationCodes,
+  cohortMemberIds,
+  cohortStatistics,
+  cohortStatisticsSchema,
+  defaultCohortStatistics,
+  statisticsSourceSignature,
+} from "@/src/lib/cohort-statistics";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
 import { analysisValuesSchema } from "@/src/lib/saved-analysis-model";
 import type { SavedAnalysis } from "@/src/lib/saved-analysis-model";
@@ -230,6 +238,79 @@ export function useSavedAnalyses() {
             )
           : comparisonSourceSignature(space.rows, space.opened?.role ?? "researcher", Date.now()))),
   );
+  const localClinical = useLiveQuery(() => workspace?.clinicalRecords);
+  const doctorRows = workspace && space.opened?.role === "doctor" ? workspace : null;
+  const clinicalRows =
+    doctorRows && Date.now() < doctorRows.expiresAt
+      ? (localClinical.data
+          ?.filter((row) => row.clientId !== doctorRows.clinicalSnapshotId && !row.deleted)
+          .flatMap((envelope) => {
+            try {
+              return [doctorRows.readClinical(envelope)];
+            } catch (error) {
+              if (error instanceof Error && error.message === "PATIENT_NOT_FOUND") return [];
+              throw error;
+            }
+          }) ?? [])
+      : [];
+  const statisticsForm = useForm({
+    initialValues: defaultCohortStatistics,
+    validate: (input) => {
+      const result = cohortStatisticsSchema.safeParse(input);
+      return result.success
+        ? {}
+        : Object.fromEntries(
+            result.error.issues.map((issue) => [issue.path.join("."), t`Проверьте значение поля`]),
+          );
+    },
+  });
+  const statisticsMembers =
+    doctorRows && currentAnalysis
+      ? cohortMemberIds(space.rows, "doctor", criteria, Date.now())
+      : new Set<string>();
+  const statisticsCodes = availableObservationCodes(clinicalRows, statisticsMembers);
+  const statisticsKey = hash({ criteria, statistics: statisticsForm.values });
+  const statistics = useMutation({
+    mutationKey: ["analysis-statistics"],
+    networkMode: "always",
+    retry: false,
+    gcTime: 0,
+    mutationFn: async (input: { scope: string; key: string }) => {
+      if (
+        !workspace ||
+        !doctorRows ||
+        !currentAnalysis ||
+        input.scope !== workspace.scope ||
+        Date.now() >= workspace.expiresAt ||
+        !space.downloaded.isReady
+      )
+        throw new Error("WORKSPACE_LOCKED");
+      try {
+        return {
+          scope: workspace.scope,
+          key: input.key,
+          report: cohortStatistics(
+            space.rows,
+            "doctor",
+            criteria,
+            clinicalRows,
+            statisticsForm.values,
+            Date.now(),
+          ),
+        };
+      } catch {
+        throw new Error("ANALYSIS_CALCULATION_FAILED");
+      }
+    },
+  });
+  const statisticsResult =
+    currentAnalysis && statistics.data?.scope === workspace?.scope ? statistics.data : undefined;
+  const statisticsStale = Boolean(
+    statisticsResult &&
+    (statisticsResult.key !== statisticsKey ||
+      statisticsResult.report.signature !==
+        statisticsSourceSignature(space.rows, "doctor", criteria, clinicalRows, Date.now())),
+  );
   return {
     ...space,
     comparison,
@@ -238,6 +319,12 @@ export function useSavedAnalyses() {
     comparisonStale,
     freezeSample,
     unfreezeSample,
+    statistics,
+    statisticsKey,
+    statisticsResult,
+    statisticsStale,
+    statisticsCodes,
+    statisticsForm,
     analyses,
     localAnalyses,
     analysisForm,

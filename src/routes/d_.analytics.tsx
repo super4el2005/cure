@@ -44,6 +44,12 @@ function Analytics() {
     comparisonStale,
     freezeSample,
     unfreezeSample,
+    statistics,
+    statisticsKey,
+    statisticsResult,
+    statisticsStale,
+    statisticsCodes,
+    statisticsForm,
     userId,
     workspace,
     opened,
@@ -79,6 +85,11 @@ function Analytics() {
     small: t`Ожидаемая частота хотя бы в одной ячейке меньше 5. Приближение χ² не применяется.`,
   };
   const sexLabels = { female: t`Женский`, male: t`Мужской`, unknown: t`Не указан` };
+  const correlationReasons = {
+    small: t`Меньше трёх пар наблюдений. Коэффициент корреляции не рассчитывается.`,
+    constant: t`Нет вариации хотя бы одного показателя. Корреляция не определена.`,
+    same: t`Для корреляции выберите два разных показателя.`,
+  };
   const selectionSteps = [
     { label: t`Доступно записей до отбора`, value: report.flow.available },
     { label: t`Исключено: нет разрешения на поля критериев`, value: report.flow.unavailableFields },
@@ -653,6 +664,148 @@ function Analytics() {
                             </Text>
                           )}
                           <Alert>{t`Сравниваются записи в разрешённых локальных данных, а не риск заболевания в популяции. Пустой список диагнозов означает отсутствие записанного кода, а не отсутствие заболевания. Результат не доказывает причинность и не является рекомендацией по лечению. При повторных проверках возрастает вероятность случайных находок.`}</Alert>
+                        </>
+                      )}
+                    </Stack>
+                  </Paper>
+                )}
+                {opened?.role === "doctor" && currentAnalysis && (
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
+                      <Title order={2}>{t`Описательная статистика показателей`}</Title>
+                      <Text>{t`Статистика последних по дате числовых наблюдений с записанным кодом у участников текущей когорты. Повторные измерения одного пациента не суммируются. Раздел доступен только врачу: исследователь не читает клинические записи.`}</Text>
+                      {statisticsCodes.length === 0 ? (
+                        <Alert>{t`В текущей когорте нет числовых наблюдений с записанным кодом.`}</Alert>
+                      ) : (
+                        <Group grow align="flex-start">
+                          <Select
+                            allowDeselect={false}
+                            searchable
+                            label={t`Показатель`}
+                            data={statisticsCodes}
+                            {...statisticsForm.getInputProps("primary")}
+                          />
+                          <Select
+                            searchable
+                            clearable
+                            label={t`Второй показатель для корреляции`}
+                            data={statisticsCodes}
+                            value={statisticsForm.values.secondary || null}
+                            onChange={(value) =>
+                              statisticsForm.setFieldValue("secondary", value ?? "")
+                            }
+                          />
+                        </Group>
+                      )}
+                      <Button
+                        variant="default"
+                        loading={statistics.isPending}
+                        onClick={() => {
+                          if (!statisticsForm.validate().hasErrors)
+                            statistics.mutate({
+                              scope: workspace.scope,
+                              key: statisticsKey,
+                            });
+                        }}
+                      >{t`Рассчитать статистику`}</Button>
+                      {statistics.isError && (
+                        <Alert color="red">{t`Не удалось выполнить локальный расчёт. Проверьте параметры и доступ к данным.`}</Alert>
+                      )}
+                    </Stack>
+                  </Paper>
+                )}
+                {statisticsResult && opened?.role === "doctor" && (
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
+                      <Title order={2}>{t`Статистика показателей когорты`}</Title>
+                      {statisticsStale ? (
+                        <Alert color="yellow">{t`Данные или параметры изменились. Выполните расчёт повторно; предыдущий результат скрыт.`}</Alert>
+                      ) : (
+                        <>
+                          <Text>
+                            {t`Время расчёта:`}{" "}
+                            {i18n.date(new Date(statisticsResult.report.calculatedAt), {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </Text>
+                          <Text>
+                            {t`Участников когорты:`} {statisticsResult.report.members}
+                            {"; "}
+                            {t`с числовым значением показателя:`}{" "}
+                            {statisticsResult.report.withPrimary}
+                          </Text>
+                          {statisticsResult.report.primary ? (
+                            <Table.ScrollContainer minWidth={650}>
+                              <Table>
+                                <Table.Thead>
+                                  <Table.Tr>
+                                    <Table.Th>{t`Показатель`}</Table.Th>
+                                    <Table.Th>{t`Значений`}</Table.Th>
+                                    <Table.Th>{t`Среднее`}</Table.Th>
+                                    <Table.Th>{t`СКО`}</Table.Th>
+                                    <Table.Th>{t`Мин`}</Table.Th>
+                                    <Table.Th>{t`Q1`}</Table.Th>
+                                    <Table.Th>{t`Медиана`}</Table.Th>
+                                    <Table.Th>{t`Q3`}</Table.Th>
+                                    <Table.Th>{t`Макс`}</Table.Th>
+                                  </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                  {[
+                                    {
+                                      label: statisticsForm.values.primary,
+                                      stats: statisticsResult.report.primary,
+                                    },
+                                    ...(statisticsResult.report.secondary
+                                      ? [
+                                          {
+                                            label: statisticsForm.values.secondary,
+                                            stats: statisticsResult.report.secondary,
+                                          },
+                                        ]
+                                      : []),
+                                  ].map(({ label, stats }) => (
+                                    <Table.Tr key={label}>
+                                      <Table.Td>{label}</Table.Td>
+                                      <Table.Td>{stats.n}</Table.Td>
+                                      {[
+                                        stats.mean,
+                                        stats.sd,
+                                        stats.min,
+                                        stats.q1,
+                                        stats.median,
+                                        stats.q3,
+                                        stats.max,
+                                      ].map((value, index) => (
+                                        <Table.Td key={index}>
+                                          {value === null
+                                            ? "—"
+                                            : i18n.number(value, { maximumFractionDigits: 3 })}
+                                        </Table.Td>
+                                      ))}
+                                    </Table.Tr>
+                                  ))}
+                                </Table.Tbody>
+                              </Table>
+                            </Table.ScrollContainer>
+                          ) : (
+                            <Alert>{t`У участников когорты нет числовых значений выбранного показателя.`}</Alert>
+                          )}
+                          {statisticsResult.report.correlation &&
+                            (statisticsResult.report.correlation.reason ? (
+                              <Alert>
+                                {correlationReasons[statisticsResult.report.correlation.reason]}
+                              </Alert>
+                            ) : (
+                              <Text>
+                                {t`Корреляция Пирсона по парам наблюдений (${statisticsResult.report.correlation.n}):`}{" "}
+                                {i18n.number(statisticsResult.report.correlation.r ?? 0, {
+                                  maximumFractionDigits: 3,
+                                })}
+                              </Text>
+                            ))}
+                          <Alert>{t`Описательная статистика не проверяет гипотезы: у корреляции нет доверительного интервала, она не доказывает связь и не учитывает смешивающие факторы. Последнее по дате наблюдение не обязательно самое точное.`}</Alert>
                         </>
                       )}
                     </Stack>
