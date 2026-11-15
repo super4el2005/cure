@@ -48,6 +48,7 @@ export type ActionDefinition<Input, Output> = {
   kind: "read" | "write";
   roles: readonly ("doctor" | "researcher")[];
   destructive: boolean;
+  description: string;
   input: z.ZodType<Input>;
   run: (context: ActionContext, input: Input) => Output | Promise<Output>;
   affected: (output: Output) => { kind: string; count: number };
@@ -68,6 +69,8 @@ export const cureActions = [
     kind: "read",
     roles: ["doctor", "researcher"],
     destructive: false,
+    description:
+      "Общие агрегированные показатели доступных записей рабочего пространства: число записей, распределение по полу и полнота данных. Без идентификаторов пациентов.",
     input: z.object({}),
     run: (context) => {
       const summary = analyzeCohort(context.rows, context.role, defaultCohortCriteria, context.now);
@@ -87,6 +90,8 @@ export const cureActions = [
     kind: "read",
     roles: ["doctor", "researcher"],
     destructive: false,
+    description:
+      "Описательная сводка когорты по критериям отбора (коды диагнозов включения и исключения, совпадение any/all, пол): схема отбора, распределение по полу и кодам диагнозов. Агрегаты без идентификаторов.",
     input: z.object({ criteria: cohortCriteriaSchema }),
     run: (context, input) => analyzeCohort(context.rows, context.role, input.criteria, context.now),
     affected: aggregate,
@@ -97,6 +102,8 @@ export const cureActions = [
     kind: "read",
     roles: ["doctor", "researcher"],
     destructive: false,
+    description:
+      "Бинарное сравнение двух когорт: доли исхода с точными интервалами Клоппера — Пирсона и критерий χ² с поправкой Йейтса при выполнении условий. Агрегаты без идентификаторов.",
     input: z.object({
       criteria: cohortCriteriaSchema,
       comparison: cohortComparisonSchema,
@@ -111,6 +118,8 @@ export const cureActions = [
     kind: "read",
     roles: ["doctor"],
     destructive: false,
+    description:
+      "Список кодов числовых наблюдений, доступных в выбранной когорте. Доступно только врачу.",
     input: z.object({ criteria: cohortCriteriaSchema.default(defaultCohortCriteria) }),
     run: (context, input) => ({
       codes: availableObservationCodes(
@@ -126,6 +135,8 @@ export const cureActions = [
     kind: "read",
     roles: ["doctor", "researcher"],
     destructive: false,
+    description:
+      "Список собственных сохранённых определений анализов текущего пользователя: названия, описания и время обновления, без критериев и без данных пациентов.",
     input: z.object({}),
     run: (context) => ({
       analyses: context.analyses
@@ -147,6 +158,8 @@ export const cureActions = [
     kind: "write",
     roles: ["doctor", "researcher"],
     destructive: false,
+    description:
+      "Сохранение собственного определения анализа (название, описание, критерии когорты, настройки сравнения) в зашифрованную офлайн-очередь. Не меняет карты пациентов.",
     input: z.object({
       clientId: z.uuid().default(() => crypto.randomUUID()),
       expectedRevision: z.number().int().min(0).default(0),
@@ -174,12 +187,13 @@ export function createActionRegistry(actions: readonly AnyAction[] = cureActions
   }
   return {
     list: () =>
-      actions.map(({ id, version, kind, roles, destructive }) => ({
+      actions.map(({ id, version, kind, roles, destructive, description }) => ({
         id,
         version,
         kind,
         roles: [...roles],
         destructive,
+        description,
       })),
     async run(context: ActionContext, actor: ActionActor, id: string, rawInput: unknown) {
       const action = map.get(id);
