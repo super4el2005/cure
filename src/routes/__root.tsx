@@ -313,6 +313,7 @@ function ApplicationNavigation({ children }: { children: React.ReactNode }) {
   const mobile = base === "/m";
   const links = [
     ["workspace", t`Обзор`],
+    ["notifications", t`Уведомления`],
     ["patients", t`Пациенты`],
     ["projects", t`Мои исследования`],
     ["invitations", t`Приглашения`],

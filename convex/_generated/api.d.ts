@@ -1,4 +1,5 @@
 import type * as organizationMembers from "@/convex/organizationMembers";
+import type * as notifications from "@/convex/notifications";
 import type * as recruitment from "@/convex/recruitment";
 import type * as library from "@/convex/library";
 import type * as studyForms from "@/convex/studyForms";
@@ -33,6 +34,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   organizationMembers: typeof organizationMembers;
+  notifications: typeof notifications;
   recruitment: typeof recruitment;
   library:typeof library;
   studyForms: typeof studyForms;
