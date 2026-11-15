@@ -7,12 +7,12 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
 
-#: src/routes/__root.tsx:487
+#: src/routes/__root.tsx:488
 msgid "AI доступен при подключении к интернету."
 msgstr "AI requires an internet connection."
 
-#: src/routes/__root.tsx:404
-#: src/routes/__root.tsx:455
+#: src/routes/__root.tsx:405
+#: src/routes/__root.tsx:456
 msgid "AI-чат"
 msgstr "AI chat"
 
@@ -46,7 +46,7 @@ msgstr "PubMed is unavailable. Your personal library and saved metadata remain a
 msgid "ROR содержит организации образования. Наличие в ROR не подтверждает медицинскую аккредитацию."
 msgstr "ROR lists educational organizations. Inclusion does not confirm medical accreditation."
 
-#: src/routes/__root.tsx:356
+#: src/routes/__root.tsx:357
 msgid "Авто"
 msgstr "Auto"
 
@@ -206,7 +206,7 @@ msgstr "Allergy"
 msgid "Анализ доступных данных организации. Карты пациентов не изменяются."
 msgstr "Analyze available organization data. Patient records stay unchanged."
 
-#: src/routes/__root.tsx:319
+#: src/routes/__root.tsx:320
 #: src/routes/d_.analytics.tsx:84
 #: src/routes/d.tsx:179
 #: src/routes/m_.analytics.tsx:84
@@ -306,7 +306,7 @@ msgstr "Study safety"
 msgid "Библиографическое описание"
 msgstr "Bibliographic citation"
 
-#: src/routes/__root.tsx:320
+#: src/routes/__root.tsx:321
 msgid "Библиотека"
 msgstr "Library"
 
@@ -448,7 +448,7 @@ msgstr "Queued: {0}"
 msgid "В работе"
 msgstr "In progress"
 
-#: src/routes/__root.tsx:496
+#: src/routes/__root.tsx:497
 msgid "Ваш вопрос"
 msgstr "Your question"
 
@@ -850,7 +850,12 @@ msgstr "Sign in with Google and open your profile"
 msgid "Войдите через Google, чтобы открыть рабочее пространство. Для первого входа нужен интернет."
 msgstr "Sign in with Google to open your workspace. Your first sign-in requires internet access."
 
-#: src/routes/__root.tsx:488
+#: src/routes/d_.notifications.tsx:65
+#: src/routes/m_.notifications.tsx:65
+msgid "Войдите через Google, чтобы увидеть уведомления. Для первого входа нужен интернет."
+msgstr ""
+
+#: src/routes/__root.tsx:489
 msgid "Войдите, чтобы использовать чат."
 msgstr "Sign in to use chat."
 
@@ -864,7 +869,7 @@ msgstr "Sign in to configure an AI provider."
 msgid "Войдите, чтобы создать или открыть свой профиль."
 msgstr "Sign in to create or view your profile."
 
-#: src/routes/__root.tsx:410
+#: src/routes/__root.tsx:411
 #: src/routes/d_.profile.tsx:98
 #: src/routes/m_.profile.tsx:98
 msgid "Войти через Google"
@@ -884,7 +889,7 @@ msgstr "Question"
 msgid "Вопросы меняются по условиям шаблона. Скрытые ответы не сохраняются; перед сохранением проверьте активную ветку."
 msgstr "Questions change according to template conditions. Hidden answers are not saved; review the active branch before saving."
 
-#: src/routes/__root.tsx:473
+#: src/routes/__root.tsx:474
 msgid "Вопросы о работе и исследованиях. Чат пока не изменяет данные системы."
 msgstr "Ask about work and research. Chat cannot change system data yet."
 
@@ -1076,11 +1081,11 @@ msgstr "Second occurrence of the hour"
 msgid "Вход был отменён или произошла ошибка. Вернитесь на главную и попробуйте ещё раз."
 msgstr "Sign-in was cancelled or an error occurred. Return to the home page and try again."
 
-#: src/routes/__root.tsx:439
+#: src/routes/__root.tsx:440
 msgid "Вход или выход не выполнен. Проверьте соединение."
 msgstr "Sign-in or sign-out failed. Check your connection."
 
-#: src/routes/__root.tsx:478
+#: src/routes/__root.tsx:479
 msgid "Вы"
 msgstr "You"
 
@@ -1231,7 +1236,7 @@ msgstr "Recovered"
 msgid "Выздоровление с последствиями"
 msgstr "Recovered with sequelae"
 
-#: src/routes/__root.tsx:410
+#: src/routes/__root.tsx:411
 msgid "Выйти"
 msgstr "Sign out"
 
@@ -2230,10 +2235,20 @@ msgstr "Loading local data…"
 msgid "Загрузка показателей центров…"
 msgstr ""
 
+#: src/routes/d_.notifications.tsx:68
+#: src/routes/m_.notifications.tsx:68
+msgid "Загрузка уведомлений…"
+msgstr ""
+
 #: src/routes/d_.projects_.$id.work.tsx:426
 #: src/routes/m_.projects_.$id.work.tsx:426
 msgid "Задач пока нет."
 msgstr "No tasks yet."
+
+#: src/routes/d_.notifications.tsx:19
+#: src/routes/m_.notifications.tsx:19
+msgid "Задача"
+msgstr ""
 
 #: src/routes/d_.projects_.$id.work.tsx:330
 #: src/routes/d_.workspace.tsx:101
@@ -3083,7 +3098,7 @@ msgstr "Event record"
 msgid "Карточка, заметки и прежние версии станут недоступны после удаления; сервер очистит версии после синхронизации."
 msgstr "The record, notes and previous versions become unavailable after deletion; the server erases versions after synchronization."
 
-#: src/routes/__root.tsx:323
+#: src/routes/__root.tsx:324
 msgid "Каталог исследований"
 msgstr "Study directory"
 
@@ -3437,6 +3452,11 @@ msgstr "Mild"
 msgid "Лекарственная терапия"
 msgstr "Medication therapy"
 
+#: src/routes/d_.notifications.tsx:67
+#: src/routes/m_.notifications.tsx:67
+msgid "Лента уведомлений требует сети и активной сессии."
+msgstr ""
+
 #: src/lib/clinical-history-content.ts:71
 #: src/routes/d_.projects_.$id.safety.tsx:103
 #: src/routes/m_.projects_.$id.safety.tsx:103
@@ -3568,7 +3588,7 @@ msgstr "Less than"
 msgid "Меньше или равно"
 msgstr "Less than or equal to"
 
-#: src/routes/__root.tsx:389
+#: src/routes/__root.tsx:390
 msgid "Меню"
 msgstr "Menu"
 
@@ -3651,7 +3671,7 @@ msgstr "My authorship decision"
 msgid "Мои заявки"
 msgstr "My applications"
 
-#: src/routes/__root.tsx:317
+#: src/routes/__root.tsx:318
 #: src/routes/d_.invitations.tsx:48
 #: src/routes/d_.patients_.$id_.enrollment.tsx:203
 #: src/routes/d_.patients_.$id_.forms.tsx:204
@@ -3981,7 +4001,7 @@ msgstr "Start screening"
 msgid "Не менее 12 символов"
 msgstr "At least 12 characters"
 
-#: src/routes/__root.tsx:464
+#: src/routes/__root.tsx:465
 msgid "Не отправляйте персональные данные пациентов."
 msgstr "Do not send identifiable patient data."
 
@@ -4065,6 +4085,11 @@ msgstr "Could not load the directory. Check your connection and try again."
 msgid "Не удалось загрузить показатели центров. Повторите попытку позже."
 msgstr ""
 
+#: src/routes/d_.notifications.tsx:70
+#: src/routes/m_.notifications.tsx:70
+msgid "Не удалось загрузить уведомления. Повторите попытку позже."
+msgstr ""
+
 #: src/routes/d_.analytics.tsx:130
 #: src/routes/d_.patients_.$id_.quality.tsx:160
 #: src/routes/m_.analytics.tsx:130
@@ -4136,7 +4161,7 @@ msgstr "Could not read archived rejected decisions."
 msgid "Не удалось прочитать сохранённые решения. Повторите попытку."
 msgstr "Unable to read saved decisions. Please try again."
 
-#: src/routes/__root.tsx:441
+#: src/routes/__root.tsx:442
 msgid "Не удалось сменить язык."
 msgstr "Could not change the language."
 
@@ -4736,6 +4761,11 @@ msgstr "Awaiting a decision"
 msgid "окно"
 msgstr ""
 
+#: src/routes/d_.notifications.tsx:21
+#: src/routes/m_.notifications.tsx:21
+msgid "Окно визита"
+msgstr ""
+
 #: src/lib/clinical-history-content.ts:148
 msgid "Окно визита (UTC)"
 msgstr "Visit window (UTC)"
@@ -4876,7 +4906,7 @@ msgstr "Published profiles of doctors and researchers with verified credentials.
 msgid "Опубликовать описание в каталоге"
 msgstr "Publish the description in the directory"
 
-#: src/routes/__root.tsx:322
+#: src/routes/__root.tsx:323
 #: src/routes/d_.organizations.tsx:48
 #: src/routes/m_.organizations.tsx:48
 msgid "Организации"
@@ -4967,7 +4997,7 @@ msgstr "Decision rationale, without medical data"
 msgid "Основная"
 msgstr "Primary"
 
-#: src/routes/__root.tsx:417
+#: src/routes/__root.tsx:418
 msgid "Основная навигация"
 msgstr "Main navigation"
 
@@ -5002,7 +5032,7 @@ msgstr "Stay"
 msgid "От 1 до 365 дней"
 msgstr "Between 1 and 365 days"
 
-#: src/routes/__root.tsx:490
+#: src/routes/__root.tsx:491
 msgid "Ответ не получен. Текст сохранён в поле — можно повторить."
 msgstr "No response received. Your text is still in the field; you can retry."
 
@@ -5191,6 +5221,11 @@ msgstr "Public eligibility criteria"
 #: src/routes/m_.workspace.tsx:173
 msgid "Открытых рассмотрений, назначенных вам, нет."
 msgstr "No open reviews are assigned to you."
+
+#: src/routes/d_.notifications.tsx:76
+#: src/routes/m_.notifications.tsx:76
+msgid "Открытых уведомлений нет."
+msgstr ""
 
 #: src/routes/d_.patients.tsx:715
 #: src/routes/m_.patients.tsx:715
@@ -5503,7 +5538,7 @@ msgstr "Withdraw the membership application?"
 msgid "Отозвать приглашение"
 msgstr "Revoke invitation"
 
-#: src/routes/__root.tsx:511
+#: src/routes/__root.tsx:512
 msgid "Отправить"
 msgstr "Send"
 
@@ -5537,7 +5572,7 @@ msgstr "Create a new version with a different expiry"
 msgid "Оценка критериев и подтверждающие сведения"
 msgstr "Eligibility assessment and supporting evidence"
 
-#: src/routes/__root.tsx:461
+#: src/routes/__root.tsx:462
 msgid "Очистить"
 msgstr "Clear"
 
@@ -5632,7 +5667,7 @@ msgstr "Patient unavailable or deleted."
 msgid "Пациент недоступен, удалён или ещё не подготовлен на устройстве."
 msgstr "The patient is unavailable, deleted or not yet prepared on this device."
 
-#: src/routes/__root.tsx:316
+#: src/routes/__root.tsx:317
 #: src/routes/d_.patients.tsx:101
 #: src/routes/d_.workspace.tsx:161
 #: src/routes/d.tsx:179
@@ -6117,6 +6152,11 @@ msgstr "Up to 25 events are shown per page. One record can contain multiple date
 msgid "Показаны локальные данные. Новые изменения и отзывы доступа других участников могут быть ещё не получены. Неотправленные изменения учитываются в ленте."
 msgstr "Local data is shown. Other participants' changes and access revocations may not have arrived yet. Pending local changes are included in the timeline."
 
+#: src/routes/d_.notifications.tsx:74
+#: src/routes/m_.notifications.tsx:74
+msgid "Показаны открытые приглашения, назначенные задачи, назначенные рассмотрения событий и визиты с открывшимся окном. Лента обновляется автоматически и не хранится на устройстве."
+msgstr ""
+
 #: src/routes/d_.patients.tsx:575
 #: src/routes/m_.patients.tsx:575
 msgid "Показаны первые 20 групп совпадений."
@@ -6415,12 +6455,17 @@ msgstr "Funding acquisition"
 msgid "Пригласить специалиста"
 msgstr "Invite a specialist"
 
+#: src/routes/d_.notifications.tsx:18
+#: src/routes/m_.notifications.tsx:18
+msgid "Приглашение в исследование"
+msgstr ""
+
 #: src/routes/d_.invitations.tsx:117
 #: src/routes/m_.invitations.tsx:117
 msgid "Приглашений пока нет."
 msgstr "No invitations yet."
 
-#: src/routes/__root.tsx:318
+#: src/routes/__root.tsx:319
 msgid "Приглашения"
 msgstr "Invitations"
 
@@ -6894,7 +6939,7 @@ msgstr "Study protocol"
 msgid "Профессия"
 msgstr "Profession"
 
-#: src/routes/__root.tsx:326
+#: src/routes/__root.tsx:327
 msgid "Профиль"
 msgstr "Profile"
 
@@ -7077,6 +7122,11 @@ msgstr ""
 #: src/routes/m_.analytics.tsx:657
 msgid "Распределение по полу"
 msgstr "Sex distribution"
+
+#: src/routes/d_.notifications.tsx:20
+#: src/routes/m_.notifications.tsx:20
+msgid "Рассмотрение события"
+msgstr ""
 
 #: src/routes/d_.patients_.$id_.timeline.tsx:111
 #: src/routes/m_.patients_.$id_.timeline.tsx:111
@@ -7447,7 +7497,7 @@ msgstr "Verify the date and status. The system does not stop treatment or confir
 msgid "Сверьте с новой проверкой: версия данных или контрольная дата могут отличаться"
 msgstr "Compare with a new check: the data version or control date may differ"
 
-#: src/routes/__root.tsx:357
+#: src/routes/__root.tsx:358
 msgid "Светлая"
 msgstr "Light"
 
@@ -7829,7 +7879,7 @@ msgstr "Create study"
 msgid "Создать следующую версию"
 msgstr "Create next version"
 
-#: src/routes/__root.tsx:495
+#: src/routes/__root.tsx:496
 msgid "Сообщение AI"
 msgstr "AI message"
 
@@ -7862,7 +7912,7 @@ msgstr "Status or deadline needs clarification"
 msgid "Сотрудник"
 msgstr "Member"
 
-#: src/routes/__root.tsx:324
+#: src/routes/__root.tsx:325
 msgid "Сотрудники и доступ"
 msgstr "Members and access"
 
@@ -8082,7 +8132,7 @@ msgstr "Specialty"
 msgid "Специалист"
 msgstr "Specialist"
 
-#: src/routes/__root.tsx:321
+#: src/routes/__root.tsx:322
 #: src/routes/d_.specialists.tsx:48
 #: src/routes/m_.specialists.tsx:48
 msgid "Специалисты"
@@ -8098,7 +8148,7 @@ msgstr "Empty diagnosis list in authorized records"
 msgid "Способ применения"
 msgstr "Route of administration"
 
-#: src/routes/__root.tsx:325
+#: src/routes/__root.tsx:326
 #: src/routes/d_.tools.tsx:226
 #: src/routes/m_.tools.tsx:226
 msgid "Справочники и AI"
@@ -8194,7 +8244,9 @@ msgstr "Local access has expired. Connect and verify your access again to contin
 msgid "Срок офлайн-доступа истёк. Заблокируйте пространство и откройте его заново с интернетом."
 msgstr "Offline access has expired. Lock the workspace and reopen it with an internet connection."
 
+#: src/routes/d_.notifications.tsx:83
 #: src/routes/d_.workspace.tsx:334
+#: src/routes/m_.notifications.tsx:83
 #: src/routes/m_.workspace.tsx:334
 msgid "Срок прошёл"
 msgstr "Overdue"
@@ -8241,6 +8293,11 @@ msgstr "Consent has expired. This record preserves enrollment history and does n
 #: src/lib/patient-history-content.ts:45
 msgid "Срок, указанный в событии"
 msgstr "Expiry recorded in the event"
+
+#: src/routes/d_.notifications.tsx:86
+#: src/routes/m_.notifications.tsx:86
+msgid "Срок:"
+msgstr ""
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:290
 #: src/routes/m_.patients_.$id_.enrollment.tsx:290
@@ -8420,11 +8477,11 @@ msgstr ""
 msgid "Текущий статус источника:"
 msgstr "Current source status:"
 
-#: src/routes/__root.tsx:348
+#: src/routes/__root.tsx:349
 msgid "Тема"
 msgstr "Theme"
 
-#: src/routes/__root.tsx:358
+#: src/routes/__root.tsx:359
 msgid "Тёмная"
 msgstr "Dark"
 
@@ -8551,6 +8608,12 @@ msgstr "This study has no forms yet."
 #: src/routes/m_.patients_.$id_.forms.tsx:474
 msgid "У пациента пока нет ответов на опросники."
 msgstr "The patient has no questionnaire responses yet."
+
+#: src/routes/__root.tsx:316
+#: src/routes/d_.notifications.tsx:63
+#: src/routes/m_.notifications.tsx:63
+msgid "Уведомления"
+msgstr ""
 
 #: src/lib/clinical-history-content.ts:55
 #: src/routes/d_.projects_.$id.safety.tsx:79
@@ -9192,7 +9255,7 @@ msgstr "Me"
 msgid "Язык данных: {0}."
 msgstr "Data language: {0}."
 
-#: src/routes/__root.tsx:333
+#: src/routes/__root.tsx:334
 #: src/routes/d.tsx:63
 #: src/routes/m.tsx:63
 msgid "Язык интерфейса"
