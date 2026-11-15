@@ -534,6 +534,7 @@ export default defineSchema({
   })
     .index("by_client", ["clientId"])
     .index("by_project", ["projectClientId"])
+    .index("by_form", ["formClientId"])
     .index("by_form_version", ["projectClientId", "formClientId", "version"]),
   libraryItems: defineTable({
     userId: v.string(),

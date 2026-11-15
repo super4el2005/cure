@@ -52,6 +52,75 @@ export type RegistrySeries = {
   patientClientId: string;
   observations: RegistryObservation[];
 };
+// Deterministic de-identified pseudonym (FNV-1a 64-bit over UTF-8). The input
+// always contains a random UUID, so the code is stable for matching repeated
+// observations of one participant without exposing identifiers.
+export function registryPseudonym(input: string) {
+  let hash = 0xcbf29ce484222325n;
+  for (const byte of new TextEncoder().encode(input)) {
+    hash ^= BigInt(byte);
+    hash = (hash * 0x100000001b3n) & 0xffffffffffffffffn;
+  }
+  return hash.toString(16).padStart(16, "0");
+}
+export function registryParticipantCode(projectClientId: string, patientClientId: string) {
+  return registryPseudonym(`${projectClientId}:${patientClientId}`);
+}
+export type DeidentifiedRegistryRow = {
+  observationId: string;
+  participantCode: string;
+  occurredOn: string;
+  formVersion: number;
+  answers: Record<string, string | number | boolean | string[]>;
+};
+// Indicator ids a de-identified row may expose: the record's own registry
+// config when present, otherwise the latest registry indicators that existed
+// in that version's snapshot. Answers outside this set never leave the clinic
+// rows, and neither do notes, names or record identifiers.
+export function deidentifiedIndicatorIds(
+  definition: FormDefinition,
+  latestIndicators: readonly string[],
+) {
+  const own = definition.registry?.indicators;
+  if (own) return new Set(own);
+  const present = new Set(definition.fields.map((field) => field.id));
+  return new Set(latestIndicators.filter((id) => present.has(id)));
+}
+export function deidentifiedRegistryRows(
+  records: ClinicalRecord[],
+  projectClientId: string,
+  formClientId: string,
+  latestIndicators: readonly string[],
+) {
+  return records
+    .filter(
+      (record) =>
+        !record.deleted &&
+        record.payload?.kind === "questionnaire" &&
+        record.payload.formClientId === formClientId &&
+        record.payload.status === "final",
+    )
+    .map((record) => {
+      const payload = record.payload!;
+      if (payload.kind !== "questionnaire") throw new Error("INVALID_CLINICAL_RECORD");
+      const exposed = deidentifiedIndicatorIds(payload.definition, latestIndicators);
+      return {
+        observationId: registryPseudonym(`observation:${record.clientId}`),
+        participantCode: registryParticipantCode(projectClientId, record.patientClientId),
+        occurredOn: payload.occurredOn,
+        formVersion: payload.formVersion,
+        answers: Object.fromEntries(
+          Object.entries(payload.answers).filter(([fieldId]) => exposed.has(fieldId)),
+        ),
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.participantCode.localeCompare(b.participantCode) ||
+        a.occurredOn.localeCompare(b.occurredOn) ||
+        a.observationId.localeCompare(b.observationId),
+    );
+}
 // Latest clinical observation per registry autofill mapping. Only number
 // fields are autofillable; the physician still reviews and confirms the
 // prefilled value before saving, so provenance stays manual entry.
