@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react/macro";
-import { BarChart } from "@mantine/charts";
+import { BarChart, LineChart } from "@mantine/charts";
 import {
   Checkbox,
   Fieldset,
@@ -50,6 +50,11 @@ function Analytics() {
     statisticsStale,
     statisticsCodes,
     statisticsForm,
+    longitudinal,
+    longitudinalKey,
+    longitudinalResult,
+    longitudinalStale,
+    longitudinalForm,
     userId,
     workspace,
     opened,
@@ -806,6 +811,129 @@ function Analytics() {
                               </Text>
                             ))}
                           <Alert>{t`Описательная статистика не проверяет гипотезы: у корреляции нет доверительного интервала, она не доказывает связь и не учитывает смешивающие факторы. Последнее по дате наблюдение не обязательно самое точное.`}</Alert>
+                        </>
+                      )}
+                    </Stack>
+                  </Paper>
+                )}
+                {opened?.role === "doctor" && currentAnalysis && (
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
+                      <Title order={2}>{t`Динамика показателя по периодам`}</Title>
+                      <Text>{t`Агрегированная динамика числовых наблюдений участников текущей когорты по календарным периодам. Все числовые значения входят в свой период: повторные измерения одного пациента учитываются как повторные.`}</Text>
+                      {statisticsCodes.length === 0 ? (
+                        <Alert>{t`В текущей когорте нет числовых наблюдений с записанным кодом.`}</Alert>
+                      ) : (
+                        <Group grow align="flex-start">
+                          <Select
+                            allowDeselect={false}
+                            searchable
+                            label={t`Показатель`}
+                            data={statisticsCodes}
+                            {...longitudinalForm.getInputProps("code")}
+                          />
+                          <Select
+                            allowDeselect={false}
+                            label={t`Период`}
+                            data={[
+                              { value: "month", label: t`Календарный месяц` },
+                              { value: "quarter", label: t`Календарный квартал` },
+                            ]}
+                            {...longitudinalForm.getInputProps("bucket")}
+                          />
+                        </Group>
+                      )}
+                      <Button
+                        variant="default"
+                        loading={longitudinal.isPending}
+                        onClick={() => {
+                          if (!longitudinalForm.validate().hasErrors)
+                            longitudinal.mutate({
+                              scope: workspace.scope,
+                              key: longitudinalKey,
+                            });
+                        }}
+                      >{t`Рассчитать динамику`}</Button>
+                      {longitudinal.isError && (
+                        <Alert color="red">{t`Не удалось выполнить локальный расчёт. Проверьте параметры и доступ к данным.`}</Alert>
+                      )}
+                    </Stack>
+                  </Paper>
+                )}
+                {longitudinalResult && opened?.role === "doctor" && (
+                  <Paper withBorder p="sm">
+                    <Stack gap="sm">
+                      <Title order={2}>{t`Динамика показателя когорты`}</Title>
+                      {longitudinalStale ? (
+                        <Alert color="yellow">{t`Данные или параметры изменились. Выполните расчёт повторно; предыдущий результат скрыт.`}</Alert>
+                      ) : (
+                        <>
+                          <Text>
+                            {t`Время расчёта:`}{" "}
+                            {i18n.date(new Date(longitudinalResult.report.calculatedAt), {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </Text>
+                          <Text>
+                            {t`Участников когорты:`} {longitudinalResult.report.members}
+                            {"; "}
+                            {t`с наблюдениями показателя:`} {longitudinalResult.report.patients}
+                            {"; "}
+                            {t`наблюдений:`} {longitudinalResult.report.observations}
+                          </Text>
+                          {longitudinalResult.report.series.length === 0 ? (
+                            <Alert>{t`У участников когорты нет числовых значений выбранного показателя.`}</Alert>
+                          ) : (
+                            <>
+                              <LineChart
+                                h={280}
+                                data={longitudinalResult.report.series.map((period) => ({
+                                  period: period.key,
+                                  mean: period.mean,
+                                  median: period.median,
+                                }))}
+                                dataKey="period"
+                                series={[
+                                  { name: "mean", label: t`Среднее`, color: "blue.6" },
+                                  { name: "median", label: t`Медиана`, color: "teal.6" },
+                                ]}
+                                curveType="linear"
+                              />
+                              <Table.ScrollContainer minWidth={650}>
+                                <Table>
+                                  <Table.Thead>
+                                    <Table.Tr>
+                                      <Table.Th>{t`Период`}</Table.Th>
+                                      <Table.Th>{t`Наблюдений`}</Table.Th>
+                                      <Table.Th>{t`Пациентов`}</Table.Th>
+                                      <Table.Th>{t`Среднее`}</Table.Th>
+                                      <Table.Th>{t`Медиана`}</Table.Th>
+                                      <Table.Th>{t`Мин`}</Table.Th>
+                                      <Table.Th>{t`Макс`}</Table.Th>
+                                    </Table.Tr>
+                                  </Table.Thead>
+                                  <Table.Tbody>
+                                    {longitudinalResult.report.series.map((period) => (
+                                      <Table.Tr key={period.key}>
+                                        <Table.Td>{period.key}</Table.Td>
+                                        <Table.Td>{period.n}</Table.Td>
+                                        <Table.Td>{period.patients}</Table.Td>
+                                        {[period.mean, period.median, period.min, period.max].map(
+                                          (value, index) => (
+                                            <Table.Td key={index}>
+                                              {i18n.number(value, { maximumFractionDigits: 3 })}
+                                            </Table.Td>
+                                          ),
+                                        )}
+                                      </Table.Tr>
+                                    ))}
+                                  </Table.Tbody>
+                                </Table>
+                              </Table.ScrollContainer>
+                            </>
+                          )}
+                          <Alert>{t`Периодические доли зависят от того, когда участникам выполнялись измерения: рост числа наблюдений отражает практику наблюдения, а не только течение болезни. Разные периоды содержат разный состав пациентов; сравнение периодов без модели повторных измерений не является проверкой гипотезы.`}</Alert>
                         </>
                       )}
                     </Stack>
