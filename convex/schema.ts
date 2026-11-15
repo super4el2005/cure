@@ -271,6 +271,14 @@ export const analysisValues = v.object({
       independent: v.boolean(),
       intent: v.union(v.literal("exploratory"), v.literal("prespecified")),
       hypothesis: v.string(),
+      fixedSample: v.optional(
+        v.object({
+          frozenAt: v.number(),
+          groupIds: v.array(v.string()),
+          referenceIds: v.array(v.string()),
+          signature: v.string(),
+        }),
+      ),
     }),
   ),
 });
