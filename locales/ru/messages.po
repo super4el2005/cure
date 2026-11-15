@@ -99,6 +99,11 @@ msgstr "Автор события:"
 msgid "Авторы"
 msgstr "Авторы"
 
+#: src/routes/d_.projects_.$id.enrollment.tsx:79
+#: src/routes/m_.projects_.$id.enrollment.tsx:79
+msgid "Агрегированные показатели центров по подтверждённым сервером записям участия. Персональные данные, даты событий, причины решений и документы согласия не покидают клиники. Изменения, ожидающие отправки из локального пространства, попадут в обзор после синхронизации."
+msgstr "Агрегированные показатели центров по подтверждённым сервером записям участия. Персональные данные, даты событий, причины решений и документы согласия не покидают клиники. Изменения, ожидающие отправки из локального пространства, попадут в обзор после синхронизации."
+
 #: src/routes/d_.profile.tsx:189
 #: src/routes/m_.profile.tsx:189
 msgid "Администратор"
@@ -393,7 +398,7 @@ msgstr "В открытое описание не включайте данны�
 #: src/routes/d_.patients_.$id_.timeline.tsx:258
 #: src/routes/d_.patients_.$id.tsx:131
 #: src/routes/d_.projects_.$id.credits.tsx:190
-#: src/routes/d_.projects_.$id.enrollment.tsx:122
+#: src/routes/d_.projects_.$id.enrollment.tsx:195
 #: src/routes/d_.projects_.$id.forms.tsx:156
 #: src/routes/d_.projects_.$id.protocol.tsx:212
 #: src/routes/d_.projects_.$id.safety.tsx:225
@@ -411,7 +416,7 @@ msgstr "В открытое описание не включайте данны�
 #: src/routes/m_.patients_.$id_.timeline.tsx:258
 #: src/routes/m_.patients_.$id.tsx:131
 #: src/routes/m_.projects_.$id.credits.tsx:190
-#: src/routes/m_.projects_.$id.enrollment.tsx:122
+#: src/routes/m_.projects_.$id.enrollment.tsx:195
 #: src/routes/m_.projects_.$id.forms.tsx:156
 #: src/routes/m_.projects_.$id.protocol.tsx:212
 #: src/routes/m_.projects_.$id.safety.tsx:225
@@ -725,10 +730,10 @@ msgstr "Вклад, интересы и авторство"
 #: src/lib/clinical-history-content.ts:47
 #: src/routes/d_.patients_.$id_.enrollment.tsx:68
 #: src/routes/d_.patients_.$id_.timeline.tsx:122
-#: src/routes/d_.projects_.$id.enrollment.tsx:56
+#: src/routes/d_.projects_.$id.enrollment.tsx:59
 #: src/routes/m_.patients_.$id_.enrollment.tsx:68
 #: src/routes/m_.patients_.$id_.timeline.tsx:122
-#: src/routes/m_.projects_.$id.enrollment.tsx:56
+#: src/routes/m_.projects_.$id.enrollment.tsx:59
 msgid "Включён"
 msgstr "Включён"
 
@@ -792,7 +797,7 @@ msgstr "Войдите и заполните профессиональный п
 #: src/routes/d_.patients_.$id_.visits.tsx:97
 #: src/routes/d_.patients_.$id.tsx:81
 #: src/routes/d_.patients.tsx:104
-#: src/routes/d_.projects_.$id.enrollment.tsx:70
+#: src/routes/d_.projects_.$id.enrollment.tsx:73
 #: src/routes/d_.projects_.$id.safety.tsx:165
 #: src/routes/d_.projects_.$id.visits.tsx:129
 #: src/routes/m_.analytics.tsx:87
@@ -805,7 +810,7 @@ msgstr "Войдите и заполните профессиональный п
 #: src/routes/m_.patients_.$id_.visits.tsx:97
 #: src/routes/m_.patients_.$id.tsx:81
 #: src/routes/m_.patients.tsx:104
-#: src/routes/m_.projects_.$id.enrollment.tsx:70
+#: src/routes/m_.projects_.$id.enrollment.tsx:73
 #: src/routes/m_.projects_.$id.safety.tsx:165
 #: src/routes/m_.projects_.$id.visits.tsx:129
 msgid "Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами."
@@ -1037,6 +1042,11 @@ msgstr "Все указанные диагнозы"
 msgid "Все условия"
 msgstr "Все условия"
 
+#: src/routes/d_.projects_.$id.enrollment.tsx:112
+#: src/routes/m_.projects_.$id.enrollment.tsx:112
+msgid "Всего"
+msgstr "Всего"
+
 #: src/routes/d_.library.tsx:539
 #: src/routes/m_.library.tsx:539
 msgid "Всего в PubMed:"
@@ -1106,7 +1116,7 @@ msgstr "Выберите исследователя"
 #: src/routes/d_.patients_.$id.tsx:95
 #: src/routes/d_.patients.tsx:120
 #: src/routes/d_.projects_.$id.credits.tsx:154
-#: src/routes/d_.projects_.$id.enrollment.tsx:83
+#: src/routes/d_.projects_.$id.enrollment.tsx:156
 #: src/routes/d_.projects_.$id.forms.tsx:114
 #: src/routes/d_.projects_.$id.protocol.tsx:176
 #: src/routes/d_.projects_.$id.safety.tsx:178
@@ -1129,7 +1139,7 @@ msgstr "Выберите исследователя"
 #: src/routes/m_.patients_.$id.tsx:95
 #: src/routes/m_.patients.tsx:120
 #: src/routes/m_.projects_.$id.credits.tsx:154
-#: src/routes/m_.projects_.$id.enrollment.tsx:83
+#: src/routes/m_.projects_.$id.enrollment.tsx:156
 #: src/routes/m_.projects_.$id.forms.tsx:114
 #: src/routes/m_.projects_.$id.protocol.tsx:176
 #: src/routes/m_.projects_.$id.safety.tsx:178
@@ -1193,9 +1203,9 @@ msgid "Выбыл"
 msgstr "Выбыл"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:70
-#: src/routes/d_.projects_.$id.enrollment.tsx:58
+#: src/routes/d_.projects_.$id.enrollment.tsx:61
 #: src/routes/m_.patients_.$id_.enrollment.tsx:70
-#: src/routes/m_.projects_.$id.enrollment.tsx:58
+#: src/routes/m_.projects_.$id.enrollment.tsx:61
 msgid "Выбытие"
 msgstr "Выбытие"
 
@@ -1480,9 +1490,9 @@ msgid "Дата события"
 msgstr "Дата события"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:259
-#: src/routes/d_.projects_.$id.enrollment.tsx:200
+#: src/routes/d_.projects_.$id.enrollment.tsx:273
 #: src/routes/m_.patients_.$id_.enrollment.tsx:259
-#: src/routes/m_.projects_.$id.enrollment.tsx:200
+#: src/routes/m_.projects_.$id.enrollment.tsx:273
 msgid "Дата события (UTC)"
 msgstr "Дата события (UTC)"
 
@@ -1965,20 +1975,20 @@ msgid "Журнал доступа"
 msgstr "Журнал доступа"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:363
-#: src/routes/d_.projects_.$id.enrollment.tsx:65
+#: src/routes/d_.projects_.$id.enrollment.tsx:68
 #: src/routes/d_.projects_.$id.safety.tsx:159
 #: src/routes/d_.projects_.$id.visits.tsx:125
 #: src/routes/d_.projects.tsx:329
 #: src/routes/m_.patients_.$id_.enrollment.tsx:363
-#: src/routes/m_.projects_.$id.enrollment.tsx:65
+#: src/routes/m_.projects_.$id.enrollment.tsx:68
 #: src/routes/m_.projects_.$id.safety.tsx:159
 #: src/routes/m_.projects_.$id.visits.tsx:125
 #: src/routes/m_.projects.tsx:329
 msgid "Журнал набора клиники"
 msgstr "Журнал набора клиники"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:137
-#: src/routes/m_.projects_.$id.enrollment.tsx:137
+#: src/routes/d_.projects_.$id.enrollment.tsx:210
+#: src/routes/m_.projects_.$id.enrollment.tsx:210
 msgid "Журнал пациентов клиники доступен только врачу. Участие в команде исследования не открывает персональные данные или показатели набора клиники."
 msgstr "Журнал пациентов клиники доступен только врачу. Участие в команде исследования не открывает персональные данные или показатели набора клиники."
 
@@ -2009,7 +2019,7 @@ msgstr "Заблокировать библиотеку"
 #: src/routes/d_.patients_.$id.tsx:142
 #: src/routes/d_.patients.tsx:181
 #: src/routes/d_.projects_.$id.credits.tsx:202
-#: src/routes/d_.projects_.$id.enrollment.tsx:120
+#: src/routes/d_.projects_.$id.enrollment.tsx:193
 #: src/routes/d_.projects_.$id.forms.tsx:154
 #: src/routes/d_.projects_.$id.protocol.tsx:223
 #: src/routes/d_.projects_.$id.safety.tsx:223
@@ -2029,7 +2039,7 @@ msgstr "Заблокировать библиотеку"
 #: src/routes/m_.patients_.$id.tsx:142
 #: src/routes/m_.patients.tsx:181
 #: src/routes/m_.projects_.$id.credits.tsx:202
-#: src/routes/m_.projects_.$id.enrollment.tsx:120
+#: src/routes/m_.projects_.$id.enrollment.tsx:193
 #: src/routes/m_.projects_.$id.forms.tsx:154
 #: src/routes/m_.projects_.$id.protocol.tsx:223
 #: src/routes/m_.projects_.$id.safety.tsx:223
@@ -2145,7 +2155,7 @@ msgstr "Загрузка"
 #: src/routes/d_.patients_.$id_.visits.tsx:172
 #: src/routes/d_.patients_.$id.tsx:144
 #: src/routes/d_.projects_.$id.credits.tsx:205
-#: src/routes/d_.projects_.$id.enrollment.tsx:142
+#: src/routes/d_.projects_.$id.enrollment.tsx:215
 #: src/routes/d_.projects_.$id.forms.tsx:170
 #: src/routes/d_.projects_.$id.protocol.tsx:226
 #: src/routes/d_.projects_.$id.safety.tsx:246
@@ -2165,7 +2175,7 @@ msgstr "Загрузка"
 #: src/routes/m_.patients_.$id_.visits.tsx:172
 #: src/routes/m_.patients_.$id.tsx:144
 #: src/routes/m_.projects_.$id.credits.tsx:205
-#: src/routes/m_.projects_.$id.enrollment.tsx:142
+#: src/routes/m_.projects_.$id.enrollment.tsx:215
 #: src/routes/m_.projects_.$id.forms.tsx:170
 #: src/routes/m_.projects_.$id.protocol.tsx:226
 #: src/routes/m_.projects_.$id.safety.tsx:246
@@ -2177,6 +2187,11 @@ msgstr "Загрузка"
 #: src/routes/m_.workspace.tsx:311
 msgid "Загрузка локальных данных…"
 msgstr "Загрузка локальных данных…"
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:83
+#: src/routes/m_.projects_.$id.enrollment.tsx:83
+msgid "Загрузка показателей центров…"
+msgstr "Загрузка показателей центров…"
 
 #: src/routes/d_.projects_.$id.work.tsx:426
 #: src/routes/m_.projects_.$id.work.tsx:426
@@ -2316,8 +2331,8 @@ msgstr "Записей"
 msgid "Записей в проверке:"
 msgstr "Записей в проверке:"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:146
-#: src/routes/m_.projects_.$id.enrollment.tsx:146
+#: src/routes/d_.projects_.$id.enrollment.tsx:219
+#: src/routes/m_.projects_.$id.enrollment.tsx:219
 msgid "Записей участия:"
 msgstr "Записей участия:"
 
@@ -2793,9 +2808,9 @@ msgstr "Исследование недоступно в выбранной ор
 msgid "Исследование недоступно в выбранном пространстве."
 msgstr "Исследование недоступно в выбранном пространстве."
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:67
+#: src/routes/d_.projects_.$id.enrollment.tsx:70
 #: src/routes/d_.projects_.$id.safety.tsx:162
-#: src/routes/m_.projects_.$id.enrollment.tsx:67
+#: src/routes/m_.projects_.$id.enrollment.tsx:70
 #: src/routes/m_.projects_.$id.safety.tsx:162
 msgid "Исследование:"
 msgstr "Исследование:"
@@ -2846,6 +2861,13 @@ msgstr "Исследовательская запись"
 #: src/routes/m.tsx:62
 #~ msgid "Исследователям"
 #~ msgstr "Исследователям"
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:97
+#: src/routes/d_.projects_.$id.enrollment.tsx:113
+#: src/routes/m_.projects_.$id.enrollment.tsx:97
+#: src/routes/m_.projects_.$id.enrollment.tsx:113
+msgid "Истёкшее согласие"
+msgstr "Истёкшее согласие"
 
 #: src/routes/d_.patients_.$id_.history.tsx:175
 #: src/routes/m_.patients_.$id_.history.tsx:175
@@ -3321,9 +3343,9 @@ msgid "Критерии исключения:"
 msgstr "Критерии исключения:"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:67
-#: src/routes/d_.projects_.$id.enrollment.tsx:55
+#: src/routes/d_.projects_.$id.enrollment.tsx:58
 #: src/routes/m_.patients_.$id_.enrollment.tsx:67
-#: src/routes/m_.projects_.$id.enrollment.tsx:55
+#: src/routes/m_.projects_.$id.enrollment.tsx:58
 msgid "Критерии не выполнены"
 msgstr "Критерии не выполнены"
 
@@ -3482,6 +3504,21 @@ msgstr "Медицинские справочники"
 #~ msgid "Медицинские справочники и AI"
 #~ msgstr "Медицинские справочники и AI"
 
+#: src/routes/d_.projects_.$id.enrollment.tsx:85
+#: src/routes/m_.projects_.$id.enrollment.tsx:85
+msgid "Межцентровый журнал доступен участникам команды исследования."
+msgstr "Межцентровый журнал доступен участникам команды исследования."
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:78
+#: src/routes/m_.projects_.$id.enrollment.tsx:78
+msgid "Межцентровый журнал набора"
+msgstr "Межцентровый журнал набора"
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:81
+#: src/routes/m_.projects_.$id.enrollment.tsx:81
+msgid "Межцентровый журнал требует сети и активной сессии."
+msgstr "Межцентровый журнал требует сети и активной сессии."
+
 #: src/routes/d_.projects_.$id.forms.tsx:67
 #: src/routes/m_.projects_.$id.forms.tsx:67
 msgid "Меньше"
@@ -3580,7 +3617,7 @@ msgstr "Мои заявки"
 #: src/routes/d_.patients_.$id_.enrollment.tsx:203
 #: src/routes/d_.patients_.$id_.forms.tsx:204
 #: src/routes/d_.projects_.$id.credits.tsx:121
-#: src/routes/d_.projects_.$id.enrollment.tsx:64
+#: src/routes/d_.projects_.$id.enrollment.tsx:67
 #: src/routes/d_.projects_.$id.forms.tsx:97
 #: src/routes/d_.projects_.$id.protocol.tsx:159
 #: src/routes/d_.projects_.$id.safety.tsx:154
@@ -3595,7 +3632,7 @@ msgstr "Мои заявки"
 #: src/routes/m_.patients_.$id_.enrollment.tsx:203
 #: src/routes/m_.patients_.$id_.forms.tsx:204
 #: src/routes/m_.projects_.$id.credits.tsx:121
-#: src/routes/m_.projects_.$id.enrollment.tsx:64
+#: src/routes/m_.projects_.$id.enrollment.tsx:67
 #: src/routes/m_.projects_.$id.forms.tsx:97
 #: src/routes/m_.projects_.$id.protocol.tsx:159
 #: src/routes/m_.projects_.$id.safety.tsx:154
@@ -3818,10 +3855,10 @@ msgstr "Назначить визит исследования"
 
 #: src/routes/d_.library.tsx:338
 #: src/routes/d_.patients.tsx:583
-#: src/routes/d_.projects_.$id.enrollment.tsx:188
+#: src/routes/d_.projects_.$id.enrollment.tsx:261
 #: src/routes/m_.library.tsx:338
 #: src/routes/m_.patients.tsx:583
-#: src/routes/m_.projects_.$id.enrollment.tsx:188
+#: src/routes/m_.projects_.$id.enrollment.tsx:261
 msgid "Найдено:"
 msgstr "Найдено:"
 
@@ -3979,6 +4016,11 @@ msgstr "Не удалось загрузить исследование. Пов�
 msgid "Не удалось загрузить каталог. Проверьте подключение и повторите попытку."
 msgstr "Не удалось загрузить каталог. Проверьте подключение и повторите попытку."
 
+#: src/routes/d_.projects_.$id.enrollment.tsx:87
+#: src/routes/m_.projects_.$id.enrollment.tsx:87
+msgid "Не удалось загрузить показатели центров. Повторите попытку позже."
+msgstr "Не удалось загрузить показатели центров. Повторите попытку позже."
+
 #: src/routes/d_.analytics.tsx:130
 #: src/routes/d_.patients_.$id_.quality.tsx:160
 #: src/routes/m_.analytics.tsx:130
@@ -3991,8 +4033,8 @@ msgstr "Не удалось открыть или подтвердить про�
 #~ msgid "Не удалось открыть локальное хранилище."
 #~ msgstr "Не удалось открыть локальное хранилище."
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:111
-#: src/routes/m_.projects_.$id.enrollment.tsx:111
+#: src/routes/d_.projects_.$id.enrollment.tsx:184
+#: src/routes/m_.projects_.$id.enrollment.tsx:184
 msgid "Не удалось открыть локальные данные. Проверьте организацию, парольную фразу и срок доступа."
 msgstr "Не удалось открыть локальные данные. Проверьте организацию, парольную фразу и срок доступа."
 
@@ -4330,8 +4372,8 @@ msgstr "Нет записей о терапии"
 msgid "Нет записей результатов обследований"
 msgstr "Нет записей результатов обследований"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:191
-#: src/routes/m_.projects_.$id.enrollment.tsx:191
+#: src/routes/d_.projects_.$id.enrollment.tsx:264
+#: src/routes/m_.projects_.$id.enrollment.tsx:264
 msgid "Нет записей участия по выбранным условиям."
 msgstr "Нет записей участия по выбранным условиям."
 
@@ -4478,6 +4520,11 @@ msgstr "Обновить приложение"
 #: src/routes/m_.organization.members.tsx:140
 msgid "Обновить сведения о доступе"
 msgstr "Обновить сведения о доступе"
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:114
+#: src/routes/m_.projects_.$id.enrollment.tsx:114
+msgid "Обновлено (UTC)"
+msgstr "Обновлено (UTC)"
 
 #: src/routes/d_.analytics.tsx:201
 #: src/routes/d_.patients_.$id.tsx:181
@@ -4793,7 +4840,7 @@ msgstr "Организации не найдены. Уточните назва�
 #: src/routes/d_.patients_.$id.tsx:94
 #: src/routes/d_.patients.tsx:119
 #: src/routes/d_.projects_.$id.credits.tsx:153
-#: src/routes/d_.projects_.$id.enrollment.tsx:82
+#: src/routes/d_.projects_.$id.enrollment.tsx:155
 #: src/routes/d_.projects_.$id.forms.tsx:113
 #: src/routes/d_.projects_.$id.protocol.tsx:175
 #: src/routes/d_.projects_.$id.safety.tsx:177
@@ -4814,7 +4861,7 @@ msgstr "Организации не найдены. Уточните назва�
 #: src/routes/m_.patients_.$id.tsx:94
 #: src/routes/m_.patients.tsx:119
 #: src/routes/m_.projects_.$id.credits.tsx:153
-#: src/routes/m_.projects_.$id.enrollment.tsx:82
+#: src/routes/m_.projects_.$id.enrollment.tsx:155
 #: src/routes/m_.projects_.$id.forms.tsx:113
 #: src/routes/m_.projects_.$id.protocol.tsx:175
 #: src/routes/m_.projects_.$id.safety.tsx:177
@@ -4946,10 +4993,10 @@ msgstr "Отзыв зафиксирован"
 #: src/lib/clinical-history-content.ts:48
 #: src/routes/d_.patients_.$id_.enrollment.tsx:69
 #: src/routes/d_.patients_.$id_.timeline.tsx:123
-#: src/routes/d_.projects_.$id.enrollment.tsx:57
+#: src/routes/d_.projects_.$id.enrollment.tsx:60
 #: src/routes/m_.patients_.$id_.enrollment.tsx:69
 #: src/routes/m_.patients_.$id_.timeline.tsx:123
-#: src/routes/m_.projects_.$id.enrollment.tsx:57
+#: src/routes/m_.projects_.$id.enrollment.tsx:60
 msgid "Отказ"
 msgstr "Отказ"
 
@@ -5140,7 +5187,7 @@ msgstr "Открыть профиль"
 #: src/routes/d_.patients_.$id.tsx:116
 #: src/routes/d_.patients.tsx:142
 #: src/routes/d_.projects_.$id.credits.tsx:175
-#: src/routes/d_.projects_.$id.enrollment.tsx:104
+#: src/routes/d_.projects_.$id.enrollment.tsx:177
 #: src/routes/d_.projects_.$id.forms.tsx:135
 #: src/routes/d_.projects_.$id.protocol.tsx:197
 #: src/routes/d_.projects_.$id.safety.tsx:199
@@ -5161,7 +5208,7 @@ msgstr "Открыть профиль"
 #: src/routes/m_.patients_.$id.tsx:116
 #: src/routes/m_.patients.tsx:142
 #: src/routes/m_.projects_.$id.credits.tsx:175
-#: src/routes/m_.projects_.$id.enrollment.tsx:104
+#: src/routes/m_.projects_.$id.enrollment.tsx:177
 #: src/routes/m_.projects_.$id.forms.tsx:135
 #: src/routes/m_.projects_.$id.protocol.tsx:197
 #: src/routes/m_.projects_.$id.safety.tsx:199
@@ -5452,7 +5499,7 @@ msgstr "Парольная фраза личной библиотеки"
 #: src/routes/d_.patients_.$id.tsx:99
 #: src/routes/d_.patients.tsx:124
 #: src/routes/d_.projects_.$id.credits.tsx:158
-#: src/routes/d_.projects_.$id.enrollment.tsx:87
+#: src/routes/d_.projects_.$id.enrollment.tsx:160
 #: src/routes/d_.projects_.$id.forms.tsx:118
 #: src/routes/d_.projects_.$id.protocol.tsx:180
 #: src/routes/d_.projects_.$id.safety.tsx:182
@@ -5473,7 +5520,7 @@ msgstr "Парольная фраза личной библиотеки"
 #: src/routes/m_.patients_.$id.tsx:99
 #: src/routes/m_.patients.tsx:124
 #: src/routes/m_.projects_.$id.credits.tsx:158
-#: src/routes/m_.projects_.$id.enrollment.tsx:87
+#: src/routes/m_.projects_.$id.enrollment.tsx:160
 #: src/routes/m_.projects_.$id.forms.tsx:118
 #: src/routes/m_.projects_.$id.protocol.tsx:180
 #: src/routes/m_.projects_.$id.safety.tsx:182
@@ -5492,9 +5539,9 @@ msgid "Парольные фразы должны совпадать"
 msgstr "Парольные фразы должны совпадать"
 
 #: src/routes/d_.patients.tsx:590
-#: src/routes/d_.projects_.$id.enrollment.tsx:198
+#: src/routes/d_.projects_.$id.enrollment.tsx:271
 #: src/routes/m_.patients.tsx:590
-#: src/routes/m_.projects_.$id.enrollment.tsx:198
+#: src/routes/m_.projects_.$id.enrollment.tsx:271
 msgid "Пациент"
 msgstr "Пациент"
 
@@ -5643,7 +5690,7 @@ msgstr "Повторите нужное действие по текущей з�
 #: src/routes/d_.patients_.$id.tsx:107
 #: src/routes/d_.patients.tsx:133
 #: src/routes/d_.projects_.$id.credits.tsx:166
-#: src/routes/d_.projects_.$id.enrollment.tsx:95
+#: src/routes/d_.projects_.$id.enrollment.tsx:168
 #: src/routes/d_.projects_.$id.forms.tsx:126
 #: src/routes/d_.projects_.$id.protocol.tsx:188
 #: src/routes/d_.projects_.$id.safety.tsx:190
@@ -5665,7 +5712,7 @@ msgstr "Повторите нужное действие по текущей з�
 #: src/routes/m_.patients_.$id.tsx:107
 #: src/routes/m_.patients.tsx:133
 #: src/routes/m_.projects_.$id.credits.tsx:166
-#: src/routes/m_.projects_.$id.enrollment.tsx:95
+#: src/routes/m_.projects_.$id.enrollment.tsx:168
 #: src/routes/m_.projects_.$id.forms.tsx:126
 #: src/routes/m_.projects_.$id.protocol.tsx:188
 #: src/routes/m_.projects_.$id.safety.tsx:190
@@ -5702,7 +5749,7 @@ msgstr "Повторить"
 #: src/routes/d_.patients_.$id.tsx:138
 #: src/routes/d_.patients.tsx:196
 #: src/routes/d_.projects_.$id.credits.tsx:197
-#: src/routes/d_.projects_.$id.enrollment.tsx:133
+#: src/routes/d_.projects_.$id.enrollment.tsx:206
 #: src/routes/d_.projects_.$id.forms.tsx:167
 #: src/routes/d_.projects_.$id.protocol.tsx:219
 #: src/routes/d_.projects_.$id.safety.tsx:236
@@ -5724,7 +5771,7 @@ msgstr "Повторить"
 #: src/routes/m_.patients_.$id.tsx:138
 #: src/routes/m_.patients.tsx:196
 #: src/routes/m_.projects_.$id.credits.tsx:197
-#: src/routes/m_.projects_.$id.enrollment.tsx:133
+#: src/routes/m_.projects_.$id.enrollment.tsx:206
 #: src/routes/m_.projects_.$id.forms.tsx:167
 #: src/routes/m_.projects_.$id.protocol.tsx:219
 #: src/routes/m_.projects_.$id.safety.tsx:236
@@ -5851,6 +5898,11 @@ msgstr "Подтверждаю, что согласие или отзыв пол
 msgid "Подтверждение квалификации выполняется отдельно. Заявка и самостоятельный выбор профессии не дают доступа к пациентам."
 msgstr "Подтверждение квалификации выполняется отдельно. Заявка и самостоятельный выбор профессии не дают доступа к пациентам."
 
+#: src/routes/d_.projects_.$id.enrollment.tsx:101
+#: src/routes/m_.projects_.$id.enrollment.tsx:101
+msgid "Подтверждённых записей участия пока нет."
+msgstr "Подтверждённых записей участия пока нет."
+
 #: src/routes/d_.profile.tsx:181
 #: src/routes/m_.profile.tsx:181
 msgid "Подтверждённых организаций пока нет."
@@ -5937,8 +5989,8 @@ msgstr "Поиск организации по названию"
 msgid "Поиск по английскому термину или коду."
 msgstr "Поиск по английскому термину или коду."
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:156
-#: src/routes/m_.projects_.$id.enrollment.tsx:156
+#: src/routes/d_.projects_.$id.enrollment.tsx:229
+#: src/routes/m_.projects_.$id.enrollment.tsx:229
 msgid "Поиск по имени или идентификатору пациента"
 msgstr "Поиск по имени или идентификатору пациента"
 
@@ -6009,10 +6061,15 @@ msgstr "Показаны первые 20 групп совпадений."
 msgid "Показаны сохранённые на устройстве данные. Новые приглашения и изменения коллег появятся после подключения."
 msgstr "Показаны сохранённые на устройстве данные. Новые приглашения и изменения коллег появятся после подключения."
 
+#: src/routes/d_.projects_.$id.enrollment.tsx:213
+#: src/routes/m_.projects_.$id.enrollment.tsx:213
+msgid "Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения; межцентровый обзор выше собирается отдельно на сервере. Счётчики отражают текущие статусы до применения фильтров."
+msgstr "Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения; межцентровый обзор выше собирается отдельно на сервере. Счётчики отражают текущие статусы до применения фильтров."
+
 #: src/routes/d_.projects_.$id.enrollment.tsx:140
 #: src/routes/m_.projects_.$id.enrollment.tsx:140
-msgid "Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения. Это не межцентровый отчёт. Счётчики отражают текущие статусы до применения фильтров."
-msgstr "Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения. Это не межцентровый отчёт. Счётчики отражают текущие статусы до применения фильтров."
+#~ msgid "Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения. Это не межцентровый отчёт. Счётчики отражают текущие статусы до применения фильтров."
+#~ msgstr "Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения. Это не межцентровый отчёт. Счётчики отражают текущие статусы до применения фильтров."
 
 #: src/routes/d_.specialists_.$id.tsx:73
 #: src/routes/m_.specialists_.$id.tsx:73
@@ -6394,9 +6451,9 @@ msgid "Приоритет"
 msgstr "Приоритет"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:266
-#: src/routes/d_.projects_.$id.enrollment.tsx:201
+#: src/routes/d_.projects_.$id.enrollment.tsx:274
 #: src/routes/m_.patients_.$id_.enrollment.tsx:266
-#: src/routes/m_.projects_.$id.enrollment.tsx:201
+#: src/routes/m_.projects_.$id.enrollment.tsx:274
 msgid "Причина и обоснование решения"
 msgstr "Причина и обоснование решения"
 
@@ -6743,8 +6800,8 @@ msgstr "Произошла ошибка приложения. Перезагру
 msgid "Проспективное"
 msgstr "Проспективное"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:203
-#: src/routes/m_.projects_.$id.enrollment.tsx:203
+#: src/routes/d_.projects_.$id.enrollment.tsx:276
+#: src/routes/m_.projects_.$id.enrollment.tsx:276
 msgid "Протокол"
 msgstr "Протокол"
 
@@ -7161,10 +7218,10 @@ msgstr "Рецензирование и редактирование рукоп�
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:253
 #: src/routes/d_.projects_.$id.credits.tsx:406
-#: src/routes/d_.projects_.$id.enrollment.tsx:199
+#: src/routes/d_.projects_.$id.enrollment.tsx:272
 #: src/routes/m_.patients_.$id_.enrollment.tsx:253
 #: src/routes/m_.projects_.$id.credits.tsx:406
-#: src/routes/m_.projects_.$id.enrollment.tsx:199
+#: src/routes/m_.projects_.$id.enrollment.tsx:272
 msgid "Решение"
 msgstr "Решение"
 
@@ -7448,7 +7505,7 @@ msgstr "Синхронизация подключена"
 #: src/routes/d_.patients_.$id_.forms.tsx:181
 #: src/routes/d_.patients_.$id_.visits.tsx:159
 #: src/routes/d_.patients.tsx:190
-#: src/routes/d_.projects_.$id.enrollment.tsx:127
+#: src/routes/d_.projects_.$id.enrollment.tsx:200
 #: src/routes/d_.projects_.$id.forms.tsx:161
 #: src/routes/d_.projects_.$id.safety.tsx:230
 #: src/routes/d_.projects_.$id.visits.tsx:192
@@ -7457,7 +7514,7 @@ msgstr "Синхронизация подключена"
 #: src/routes/m_.patients_.$id_.forms.tsx:181
 #: src/routes/m_.patients_.$id_.visits.tsx:159
 #: src/routes/m_.patients.tsx:190
-#: src/routes/m_.projects_.$id.enrollment.tsx:127
+#: src/routes/m_.projects_.$id.enrollment.tsx:200
 #: src/routes/m_.projects_.$id.forms.tsx:161
 #: src/routes/m_.projects_.$id.safety.tsx:230
 #: src/routes/m_.projects_.$id.visits.tsx:192
@@ -7477,10 +7534,10 @@ msgstr "Скачать приложение"
 #: src/lib/clinical-history-content.ts:45
 #: src/routes/d_.patients_.$id_.enrollment.tsx:66
 #: src/routes/d_.patients_.$id_.timeline.tsx:120
-#: src/routes/d_.projects_.$id.enrollment.tsx:54
+#: src/routes/d_.projects_.$id.enrollment.tsx:57
 #: src/routes/m_.patients_.$id_.enrollment.tsx:66
 #: src/routes/m_.patients_.$id_.timeline.tsx:120
-#: src/routes/m_.projects_.$id.enrollment.tsx:54
+#: src/routes/m_.projects_.$id.enrollment.tsx:57
 msgid "Скрининг"
 msgstr "Скрининг"
 
@@ -7589,9 +7646,9 @@ msgid "Согласие действует до"
 msgstr "Согласие действует до"
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:309
-#: src/routes/d_.projects_.$id.enrollment.tsx:202
+#: src/routes/d_.projects_.$id.enrollment.tsx:275
 #: src/routes/m_.patients_.$id_.enrollment.tsx:309
-#: src/routes/m_.projects_.$id.enrollment.tsx:202
+#: src/routes/m_.projects_.$id.enrollment.tsx:275
 msgid "Согласие действует по"
 msgstr "Согласие действует по"
 
@@ -7606,8 +7663,8 @@ msgstr "Согласие зафиксировано"
 msgid "Согласие или отзыв сохранены на устройстве. Для выдачи доступа дождитесь отправки на сервер."
 msgstr "Согласие или отзыв сохранены на устройстве. Для выдачи доступа дождитесь отправки на сервер."
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:231
-#: src/routes/m_.projects_.$id.enrollment.tsx:231
+#: src/routes/d_.projects_.$id.enrollment.tsx:304
+#: src/routes/m_.projects_.$id.enrollment.tsx:304
 msgid "Согласие истекло"
 msgstr "Согласие истекло"
 
@@ -8176,8 +8233,8 @@ msgstr "Статус терапии"
 msgid "Статус чтения и отбора"
 msgstr "Статус чтения и отбора"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:165
-#: src/routes/m_.projects_.$id.enrollment.tsx:165
+#: src/routes/d_.projects_.$id.enrollment.tsx:238
+#: src/routes/m_.projects_.$id.enrollment.tsx:238
 msgid "Статусы участия"
 msgstr "Статусы участия"
 
@@ -8273,10 +8330,15 @@ msgstr "Текущее содержимое источника"
 msgid "Текущие записи без загруженной архивной редакции"
 msgstr "Текущие записи без загруженной архивной редакции"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:195
-#: src/routes/m_.projects_.$id.enrollment.tsx:195
+#: src/routes/d_.projects_.$id.enrollment.tsx:268
+#: src/routes/m_.projects_.$id.enrollment.tsx:268
 msgid "Текущие решения по пациентам выбранной клиники"
 msgstr "Текущие решения по пациентам выбранной клиники"
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:105
+#: src/routes/m_.projects_.$id.enrollment.tsx:105
+msgid "Текущие состояния набора по центрам исследования"
+msgstr "Текущие состояния набора по центрам исследования"
 
 #: src/routes/d_.patients_.$id_.timeline.tsx:330
 #: src/routes/m_.patients_.$id_.timeline.tsx:330
@@ -8318,8 +8380,8 @@ msgstr "Тип исследования"
 msgid "Тип результата"
 msgstr "Тип результата"
 
-#: src/routes/d_.projects_.$id.enrollment.tsx:180
-#: src/routes/m_.projects_.$id.enrollment.tsx:180
+#: src/routes/d_.projects_.$id.enrollment.tsx:253
+#: src/routes/m_.projects_.$id.enrollment.tsx:253
 msgid "Только включённые пациенты с истёкшим согласием"
 msgstr "Только включённые пациенты с истёкшим согласием"
 
@@ -8744,9 +8806,9 @@ msgstr "Участие в исследованиях ещё не зарегис�
 #~ msgstr "Участие в совместных исследованиях."
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:71
-#: src/routes/d_.projects_.$id.enrollment.tsx:59
+#: src/routes/d_.projects_.$id.enrollment.tsx:62
 #: src/routes/m_.patients_.$id_.enrollment.tsx:71
-#: src/routes/m_.projects_.$id.enrollment.tsx:59
+#: src/routes/m_.projects_.$id.enrollment.tsx:62
 msgid "Участие завершено"
 msgstr "Участие завершено"
 
@@ -8871,6 +8933,11 @@ msgstr "Цель визита"
 #: src/routes/m_.patients.tsx:287
 msgid "Цель использования данных"
 msgstr "Цель использования данных"
+
+#: src/routes/d_.projects_.$id.enrollment.tsx:108
+#: src/routes/m_.projects_.$id.enrollment.tsx:108
+msgid "Центр"
+msgstr "Центр"
 
 #: src/routes/d_.projects_.$id.visits.tsx:273
 #: src/routes/m_.projects_.$id.visits.tsx:273
