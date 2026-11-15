@@ -14,6 +14,11 @@ import {
 } from "@/src/lib/cohort-comparison";
 import { defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
 import {
+  cohortLongitudinal,
+  cohortLongitudinalSchema,
+  defaultCohortLongitudinal,
+} from "@/src/lib/cohort-longitudinal";
+import {
   availableObservationCodes,
   cohortMemberIds,
   cohortStatistics,
@@ -311,6 +316,61 @@ export function useSavedAnalyses() {
       statisticsResult.report.signature !==
         statisticsSourceSignature(space.rows, "doctor", criteria, clinicalRows, Date.now())),
   );
+  const longitudinalForm = useForm({
+    initialValues: defaultCohortLongitudinal,
+    validate: (input) => {
+      const result = cohortLongitudinalSchema.safeParse(input);
+      return result.success
+        ? {}
+        : Object.fromEntries(
+            result.error.issues.map((issue) => [issue.path.join("."), t`Проверьте значение поля`]),
+          );
+    },
+  });
+  const longitudinalKey = hash({ criteria, longitudinal: longitudinalForm.values });
+  const longitudinal = useMutation({
+    mutationKey: ["analysis-longitudinal"],
+    networkMode: "always",
+    retry: false,
+    gcTime: 0,
+    mutationFn: async (input: { scope: string; key: string }) => {
+      if (
+        !workspace ||
+        !doctorRows ||
+        !currentAnalysis ||
+        input.scope !== workspace.scope ||
+        Date.now() >= workspace.expiresAt ||
+        !space.downloaded.isReady
+      )
+        throw new Error("WORKSPACE_LOCKED");
+      try {
+        return {
+          scope: workspace.scope,
+          key: input.key,
+          report: cohortLongitudinal(
+            space.rows,
+            "doctor",
+            criteria,
+            clinicalRows,
+            longitudinalForm.values,
+            Date.now(),
+          ),
+        };
+      } catch {
+        throw new Error("ANALYSIS_CALCULATION_FAILED");
+      }
+    },
+  });
+  const longitudinalResult =
+    currentAnalysis && longitudinal.data?.scope === workspace?.scope
+      ? longitudinal.data
+      : undefined;
+  const longitudinalStale = Boolean(
+    longitudinalResult &&
+    (longitudinalResult.key !== longitudinalKey ||
+      longitudinalResult.report.signature !==
+        statisticsSourceSignature(space.rows, "doctor", criteria, clinicalRows, Date.now())),
+  );
   return {
     ...space,
     comparison,
@@ -325,6 +385,11 @@ export function useSavedAnalyses() {
     statisticsStale,
     statisticsCodes,
     statisticsForm,
+    longitudinal,
+    longitudinalKey,
+    longitudinalResult,
+    longitudinalStale,
+    longitudinalForm,
     analyses,
     localAnalyses,
     analysisForm,
