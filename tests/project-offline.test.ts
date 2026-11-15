@@ -264,6 +264,7 @@ describe("durable research projects", () => {
         ethicsApproved: false,
         ethicsReference: "",
         ethicsExpiresAt: 0,
+        visitSchedule: [],
       },
     });
 
@@ -360,6 +361,7 @@ describe("durable research projects", () => {
       ethicsApproved: false,
       ethicsReference: "",
       ethicsExpiresAt: 0,
+      visitSchedule: [],
     };
     await expect(
       workspace.saveProtocol({

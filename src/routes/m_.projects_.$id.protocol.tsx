@@ -8,6 +8,7 @@ import {
   Checkbox,
   Container,
   Group,
+  NumberInput,
   Select,
   Paper,
   PasswordInput,
@@ -28,6 +29,7 @@ import "dayjs/locale/ru";
 
 import type { FailedProjectAction } from "@/src/lib/project-workspace";
 import { protocolValuesSchema } from "@/src/lib/research-model";
+import type { ProtocolValues } from "@/src/lib/research-model";
 import { useProjectWorkspace } from "@/src/lib/use-project-workspace";
 
 export const Route = createFileRoute("/m_/projects_/$id/protocol")({ component: Protocol });
@@ -50,6 +52,13 @@ function Protocol() {
     downloaded,
   } = useProjectWorkspace();
   const [editing, editor] = useDisclosure(false);
+  const visitTypes = {
+    consultation: t`Консультация`,
+    procedure: t`Процедура`,
+    hospitalization: t`Госпитализация`,
+    followUp: t`Повторный приём`,
+  };
+  const visitTypeOptions = Object.entries(visitTypes).map(([value, label]) => ({ value, label }));
   const local = useLiveQuery(() => workspace?.protocols);
   const project = rows.find((row) => row.clientId === id);
   const history =
@@ -76,6 +85,7 @@ function Protocol() {
       ethicsApproved: false,
       ethicsReference: "",
       ethicsDate: null as string | null,
+      visitSchedule: [] as ProtocolValues["visitSchedule"],
       attested: false,
       failureId: "",
     },
@@ -87,7 +97,7 @@ function Protocol() {
       const errors: Record<string, string> = {};
       if (!result.success)
         for (const issue of result.error.issues)
-          errors[String(issue.path[0] ?? "ethicsReference")] = t`Проверьте значение поля`;
+          errors[issue.path.join(".") || "ethicsReference"] = t`Проверьте значение поля`;
       if (
         values.ethicsApproved &&
         (!values.ethicsDate || dayjs(values.ethicsDate).valueOf() <= Date.now())
@@ -283,6 +293,75 @@ function Protocol() {
                           maxLength={10000}
                           {...form.getInputProps("analysisPlan")}
                         />
+                        <Title order={3}>{t`Расписание визитов`}</Title>
+                        <Text size="sm">{t`Плановые визиты создаются автоматически при включении пациента: день от даты включения и допустимое окно в днях. Визиты за пределами действия согласия участника не создаются.`}</Text>
+                        {form.values.visitSchedule.map((item, index) => (
+                          <Paper withBorder p="sm" key={index}>
+                            <Stack gap="sm">
+                              <TextInput
+                                label={t`Название визита`}
+                                required
+                                maxLength={200}
+                                {...form.getInputProps(`visitSchedule.${index}.title`)}
+                              />
+                              <Group grow>
+                                <NumberInput
+                                  label={t`День от включения`}
+                                  min={0}
+                                  max={3650}
+                                  allowDecimal={false}
+                                  {...form.getInputProps(`visitSchedule.${index}.offsetDays`)}
+                                />
+                                <NumberInput
+                                  label={t`Окно до, дней`}
+                                  min={0}
+                                  max={90}
+                                  allowDecimal={false}
+                                  {...form.getInputProps(`visitSchedule.${index}.windowBeforeDays`)}
+                                />
+                                <NumberInput
+                                  label={t`Окно после, дней`}
+                                  min={0}
+                                  max={90}
+                                  allowDecimal={false}
+                                  {...form.getInputProps(`visitSchedule.${index}.windowAfterDays`)}
+                                />
+                              </Group>
+                              <Group grow>
+                                <Select
+                                  allowDeselect={false}
+                                  label={t`Тип визита`}
+                                  data={visitTypeOptions}
+                                  {...form.getInputProps(`visitSchedule.${index}.visitType`)}
+                                />
+                                <NumberInput
+                                  label={t`Длительность, минут`}
+                                  min={1}
+                                  max={1440}
+                                  allowDecimal={false}
+                                  {...form.getInputProps(`visitSchedule.${index}.durationMinutes`)}
+                                />
+                              </Group>
+                              <Button
+                                variant="default"
+                                onClick={() => form.removeListItem("visitSchedule", index)}
+                              >{t`Удалить визит из расписания`}</Button>
+                            </Stack>
+                          </Paper>
+                        ))}
+                        <Button
+                          variant="default"
+                          onClick={() =>
+                            form.insertListItem("visitSchedule", {
+                              title: "",
+                              offsetDays: 0,
+                              windowBeforeDays: 0,
+                              windowAfterDays: 0,
+                              visitType: "consultation",
+                              durationMinutes: 30,
+                            })
+                          }
+                        >{t`Добавить визит в расписание`}</Button>
                         <Checkbox
                           label={t`Получено разрешение этического комитета`}
                           {...form.getInputProps("ethicsApproved", { type: "checkbox" })}
@@ -347,6 +426,20 @@ function Protocol() {
                           <Text>{version.endpoints}</Text>
                           <Title order={3}>{t`План анализа`}</Title>
                           <Text>{version.analysisPlan}</Text>
+                          <Title order={3}>{t`Расписание визитов`}</Title>
+                          {version.visitSchedule.length === 0 ? (
+                            <Text>{t`Автоматическое расписание не задано.`}</Text>
+                          ) : (
+                            version.visitSchedule.map((item, index) => (
+                              <Text key={index}>
+                                {item.title}: {t`день`} {i18n.number(item.offsetDays)}, {t`окно`} −
+                                {i18n.number(item.windowBeforeDays)}/+
+                                {i18n.number(item.windowAfterDays)} {t`дн.`},{" "}
+                                {visitTypes[item.visitType]}, {t`длительность, минут`}:{" "}
+                                {i18n.number(item.durationMinutes)}
+                              </Text>
+                            ))
+                          )}
                           <Badge>
                             {version.ethicsApproved && version.ethicsExpiresAt > Date.now()
                               ? t`Разрешение зарегистрировано`

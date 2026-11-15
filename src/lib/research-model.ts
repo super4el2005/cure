@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { visitScheduleSchema } from "@/src/lib/protocol-schedule";
+
 export const researchKindSchema = z.enum([
   "retrospective",
   "prospective",
@@ -57,6 +59,8 @@ export const protocolValuesSchema = z
     ethicsApproved: z.boolean(),
     ethicsReference: z.string().trim().max(1000),
     ethicsExpiresAt: z.number().finite().nonnegative(),
+    // Legacy protocol versions without a schedule read as an empty plan.
+    visitSchedule: visitScheduleSchema.default([]),
   })
   .refine((value) => !value.ethicsApproved || value.ethicsReference.length > 0);
 export type ProtocolValues = z.infer<typeof protocolValuesSchema>;

@@ -4,7 +4,7 @@ import { internal } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { internalMutation, mutation, query } from "@/convex/_generated/server";
 import { organizationAccess } from "@/convex/lib/access";
-import { enrollmentAccess, checkRecruitment } from "@/convex/lib/enrollment";
+import { enrollmentAccess, checkRecruitment, scheduleStudyVisits } from "@/convex/lib/enrollment";
 import { operationReceipt, projectAccess, requireClientId } from "@/convex/lib/research";
 import { checkStudyIssue } from "@/convex/lib/studyIssue";
 import { studyVisitAccess, checkStudyVisit } from "@/convex/lib/studyVisit";
@@ -297,6 +297,7 @@ export const apply = mutation({
           studyProject,
         );
     }
+    let enrolledProtocol: Awaited<ReturnType<typeof checkRecruitment>> | undefined;
     if (payload?.kind === "enrollment") {
       try {
         validateEnrollmentChange(
@@ -309,7 +310,7 @@ export const apply = mutation({
         throw new ConvexError(error instanceof Error ? error.message : "INVALID_ENROLLMENT");
       }
       if (args.action === "create" || payload.events.at(-1)?.status === "enrolled")
-        await checkRecruitment(ctx, payload, enrollmentProject);
+        enrolledProtocol = await checkRecruitment(ctx, payload, enrollmentProject);
       if (args.action === "create") {
         const candidates = await ctx.db
           .query("clinicalRecords")
@@ -411,6 +412,19 @@ export const apply = mutation({
       revision,
       at: now,
     });
+    if (
+      payload?.kind === "enrollment" &&
+      payload.events.at(-1)?.status === "enrolled" &&
+      enrolledProtocol
+    )
+      await scheduleStudyVisits(ctx, {
+        organizationId: args.organizationId,
+        recordClientId: args.clientId,
+        patientClientId: args.patientClientId,
+        payload,
+        protocol: enrolledProtocol,
+        actorId: userId,
+      });
     return receipt.commit(revision);
   },
 });
