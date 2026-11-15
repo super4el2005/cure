@@ -20,10 +20,18 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import { NumberInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { analyzeCohort, defaultCohortCriteria } from "@/src/lib/cohort-analysis";
+import {
+  achievedPower,
+  minimumDetectableEffect,
+  sampleSizePerGroup,
+} from "@/src/lib/power-analysis";
+import type { PowerConfidence } from "@/src/lib/power-analysis";
 import { useSavedAnalyses } from "@/src/lib/use-saved-analyses";
 
 export const Route = createFileRoute("/d_/analytics")({ component: Analytics });
@@ -725,7 +733,144 @@ function Analytics() {
             )}
           </>
         )}
+        <PowerPlanner />
       </Stack>
     </Container>
+  );
+}
+function PowerPlanner() {
+  const { t, i18n } = useLingui();
+  const form = useForm({
+    initialValues: {
+      p1: 0.2 as number | string,
+      p2: 0.1 as number | string,
+      n: 200 as number | string,
+      confidence: "95" as "90" | "95" | "99",
+      power: 0.8 as number | string,
+    },
+  });
+  const validShare = (value: number | string): value is number =>
+    typeof value === "number" && Number.isFinite(value) && value > 0 && value < 1;
+  const validSize = (value: number | string): value is number =>
+    typeof value === "number" && Number.isSafeInteger(value) && value >= 1;
+  const ready =
+    validShare(form.values.p1) &&
+    validShare(form.values.p2) &&
+    validSize(form.values.n) &&
+    validShare(form.values.power);
+  const confidence = Number(form.values.confidence) as PowerConfidence;
+  const planned =
+    ready && form.values.p1 !== form.values.p2
+      ? {
+          size: sampleSizePerGroup(
+            form.values.p1 as number,
+            form.values.p2 as number,
+            confidence,
+            form.values.power as number,
+          ),
+          power: achievedPower(
+            form.values.p1 as number,
+            form.values.p2 as number,
+            form.values.n as number,
+            confidence,
+          ),
+          mde: minimumDetectableEffect(
+            form.values.p1 as number,
+            form.values.n as number,
+            confidence,
+            form.values.power as number,
+          ),
+        }
+      : null;
+  return (
+    <Paper withBorder p="sm">
+      <Stack gap="sm">
+        <Title order={2}>{t`Объём выборки и мощность`}</Title>
+        <Text size="sm">{t`Планирование сравнения двух долей в двух независимых равных группах (двустороннее, нормальное приближение без поправки на непрерывность). Расчёт не использует данные пациентов и не заменяет анализ фактической фиксированной выборки.`}</Text>
+        <Group grow>
+          <NumberInput
+            label={t`Ожидаемая доля в первой группе`}
+            min={0}
+            max={1}
+            step={0.01}
+            decimalScale={4}
+            {...form.getInputProps("p1")}
+          />
+          <NumberInput
+            label={t`Ожидаемая доля во второй группе`}
+            min={0}
+            max={1}
+            step={0.01}
+            decimalScale={4}
+            {...form.getInputProps("p2")}
+          />
+        </Group>
+        <Group grow>
+          <NumberInput
+            label={t`Доступный объём группы`}
+            min={1}
+            step={10}
+            allowDecimal={false}
+            {...form.getInputProps("n")}
+          />
+          <NumberInput
+            label={t`Требуемая мощность`}
+            min={0}
+            max={1}
+            step={0.05}
+            decimalScale={2}
+            {...form.getInputProps("power")}
+          />
+          <Select
+            allowDeselect={false}
+            label={t`Доверительный уровень`}
+            data={[
+              { value: "90", label: "90%" },
+              { value: "95", label: "95%" },
+              { value: "99", label: "99%" },
+            ]}
+            {...form.getInputProps("confidence")}
+          />
+        </Group>
+        {!ready && (
+          <Alert>{t`Доли и мощность — числа от 0 до 1, объём группы — целое положительное число.`}</Alert>
+        )}
+        {ready && form.values.p1 === form.values.p2 && (
+          <Alert>{t`Доли совпадают: различие отсутствует, расчёт не имеет смысла.`}</Alert>
+        )}
+        {planned && (
+          <Table>
+            <Table.Tbody>
+              <Table.Tr>
+                <Table.Td>{t`Требуемый объём каждой группы`}</Table.Td>
+                <Table.Td>{planned.size ?? "—"}</Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>{t`Достижимая мощность при доступном объёме`}</Table.Td>
+                <Table.Td>
+                  {planned.power === null
+                    ? "—"
+                    : i18n.number(planned.power, {
+                        style: "percent",
+                        maximumFractionDigits: 1,
+                      })}
+                </Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>{t`Минимальное обнаруживаемое различие`}</Table.Td>
+                <Table.Td>
+                  {planned.mde === null
+                    ? t`Недостижимо при этом объёме`
+                    : i18n.number(planned.mde, {
+                        style: "percent",
+                        maximumFractionDigits: 2,
+                      })}
+                </Table.Td>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+        )}
+      </Stack>
+    </Paper>
   );
 }
