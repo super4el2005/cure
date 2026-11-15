@@ -318,6 +318,11 @@ function Patients() {
                       data={[
                         { value: "sex", label: t`Пол` },
                         { value: "diagnoses", label: t`Диагнозы` },
+                        { value: "history", label: t`Анамнез` },
+                        { value: "allergies", label: t`Аллергии` },
+                        { value: "medications", label: t`Препараты` },
+                        { value: "observations", label: t`Обследования` },
+                        { value: "visits", label: t`Визиты` },
                       ]}
                       {...consentForm.getInputProps("scope")}
                     />

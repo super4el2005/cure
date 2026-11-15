@@ -19,12 +19,27 @@ import {
 } from "@mantine/core";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import { consentScopeCategorySchema } from "@/src/lib/consent-model";
+import type { ConsentScopeCategory } from "@/src/lib/consent-model";
 import { usePatientWorkspace } from "@/src/lib/use-patient-workspace";
 import { failureDetails } from "@/src/observability/events";
 
 export const Route = createFileRoute("/m_/patients_/$id_/consents")({ component: Consents });
 function Consents() {
   const { t, i18n } = useLingui();
+  const categoryLabels: Record<ConsentScopeCategory, string> = {
+    sex: t`Пол`,
+    diagnoses: t`Диагнозы`,
+    history: t`Анамнез`,
+    allergies: t`Аллергии`,
+    medications: t`Препараты`,
+    observations: t`Обследования`,
+    visits: t`Визиты`,
+  };
+  const categoryOptions = consentScopeCategorySchema.options.map((value) => ({
+    value,
+    label: categoryLabels[value],
+  }));
   const { id } = Route.useParams();
   const {
     userId,
@@ -145,7 +160,7 @@ function Consents() {
                       <Text>
                         {t`Доступны категории:`}{" "}
                         {patient.consentScope
-                          .map((category) => (category === "sex" ? t`Пол` : t`Диагнозы`))
+                          .map((category) => categoryLabels[category])
                           .join(", ")}
                       </Text>
                       {patient.accessExpiresAt && (
@@ -263,10 +278,7 @@ function Consents() {
                               />
                               <MultiSelect
                                 label={t`Разрешённые категории данных`}
-                                data={[
-                                  { value: "sex", label: t`Пол` },
-                                  { value: "diagnoses", label: t`Диагнозы` },
-                                ]}
+                                data={categoryOptions}
                                 {...consentForm.getInputProps("scope")}
                               />
                               <NumberInput
@@ -408,9 +420,7 @@ function Consents() {
                           </Text>
                           <Text>
                             {t`Доступны категории:`}{" "}
-                            {event.scope
-                              .map((category) => (category === "sex" ? t`Пол` : t`Диагнозы`))
-                              .join(", ")}
+                            {event.scope.map((category) => categoryLabels[category]).join(", ")}
                           </Text>
                           <Text>
                             {t`Зарегистрировано:`}{" "}

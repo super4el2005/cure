@@ -20,7 +20,7 @@ import {
   prepareClinicalVault,
   rememberClinicalIdentity,
 } from "@/src/lib/clinical-identity";
-import type { ConsentEvent } from "@/src/lib/consent-model";
+import type { ConsentEvent, ConsentScopeCategory } from "@/src/lib/consent-model";
 import { patientFormSchema, patientValueSchema } from "@/src/lib/patient-model";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
 import { openPatientWorkspace } from "@/src/lib/patient-workspace";
@@ -89,7 +89,7 @@ export function usePatientWorkspace() {
       kind: "granted" as "granted" | "withdrawn",
       purpose: "",
       recipients: [] as string[],
-      scope: ["sex", "diagnoses"] as ("sex" | "diagnoses")[],
+      scope: ["sex", "diagnoses"] as ConsentScopeCategory[],
       documentReference: "",
       days: 30 as number | string,
       attested: false,
