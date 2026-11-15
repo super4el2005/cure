@@ -25,6 +25,12 @@ import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import {
+  comparisonReportCsv,
+  downloadCsv,
+  longitudinalReportCsv,
+  statisticsReportCsv,
+} from "@/src/lib/analysis-export";
 import { analyzeCohort, defaultCohortCriteria } from "@/src/lib/cohort-analysis";
 import {
   achievedPower,
@@ -668,6 +674,18 @@ function Analytics() {
                                   })}
                             </Text>
                           )}
+                          <Button
+                            variant="default"
+                            onClick={() =>
+                              downloadCsv(
+                                `cohort-comparison-${new Date(comparisonResult.report.calculatedAt).toISOString().slice(0, 10)}.csv`,
+                                comparisonReportCsv(comparisonResult.report, [
+                                  t`Основная`,
+                                  t`Референтная`,
+                                ]),
+                              )
+                            }
+                          >{t`Скачать агрегированную таблицу (CSV)`}</Button>
                           <Alert>{t`Сравниваются записи в разрешённых локальных данных, а не риск заболевания в популяции. Пустой список диагнозов означает отсутствие записанного кода, а не отсутствие заболевания. Результат не доказывает причинность и не является рекомендацией по лечению. При повторных проверках возрастает вероятность случайных находок.`}</Alert>
                         </>
                       )}
@@ -810,6 +828,18 @@ function Analytics() {
                                 })}
                               </Text>
                             ))}
+                          <Button
+                            variant="default"
+                            onClick={() =>
+                              downloadCsv(
+                                `cohort-statistics-${new Date(statisticsResult.report.calculatedAt).toISOString().slice(0, 10)}.csv`,
+                                statisticsReportCsv(statisticsResult.report, {
+                                  primary: statisticsForm.values.primary,
+                                  secondary: statisticsForm.values.secondary,
+                                }),
+                              )
+                            }
+                          >{t`Скачать агрегированную таблицу (CSV)`}</Button>
                           <Alert>{t`Описательная статистика не проверяет гипотезы: у корреляции нет доверительного интервала, она не доказывает связь и не учитывает смешивающие факторы. Последнее по дате наблюдение не обязательно самое точное.`}</Alert>
                         </>
                       )}
@@ -933,6 +963,18 @@ function Analytics() {
                               </Table.ScrollContainer>
                             </>
                           )}
+                          <Button
+                            variant="default"
+                            onClick={() =>
+                              downloadCsv(
+                                `cohort-longitudinal-${new Date(longitudinalResult.report.calculatedAt).toISOString().slice(0, 10)}.csv`,
+                                longitudinalReportCsv(
+                                  longitudinalResult.report,
+                                  longitudinalForm.values.code,
+                                ),
+                              )
+                            }
+                          >{t`Скачать агрегированную таблицу (CSV)`}</Button>
                           <Alert>{t`Периодические доли зависят от того, когда участникам выполнялись измерения: рост числа наблюдений отражает практику наблюдения, а не только течение болезни. Разные периоды содержат разный состав пациентов; сравнение периодов без модели повторных измерений не является проверкой гипотезы.`}</Alert>
                         </>
                       )}
