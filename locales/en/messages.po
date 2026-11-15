@@ -55,8 +55,8 @@ msgstr "Auto"
 msgid "Автоматическое расписание не задано."
 msgstr ""
 
-#: src/routes/d_.registries_.$id.tsx:300
-#: src/routes/m_.registries_.$id.tsx:300
+#: src/routes/d_.registries_.$id.tsx:426
+#: src/routes/m_.registries_.$id.tsx:426
 msgid "автор"
 msgstr ""
 
@@ -424,7 +424,7 @@ msgstr "Do not include patient data in the public description. Publication and r
 #: src/routes/d_.projects_.$id.visits.tsx:187
 #: src/routes/d_.projects_.$id.work.tsx:305
 #: src/routes/d_.projects.tsx:196
-#: src/routes/d_.registries_.$id.tsx:109
+#: src/routes/d_.registries_.$id.tsx:194
 #: src/routes/d_.workspace.tsx:271
 #: src/routes/m_.invitations.tsx:102
 #: src/routes/m_.library.tsx:162
@@ -443,7 +443,7 @@ msgstr "Do not include patient data in the public description. Publication and r
 #: src/routes/m_.projects_.$id.visits.tsx:187
 #: src/routes/m_.projects_.$id.work.tsx:305
 #: src/routes/m_.projects.tsx:196
-#: src/routes/m_.registries_.$id.tsx:109
+#: src/routes/m_.registries_.$id.tsx:194
 #: src/routes/m_.workspace.tsx:271
 msgid "В очереди:"
 msgstr "Queued:"
@@ -596,10 +596,15 @@ msgstr "Protocol version:"
 msgid "Версия согласия"
 msgstr "Consent version"
 
-#: src/routes/d_.registries_.$id.tsx:135
-#: src/routes/d_.registries_.$id.tsx:216
-#: src/routes/m_.registries_.$id.tsx:135
-#: src/routes/m_.registries_.$id.tsx:216
+#: src/routes/d_.registries_.$id.tsx:532
+#: src/routes/m_.registries_.$id.tsx:532
+msgid "версия формы"
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:220
+#: src/routes/d_.registries_.$id.tsx:342
+#: src/routes/m_.registries_.$id.tsx:220
+#: src/routes/m_.registries_.$id.tsx:342
 msgid "Версия формы"
 msgstr ""
 
@@ -834,7 +839,7 @@ msgstr "Sign in and complete your professional profile to collaborate."
 #: src/routes/d_.projects_.$id.enrollment.tsx:73
 #: src/routes/d_.projects_.$id.safety.tsx:165
 #: src/routes/d_.projects_.$id.visits.tsx:129
-#: src/routes/d_.registries_.$id.tsx:58
+#: src/routes/d_.registries_.$id.tsx:143
 #: src/routes/m_.analytics.tsx:87
 #: src/routes/m_.patients_.$id_.consents.tsx:78
 #: src/routes/m_.patients_.$id_.enrollment.tsx:114
@@ -848,7 +853,7 @@ msgstr "Sign in and complete your professional profile to collaborate."
 #: src/routes/m_.projects_.$id.enrollment.tsx:73
 #: src/routes/m_.projects_.$id.safety.tsx:165
 #: src/routes/m_.projects_.$id.visits.tsx:129
-#: src/routes/m_.registries_.$id.tsx:58
+#: src/routes/m_.registries_.$id.tsx:143
 msgid "Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами."
 msgstr "Sign in and verify your organization membership to work with patient records."
 
@@ -1169,7 +1174,7 @@ msgstr "Select a researcher"
 #: src/routes/d_.projects_.$id.visits.tsx:142
 #: src/routes/d_.projects_.$id.work.tsx:263
 #: src/routes/d_.projects.tsx:153
-#: src/routes/d_.registries_.$id.tsx:71
+#: src/routes/d_.registries_.$id.tsx:156
 #: src/routes/d_.workspace.tsx:123
 #: src/routes/m_.analytics.tsx:100
 #: src/routes/m_.invitations.tsx:66
@@ -1193,7 +1198,7 @@ msgstr "Select a researcher"
 #: src/routes/m_.projects_.$id.visits.tsx:142
 #: src/routes/m_.projects_.$id.work.tsx:263
 #: src/routes/m_.projects.tsx:153
-#: src/routes/m_.registries_.$id.tsx:71
+#: src/routes/m_.registries_.$id.tsx:156
 #: src/routes/m_.workspace.tsx:123
 msgid "Выберите организацию"
 msgstr "Select an organization"
@@ -1382,7 +1387,7 @@ msgstr "The groups overlap. A test for independent groups does not apply."
 #: src/routes/d_.projects_.$id.credits.tsx:625
 #: src/routes/d_.projects_.$id.forms.tsx:437
 #: src/routes/d_.projects_.$id.forms.tsx:714
-#: src/routes/d_.registries_.$id.tsx:52
+#: src/routes/d_.registries_.$id.tsx:61
 #: src/routes/m_.organization.members.tsx:569
 #: src/routes/m_.organization.members.tsx:570
 #: src/routes/m_.patients_.$id_.forms.tsx:365
@@ -1391,7 +1396,7 @@ msgstr "The groups overlap. A test for independent groups does not apply."
 #: src/routes/m_.projects_.$id.credits.tsx:625
 #: src/routes/m_.projects_.$id.forms.tsx:437
 #: src/routes/m_.projects_.$id.forms.tsx:714
-#: src/routes/m_.registries_.$id.tsx:52
+#: src/routes/m_.registries_.$id.tsx:61
 msgid "Да"
 msgstr "Yes"
 
@@ -1411,9 +1416,9 @@ msgid "Данные или параметры изменились. Выполн
 msgstr "Data or parameters changed. Recalculate; the previous result is hidden."
 
 #: src/routes/d_.projects_.$id.forms.tsx:843
-#: src/routes/d_.registries_.$id.tsx:56
+#: src/routes/d_.registries_.$id.tsx:141
 #: src/routes/m_.projects_.$id.forms.tsx:843
-#: src/routes/m_.registries_.$id.tsx:56
+#: src/routes/m_.registries_.$id.tsx:141
 msgid "Данные регистра"
 msgstr ""
 
@@ -2116,7 +2121,7 @@ msgstr "Lock library"
 #: src/routes/d_.projects_.$id.visits.tsx:185
 #: src/routes/d_.projects_.$id.work.tsx:316
 #: src/routes/d_.projects.tsx:208
-#: src/routes/d_.registries_.$id.tsx:107
+#: src/routes/d_.registries_.$id.tsx:192
 #: src/routes/m_.analytics.tsx:140
 #: src/routes/m_.invitations.tsx:113
 #: src/routes/m_.patients_.$id_.consents.tsx:145
@@ -2137,7 +2142,7 @@ msgstr "Lock library"
 #: src/routes/m_.projects_.$id.visits.tsx:185
 #: src/routes/m_.projects_.$id.work.tsx:316
 #: src/routes/m_.projects.tsx:208
-#: src/routes/m_.registries_.$id.tsx:107
+#: src/routes/m_.registries_.$id.tsx:192
 msgid "Заблокировать пространство"
 msgstr "Lock workspace"
 
@@ -2236,8 +2241,8 @@ msgstr "Load more members"
 msgid "Загрузка"
 msgstr "Loading"
 
-#: src/routes/d_.registries_.$id.tsx:125
-#: src/routes/m_.registries_.$id.tsx:125
+#: src/routes/d_.registries_.$id.tsx:210
+#: src/routes/m_.registries_.$id.tsx:210
 msgid "Загрузка данных регистра…"
 msgstr ""
 
@@ -2259,7 +2264,7 @@ msgstr ""
 #: src/routes/d_.projects_.$id.visits.tsx:213
 #: src/routes/d_.projects_.$id.work.tsx:320
 #: src/routes/d_.projects.tsx:292
-#: src/routes/d_.registries_.$id.tsx:203
+#: src/routes/d_.registries_.$id.tsx:329
 #: src/routes/d_.workspace.tsx:205
 #: src/routes/d_.workspace.tsx:311
 #: src/routes/m_.invitations.tsx:116
@@ -2280,7 +2285,7 @@ msgstr ""
 #: src/routes/m_.projects_.$id.visits.tsx:213
 #: src/routes/m_.projects_.$id.work.tsx:320
 #: src/routes/m_.projects.tsx:292
-#: src/routes/m_.registries_.$id.tsx:203
+#: src/routes/m_.registries_.$id.tsx:329
 #: src/routes/m_.workspace.tsx:205
 #: src/routes/m_.workspace.tsx:311
 msgid "Загрузка локальных данных…"
@@ -2503,6 +2508,36 @@ msgstr "Complete questionnaire"
 #: src/routes/m_.organization.members.tsx:215
 msgid "Запрашиваемая роль"
 msgstr "Requested role"
+
+#: src/routes/d_.registries_.$id.tsx:97
+#: src/routes/m_.registries_.$id.tsx:97
+msgid "Запрос на уточнение данных"
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:130
+#: src/routes/m_.registries_.$id.tsx:130
+msgid "Запрос не даёт права изменять карту пациента и не раскрывает личные данные участника"
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:280
+#: src/routes/m_.registries_.$id.tsx:280
+msgid "Запросить уточнение"
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:452
+#: src/routes/m_.registries_.$id.tsx:452
+msgid "Запросов от участников проекта пока нет."
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:293
+#: src/routes/m_.registries_.$id.tsx:293
+msgid "Запросов пока нет."
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:444
+#: src/routes/m_.registries_.$id.tsx:444
+msgid "Запросы на уточнение данных"
+msgstr ""
 
 #: src/routes/d_.patients_.$id.tsx:425
 #: src/routes/m_.patients_.$id.tsx:425
@@ -2733,8 +2768,8 @@ msgstr "Changes are saved locally. Delivery status is shown in the queue."
 msgid "Изменения, требующие внимания"
 msgstr "Changes requiring attention"
 
-#: src/routes/d_.registries_.$id.tsx:302
-#: src/routes/m_.registries_.$id.tsx:302
+#: src/routes/d_.registries_.$id.tsx:428
+#: src/routes/m_.registries_.$id.tsx:428
 msgid "изменено"
 msgstr ""
 
@@ -3040,10 +3075,10 @@ msgstr "Consent history"
 msgid "История участия будет очищена после синхронизации. Для отказа или выбытия используйте решение, чтобы сохранить историю."
 msgstr "Participation history will be cleared after synchronization. Record a refusal or withdrawal decision to preserve the history."
 
-#: src/routes/d_.registries_.$id.tsx:190
-#: src/routes/d_.registries_.$id.tsx:298
-#: src/routes/m_.registries_.$id.tsx:190
-#: src/routes/m_.registries_.$id.tsx:298
+#: src/routes/d_.registries_.$id.tsx:275
+#: src/routes/d_.registries_.$id.tsx:424
+#: src/routes/m_.registries_.$id.tsx:275
+#: src/routes/m_.registries_.$id.tsx:424
 msgid "источник — форма, версия"
 msgstr ""
 
@@ -3749,6 +3784,11 @@ msgstr "Model"
 msgid "Моё решение по авторству"
 msgstr "My authorship decision"
 
+#: src/routes/d_.registries_.$id.tsx:288
+#: src/routes/m_.registries_.$id.tsx:288
+msgid "Мои запросы на уточнение"
+msgstr ""
+
 #: src/routes/d_.organization.members.tsx:238
 #: src/routes/m_.organization.members.tsx:238
 msgid "Мои заявки"
@@ -3894,10 +3934,10 @@ msgstr "Under review"
 msgid "Наблюдатель"
 msgstr "Viewer"
 
-#: src/routes/d_.registries_.$id.tsx:184
-#: src/routes/d_.registries_.$id.tsx:292
-#: src/routes/m_.registries_.$id.tsx:184
-#: src/routes/m_.registries_.$id.tsx:292
+#: src/routes/d_.registries_.$id.tsx:269
+#: src/routes/d_.registries_.$id.tsx:418
+#: src/routes/m_.registries_.$id.tsx:269
+#: src/routes/m_.registries_.$id.tsx:418
 msgid "Наблюдение от"
 msgstr ""
 
@@ -4158,9 +4198,16 @@ msgstr "Could not complete the library action. Check your profile, passphrase, a
 msgid "Не удалось выполнить локальный расчёт. Проверьте параметры и доступ к данным."
 msgstr "Local calculation failed. Check parameters and data access."
 
-#: src/routes/d_.registries_.$id.tsx:127
-#: src/routes/m_.registries_.$id.tsx:127
+#: src/routes/d_.registries_.$id.tsx:212
+#: src/routes/m_.registries_.$id.tsx:212
 msgid "Не удалось загрузить данные регистра. Проверьте членство в проекте и повторите попытку."
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:290
+#: src/routes/d_.registries_.$id.tsx:446
+#: src/routes/m_.registries_.$id.tsx:290
+#: src/routes/m_.registries_.$id.tsx:446
+msgid "Не удалось загрузить запросы. Повторите попытку позже."
 msgstr ""
 
 #: src/routes/d_.research_.$id.tsx:51
@@ -4207,8 +4254,8 @@ msgstr "Could not open local data. Check the organization, passphrase and access
 msgid "Не удалось открыть настройки AI на устройстве."
 msgstr "Unable to open AI settings on this device."
 
-#: src/routes/d_.registries_.$id.tsx:98
-#: src/routes/m_.registries_.$id.tsx:98
+#: src/routes/d_.registries_.$id.tsx:183
+#: src/routes/m_.registries_.$id.tsx:183
 msgid "Не удалось открыть рабочее пространство. Проверьте парольную фразу и повторите попытку."
 msgstr ""
 
@@ -4220,6 +4267,11 @@ msgstr "Could not open the saved proposal."
 #: src/router.tsx:44
 msgid "Не удалось открыть страницу. Сохранённые данные доступны после восстановления."
 msgstr "Could not open the page. Saved data remains available after recovery."
+
+#: src/routes/d_.registries_.$id.tsx:135
+#: src/routes/m_.registries_.$id.tsx:135
+msgid "Не удалось отправить запрос. Проверьте сеть и повторите попытку."
+msgstr ""
 
 #: src/routes/__root.tsx:236
 msgid "Не удалось подготовить офлайн-запуск."
@@ -4317,6 +4369,11 @@ msgstr "Unable to save AI settings."
 #: src/routes/m_.patients_.$id_.forms.tsx:165
 msgid "Не удалось сохранить ответ. Проверьте права проекта, актуальность шаблона и версию записи. Введённые значения остаются в форме."
 msgstr "Unable to save the response. Check project permissions, template availability and the record revision. Your input remains in the form."
+
+#: src/routes/d_.registries_.$id.tsx:449
+#: src/routes/m_.registries_.$id.tsx:449
+msgid "Не удалось сохранить ответ. Проверьте сеть и повторите попытку."
+msgstr ""
 
 #: src/routes/d_.patients_.$id_.enrollment.tsx:161
 #: src/routes/m_.patients_.$id_.enrollment.tsx:161
@@ -4502,7 +4559,7 @@ msgstr "Unsaved input will be closed."
 #: src/routes/d_.projects_.$id.credits.tsx:625
 #: src/routes/d_.projects_.$id.forms.tsx:438
 #: src/routes/d_.projects_.$id.forms.tsx:715
-#: src/routes/d_.registries_.$id.tsx:52
+#: src/routes/d_.registries_.$id.tsx:61
 #: src/routes/m_.organization.members.tsx:569
 #: src/routes/m_.organization.members.tsx:570
 #: src/routes/m_.patients_.$id_.forms.tsx:366
@@ -4511,7 +4568,7 @@ msgstr "Unsaved input will be closed."
 #: src/routes/m_.projects_.$id.credits.tsx:625
 #: src/routes/m_.projects_.$id.forms.tsx:438
 #: src/routes/m_.projects_.$id.forms.tsx:715
-#: src/routes/m_.registries_.$id.tsx:52
+#: src/routes/m_.registries_.$id.tsx:61
 msgid "Нет"
 msgstr "No"
 
@@ -4908,13 +4965,13 @@ msgstr ""
 msgid "Окончательный ответ"
 msgstr "Final response"
 
-#: src/routes/d_.registries_.$id.tsx:234
-#: src/routes/m_.registries_.$id.tsx:234
+#: src/routes/d_.registries_.$id.tsx:360
+#: src/routes/m_.registries_.$id.tsx:360
 msgid "Окончательных ответов по этому регистру пока нет."
 msgstr ""
 
-#: src/routes/d_.registries_.$id.tsx:140
-#: src/routes/m_.registries_.$id.tsx:140
+#: src/routes/d_.registries_.$id.tsx:225
+#: src/routes/m_.registries_.$id.tsx:225
 msgid "Окончательных ответов участников с действующим согласием пока нет."
 msgstr ""
 
@@ -4995,6 +5052,11 @@ msgstr "Descriptive ratio of proportions:"
 #~ msgid "Описательный анализ доступных записей выбранной организации. Изменение критериев не изменяет карты пациентов."
 #~ msgstr "Descriptive analysis of available records in the selected organization. Changing criteria does not change patient records."
 
+#: src/routes/d_.registries_.$id.tsx:71
+#: src/routes/m_.registries_.$id.tsx:71
+msgid "Опишите, что нужно уточнить"
+msgstr ""
+
 #: src/lib/clinical-history-content.ts:22
 #: src/routes/d_.patients_.$id_.timeline.tsx:93
 #: src/routes/d_.patients_.$id.tsx:67
@@ -5061,7 +5123,7 @@ msgstr "No organizations found. Refine the name."
 #: src/routes/d_.projects_.$id.visits.tsx:141
 #: src/routes/d_.projects_.$id.work.tsx:262
 #: src/routes/d_.projects.tsx:152
-#: src/routes/d_.registries_.$id.tsx:70
+#: src/routes/d_.registries_.$id.tsx:155
 #: src/routes/d_.workspace.tsx:122
 #: src/routes/m_.analytics.tsx:99
 #: src/routes/m_.invitations.tsx:65
@@ -5083,7 +5145,7 @@ msgstr "No organizations found. Refine the name."
 #: src/routes/m_.projects_.$id.visits.tsx:141
 #: src/routes/m_.projects_.$id.work.tsx:262
 #: src/routes/m_.projects.tsx:152
-#: src/routes/m_.registries_.$id.tsx:70
+#: src/routes/m_.registries_.$id.tsx:155
 #: src/routes/m_.workspace.tsx:122
 msgid "Организация"
 msgstr "Organization"
@@ -5158,6 +5220,18 @@ msgstr "Stay"
 msgid "От 1 до 365 дней"
 msgstr "Between 1 and 365 days"
 
+#: src/routes/d_.registries_.$id.tsx:540
+#: src/routes/m_.registries_.$id.tsx:540
+msgid "Ответ врача"
+msgstr ""
+
+#: src/routes/d_.registries_.$id.tsx:317
+#: src/routes/d_.registries_.$id.tsx:560
+#: src/routes/m_.registries_.$id.tsx:317
+#: src/routes/m_.registries_.$id.tsx:560
+msgid "Ответ врача:"
+msgstr ""
+
 #: src/routes/__root.tsx:491
 msgid "Ответ не получен. Текст сохранён в поле — можно повторить."
 msgstr "No response received. Your text is still in the field; you can retry."
@@ -5171,6 +5245,11 @@ msgstr "No response received. Your text is still in the field; you can retry."
 #: src/routes/m_.patients_.$id_.forms.tsx:519
 msgid "Ответ не указан"
 msgstr "No response"
+
+#: src/routes/d_.registries_.$id.tsx:549
+#: src/routes/m_.registries_.$id.tsx:549
+msgid "Ответить"
+msgstr ""
 
 #: src/lib/clinical-history-content.ts:215
 #: src/routes/d_.projects_.$id.safety.tsx:442
@@ -5193,6 +5272,13 @@ msgstr "Responses have not been loaded yet. The initial download requires an int
 #: src/lib/data-quality-content.ts:63
 msgid "Ответы опросника требуют проверки"
 msgstr "Questionnaire answers need verification"
+
+#: src/routes/d_.registries_.$id.tsx:91
+#: src/routes/d_.registries_.$id.tsx:509
+#: src/routes/m_.registries_.$id.tsx:91
+#: src/routes/m_.registries_.$id.tsx:509
+msgid "Отвечен"
+msgstr ""
 
 #: src/routes/d_.patients_.$id_.consents.tsx:404
 #: src/routes/d_.patients.tsx:390
@@ -5219,6 +5305,13 @@ msgstr "Refusal"
 #: src/routes/m_.organization.members.tsx:415
 msgid "Отказ по заявке"
 msgstr "Application refusal"
+
+#: src/routes/d_.registries_.$id.tsx:92
+#: src/routes/d_.registries_.$id.tsx:510
+#: src/routes/m_.registries_.$id.tsx:92
+#: src/routes/m_.registries_.$id.tsx:510
+msgid "Отклонён"
+msgstr ""
 
 #: src/routes/d_.organization.members.tsx:75
 #: src/routes/m_.organization.members.tsx:75
@@ -5252,6 +5345,11 @@ msgstr "No rejected changes."
 msgid "Отклонено"
 msgstr "Declined"
 
+#: src/routes/d_.registries_.$id.tsx:554
+#: src/routes/m_.registries_.$id.tsx:554
+msgid "Отклонить"
+msgstr ""
+
 #: src/routes/d_.organization.members.tsx:395
 #: src/routes/m_.organization.members.tsx:395
 msgid "Отклонить заявку?"
@@ -5278,6 +5376,13 @@ msgstr "I decline"
 #: src/routes/m_.workspace.tsx:160
 msgid "Откройте клиническое пространство для просмотра визитов."
 msgstr "Unlock a clinical workspace to view visits."
+
+#: src/routes/d_.registries_.$id.tsx:90
+#: src/routes/d_.registries_.$id.tsx:508
+#: src/routes/m_.registries_.$id.tsx:90
+#: src/routes/m_.registries_.$id.tsx:508
+msgid "Открыт"
+msgstr ""
 
 #: src/routes/d_.patients_.$id_.forms.tsx:432
 #: src/routes/m_.patients_.$id_.forms.tsx:432
@@ -5415,7 +5520,7 @@ msgstr "Open profile"
 #: src/routes/d_.projects_.$id.visits.tsx:163
 #: src/routes/d_.projects_.$id.work.tsx:284
 #: src/routes/d_.projects.tsx:175
-#: src/routes/d_.registries_.$id.tsx:92
+#: src/routes/d_.registries_.$id.tsx:177
 #: src/routes/d_.workspace.tsx:144
 #: src/routes/m_.analytics.tsx:121
 #: src/routes/m_.invitations.tsx:87
@@ -5437,7 +5542,7 @@ msgstr "Open profile"
 #: src/routes/m_.projects_.$id.visits.tsx:163
 #: src/routes/m_.projects_.$id.work.tsx:284
 #: src/routes/m_.projects.tsx:175
-#: src/routes/m_.registries_.$id.tsx:92
+#: src/routes/m_.registries_.$id.tsx:177
 #: src/routes/m_.workspace.tsx:144
 msgid "Открыть рабочее пространство"
 msgstr "Open workspace"
@@ -5675,6 +5780,11 @@ msgstr "Revoke invitation"
 msgid "Отправить"
 msgstr "Send"
 
+#: src/routes/d_.registries_.$id.tsx:137
+#: src/routes/m_.registries_.$id.tsx:137
+msgid "Отправить запрос"
+msgstr ""
+
 #: src/lib/data-quality-content.ts:28
 msgid "Отсутствие записи не означает отсутствие аллергий."
 msgstr "A missing entry does not mean there are no allergies."
@@ -5734,7 +5844,7 @@ msgstr "Personal library passphrase"
 #: src/routes/d_.projects_.$id.visits.tsx:146
 #: src/routes/d_.projects_.$id.work.tsx:267
 #: src/routes/d_.projects.tsx:157
-#: src/routes/d_.registries_.$id.tsx:75
+#: src/routes/d_.registries_.$id.tsx:160
 #: src/routes/d_.workspace.tsx:127
 #: src/routes/m_.analytics.tsx:104
 #: src/routes/m_.invitations.tsx:70
@@ -5756,7 +5866,7 @@ msgstr "Personal library passphrase"
 #: src/routes/m_.projects_.$id.visits.tsx:146
 #: src/routes/m_.projects_.$id.work.tsx:267
 #: src/routes/m_.projects.tsx:157
-#: src/routes/m_.registries_.$id.tsx:75
+#: src/routes/m_.registries_.$id.tsx:160
 #: src/routes/m_.workspace.tsx:127
 msgid "Парольная фраза локального хранилища"
 msgstr "Local storage passphrase"
@@ -5932,7 +6042,7 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/d_.projects_.$id.visits.tsx:154
 #: src/routes/d_.projects_.$id.work.tsx:275
 #: src/routes/d_.projects.tsx:166
-#: src/routes/d_.registries_.$id.tsx:83
+#: src/routes/d_.registries_.$id.tsx:168
 #: src/routes/d_.workspace.tsx:135
 #: src/routes/m_.analytics.tsx:112
 #: src/routes/m_.invitations.tsx:78
@@ -5955,7 +6065,7 @@ msgstr "Repeat the desired action using the current record. The rejected decisio
 #: src/routes/m_.projects_.$id.visits.tsx:154
 #: src/routes/m_.projects_.$id.work.tsx:275
 #: src/routes/m_.projects.tsx:166
-#: src/routes/m_.registries_.$id.tsx:83
+#: src/routes/m_.registries_.$id.tsx:168
 #: src/routes/m_.workspace.tsx:135
 msgid "Повторите парольную фразу"
 msgstr "Repeat the passphrase"
@@ -5993,7 +6103,7 @@ msgstr "Retry"
 #: src/routes/d_.projects_.$id.visits.tsx:198
 #: src/routes/d_.projects_.$id.work.tsx:312
 #: src/routes/d_.projects.tsx:203
-#: src/routes/d_.registries_.$id.tsx:120
+#: src/routes/d_.registries_.$id.tsx:205
 #: src/routes/d_.workspace.tsx:278
 #: src/routes/m_.analytics.tsx:150
 #: src/routes/m_.invitations.tsx:109
@@ -6016,7 +6126,7 @@ msgstr "Retry"
 #: src/routes/m_.projects_.$id.visits.tsx:198
 #: src/routes/m_.projects_.$id.work.tsx:312
 #: src/routes/m_.projects.tsx:203
-#: src/routes/m_.registries_.$id.tsx:120
+#: src/routes/m_.registries_.$id.tsx:205
 #: src/routes/m_.workspace.tsx:278
 msgid "Повторно проверить сессию и доступ"
 msgstr "Verify session and access again"
@@ -6291,13 +6401,13 @@ msgstr "Up to 25 events are shown per page. One record can contain multiple date
 msgid "Показаны локальные данные. Новые изменения и отзывы доступа других участников могут быть ещё не получены. Неотправленные изменения учитываются в ленте."
 msgstr "Local data is shown. Other participants' changes and access revocations may not have arrived yet. Pending local changes are included in the timeline."
 
-#: src/routes/d_.registries_.$id.tsx:138
-#: src/routes/m_.registries_.$id.tsx:138
+#: src/routes/d_.registries_.$id.tsx:223
+#: src/routes/m_.registries_.$id.tsx:223
 msgid "Показаны обезличенные записи участников с действующим согласием на участие в исследовании. Наблюдения одного участника сопоставляются между визитами по коду участника; личные данные, авторы записей и примечания не раскрываются. Чтение требует сети и не сохраняется на устройстве."
 msgstr ""
 
-#: src/routes/d_.registries_.$id.tsx:232
-#: src/routes/m_.registries_.$id.tsx:232
+#: src/routes/d_.registries_.$id.tsx:358
+#: src/routes/m_.registries_.$id.tsx:358
 msgid "Показаны окончательные ответы по реестровым показателям в хронологии каждого пациента. Ввод и исправление данных выполняются в карте пациента на странице опросников; источник, автор, время и способ получения указаны под каждой таблицей."
 msgstr ""
 
@@ -6338,11 +6448,13 @@ msgstr ""
 
 #: src/lib/clinical-history-content.ts:124
 #: src/routes/d_.analytics.tsx:626
-#: src/routes/d_.registries_.$id.tsx:152
-#: src/routes/d_.registries_.$id.tsx:254
+#: src/routes/d_.registries_.$id.tsx:120
+#: src/routes/d_.registries_.$id.tsx:237
+#: src/routes/d_.registries_.$id.tsx:380
 #: src/routes/m_.analytics.tsx:626
-#: src/routes/m_.registries_.$id.tsx:152
-#: src/routes/m_.registries_.$id.tsx:254
+#: src/routes/m_.registries_.$id.tsx:120
+#: src/routes/m_.registries_.$id.tsx:237
+#: src/routes/m_.registries_.$id.tsx:380
 msgid "Показатель"
 msgstr "Measure"
 
@@ -7348,8 +7460,8 @@ msgstr "Regional downloads — Geofabrik"
 msgid "Регистр"
 msgstr "Registry"
 
-#: src/routes/d_.registries_.$id.tsx:205
-#: src/routes/m_.registries_.$id.tsx:205
+#: src/routes/d_.registries_.$id.tsx:331
+#: src/routes/m_.registries_.$id.tsx:331
 msgid "Регистр не найден. Шаблон должен хотя бы раз синхронизироваться с сервером в исследовательском пространстве."
 msgstr ""
 
@@ -7810,7 +7922,7 @@ msgstr "Synchronization connected"
 #: src/routes/d_.projects_.$id.forms.tsx:162
 #: src/routes/d_.projects_.$id.safety.tsx:230
 #: src/routes/d_.projects_.$id.visits.tsx:192
-#: src/routes/d_.registries_.$id.tsx:114
+#: src/routes/d_.registries_.$id.tsx:199
 #: src/routes/m_.library.tsx:171
 #: src/routes/m_.patients_.$id_.enrollment.tsx:177
 #: src/routes/m_.patients_.$id_.forms.tsx:181
@@ -7820,7 +7932,7 @@ msgstr "Synchronization connected"
 #: src/routes/m_.projects_.$id.forms.tsx:162
 #: src/routes/m_.projects_.$id.safety.tsx:230
 #: src/routes/m_.projects_.$id.visits.tsx:192
-#: src/routes/m_.registries_.$id.tsx:114
+#: src/routes/m_.registries_.$id.tsx:199
 msgid "Синхронизация приостановлена. Нужны сеть и подтверждённая сессия того же пользователя."
 msgstr "Sync is paused. It requires a connection and a verified session for the same user."
 
@@ -8321,8 +8433,8 @@ msgstr "Specialists"
 msgid "Список диагнозов пуст в разрешённых данных"
 msgstr "Empty diagnosis list in authorized records"
 
-#: src/routes/d_.registries_.$id.tsx:308
-#: src/routes/m_.registries_.$id.tsx:308
+#: src/routes/d_.registries_.$id.tsx:434
+#: src/routes/m_.registries_.$id.tsx:434
 msgid "способ — ручной ввод врачом"
 msgstr ""
 
@@ -9160,11 +9272,15 @@ msgstr "Membership ended"
 #: src/routes/d_.invitations.tsx:44
 #: src/routes/d_.projects_.$id.team.tsx:75
 #: src/routes/d_.projects.tsx:306
-#: src/routes/d_.registries_.$id.tsx:146
+#: src/routes/d_.registries_.$id.tsx:110
+#: src/routes/d_.registries_.$id.tsx:231
+#: src/routes/d_.registries_.$id.tsx:303
 #: src/routes/m_.invitations.tsx:44
 #: src/routes/m_.projects_.$id.team.tsx:75
 #: src/routes/m_.projects.tsx:306
-#: src/routes/m_.registries_.$id.tsx:146
+#: src/routes/m_.registries_.$id.tsx:110
+#: src/routes/m_.registries_.$id.tsx:231
+#: src/routes/m_.registries_.$id.tsx:303
 msgid "Участник"
 msgstr "Member"
 
@@ -9349,6 +9465,11 @@ msgstr "Membership changed after the application. Review the application again; 
 #~ msgid "Чтение разрешённых данных пациентов без изменения карт."
 #~ msgstr "Read permitted patient data without modifying records."
 
+#: src/routes/d_.registries_.$id.tsx:129
+#: src/routes/m_.registries_.$id.tsx:129
+msgid "Что нужно уточнить"
+msgstr ""
+
 #: src/lib/clinical-history-content.ts:155
 msgid "Шаблон"
 msgstr "Template"
@@ -9388,8 +9509,8 @@ msgstr "Score does not apply to the active branch"
 msgid "Шкалы задаёт автор формы. Это расчёт по указанным правилам, а не автоматически подтверждённый медицинский инструмент. Скрытые или пропущенные исходные ответы не заменяются нулями."
 msgstr "Scores are defined by the form author. They follow the specified calculation rules and are not automatically validated medical instruments. Hidden or missing source answers are not replaced with zero."
 
-#: src/routes/d_.registries_.$id.tsx:208
-#: src/routes/m_.registries_.$id.tsx:208
+#: src/routes/d_.registries_.$id.tsx:334
+#: src/routes/m_.registries_.$id.tsx:334
 msgid "Эта форма не отмечена как регистр в последней версии. Отметьте реестровые показатели в конструкторе форм проекта."
 msgstr ""
 

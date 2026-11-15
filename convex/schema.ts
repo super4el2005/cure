@@ -536,6 +536,26 @@ export default defineSchema({
     .index("by_project", ["projectClientId"])
     .index("by_form", ["formClientId"])
     .index("by_form_version", ["projectClientId", "formClientId", "version"]),
+  registryQueries: defineTable({
+    clientId: v.string(),
+    organizationId: v.id("organizations"),
+    projectClientId: v.string(),
+    formClientId: v.string(),
+    participantCode: v.string(),
+    occurredOn: v.string(),
+    formVersion: v.number(),
+    fieldId: v.union(v.string(), v.null()),
+    text: v.string(),
+    status: v.union(v.literal("open"), v.literal("resolved"), v.literal("dismissed")),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    resolvedBy: v.union(v.string(), v.null()),
+    resolvedAt: v.union(v.number(), v.null()),
+    resolution: v.string(),
+  })
+    .index("by_client", ["clientId"])
+    .index("by_org_form", ["organizationId", "formClientId"])
+    .index("by_requester", ["createdBy", "formClientId"]),
   libraryItems: defineTable({
     userId: v.string(),
     clientId: v.string(),

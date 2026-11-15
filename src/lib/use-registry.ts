@@ -1,9 +1,10 @@
 import { useLiveQuery } from "@tanstack/react-db";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConvex } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 import { groupRegistrySeries, registryObservations } from "@/src/lib/registry-data";
+import { registryParticipantCode } from "@/src/lib/registry-data";
 import type { DeidentifiedRegistryRow } from "@/src/lib/registry-data";
 import { retainedWorkspaceOptions } from "@/src/lib/retained-workspaces";
 import type { FormVersion } from "@/src/lib/study-form-model";
@@ -89,6 +90,73 @@ export function useRegistry(formClientId: string) {
     participantCode,
     observations,
   }));
+  const queryClient = useQueryClient();
+  const queriesFeed = useQuery({
+    queryKey: ["registry-queries", workspace?.scope, formClientId],
+    enabled: Boolean(workspace && opened),
+    gcTime: 0,
+    networkMode: "always",
+    retry: false,
+    refetchInterval: 30000,
+    queryFn: () =>
+      convex.query(api.registries.queries, {
+        actorId: userId!,
+        organizationId: workspace!.organizationId,
+        formClientId,
+      }),
+  });
+  const invalidate = () =>
+    queryClient.invalidateQueries({
+      queryKey: ["registry-queries", workspace?.scope, formClientId],
+    });
+  const raiseQuery = useMutation({
+    mutationKey: ["registry-query-raise"],
+    networkMode: "always",
+    retry: false,
+    gcTime: 0,
+    mutationFn: async (input: {
+      participantCode: string;
+      occurredOn: string;
+      formVersion: number;
+      fieldId: string | null;
+      text: string;
+    }) => {
+      if (!workspace || opened?.role !== "researcher") throw new Error("ACCESS_DENIED");
+      return convex.mutation(api.registries.raise, {
+        actorId: userId!,
+        organizationId: workspace.organizationId,
+        formClientId,
+        clientId: crypto.randomUUID(),
+        ...input,
+      });
+    },
+    onSuccess: invalidate,
+  });
+  const resolveQuery = useMutation({
+    mutationKey: ["registry-query-resolve"],
+    networkMode: "always",
+    retry: false,
+    gcTime: 0,
+    mutationFn: async (input: {
+      clientId: string;
+      status: "resolved" | "dismissed";
+      resolution: string;
+    }) => {
+      if (!workspace || opened?.role !== "doctor") throw new Error("ACCESS_DENIED");
+      return convex.mutation(api.registries.resolve, {
+        actorId: userId!,
+        organizationId: workspace.organizationId,
+        ...input,
+      });
+    },
+    onSuccess: invalidate,
+  });
+  const queryParticipants = new Map(
+    series.map((group) => [
+      registryParticipantCode(latest?.projectClientId ?? "", group.patientClientId),
+      group.patientClientId,
+    ]),
+  );
   return {
     ...space,
     localTemplates,
@@ -103,6 +171,10 @@ export function useRegistry(formClientId: string) {
     names,
     researcherFeed,
     researcherSeries,
+    queriesFeed,
+    raiseQuery,
+    resolveQuery,
+    queryParticipants,
     canRead: Boolean(workspace && opened?.role === "doctor"),
     loading: Boolean(
       workspace &&
