@@ -5,7 +5,9 @@ import { useLingui } from "@lingui/react/macro";
 import {
   Anchor,
   AppShell,
+  Badge,
   Burger,
+  Code,
   NavLink,
   ScrollArea,
   Textarea,
@@ -473,7 +475,7 @@ function ShellChat({ owner }: { owner: string }) {
             <Text
               size="sm"
               c="dimmed"
-            >{t`Вопросы о работе и исследованиях. Чат пока не изменяет данные системы.`}</Text>
+            >{t`Вопросы о работе и исследованиях. Действия чтения выполняются сразу, действия записи — только после вашего подтверждения.`}</Text>
           )}
           {chat.messages.map((message, index) => (
             <Paper key={index} withBorder p="xs">
@@ -483,6 +485,50 @@ function ShellChat({ owner }: { owner: string }) {
               <Text size="sm" style={{ whiteSpace: "pre-wrap" }}>
                 {message.content}
               </Text>
+              {message.card && (
+                <Stack gap="xs" mt="xs">
+                  <Badge
+                    variant="light"
+                    color={
+                      message.card.status === "executed"
+                        ? "green"
+                        : message.card.status === "failed"
+                          ? "red"
+                          : message.card.status === "cancelled"
+                            ? "gray"
+                            : "yellow"
+                    }
+                  >
+                    {message.card.action}
+                  </Badge>
+                  {message.card.status === "pending" && (
+                    <>
+                      <Code block>{JSON.stringify(message.card.input, null, 2)}</Code>
+                      <Group gap="xs">
+                        <Button
+                          size="compact-xs"
+                          loading={chat.execute.isPending}
+                          onClick={() => chat.confirmAction(index)}
+                        >{t`Подтвердить`}</Button>
+                        <Button
+                          size="compact-xs"
+                          variant="default"
+                          disabled={chat.execute.isPending}
+                          onClick={() => chat.cancelAction(index)}
+                        >{t`Отменить`}</Button>
+                      </Group>
+                    </>
+                  )}
+                  {message.card.status === "executed" && message.card.result && (
+                    <Code block>{message.card.result}</Code>
+                  )}
+                  {message.card.status === "failed" && message.card.error && (
+                    <Text size="xs" c="red">
+                      {message.card.error}
+                    </Text>
+                  )}
+                </Stack>
+              )}
             </Paper>
           ))}
         </Stack>
