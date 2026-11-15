@@ -7,6 +7,7 @@ import {
   Container,
   Group,
   List,
+  Modal,
   Paper,
   PasswordInput,
   ScrollArea,
@@ -14,11 +15,15 @@ import {
   Stack,
   Table,
   Text,
+  Textarea,
   Title,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { registryIndicators, registryValueText } from "@/src/lib/registry-data";
+import type { DeidentifiedRegistryRow } from "@/src/lib/registry-data";
 import { useRegistry } from "@/src/lib/use-registry";
 
 export const Route = createFileRoute("/d_/registries_/$id")({ component: RegistryData });
@@ -45,14 +50,94 @@ function RegistryData() {
     names,
     researcherFeed,
     researcherSeries,
+    queriesFeed,
+    raiseQuery,
+    resolveQuery,
+    queryParticipants,
     canRead,
     loading,
   } = useRegistry(id);
   const indicators = latest ? registryIndicators(latest.definition) : [];
   const valueLabels = { yes: t`Да`, no: t`Нет` };
+  const [raising, raiseDialog] = useDisclosure(false);
+  const raiseForm = useForm({
+    initialValues: {
+      participantCode: "",
+      occurredOn: "",
+      formVersion: 1,
+      fieldId: null as string | null,
+      text: "",
+    },
+    validate: { text: (value) => (value.trim() ? null : t`Опишите, что нужно уточнить`) },
+  });
+  const startRaise = (observation: DeidentifiedRegistryRow) => {
+    raiseForm.setValues({
+      participantCode: observation.participantCode,
+      occurredOn: observation.occurredOn,
+      formVersion: observation.formVersion,
+      fieldId: null,
+      text: "",
+    });
+    raiseForm.clearErrors();
+    raiseDialog.open();
+  };
+  const queryRows = queriesFeed.data ?? [];
+  const fieldLabels = new Map(
+    (researcherFeed.data?.fields ?? []).map((field) => [field.id, field.label]),
+  );
+  const indicatorLabels = new Map(indicators.map((field) => [field.id, field.label]));
+  const queryStatuses = {
+    open: t`Открыт`,
+    resolved: t`Отвечен`,
+    dismissed: t`Отклонён`,
+  } as const;
   return (
     <Container component="main" py="sm">
       <Stack gap="sm">
+        <Modal opened={raising} onClose={raiseDialog.close} title={t`Запрос на уточнение данных`}>
+          <form
+            onSubmit={raiseForm.onSubmit((values) =>
+              raiseQuery.mutate(values, {
+                onSuccess: () => {
+                  raiseDialog.close();
+                  raiseForm.reset();
+                },
+              }),
+            )}
+          >
+            <Stack gap="sm">
+              <Text size="sm">
+                {t`Участник`} {raiseForm.values.participantCode}
+                {", "}
+                {raiseForm.values.occurredOn &&
+                  i18n.date(`${raiseForm.values.occurredOn}T00:00:00Z`, {
+                    dateStyle: "medium",
+                    timeZone: "UTC",
+                  })}
+              </Text>
+              <Select
+                clearable
+                label={t`Показатель`}
+                data={(researcherFeed.data?.fields ?? []).map((field) => ({
+                  value: field.id,
+                  label: field.label,
+                }))}
+                {...raiseForm.getInputProps("fieldId")}
+              />
+              <Textarea
+                required
+                label={t`Что нужно уточнить`}
+                description={t`Запрос не даёт права изменять карту пациента и не раскрывает личные данные участника`}
+                maxLength={2000}
+                {...raiseForm.getInputProps("text")}
+              />
+              {raiseQuery.isError && (
+                <Alert color="red">{t`Не удалось отправить запрос. Проверьте сеть и повторите попытку.`}</Alert>
+              )}
+              <Button type="submit" loading={raiseQuery.isPending}>{t`Отправить запрос`}</Button>
+            </Stack>
+          </form>
+        </Modal>
         <Title>{t`Данные регистра`}</Title>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
@@ -187,10 +272,51 @@ function RegistryData() {
                                     timeZone: "UTC",
                                   })}
                                   {", "}
-                                  {t`источник — форма, версия`} {observation.formVersion}
+                                  {t`источник — форма, версия`} {observation.formVersion}{" "}
+                                  <Button
+                                    variant="subtle"
+                                    size="compact-sm"
+                                    onClick={() => startRaise(observation)}
+                                  >{t`Запросить уточнение`}</Button>
                                 </List.Item>
                               ))}
                             </List>
+                          </Stack>
+                        </Paper>
+                      ))
+                    )}
+                    <Title order={2}>{t`Мои запросы на уточнение`}</Title>
+                    {queriesFeed.isError && (
+                      <Alert color="red">{t`Не удалось загрузить запросы. Повторите попытку позже.`}</Alert>
+                    )}
+                    {queryRows.length === 0 ? (
+                      <Text>{t`Запросов пока нет.`}</Text>
+                    ) : (
+                      queryRows.map((row) => (
+                        <Paper withBorder p="sm" key={row.clientId}>
+                          <Stack gap="xs">
+                            <Group>
+                              <Badge color={row.status === "open" ? "blue" : "gray"}>
+                                {queryStatuses[row.status]}
+                              </Badge>
+                              <Text size="sm">
+                                {t`Участник`} {row.participantCode}
+                                {", "}
+                                {i18n.date(`${row.occurredOn}T00:00:00Z`, {
+                                  dateStyle: "medium",
+                                  timeZone: "UTC",
+                                })}
+                                {row.fieldId && fieldLabels.get(row.fieldId)
+                                  ? `, ${fieldLabels.get(row.fieldId)}`
+                                  : ""}
+                              </Text>
+                            </Group>
+                            <Text size="sm">{row.text}</Text>
+                            {row.resolution && (
+                              <Text size="sm">
+                                {t`Ответ врача:`} {row.resolution}
+                              </Text>
+                            )}
                           </Stack>
                         </Paper>
                       ))
@@ -313,6 +439,33 @@ function RegistryData() {
                         </Paper>
                       ))
                     )}
+                    {latest && registry && (
+                      <>
+                        <Title order={2}>{t`Запросы на уточнение данных`}</Title>
+                        {queriesFeed.isError && (
+                          <Alert color="red">{t`Не удалось загрузить запросы. Повторите попытку позже.`}</Alert>
+                        )}
+                        {resolveQuery.isError && (
+                          <Alert color="red">{t`Не удалось сохранить ответ. Проверьте сеть и повторите попытку.`}</Alert>
+                        )}
+                        {queryRows.length === 0 ? (
+                          <Text>{t`Запросов от участников проекта пока нет.`}</Text>
+                        ) : (
+                          queryRows.map((row) => (
+                            <ResolveRow
+                              key={row.clientId}
+                              queryRow={row}
+                              participant={
+                                names.get(queryParticipants.get(row.participantCode) ?? "") ??
+                                row.participantCode
+                              }
+                              indicator={(row.fieldId && indicatorLabels.get(row.fieldId)) || null}
+                              resolveQuery={resolveQuery}
+                            />
+                          ))
+                        )}
+                      </>
+                    )}
                   </>
                 )}
               </>
@@ -321,5 +474,94 @@ function RegistryData() {
         )}
       </Stack>
     </Container>
+  );
+}
+function ResolveRow({
+  queryRow,
+  participant,
+  indicator,
+  resolveQuery,
+}: {
+  queryRow: {
+    clientId: string;
+    participantCode: string;
+    occurredOn: string;
+    formVersion: number;
+    fieldId: string | null;
+    text: string;
+    status: "open" | "resolved" | "dismissed";
+    resolution: string;
+  };
+  participant: string;
+  indicator: string | null;
+  resolveQuery: {
+    mutate: (
+      input: { clientId: string; status: "resolved" | "dismissed"; resolution: string },
+      options?: { onSuccess?: () => void },
+    ) => void;
+    isPending: boolean;
+  };
+}) {
+  const { t, i18n } = useLingui();
+  const resolveForm = useForm({ initialValues: { resolution: "" } });
+  const statuses = {
+    open: t`Открыт`,
+    resolved: t`Отвечен`,
+    dismissed: t`Отклонён`,
+  } as const;
+  const submit = (status: "resolved" | "dismissed") =>
+    resolveQuery.mutate(
+      { clientId: queryRow.clientId, status, resolution: resolveForm.values.resolution },
+      { onSuccess: () => resolveForm.reset() },
+    );
+  return (
+    <Paper withBorder p="sm">
+      <Stack gap="xs">
+        <Group>
+          <Badge color={queryRow.status === "open" ? "blue" : "gray"}>
+            {statuses[queryRow.status]}
+          </Badge>
+          <Text size="sm">
+            {participant}
+            {", "}
+            {i18n.date(`${queryRow.occurredOn}T00:00:00Z`, {
+              dateStyle: "medium",
+              timeZone: "UTC",
+            })}
+            {", "}
+            {t`версия формы`} {queryRow.formVersion}
+            {indicator ? `, ${indicator}` : ""}
+          </Text>
+        </Group>
+        <Text size="sm">{queryRow.text}</Text>
+        {queryRow.status === "open" ? (
+          <>
+            <Textarea
+              label={t`Ответ врача`}
+              maxLength={2000}
+              {...resolveForm.getInputProps("resolution")}
+            />
+            <Group>
+              <Button
+                loading={resolveQuery.isPending}
+                disabled={!resolveForm.values.resolution.trim()}
+                onClick={() => submit("resolved")}
+              >{t`Ответить`}</Button>
+              <Button
+                variant="default"
+                loading={resolveQuery.isPending}
+                onClick={() => submit("dismissed")}
+              >{t`Отклонить`}</Button>
+            </Group>
+          </>
+        ) : (
+          queryRow.resolution && (
+            <Text size="sm">
+              {t`Ответ врача:`} {queryRow.resolution}
+            </Text>
+          )
+        )}
+      </Stack>
+    </Paper>
   );
 }

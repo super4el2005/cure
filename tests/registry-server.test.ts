@@ -88,6 +88,7 @@ async function setup() {
   });
   for (const [userId, organizationId, role] of [
     ["researcher", clinic, "researcher"],
+    ["doctor", clinic, "doctor"],
     ["outsider", outside, "researcher"],
   ] as const)
     await t.mutation(internal.provisioning.approveMembership, { userId, organizationId, role });
@@ -260,5 +261,99 @@ describe("de-identified registry observations query", () => {
         formClientId: crypto.randomUUID(),
       }),
     ).rejects.toThrow("REGISTRY_NOT_FOUND");
+  });
+});
+
+describe("registry clarification requests", () => {
+  it("raises, lists and resolves a request without exposing identity", async () => {
+    const { t, clinic, formClientId } = await setup();
+    const researcher = t.withIdentity({ subject: "researcher" });
+    const doctor = t.withIdentity({ subject: "doctor" });
+    const feed = await researcher.query(api.registries.observations, {
+      actorId: "researcher",
+      organizationId: clinic,
+      formClientId,
+    });
+    const target = feed.rows[0]!;
+    const input = {
+      actorId: "researcher",
+      organizationId: clinic,
+      formClientId,
+      participantCode: target.participantCode,
+      occurredOn: target.occurredOn,
+      formVersion: target.formVersion,
+      fieldId: null,
+      text: "Please confirm the measurement conditions",
+    };
+    const raised = await researcher.mutation(api.registries.raise, {
+      ...input,
+      clientId: crypto.randomUUID(),
+    });
+    expect(raised.status).toBe("open");
+    const duplicate = await researcher.mutation(api.registries.raise, {
+      ...input,
+      clientId: raised.clientId,
+    });
+    expect(duplicate).toEqual(raised);
+    await expect(
+      researcher.mutation(api.registries.raise, {
+        ...input,
+        clientId: crypto.randomUUID(),
+        participantCode: "0000000000000000",
+      }),
+    ).rejects.toThrow("REGISTRY_OBSERVATION_NOT_FOUND");
+    await expect(
+      researcher.mutation(api.registries.raise, {
+        ...input,
+        clientId: crypto.randomUUID(),
+        fieldId: crypto.randomUUID(),
+      }),
+    ).rejects.toThrow("INVALID_REGISTRY_QUERY");
+    const doctorRows = await doctor.query(api.registries.queries, {
+      actorId: "doctor",
+      organizationId: clinic,
+      formClientId,
+    });
+    expect(doctorRows.map((row) => row.clientId)).toEqual([raised.clientId]);
+    expect(JSON.stringify(doctorRows)).not.toContain("Private");
+    const resolved = await doctor.mutation(api.registries.resolve, {
+      actorId: "doctor",
+      organizationId: clinic,
+      clientId: raised.clientId,
+      status: "resolved",
+      resolution: "Confirmed during the visit",
+    });
+    expect(resolved.status).toBe("resolved");
+    const again = await doctor.mutation(api.registries.resolve, {
+      actorId: "doctor",
+      organizationId: clinic,
+      clientId: raised.clientId,
+      status: "dismissed",
+      resolution: "",
+    });
+    expect(again.status).toBe("resolved");
+    const researcherRows = await researcher.query(api.registries.queries, {
+      actorId: "researcher",
+      organizationId: clinic,
+      formClientId,
+    });
+    expect(researcherRows[0]).toMatchObject({
+      clientId: raised.clientId,
+      status: "resolved",
+      resolution: "Confirmed during the visit",
+    });
+    await expect(
+      researcher.mutation(api.registries.resolve, {
+        actorId: "researcher",
+        organizationId: clinic,
+        clientId: raised.clientId,
+        status: "dismissed",
+        resolution: "",
+      }),
+    ).rejects.toThrow("ACCESS_DENIED");
+    const outsider = t.withIdentity({ subject: "outsider" });
+    await expect(
+      outsider.mutation(api.registries.raise, { ...input, clientId: crypto.randomUUID() }),
+    ).rejects.toThrow();
   });
 });
