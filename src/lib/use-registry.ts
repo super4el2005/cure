@@ -1,7 +1,10 @@
 import { useLiveQuery } from "@tanstack/react-db";
 import { useQuery } from "@tanstack/react-query";
+import { useConvex } from "convex/react";
 
+import { api } from "@/convex/_generated/api";
 import { groupRegistrySeries, registryObservations } from "@/src/lib/registry-data";
+import type { DeidentifiedRegistryRow } from "@/src/lib/registry-data";
 import { retainedWorkspaceOptions } from "@/src/lib/retained-workspaces";
 import type { FormVersion } from "@/src/lib/study-form-model";
 import { usePatientWorkspace } from "@/src/lib/use-patient-workspace";
@@ -58,6 +61,34 @@ export function useRegistry(formClientId: string) {
   const observations = registryObservations(records, formClientId);
   const series = groupRegistrySeries(observations);
   const names = new Map(rows.map((row) => [row.clientId, row.fullName]));
+  // De-identified researcher reading is online-only: the server recomputes
+  // enrollment-consent eligibility on every read and nothing is stored
+  // locally beyond the live response.
+  const convex = useConvex();
+  const researcherFeed = useQuery({
+    queryKey: ["registry-observations", workspace?.scope, formClientId],
+    enabled: Boolean(workspace && opened?.role === "researcher"),
+    gcTime: 0,
+    networkMode: "always",
+    retry: false,
+    refetchInterval: 30000,
+    queryFn: () =>
+      convex.query(api.registries.observations, {
+        actorId: userId!,
+        organizationId: workspace!.organizationId,
+        formClientId,
+      }),
+  });
+  const participantMap = new Map<string, DeidentifiedRegistryRow[]>();
+  for (const row of researcherFeed.data?.rows ?? []) {
+    const rows = participantMap.get(row.participantCode) ?? [];
+    rows.push(row);
+    participantMap.set(row.participantCode, rows);
+  }
+  const researcherSeries = [...participantMap.entries()].map(([participantCode, observations]) => ({
+    participantCode,
+    observations,
+  }));
   return {
     ...space,
     localTemplates,
@@ -70,6 +101,8 @@ export function useRegistry(formClientId: string) {
     observations,
     series,
     names,
+    researcherFeed,
+    researcherSeries,
     canRead: Boolean(workspace && opened?.role === "doctor"),
     loading: Boolean(
       workspace &&

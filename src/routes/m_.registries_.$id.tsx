@@ -43,6 +43,8 @@ function RegistryData() {
     project,
     series,
     names,
+    researcherFeed,
+    researcherSeries,
     canRead,
     loading,
   } = useRegistry(id);
@@ -119,7 +121,83 @@ function RegistryData() {
               </Alert>
             )}
             {!canRead ? (
-              <Alert>{t`Данные регистра в этой итерации доступны врачу; обезличенное чтение исследователем ещё не подключено.`}</Alert>
+              <>
+                {researcherFeed.isPending && <Text>{t`Загрузка данных регистра…`}</Text>}
+                {researcherFeed.isError && (
+                  <Alert color="red">{t`Не удалось загрузить данные регистра. Проверьте членство в проекте и повторите попытку.`}</Alert>
+                )}
+                {researcherFeed.isSuccess && (
+                  <>
+                    <Group>
+                      <Title order={2}>{researcherFeed.data.title}</Title>
+                      <Badge>{researcherFeed.data.registry.code}</Badge>
+                      <Badge variant="light">
+                        {t`Версия формы`} {researcherFeed.data.version}
+                      </Badge>
+                    </Group>
+                    <Alert>{t`Показаны обезличенные записи участников с действующим согласием на участие в исследовании. Наблюдения одного участника сопоставляются между визитами по коду участника; личные данные, авторы записей и примечания не раскрываются. Чтение требует сети и не сохраняется на устройстве.`}</Alert>
+                    {researcherSeries.length === 0 ? (
+                      <Text>{t`Окончательных ответов участников с действующим согласием пока нет.`}</Text>
+                    ) : (
+                      researcherSeries.map((group) => (
+                        <Paper withBorder p="sm" key={group.participantCode}>
+                          <Stack gap="sm">
+                            <Title order={3}>
+                              {t`Участник`} {group.participantCode}
+                            </Title>
+                            <ScrollArea>
+                              <Table>
+                                <Table.Thead>
+                                  <Table.Tr>
+                                    <Table.Th>{t`Показатель`}</Table.Th>
+                                    {group.observations.map((observation) => (
+                                      <Table.Th key={observation.observationId}>
+                                        {i18n.date(`${observation.occurredOn}T00:00:00Z`, {
+                                          dateStyle: "medium",
+                                          timeZone: "UTC",
+                                        })}
+                                      </Table.Th>
+                                    ))}
+                                  </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                  {researcherFeed.data.fields.map((field) => (
+                                    <Table.Tr key={field.id}>
+                                      <Table.Td>{field.label}</Table.Td>
+                                      {group.observations.map((observation) => (
+                                        <Table.Td key={observation.observationId}>
+                                          {registryValueText(
+                                            field,
+                                            observation.answers[field.id],
+                                            valueLabels,
+                                          ) || "—"}
+                                        </Table.Td>
+                                      ))}
+                                    </Table.Tr>
+                                  ))}
+                                </Table.Tbody>
+                              </Table>
+                            </ScrollArea>
+                            <List size="sm">
+                              {group.observations.map((observation) => (
+                                <List.Item key={observation.observationId}>
+                                  {t`Наблюдение от`}{" "}
+                                  {i18n.date(`${observation.occurredOn}T00:00:00Z`, {
+                                    dateStyle: "medium",
+                                    timeZone: "UTC",
+                                  })}
+                                  {", "}
+                                  {t`источник — форма, версия`} {observation.formVersion}
+                                </List.Item>
+                              ))}
+                            </List>
+                          </Stack>
+                        </Paper>
+                      ))
+                    )}
+                  </>
+                )}
+              </>
             ) : (
               <>
                 {loading && <Text>{t`Загрузка локальных данных…`}</Text>}

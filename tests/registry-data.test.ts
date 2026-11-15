@@ -2,10 +2,14 @@ import { describe, expect, it } from "@rstest/core";
 
 import type { ClinicalRecord } from "@/src/lib/clinical-record-model";
 import {
+  deidentifiedIndicatorIds,
+  deidentifiedRegistryRows,
   groupRegistrySeries,
   registryAutofillAnswers,
   registryIndicators,
   registryObservations,
+  registryParticipantCode,
+  registryPseudonym,
   registryValueText,
 } from "@/src/lib/registry-data";
 import { formDefinitionSchema } from "@/src/lib/study-form-model";
@@ -267,5 +271,82 @@ describe("registry autofill", () => {
       [form.fields[0]!.id]: 124,
     });
     expect(registryAutofillAnswers(registryDefinition(), rows)).toEqual({});
+  });
+});
+
+describe("de-identified registry reading", () => {
+  it("derives stable pseudonyms that never equal the identifiers", () => {
+    const project = crypto.randomUUID();
+    const patient = crypto.randomUUID();
+    const code = registryParticipantCode(project, patient);
+    expect(code).toMatch(/^[0-9a-f]{16}$/);
+    expect(code).toBe(registryParticipantCode(project, patient));
+    expect(code).not.toBe(registryParticipantCode(project, crypto.randomUUID()));
+    expect(code).not.toBe(registryParticipantCode(crypto.randomUUID(), patient));
+    expect(registryPseudonym("a")).not.toBe(registryPseudonym("b"));
+    expect(JSON.stringify({ code, patient })).toContain(patient);
+    expect(code).not.toContain(patient);
+  });
+  it("exposes only registry indicators from the record snapshot", () => {
+    const form = registryDefinition();
+    expect([...deidentifiedIndicatorIds(form, [])]).toEqual(form.registry!.indicators);
+    const legacy = definition();
+    const fallback = [legacy.fields[0]!.id, crypto.randomUUID()];
+    expect([...deidentifiedIndicatorIds(legacy, fallback)]).toEqual([legacy.fields[0]!.id]);
+  });
+  it("pseudonymizes rows and strips non-indicator answers and identity", () => {
+    const formClientId = crypto.randomUUID();
+    const projectClientId = crypto.randomUUID();
+    const patient = crypto.randomUUID();
+    const form = registryDefinition();
+    const own = record({
+      patientClientId: patient,
+      occurredOn: "2026-02-01",
+      formClientId,
+      updatedBy: "doctor-private-id",
+      definition: form,
+    });
+    const rows = deidentifiedRegistryRows(
+      [
+        own,
+        record({
+          patientClientId: patient,
+          occurredOn: "2026-01-01",
+          formClientId,
+          updatedBy: "doctor-private-id",
+          definition: form,
+        }),
+        record({
+          patientClientId: patient,
+          occurredOn: "2026-03-01",
+          formClientId,
+          definition: form,
+        }),
+        record({
+          patientClientId: patient,
+          occurredOn: "2026-03-02",
+          formClientId,
+          deleted: true,
+          definition: form,
+        }),
+        record({
+          patientClientId: patient,
+          occurredOn: "2026-03-03",
+          status: "draft",
+          formClientId,
+          definition: form,
+        }),
+      ],
+      projectClientId,
+      formClientId,
+      [],
+    );
+    expect(rows.map((row) => row.occurredOn)).toEqual(["2026-01-01", "2026-02-01", "2026-03-01"]);
+    expect(Object.keys(rows[0]!.answers).sort()).toEqual([...form.registry!.indicators].sort());
+    const serialized = JSON.stringify(rows);
+    expect(serialized).not.toContain(patient);
+    expect(serialized).not.toContain("doctor-private-id");
+    expect(serialized).not.toContain(own.clientId);
+    expect(rows[0]!.participantCode).toBe(registryParticipantCode(projectClientId, patient));
   });
 });
