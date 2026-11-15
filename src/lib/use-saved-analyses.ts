@@ -5,7 +5,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { hash } from "ohash";
 
 import { defaultCohortCriteria } from "@/src/lib/cohort-analysis";
-import { compareCohorts, comparisonSourceSignature } from "@/src/lib/cohort-comparison";
+import {
+  compareCohorts,
+  compareFixedCohorts,
+  comparisonSourceSignature,
+  freezeCohortSample,
+  frozenSampleSignature,
+} from "@/src/lib/cohort-comparison";
 import { defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
 import type { FailedPatientAction } from "@/src/lib/patient-workspace";
 import { analysisValuesSchema } from "@/src/lib/saved-analysis-model";
@@ -161,22 +167,50 @@ export function useSavedAnalyses() {
       )
         throw new Error("WORKSPACE_LOCKED");
       try {
+        const settings = analysisForm.values.comparison;
+        const role = space.opened?.role ?? "researcher";
         return {
           scope: workspace.scope,
           key: input.key,
-          report: compareCohorts(
-            space.rows,
-            space.opened?.role ?? "researcher",
-            criteria,
-            analysisForm.values.comparison,
-            Date.now(),
-          ),
+          report: settings.fixedSample
+            ? compareFixedCohorts(space.rows, role, criteria, settings, Date.now())
+            : compareCohorts(space.rows, role, criteria, settings, Date.now()),
         };
       } catch {
         throw new Error("ANALYSIS_CALCULATION_FAILED");
       }
     },
   });
+  const freezeSample = useMutation({
+    mutationKey: ["analysis-freeze"],
+    networkMode: "always",
+    retry: false,
+    gcTime: 0,
+    mutationFn: async (input: { scope: string }) => {
+      if (
+        !workspace ||
+        !currentAnalysis ||
+        input.scope !== workspace.scope ||
+        Date.now() >= workspace.expiresAt ||
+        !space.downloaded.isReady
+      )
+        throw new Error("WORKSPACE_LOCKED");
+      let fixed;
+      try {
+        fixed = freezeCohortSample(
+          space.rows,
+          space.opened?.role ?? "researcher",
+          criteria,
+          analysisForm.values.comparison,
+          Date.now(),
+        );
+      } catch {
+        throw new Error("ANALYSIS_CALCULATION_FAILED");
+      }
+      analysisForm.setFieldValue("comparison.fixedSample", fixed);
+    },
+  });
+  const unfreezeSample = () => analysisForm.setFieldValue("comparison.fixedSample", undefined);
   const comparisonResult =
     currentAnalysis &&
     analysisForm.values.comparisonEnabled &&
@@ -187,7 +221,14 @@ export function useSavedAnalyses() {
     comparisonResult &&
     (comparisonResult.key !== comparisonKey ||
       comparisonResult.report.signature !==
-        comparisonSourceSignature(space.rows, space.opened?.role ?? "researcher", Date.now())),
+        (analysisForm.values.comparison.fixedSample
+          ? frozenSampleSignature(
+              space.rows,
+              space.opened?.role ?? "researcher",
+              analysisForm.values.comparison.fixedSample,
+              Date.now(),
+            )
+          : comparisonSourceSignature(space.rows, space.opened?.role ?? "researcher", Date.now()))),
   );
   return {
     ...space,
@@ -195,6 +236,8 @@ export function useSavedAnalyses() {
     comparisonKey,
     comparisonResult,
     comparisonStale,
+    freezeSample,
+    unfreezeSample,
     analyses,
     localAnalyses,
     analysisForm,

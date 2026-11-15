@@ -3,7 +3,10 @@ import { describe, expect, it } from "@rstest/core";
 import { defaultCohortCriteria } from "@/src/lib/cohort-analysis";
 import {
   compareCohorts,
+  compareFixedCohorts,
   comparisonSourceSignature,
+  freezeCohortSample,
+  frozenSampleSignature,
   proportionInterval,
 } from "@/src/lib/cohort-comparison";
 import { cohortComparisonSchema, defaultCohortComparison } from "@/src/lib/cohort-comparison-model";
@@ -146,5 +149,142 @@ describe("local binary cohort comparison", () => {
       ),
     ).toBe(before);
     expect(comparisonSourceSignature(rows, "researcher", 100)).not.toBe(before);
+  });
+});
+describe("frozen cohort samples", () => {
+  it("freezes sorted membership of both groups and round-trips through the schema", () => {
+    const rows = source();
+    const fixed = freezeCohortSample(rows, "researcher", criteria, settings, 50);
+    expect(fixed.frozenAt).toBe(50);
+    expect(fixed.groupIds).toHaveLength(50);
+    expect(fixed.referenceIds).toHaveLength(50);
+    expect(fixed.groupIds).toEqual([...fixed.groupIds].sort((a, b) => a.localeCompare(b)));
+    expect(fixed.referenceIds).toEqual([...fixed.referenceIds].sort((a, b) => a.localeCompare(b)));
+    expect(fixed.signature).toBe(frozenSampleSignature(rows, "researcher", fixed, 50));
+    const parsed = cohortComparisonSchema.parse({ ...settings, fixedSample: fixed });
+    expect(parsed.fixedSample).toEqual(fixed);
+    expect(
+      analysisValuesSchema.parse({
+        title: "Frozen",
+        description: "",
+        criteria,
+        comparison: { ...settings, fixedSample: fixed },
+      }).comparison?.fixedSample,
+    ).toEqual(fixed);
+  });
+  it("keeps the frozen composition when selection criteria change afterwards", () => {
+    const rows = source();
+    const fixed = freezeCohortSample(rows, "researcher", criteria, settings, 50);
+    const frozen = { ...settings, fixedSample: fixed };
+    const changedCriteria = { ...defaultCohortCriteria, include: ["B"] };
+    const result = compareFixedCohorts(rows, "researcher", changedCriteria, frozen, 50);
+    expect(result.reason).toBe(null);
+    expect(result.frozenAt).toBe(50);
+    expect(result.groups[0]).toMatchObject({ selected: 50, total: 50, positive: 20, dropped: 0 });
+    expect(result.groups[1]).toMatchObject({ selected: 50, total: 50, positive: 30, dropped: 0 });
+    expect(result.test?.statistic).toBeCloseTo(3.24, 10);
+    expect(result.test?.pValue).toBeCloseTo(0.07186063822585165, 10);
+    expect(result.signature).toBe(fixed.signature);
+    expect(JSON.stringify(result)).not.toMatch(/Private|1990|clientId|birthDate/);
+    expect(JSON.stringify(result)).not.toContain(rows[0]!.clientId);
+  });
+  it("matches the live comparison while all frozen members stay authorized", () => {
+    const rows = source();
+    const fixed = freezeCohortSample(rows, "researcher", criteria, settings, 50);
+    const live = compareCohorts(rows, "researcher", criteria, settings, 50);
+    const frozen = compareFixedCohorts(
+      rows,
+      "researcher",
+      criteria,
+      { ...settings, fixedSample: fixed },
+      50,
+    );
+    expect(frozen.groups).toEqual(live.groups.map((group) => ({ ...group, dropped: 0 })));
+    expect(frozen.test).toEqual(live.test);
+  });
+  it("counts members that lost access as dropped instead of negative observations", () => {
+    const rows = source();
+    const fixed = freezeCohortSample(rows, "researcher", criteria, settings, 50);
+    const mutated = rows.map((row, index) =>
+      index === 0
+        ? { ...row, deleted: true }
+        : index === 50
+          ? { ...row, consentApproved: false }
+          : index === 1
+            ? { ...row, accessExpiresAt: 40 }
+            : row,
+    );
+    const result = compareFixedCohorts(
+      mutated,
+      "researcher",
+      criteria,
+      { ...settings, fixedSample: fixed },
+      50,
+    );
+    expect(result.groups[0]).toMatchObject({ selected: 48, dropped: 2 });
+    expect(result.groups[1]).toMatchObject({ selected: 49, dropped: 1 });
+    expect(result.signature).not.toBe(fixed.signature);
+    expect(frozenSampleSignature(mutated, "researcher", fixed, 50)).toBe(result.signature);
+  });
+  it("fails to freeze an empty group", () => {
+    expect(() =>
+      freezeCohortSample(
+        source(),
+        "researcher",
+        { ...defaultCohortCriteria, include: ["ZZZ"] },
+        settings,
+        50,
+      ),
+    ).toThrow("ANALYSIS_CALCULATION_FAILED");
+    expect(() => compareFixedCohorts(source(), "researcher", criteria, settings, 50)).toThrow(
+      "ANALYSIS_CALCULATION_FAILED",
+    );
+  });
+  it("keeps the overlap and selection guards for frozen samples", () => {
+    const rows = source();
+    const overlapping = freezeCohortSample(
+      rows,
+      "researcher",
+      criteria,
+      {
+        ...settings,
+        reference: criteria,
+      },
+      50,
+    );
+    expect(
+      compareFixedCohorts(
+        rows,
+        "researcher",
+        criteria,
+        {
+          ...settings,
+          reference: criteria,
+          fixedSample: overlapping,
+        },
+        50,
+      ).reason,
+    ).toBe("overlap");
+    const fixed = freezeCohortSample(rows, "researcher", criteria, settings, 50);
+    expect(
+      compareFixedCohorts(
+        rows,
+        "researcher",
+        { ...criteria, exclude: ["x"] },
+        { ...settings, fixedSample: fixed },
+        50,
+      ).reason,
+    ).toBe("selection");
+  });
+  it("frozen signature ignores unrelated rows and reacts to member changes", () => {
+    const rows = source();
+    const fixed = freezeCohortSample(rows, "researcher", criteria, settings, 50);
+    const before = frozenSampleSignature(rows, "researcher", fixed, 50);
+    const unrelated = [...rows, patient("C", true)];
+    expect(frozenSampleSignature(unrelated, "researcher", fixed, 50)).toBe(before);
+    const renamed = rows.map((row) => ({ ...row, fullName: "Other private name" }));
+    expect(frozenSampleSignature(renamed, "researcher", fixed, 50)).toBe(before);
+    const revised = rows.map((row, index) => (index === 0 ? { ...row, revision: 2 } : row));
+    expect(frozenSampleSignature(revised, "researcher", fixed, 50)).not.toBe(before);
   });
 });

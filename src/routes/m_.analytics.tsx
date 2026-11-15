@@ -42,6 +42,8 @@ function Analytics() {
     comparisonKey,
     comparisonResult,
     comparisonStale,
+    freezeSample,
+    unfreezeSample,
     userId,
     workspace,
     opened,
@@ -480,6 +482,40 @@ function Analytics() {
                                 })}
                               />
                               <Text>{t`Отметка о заранее определённой гипотезе является заявлением автора, а не регистрацией протокола. Кластеризация, смешивающие факторы и множественные сравнения автоматически не проверяются.`}</Text>
+                              {analysisForm.values.comparison.fixedSample ? (
+                                <>
+                                  <Group gap="sm">
+                                    <Badge variant="light">
+                                      {t`Состав зафиксирован:`}{" "}
+                                      {i18n.date(
+                                        new Date(
+                                          analysisForm.values.comparison.fixedSample.frozenAt,
+                                        ),
+                                        { dateStyle: "medium", timeStyle: "short" },
+                                      )}
+                                    </Badge>
+                                    <Button
+                                      variant="default"
+                                      onClick={unfreezeSample}
+                                    >{t`Снять фиксацию`}</Button>
+                                  </Group>
+                                  <Text>{t`Пока состав зафиксирован, критерии отбора не меняют состав групп. Расчёт выполняется по зафиксированному составу на текущих доступных значениях, а не на снимке значений. Записи, утратившие доступ, показываются как выбывшие.`}</Text>
+                                </>
+                              ) : (
+                                <>
+                                  <Button
+                                    variant="default"
+                                    loading={freezeSample.isPending}
+                                    onClick={() => {
+                                      if (!analysisForm.validate().hasErrors)
+                                        freezeSample.mutate({ scope: workspace.scope });
+                                    }}
+                                  >{t`Зафиксировать состав выборки`}</Button>
+                                  {freezeSample.isError && (
+                                    <Alert color="red">{t`Не удалось зафиксировать состав: группа пуста или данные недоступны.`}</Alert>
+                                  )}
+                                </>
+                              )}
                               <Button
                                 variant="default"
                                 loading={comparison.isPending}
@@ -524,6 +560,17 @@ function Analytics() {
                               timeStyle: "short",
                             })}
                           </Text>
+                          {comparisonResult.report.frozenAt !== null && (
+                            <Text>
+                              {t`Состав групп зафиксирован:`}{" "}
+                              {i18n.date(new Date(comparisonResult.report.frozenAt), {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                              })}
+                              {". "}
+                              {t`Значения пересчитаны на текущих доступных данных зафиксированных записей.`}
+                            </Text>
+                          )}
                           <Text>{t`Интервалы Клоппера — Пирсона относятся к каждой доле отдельно. Они не являются интервалами разности или отношения долей.`}</Text>
                           <Table.ScrollContainer minWidth={650}>
                             <Table>
@@ -534,6 +581,9 @@ function Analytics() {
                                   <Table.Th>{t`Признак / знаменатель`}</Table.Th>
                                   <Table.Th>{t`Доля и доверительный интервал`}</Table.Th>
                                   <Table.Th>{t`Недоступно / не указано`}</Table.Th>
+                                  {comparisonResult.report.frozenAt !== null && (
+                                    <Table.Th>{t`Выбыло из зафиксированного состава`}</Table.Th>
+                                  )}
                                 </Table.Tr>
                               </Table.Thead>
                               <Table.Tbody>
@@ -565,6 +615,9 @@ function Analytics() {
                                     <Table.Td>
                                       {group.unavailable} / {group.unknown}
                                     </Table.Td>
+                                    {comparisonResult.report.frozenAt !== null && (
+                                      <Table.Td>{group.dropped}</Table.Td>
+                                    )}
                                   </Table.Tr>
                                 ))}
                               </Table.Tbody>

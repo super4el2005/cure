@@ -2,6 +2,14 @@ import { z } from "zod";
 
 import { cohortCriteriaSchema, defaultCohortCriteria } from "@/src/lib/cohort-analysis";
 
+export const fixedSampleSchema = z.object({
+  frozenAt: z.number(),
+  groupIds: z.array(z.uuid()).min(1).max(50000),
+  referenceIds: z.array(z.uuid()).min(1).max(50000),
+  signature: z.string().min(1).max(200),
+});
+export type FixedSample = z.infer<typeof fixedSampleSchema>;
+
 export const cohortComparisonSchema = z
   .object({
     calculationVersion: z.literal("cohort-2x2-v1"),
@@ -14,6 +22,7 @@ export const cohortComparisonSchema = z
     independent: z.boolean(),
     intent: z.enum(["exploratory", "prespecified"]),
     hypothesis: z.string().trim().max(2000),
+    fixedSample: fixedSampleSchema.exactOptional(),
   })
   .refine((value) => value.intent !== "prespecified" || value.hypothesis.length > 0, {
     path: ["hypothesis"],
