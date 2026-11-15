@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const consentScopeCategorySchema = z.enum([
+  "sex",
+  "diagnoses",
+  "history",
+  "allergies",
+  "medications",
+  "observations",
+  "visits",
+]);
+export type ConsentScopeCategory = z.infer<typeof consentScopeCategorySchema>;
 export const consentEventSchema = z
   .object({
     id: z.uuid(),
@@ -7,10 +17,7 @@ export const consentEventSchema = z
     kind: z.enum(["granted", "withdrawn"]),
     purpose: z.string().trim().min(1).max(1000),
     recipients: z.array(z.string().min(1).max(200)).min(1).max(50),
-    scope: z
-      .array(z.enum(["sex", "diagnoses"]))
-      .min(1)
-      .max(2),
+    scope: z.array(consentScopeCategorySchema).min(1).max(7),
     expiresAt: z.number().finite().positive(),
     recordedAt: z.number().finite().positive(),
     recordedBy: z.string().min(1).max(200),

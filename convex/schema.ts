@@ -9,7 +9,17 @@ export const consentEventFields = {
   kind: v.union(v.literal("granted"), v.literal("withdrawn")),
   purpose: v.string(),
   recipients: v.array(v.string()),
-  scope: v.array(v.union(v.literal("sex"), v.literal("diagnoses"))),
+  scope: v.array(
+    v.union(
+      v.literal("sex"),
+      v.literal("diagnoses"),
+      v.literal("history"),
+      v.literal("allergies"),
+      v.literal("medications"),
+      v.literal("observations"),
+      v.literal("visits"),
+    ),
+  ),
   expiresAt: v.number(),
   recordedAt: v.number(),
   recordedBy: v.string(),

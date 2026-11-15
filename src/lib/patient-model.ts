@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { consentEventSchema } from "@/src/lib/consent-model";
+import { consentEventSchema, consentScopeCategorySchema } from "@/src/lib/consent-model";
 import type { Vault } from "@/src/lib/patient-vault";
 
 export const patientValueSchema = z.object({
@@ -17,7 +17,7 @@ export const patientRowSchema = z.object({
   updatedBy: z.string().exactOptional(),
   consentHistory: z.array(consentEventSchema).default([]),
   consentApproved: z.boolean().default(false),
-  consentScope: z.array(z.enum(["sex", "diagnoses"])).default([]),
+  consentScope: z.array(consentScopeCategorySchema).default([]),
   clientId: z.uuid(),
   revision: z.number().int().positive(),
   deleted: z.boolean(),
