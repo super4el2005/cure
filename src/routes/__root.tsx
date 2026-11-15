@@ -52,6 +52,7 @@ import { getRequestDevice } from "@/src/lib/request-device";
 import { getRequestLocale } from "@/src/lib/request-locale";
 import { useRetainedWorkspaces } from "@/src/lib/use-retained-workspaces";
 import { useShellChat } from "@/src/lib/use-shell-chat";
+import { useWebMcpActions } from "@/src/lib/use-webmcp";
 import { observePromise } from "@/src/observability/events";
 
 import mantineCoreStyles from "@mantine/core/styles.css?url";
@@ -154,6 +155,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   useRetainedWorkspaces();
+  useWebMcpActions();
   const { t, i18n } = useLingui();
   const { online } = useNetwork();
   const pathname = useLocation({ select: (location) => location.pathname });
