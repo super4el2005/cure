@@ -62,6 +62,23 @@ export const protocolFields = {
   ethicsApproved: v.boolean(),
   ethicsReference: v.string(),
   ethicsExpiresAt: v.number(),
+  visitSchedule: v.optional(
+    v.array(
+      v.object({
+        title: v.string(),
+        offsetDays: v.number(),
+        windowBeforeDays: v.number(),
+        windowAfterDays: v.number(),
+        visitType: v.union(
+          v.literal("consultation"),
+          v.literal("procedure"),
+          v.literal("hospitalization"),
+          v.literal("followUp"),
+        ),
+        durationMinutes: v.number(),
+      }),
+    ),
+  ),
 };
 export const taskFields = {
   title: v.string(),
