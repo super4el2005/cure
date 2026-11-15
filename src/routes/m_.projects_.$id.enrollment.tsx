@@ -22,11 +22,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { enrollmentStatusSchema } from "@/src/lib/study-enrollment-model";
 import { useEnrollmentRegister } from "@/src/lib/use-enrollment-register";
+import { useRecruitmentJournal } from "@/src/lib/use-recruitment-journal";
 
 export const Route = createFileRoute("/m_/projects_/$id/enrollment")({ component: Recruitment });
 function Recruitment() {
   const { t, i18n } = useLingui();
   const { id } = Route.useParams();
+  const space = useEnrollmentRegister(id);
+  const journal = useRecruitmentJournal(id, space.userId, space.online);
   const {
     userId,
     online,
@@ -49,7 +52,7 @@ function Recruitment() {
     pagination,
     pageRows,
     counts,
-  } = useEnrollmentRegister(id);
+  } = space;
   const labels = {
     screening: t`Скрининг`,
     ineligible: t`Критерии не выполнены`,
@@ -68,6 +71,76 @@ function Recruitment() {
         </Text>
         {!userId && (
           <Alert>{t`Войдите и подтвердите принадлежность к организации, чтобы работать с пациентами.`}</Alert>
+        )}
+        {userId && (
+          <Paper withBorder p="sm">
+            <Stack gap="sm">
+              <Title order={2}>{t`Межцентровый журнал набора`}</Title>
+              <Alert>{t`Агрегированные показатели центров по подтверждённым сервером записям участия. Персональные данные, даты событий, причины решений и документы согласия не покидают клиники. Изменения, ожидающие отправки из локального пространства, попадут в обзор после синхронизации.`}</Alert>
+              {!online ? (
+                <Alert>{t`Межцентровый журнал требует сети и активной сессии.`}</Alert>
+              ) : journal.centers.isPending ? (
+                <Text>{t`Загрузка показателей центров…`}</Text>
+              ) : journal.centers.data === null ? (
+                <Alert>{t`Межцентровый журнал доступен участникам команды исследования.`}</Alert>
+              ) : journal.centers.isError ? (
+                <Alert color="red">{t`Не удалось загрузить показатели центров. Повторите попытку позже.`}</Alert>
+              ) : (
+                <>
+                  <Group>
+                    {enrollmentStatusSchema.options.map((status) => (
+                      <Badge key={status}>
+                        {labels[status]}: {i18n.number(journal.totals.counts[status])}
+                      </Badge>
+                    ))}
+                    <Badge color="yellow">
+                      {t`Истёкшее согласие`}: {i18n.number(journal.totals.consentExpired)}
+                    </Badge>
+                  </Group>
+                  {journal.rows.length === 0 ? (
+                    <Text>{t`Подтверждённых записей участия пока нет.`}</Text>
+                  ) : (
+                    <Table.ScrollContainer minWidth={800}>
+                      <Table captionSide="top">
+                        <Table.Caption>{t`Текущие состояния набора по центрам исследования`}</Table.Caption>
+                        <Table.Thead>
+                          <Table.Tr>
+                            <Table.Th>{t`Центр`}</Table.Th>
+                            {enrollmentStatusSchema.options.map((status) => (
+                              <Table.Th key={status}>{labels[status]}</Table.Th>
+                            ))}
+                            <Table.Th>{t`Всего`}</Table.Th>
+                            <Table.Th>{t`Истёкшее согласие`}</Table.Th>
+                            <Table.Th>{t`Обновлено (UTC)`}</Table.Th>
+                          </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                          {journal.rows.map((row) => (
+                            <Table.Tr key={row.organizationId}>
+                              <Table.Td>
+                                {row.name || row.organizationId}
+                                <Text size="xs">
+                                  {[row.city, row.country].filter(Boolean).join(", ")}
+                                </Text>
+                              </Table.Td>
+                              {enrollmentStatusSchema.options.map((status) => (
+                                <Table.Td key={status}>{i18n.number(row.counts[status])}</Table.Td>
+                              ))}
+                              <Table.Td>{i18n.number(row.total)}</Table.Td>
+                              <Table.Td>{i18n.number(row.consentExpired)}</Table.Td>
+                              <Table.Td>
+                                {new Date(row.updatedAt).toISOString().slice(0, 10)}
+                              </Table.Td>
+                            </Table.Tr>
+                          ))}
+                        </Table.Tbody>
+                      </Table>
+                    </Table.ScrollContainer>
+                  )}
+                </>
+              )}
+            </Stack>
+          </Paper>
         )}
         {userId && !workspace && (
           <Paper withBorder p="sm">
@@ -137,7 +210,7 @@ function Recruitment() {
               <Alert>{t`Журнал пациентов клиники доступен только врачу. Участие в команде исследования не открывает персональные данные или показатели набора клиники.`}</Alert>
             ) : (
               <>
-                <Alert>{t`Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения. Это не межцентровый отчёт. Счётчики отражают текущие статусы до применения фильтров.`}</Alert>
+                <Alert>{t`Показаны только записи выбранной клиники из подготовленного локального набора, включая ещё не отправленные изменения; межцентровый обзор выше собирается отдельно на сервере. Счётчики отражают текущие статусы до применения фильтров.`}</Alert>
                 {!downloaded.isReady || !source.isReady ? (
                   <Text>{t`Загрузка локальных данных…`}</Text>
                 ) : (

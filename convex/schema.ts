@@ -579,6 +579,7 @@ export default defineSchema({
   })
     .index("by_organization", ["organizationId"])
     .index("by_client", ["organizationId", "clientId"])
+    .index("by_kind_active", ["payload.kind", "deleted"])
     .index("by_patient_active", ["organizationId", "patientClientId", "deleted"])
     .index("by_patient_kind_active", [
       "organizationId",
