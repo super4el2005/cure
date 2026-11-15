@@ -249,6 +249,22 @@ function StudyForms() {
                                   }))}
                                   {...form.getInputProps("registryIndicators")}
                                 />
+                                {form.values.registryIndicators
+                                  .flatMap((fieldId) => {
+                                    const field = form.values.fields.find(
+                                      (row) => row.id === fieldId,
+                                    );
+                                    return field?.type === "number" ? [field] : [];
+                                  })
+                                  .map((field, index) => (
+                                    <TextInput
+                                      key={field.id}
+                                      label={`${t`Код обследования для автозаполнения`}: ${field.label || `${t`Вопрос`} ${index + 1}`}`}
+                                      description={t`Новое значение подставляется из последнего обследования пациента с этим кодом; врач проверяет его перед сохранением`}
+                                      maxLength={100}
+                                      {...form.getInputProps(`registryAutofill.${field.id}`)}
+                                    />
+                                  ))}
                               </>
                             )}
                             {Object.keys(form.errors).length > 0 && (

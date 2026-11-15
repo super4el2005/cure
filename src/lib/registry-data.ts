@@ -52,6 +52,39 @@ export type RegistrySeries = {
   patientClientId: string;
   observations: RegistryObservation[];
 };
+// Latest clinical observation per registry autofill mapping. Only number
+// fields are autofillable; the physician still reviews and confirms the
+// prefilled value before saving, so provenance stays manual entry.
+export function registryAutofillAnswers(
+  definition: FormDefinition,
+  records: ClinicalRecord[],
+): Record<string, number> {
+  const rules = definition.registry?.autofill ?? [];
+  if (rules.length === 0) return {};
+  const latest = new Map<string, { occurredOn: string; updatedAt: number; value: number }>();
+  for (const record of records) {
+    if (record.deleted || record.payload?.kind !== "observation") continue;
+    const { code, numericValue } = record.payload;
+    if (!code || numericValue === null) continue;
+    const current = latest.get(code);
+    if (
+      !current ||
+      record.payload.occurredOn > current.occurredOn ||
+      (record.payload.occurredOn === current.occurredOn && record.updatedAt > current.updatedAt)
+    )
+      latest.set(code, {
+        occurredOn: record.payload.occurredOn,
+        updatedAt: record.updatedAt,
+        value: numericValue,
+      });
+  }
+  return Object.fromEntries(
+    rules.flatMap((rule) => {
+      const match = latest.get(rule.observationCode);
+      return match ? [[rule.fieldId, match.value]] : [];
+    }),
+  );
+}
 export function groupRegistrySeries(observations: RegistryObservation[]) {
   const map = new Map<string, RegistryObservation[]>();
   for (const observation of observations) {

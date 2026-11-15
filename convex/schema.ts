@@ -163,7 +163,13 @@ const studyFieldCommon = {
 };
 const studyChoices = v.array(v.object({ value: v.string(), label: v.string() }));
 export const formDefinition = v.object({
-  registry: v.optional(v.object({ code: v.string(), indicators: v.array(v.string()) })),
+  registry: v.optional(
+    v.object({
+      code: v.string(),
+      indicators: v.array(v.string()),
+      autofill: v.optional(v.array(v.object({ fieldId: v.string(), observationCode: v.string() }))),
+    }),
+  ),
   scores: v.optional(
     v.array(
       v.object({

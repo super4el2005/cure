@@ -107,6 +107,19 @@ export const registryConfigSchema = z.object({
     .min(1)
     .max(50)
     .refine((ids) => new Set(ids).size === ids.length, "DUPLICATE_REGISTRY_INDICATORS"),
+  autofill: z
+    .array(
+      z.object({
+        fieldId: z.uuid(),
+        observationCode: z.string().trim().min(1).max(100),
+      }),
+    )
+    .max(50)
+    .refine(
+      (rows) => new Set(rows.map((row) => row.fieldId)).size === rows.length,
+      "DUPLICATE_REGISTRY_AUTOFILL",
+    )
+    .exactOptional(),
 });
 export type RegistryConfig = z.infer<typeof registryConfigSchema>;
 export const formDefinitionSchema = z
@@ -126,6 +139,15 @@ export const formDefinitionSchema = z
           code: "custom",
           path: ["registry", "indicators"],
           message: "UNKNOWN_REGISTRY_INDICATOR",
+        });
+    }
+    for (const [index, rule] of (value.registry?.autofill ?? []).entries()) {
+      const field = value.fields.find((row) => row.id === rule.fieldId);
+      if (!field || field.type !== "number" || !value.registry?.indicators.includes(rule.fieldId))
+        ctx.addIssue({
+          code: "custom",
+          path: ["registry", "autofill", index],
+          message: "INVALID_REGISTRY_AUTOFILL",
         });
     }
     for (const [index, field] of value.fields.entries()) {
