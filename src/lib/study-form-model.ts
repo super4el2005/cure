@@ -95,16 +95,39 @@ export const studyFieldSchema = z
       ctx.addIssue({ code: "custom", path: ["maxDate"], message: "INVALID_FIELD_RANGE" });
   });
 export type StudyField = z.infer<typeof studyFieldSchema>;
+export const registryConfigSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1)
+    .max(50)
+    .regex(/^[a-zA-Z0-9_-]+$/, "INVALID_REGISTRY_CODE"),
+  indicators: z
+    .array(z.uuid())
+    .min(1)
+    .max(50)
+    .refine((ids) => new Set(ids).size === ids.length, "DUPLICATE_REGISTRY_INDICATORS"),
+});
+export type RegistryConfig = z.infer<typeof registryConfigSchema>;
 export const formDefinitionSchema = z
   .object({
     title: z.string().trim().min(1).max(200),
     description: z.string().trim().max(2000),
     fields: z.array(studyFieldSchema).min(1).max(50),
     scores: z.array(scoreSchema).max(20).exactOptional(),
+    registry: registryConfigSchema.exactOptional(),
   })
   .superRefine((value, ctx) => {
     if (new Set(value.fields.map((field) => field.id)).size !== value.fields.length)
       ctx.addIssue({ code: "custom", path: ["fields"], message: "DUPLICATE_FIELD_IDS" });
+    for (const indicator of value.registry?.indicators ?? []) {
+      if (!value.fields.some((field) => field.id === indicator))
+        ctx.addIssue({
+          code: "custom",
+          path: ["registry", "indicators"],
+          message: "UNKNOWN_REGISTRY_INDICATOR",
+        });
+    }
     for (const [index, field] of value.fields.entries()) {
       for (const rule of field.visibleWhen?.rules ?? []) {
         const source = value.fields.slice(0, index).find((row) => row.id === rule.fieldId);

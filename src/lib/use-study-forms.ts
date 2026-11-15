@@ -37,6 +37,9 @@ const initial = {
   description: "",
   fields: [] as ReturnType<typeof newStudyField>[],
   scores: [] as StudyScore[],
+  registryEnabled: false,
+  registryCode: "",
+  registryIndicators: [] as string[],
 };
 function definitionInput(values: typeof initial) {
   return {
@@ -44,6 +47,9 @@ function definitionInput(values: typeof initial) {
     fields: values.fields.map(({ visibleWhen, ...field }) =>
       visibleWhen ? { ...field, visibleWhen } : field,
     ),
+    ...(values.registryEnabled
+      ? { registry: { code: values.registryCode, indicators: values.registryIndicators } }
+      : {}),
   };
 }
 export function useStudyForms(projectId: string) {
@@ -93,6 +99,9 @@ export function useStudyForms(projectId: string) {
       title: record?.definition.title ?? "",
       description: record?.definition.description ?? "",
       scores: record?.definition.scores ?? [],
+      registryEnabled: Boolean(record?.definition.registry),
+      registryCode: record?.definition.registry?.code ?? "",
+      registryIndicators: record?.definition.registry?.indicators ?? [],
       fields: record
         ? record.definition.fields.map((field) => ({ ...newStudyField(), ...field }))
         : [newStudyField()],

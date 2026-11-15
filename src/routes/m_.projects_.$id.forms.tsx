@@ -10,6 +10,7 @@ import {
   Container,
   Fieldset,
   Group,
+  MultiSelect,
   Select,
   NumberInput,
   Paper,
@@ -226,6 +227,30 @@ function StudyForms() {
                               ]}
                               {...form.getInputProps("status")}
                             />
+                            <Checkbox
+                              label={t`Реестровая форма: продольные наблюдения показателей во времени`}
+                              {...form.getInputProps("registryEnabled", { type: "checkbox" })}
+                            />
+                            {form.values.registryEnabled && (
+                              <>
+                                <TextInput
+                                  label={t`Код регистра`}
+                                  description={t`Латиница, цифры, дефис и подчёркивание, до 50 символов`}
+                                  required
+                                  maxLength={50}
+                                  {...form.getInputProps("registryCode")}
+                                />
+                                <MultiSelect
+                                  label={t`Показатели регистра`}
+                                  description={t`Отметьте вопросы, значения которых сопоставляются между наблюдениями одного пациента`}
+                                  data={form.values.fields.map((field, index) => ({
+                                    value: field.id,
+                                    label: field.label || `${t`Вопрос`} ${index + 1}`,
+                                  }))}
+                                  {...form.getInputProps("registryIndicators")}
+                                />
+                              </>
+                            )}
                             {Object.keys(form.errors).length > 0 && (
                               <Alert color="red">{t`Проверьте вопросы, варианты ответа и границы значений. В форме должно быть от 1 до 50 вопросов.`}</Alert>
                             )}
@@ -784,7 +809,23 @@ function StudyForms() {
                             ? t`Доступна для новых ответов`
                             : t`Закрыта для новых ответов`}
                         </Badge>
+                        {record.definition.registry && (
+                          <Badge color="teal">
+                            {t`Регистр:`} {record.definition.registry.code}
+                          </Badge>
+                        )}
                       </Group>
+                      {record.definition.registry && (
+                        <Anchor
+                          renderRoot={(props) => (
+                            <Link
+                              {...props}
+                              to="/m/registries/$id"
+                              params={{ id: record.formClientId }}
+                            />
+                          )}
+                        >{t`Данные регистра`}</Anchor>
+                      )}
                       <Button
                         variant="default"
                         disabled={!canEdit || saveForm.isPending}
